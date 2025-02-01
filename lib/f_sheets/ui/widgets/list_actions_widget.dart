@@ -11,12 +11,17 @@ class ListActionsWidget extends StatelessWidget {
   final List<ActionTemplate> listActions;
   final SheetModel sheet;
   final bool isEditing;
+  final Function(ActionValue ac) onActionValueChanged;
+  final Function(RollLog roll) onRoll;
+
   const ListActionsWidget({
     super.key,
     required this.name,
     required this.listActions,
     required this.sheet,
     required this.isEditing,
+    required this.onActionValueChanged,
+    required this.onRoll,
   });
 
   @override
@@ -51,6 +56,8 @@ class ListActionsWidget extends StatelessWidget {
                     action: action,
                     isEditing: isEditing,
                     sheet: sheet,
+                    onActionValueChanged: onActionValueChanged,
+                    onRoll: onRoll,
                   );
                 },
               ),

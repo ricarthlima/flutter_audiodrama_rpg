@@ -28,6 +28,15 @@
             "isPreparation": true
         },
         {
+            "id": "f063aa80-e04a-11ef-8b01-7ddfa2fb8068",
+            "name": "Ajudar",
+            "description": "Gaste uma ação para ajudar uma pessoa aliada com um dado a mais em sua rolagem.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": true
+        },
+        {
             "id": "732cc5ec-a8ef-425d-b1b7-5a43e9e3f623",
             "name": "Correr",
             "description": "Determina quão longe você conseguiu correr nesse turno. É importante frisar que o deslocamento, seja corrida, escalada ou salto, é narrativo em Audiodrama RPG. Isso quer dizer que pessoa narradora e pessoas  jogadoras irão determinar o quanto o personagem conseguiu se deslocar com a rolagem que teve, respeitando os mínimos e os máximos plausíveis. Por poder ser uma ação livre, você pode simplesmente não rolar dados e usar a distância pré-determinada. Caso decida usar o teste resistido, considere uma DT10 contra o mundo para determinar o sucesso. Se você estiver usando um tradicional *grid* de 1,5 metros, recomendo a tabela no **Apêndice B** como guia.",

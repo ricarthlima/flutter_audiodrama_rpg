@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../_core/theme_provider.dart';
 import '../../helpers/enum_action_train_level.dart';
 import '../../models/action_template.dart';
 import '../../models/sheet_model.dart';
@@ -8,6 +12,8 @@ import 'action_tooltip.dart';
 
 class ActionWidget extends StatefulWidget {
   final ActionTemplate action;
+  final Function(ActionValue ac) onActionValueChanged;
+  final Function(RollLog roll) onRoll;
   final SheetModel sheet;
   final bool isEditing;
   const ActionWidget({
@@ -15,6 +21,8 @@ class ActionWidget extends StatefulWidget {
     required this.action,
     required this.sheet,
     required this.isEditing,
+    required this.onActionValueChanged,
+    required this.onRoll,
   });
 
   @override
@@ -37,13 +45,18 @@ class _ActionWidgetState extends State<ActionWidget> {
           ),
         )
         .value;
+    _trainLevel = ActionTrainLevel.values[av];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (!widget.isEditing) ? () {} : null,
+      onTap: (!widget.isEditing)
+          ? () {
+              rollAction();
+            }
+          : null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
@@ -98,6 +111,12 @@ class _ActionWidgetState extends State<ActionWidget> {
                           setState(() {
                             _trainLevel = value;
                           });
+                          widget.onActionValueChanged(
+                            ActionValue(
+                              actionId: widget.action.id,
+                              value: value.index,
+                            ),
+                          );
                         }
                       },
                     )
@@ -107,10 +126,15 @@ class _ActionWidgetState extends State<ActionWidget> {
                         children: List.generate(
                           5,
                           (index) {
-                            return Icon(
-                              Icons.directions,
-                              size: (av == index) ? 16 : 10,
-                              color: (av == index) ? _getColor(av) : null,
+                            return Image.asset(
+                              (av == index)
+                                  ? "assets/images/d20-$av.png"
+                                  : (Provider.of<ThemeProvider>(context)
+                                              .themeMode ==
+                                          ThemeMode.dark)
+                                      ? "assets/images/d20.png"
+                                      : "assets/images/d20i.png",
+                              width: (av == index) ? 14 : 10,
                             );
                           },
                         ),
@@ -123,20 +147,27 @@ class _ActionWidgetState extends State<ActionWidget> {
     );
   }
 
-  Color? _getColor(int av) {
-    switch (av) {
-      case 0:
-        return Colors.red;
-      case 1:
-        return Colors.orange;
-      case 2:
-        return Colors.blue;
-      case 3:
-        return Colors.green;
-      case 4:
-        return Colors.greenAccent;
+  void rollAction() {
+    List<int> rolls = [];
+    if (av == 0 || av == 4) {
+      rolls.add(Random().nextInt(20) + 1);
+      rolls.add(Random().nextInt(20) + 1);
+      rolls.add(Random().nextInt(20) + 1);
+    } else if (av == 1 || av == 3) {
+      rolls.add(Random().nextInt(20) + 1);
+      rolls.add(Random().nextInt(20) + 1);
+    } else if (av == 2) {
+      rolls.add(Random().nextInt(20) + 1);
     }
-    return null;
+
+    widget.onRoll(
+      RollLog(
+        rolls: rolls,
+        idAction: widget.action.id,
+        dateTime: DateTime.now(),
+        isGettingLower: av <= 1,
+      ),
+    );
   }
 
   String _tooltipText(int av) {
