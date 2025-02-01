@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "398710135839",
+    "project_id": "flutter-rpg-audiodrama",
+    "storage_bucket": "flutter-rpg-audiodrama.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398710135839:android:683f03be03f4ed7439c92a",
+        "android_client_info": {
+          "package_name": "com.example.flutter_rpg_audiodrama"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "398710135839-r2jh3rtu6s2j2r507senqv9m6jkns37h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfPd7ML5ELokCVV7QHLYOKyHtdOnq_6ck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398710135839-r2jh3rtu6s2j2r507senqv9m6jkns37h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

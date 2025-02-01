@@ -1,0 +1,484 @@
+{
+    "Ações BÁSICAS": [
+        {
+            "name": "Interagir",
+            "description": "Trata-se de uma interação básica que não se encaixa em qualquer outro teste como coletar um item, mover um objeto leve de lugar.",
+            "isFree": true,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Preparar-se",
+            "description": "Consome duas ações:  prepare-se para o que está prestes a acontecer, ganhando uma ação extra no próximo turno.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": true
+        },
+        {
+            "name": "Correr",
+            "description": "Determina quão longe você conseguiu correr nesse turno. É importante frisar que o deslocamento, seja corrida, escalada ou salto, é narrativo em Audiodrama RPG. Isso quer dizer que pessoa narradora e pessoas  jogadoras irão determinar o quanto o personagem conseguiu se deslocar com a rolagem que teve, respeitando os mínimos e os máximos plausíveis. Por poder ser uma ação livre, você pode simplesmente não rolar dados e usar a distância pré-determinada. Caso decida usar o teste resistido, considere uma DT10 contra o mundo para determinar o sucesso. Se você estiver usando um tradicional *grid* de 1,5 metros, recomendo a tabela no **Apêndice B** como guia.",
+            "isFree": true,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false
+        },
+        {
+            "name": "Escalar",
+            "description": "Determina quão alto você conseguiu escalar nesse turno.",
+            "isFree": true,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false
+        },
+        {
+            "name": "Nadar",
+            "description": "Determina quão longe você conseguiu nadar nesse turno.",
+            "isFree": true,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false
+        },
+        {
+            "name": "Saltar",
+            "description": "Determina quão longe ou (exclusivo) alto você conseguiu saltar nesse turno.",
+            "isFree": true,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false
+        },
+        {
+            "name": "Equilibrar-se",
+            "description": "Sua capacidade de equilibrar-se em situações como andar por um espaço estreito ou irregular.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Pilotar (tração animal)",
+            "description": "Trata da sua habilidade de conduzir veículos ou estruturas puxadas por animais, como carroças, trenós ou charretes, incluindo o manejo dos animais para direção e controle.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Pilotar (terrestres)",
+            "description": "Trata da sua habilidade de operar veículos terrestres, como carros, motocicletas, tanques ou outros tipos de transporte motorizado, ou manual em terra firme.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Pilotar (aéreos)",
+            "description": "Trata da sua capacidade de operar veículos ou dispositivos voadores, como aviões, helicópteros, drones ou outros meios de transporte aéreos.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Pilotar (aquáticos)",
+            "description": "Trata da sua habilidade de usar, manipular ou hackear sistemas digitais, incluindo dispositivos eletrônicos, computadores, interfaces de usuário ou redes.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Usar item",
+            "description": "Indica que você usou sua ação para interagir ou fazer funcionar um item. Cada item tem sua especificação de rolagem, alguns itens podem exigir as duas ações para serem usados.",
+            "isFree": true,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        }
+    ],
+    "Ações de Força e Resistência": [
+        {
+            "name": "Lutar",
+            "description": "Trata da sua efetividade em uma luta de corpo a corpo.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false
+        },
+        {
+            "name": "Resistir (Físico)",
+            "description": "Apenas reação: trata do quanto você conseguiu resistir a uma força imposta contra você como um empurrão, um agarrão ou um esmagamento.",
+            "isFree": false,
+            "isReaction": true,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Resistir (Fisiológico)",
+            "description": "Apenas reação: trata de resistir a intoxicações, infecções, envenenamento e coisas do tipo.",
+            "isFree": false,
+            "isReaction": true,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Forçar",
+            "description": "Trata da sua efetividade em empurrar, abrir, quebrar ou quaisquer outras ações que exijam forçar fisicamente algo ou alguém.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Amortecer queda",
+            "description": "Prepara seu corpo para a queda, em caso de sucesso, garante um dado no teste de Resistir (Físico).",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": true
+        },
+        {
+            "name": "Finalizar",
+            "description": "Ação de tentar tirar a vida de alguém ou alguma criatura que esteja sem a capacidade de se defender.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        }
+    ],
+    "Ações de Agilidade": [
+        {
+            "name": "Resistir (Reflexos)",
+            "description": "Apenas reação: trata de reagir a ações rápidas contra você: como desviar, notar que está sendo roubado ou perceber algo instantâneo no ambiente.",
+            "isFree": false,
+            "isReaction": true,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Mirar",
+            "description": "Consome duas ações: prepara-se para um lançamento ou um tiro, em caso de sucesso, garante um dado a mais nessas ações.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": true
+        },
+        {
+            "name": "Lançar",
+            "description": "Trata da sua capacidade de lançar um objeto em algum lugar ou em alguém.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Atirar",
+            "description": "Trata da sua capacidade atirar com uma arma de pontaria em algo ou em alguém.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Esconder",
+            "description": "Trata de esconder um objeto, seja consigo, seja em um local.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Esconder-se",
+            "description": "Trata de esconder a si no ambiente.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Seguir",
+            "description": "Trata de seguir alguém sem chamar atenção.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Furtar",
+            "description": "Diz quão efetiva foi sua tentativa de subtrair algo de alguém ou de um local sem chamar atenção.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false
+        },
+        {
+            "name": "Escapar",
+            "description": "Trata da sua capacidade de desatar-se de cordas, algemas, grilhões e outras formas de aprisionamento físico.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        }
+    ],
+    "Ações de Intelecto": [
+        {
+            "name": "Concentrar-se",
+            "description": "Consome duas ações: ação de limpar sua mente para se preparar para uma ação intelectual, se obtiver sucesso, ganhe um dado na sua próxima ação intelectual.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": true
+        },
+        {
+            "name": "Investigar",
+            "description": "Trata da sua capacidade de buscar informações detalhadas em documentos, pistas ou locais específicos, conectando-as a algo relevante.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Procurar",
+            "description": "Nomeie um objeto ou pessoa que possam estar escondida ou fora de vista no ambiente, essa ação determina se você consegue achar ou obter uma pista sobre.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Lembrar",
+            "description": "Trata da sua capacidade de recordar informações relevantes ou experiências passadas que ajudem em sua ação atual.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Refletir (Atualidades)",
+            "description": "Trata da sua habilidade em compreender e analisar fatos, notícias e informações recentes ou do contexto em que está inserido.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Refletir (História)",
+            "description": "Trata da sua habilidade em compreender e analisar eventos conhecidos do passado recente ou distante.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Refletir (Ciências)",
+            "description": "Trata da sua habilidade em compreender e analisar aspectos científicos no que tange química, biologia, matemática, entre outros.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Refletir (Línguas)",
+            "description": "Trata da sua habilidade de compreender, traduzir ou interpretar textos e falas em diferentes idiomas.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Orientar-se (Urbano)",
+            "description": "Conhecimento que você tem sobre especificidades da vida urbana.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Orientar-se (Ermos)",
+            "description": "Conhecimento que você tem sobre especificidades nos ambientes selvagens e desconhecidos.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Orar",
+            "description": "Trata da sua habilidade em se conectar espiritualmente ou invocar forças maiores, seja por fé, religião ou crença.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Comungar com o oculto",
+            "description": "Trata da sua habilidade de invocar energias ocultas ao seu favor, ou contra seus inimigos.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Socorrer",
+            "description": "Trata de fornecer ajuda emergencial, como primeiros socorros, estabilização de ferimentos ou salvamento imediato.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Cuidar",
+            "description": "Trata de ações prolongadas de cuidado com feridos, doentes ou pessoas em estado vulnerável.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Consertar",
+            "description": "Trata da sua habilidade em reparar objetos, dispositivos ou estruturas danificadas.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Interagir com o digital",
+            "description": "Trata da sua habilidade de usar, manipular ou hackear sistemas digitais, incluindo dispositivos eletrônicos, computadores, interfaces de usuário ou redes.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        }
+    ],
+    "Ações Sociais": [
+        {
+            "name": "Resistir (Mental)",
+            "description": "Trata de resistir a tentativas de manipulação, intimidação, provocações ou ataques mentais que possam causar confusão, medo ou desespero.",
+            "isFree": false,
+            "isReaction": true,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Intuir",
+            "description": "Trata da sua capacidade de, ativamente, ler as intenções de outro. Diferente de Resistir (Mental) essa é uma investigação ativa dos aspectos sociais de alguém que você considere suspeito.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Fingir",
+            "description": "Trata da sua capacidade de simular emoções, intenções ou papéis para enganar ou despistar outros.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false
+        },
+        {
+            "name": "Mentir",
+            "description": "Trata da sua habilidade de criar falsidades convincentes sem levantar suspeitas.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false
+        },
+        {
+            "name": "Intimidar",
+            "description": "Trata de persuadir ou forçar alguém a fazer algo utilizando ameaça, força ou presença intimidadora.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false
+        },
+        {
+            "name": "Barganhar",
+            "description": "Trata da sua habilidade em negociar termos mais favoráveis em trocas, acordos ou disputas comerciais.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false
+        },
+        {
+            "name": "Flertar",
+            "description": "Trata de se comunicar de forma sedutora ou romântica para criar conexão emocional ou interesse.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false
+        },
+        {
+            "name": "Insinuar",
+            "description": "Trata de sugerir ou comunicar algo indiretamente, utilizando linguagem corporal, insinuações ou sugestões sutis.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false
+        },
+        {
+            "name": "Disfarçar-se",
+            "description": "Trata de se passar por outra pessoa ou esconder sua verdadeira identidade por meio de roupas, maquiagem ou atuação.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Acalmar",
+            "description": "Trata de tranquilizar alguém que está em um estado emocional alterado, como medo, raiva ou desespero.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Acalmar animal",
+            "description": "Trata de controlar ou tranquilizar um animal em estado de alerta, ou agressividade.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Manejar animal",
+            "description": "Trata de treinar, guiar ou controlar animais, seja para transporte, caça ou outras utilidades.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Agradar animal",
+            "description": "Trata de ganhar a confiança de um animal, criando laços por meio de interação e alimentação.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Persuadir",
+            "description": "Trata de convencer alguém a seguir sua ideia ou proposta por meio de argumentos racionais, ou emocionais.",
+            "isFree": false,
+            "isReaction": true,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Interrogar",
+            "description": "Trata da sua capacidade de extrair informações de alguém, seja por técnicas de questionamento ou manipulação.",
+            "isFree": false,
+            "isReaction": true,
+            "isResisted": false,
+            "isPreparation": false
+        },
+        {
+            "name": "Portar-se",
+            "description": "Trata de como você se apresenta em público, seja por elegância, etiqueta ou comportamento.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false
+        }
+    ]
+}
