@@ -3,7 +3,8 @@ import 'package:flutter_rpg_audiodrama/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/_core/remote_data_manager.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_model.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_template.dart';
+import 'package:flutter_rpg_audiodrama/f_sheets/data/sheet_template.dart';
+import 'package:flutter_rpg_audiodrama/f_sheets/ui/components/sheet_history_drawer.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -80,44 +81,23 @@ class _SheetScreenState extends State<SheetScreen> {
             },
           ),
           Icon(Icons.dark_mode),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: VerticalDivider(),
+          ),
+          Builder(
+            builder: (context) => IconButton(
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+              icon: Icon(Icons.chat),
+            ),
+          ),
+          SizedBox(width: 16),
         ],
       ),
-      floatingActionButton: Builder(
-        builder: (context) => FloatingActionButton(
-          onPressed: () {
-            Scaffold.of(context).openEndDrawer();
-          },
-          tooltip: "Histórico de rolagens",
-          child: Icon(Icons.chat),
-        ),
-      ),
       endDrawer: Drawer(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Text(
-                "Histórico de Rolagem",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: Fonts.bungee,
-                  fontSize: 16,
-                ),
-              ),
-              SizedBox(height: 16),
-              SingleChildScrollView(
-                child: Column(
-                  verticalDirection: VerticalDirection.down,
-                  children: listRollLog
-                      .map(
-                        (e) => Text(e.rolls.toString()),
-                      )
-                      .toList(),
-                ),
-              ),
-            ],
-          ),
-        ),
+        child: SheetHistoryDrawer(listRollLog: listRollLog),
       ),
       body: FutureBuilder(
         future: futureGetSheet,
@@ -155,11 +135,15 @@ class _SheetScreenState extends State<SheetScreen> {
 
   Widget _generateScreen(SheetModel sheet) {
     _nameController.text = sheet.characterName;
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 32,
-        left: 32,
-        right: 32,
+    return Container(
+      margin: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(64),
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 1,
+          color: Theme.of(context).textTheme.bodyMedium!.color!,
+        ),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -205,7 +189,7 @@ class _SheetScreenState extends State<SheetScreen> {
                           "Nome:",
                           textAlign: TextAlign.start,
                           style: TextStyle(
-                            fontFamily: Fonts.sourceSerif4,
+                            fontFamily: FontsFamilies.sourceSerif4,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -217,14 +201,14 @@ class _SheetScreenState extends State<SheetScreen> {
                                   controller: _nameController,
                                   style: TextStyle(
                                     fontSize: 48,
-                                    fontFamily: Fonts.sourceSerif4,
+                                    fontFamily: FontsFamilies.sourceSerif4,
                                   ),
                                 )
                               : Text(
                                   sheet.characterName,
                                   style: TextStyle(
                                     fontSize: 48,
-                                    fontFamily: Fonts.bungee,
+                                    fontFamily: FontsFamilies.bungee,
                                   ),
                                 ),
                         ),
@@ -247,7 +231,7 @@ class _SheetScreenState extends State<SheetScreen> {
                     name: "Ações Básicas",
                     sheet: sheet,
                     isEditing: isEditing,
-                    listActions: SheetTemplate.instance.listBasicActions,
+                    listActions: SheetDAO.instance.listBasicActions,
                     onActionValueChanged: onActionValueChanged,
                     onRoll: onRoll,
                   ),
@@ -255,7 +239,7 @@ class _SheetScreenState extends State<SheetScreen> {
                     name: "Ações de Força",
                     sheet: sheet,
                     isEditing: isEditing,
-                    listActions: SheetTemplate.instance.listStrengthActions,
+                    listActions: SheetDAO.instance.listStrengthActions,
                     onActionValueChanged: onActionValueChanged,
                     onRoll: onRoll,
                   ),
@@ -263,7 +247,7 @@ class _SheetScreenState extends State<SheetScreen> {
                     name: "Ações de Agilidade",
                     sheet: sheet,
                     isEditing: isEditing,
-                    listActions: SheetTemplate.instance.listAgilityActions,
+                    listActions: SheetDAO.instance.listAgilityActions,
                     onActionValueChanged: onActionValueChanged,
                     onRoll: onRoll,
                   ),
@@ -271,7 +255,7 @@ class _SheetScreenState extends State<SheetScreen> {
                     name: "Ações de Intelecto",
                     sheet: sheet,
                     isEditing: isEditing,
-                    listActions: SheetTemplate.instance.listIntellectActions,
+                    listActions: SheetDAO.instance.listIntellectActions,
                     onActionValueChanged: onActionValueChanged,
                     onRoll: onRoll,
                   ),
@@ -279,7 +263,7 @@ class _SheetScreenState extends State<SheetScreen> {
                     name: "Ações Sociais",
                     sheet: sheet,
                     isEditing: isEditing,
-                    listActions: SheetTemplate.instance.listSocialActions,
+                    listActions: SheetDAO.instance.listSocialActions,
                     onActionValueChanged: onActionValueChanged,
                     onRoll: onRoll,
                   ),

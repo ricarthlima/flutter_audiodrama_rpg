@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(
           "AUDIODRAMA RPG",
           style: TextStyle(
-            fontFamily: Fonts.bungee,
+            fontFamily: FontsFamilies.bungee,
           ),
         ),
         actions: [

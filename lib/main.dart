@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_template.dart';
+import 'package:flutter_rpg_audiodrama/f_sheets/data/sheet_template.dart';
 
 import 'package:flutter_rpg_audiodrama/firebase_options.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +15,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  await SheetTemplate.instance.initialize();
+  await SheetDAO.instance.initialize();
 
   runApp(
     ChangeNotifierProvider(

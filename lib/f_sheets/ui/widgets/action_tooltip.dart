@@ -25,7 +25,7 @@ class ActionTooltip extends StatelessWidget {
             action.name,
             style: TextStyle(
               color: Colors.white,
-              fontFamily: Fonts.bungee,
+              fontFamily: FontsFamilies.bungee,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -40,7 +40,7 @@ class ActionTooltip extends StatelessWidget {
                 color: Colors.white,
                 fontSize: 12,
                 fontStyle: FontStyle.italic,
-                fontFamily: Fonts.sourceSerif4,
+                fontFamily: FontsFamilies.sourceSerif4,
               ),
             ),
           ),
@@ -49,7 +49,7 @@ class ActionTooltip extends StatelessWidget {
             action.description,
             style: const TextStyle(
               color: Colors.white,
-              fontFamily: Fonts.sourceSerif4,
+              fontFamily: FontsFamilies.sourceSerif4,
             ),
             textAlign: TextAlign.justify,
           ),

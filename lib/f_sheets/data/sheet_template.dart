@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_rpg_audiodrama/f_sheets/models/action_template.dart';
 
-class SheetTemplate {
+class SheetDAO {
   static const String labelBasicActions = "basic";
   static const String labelStrengthActions = "strength";
   static const String labelAgilityActions = "agility";
@@ -15,9 +15,9 @@ class SheetTemplate {
   List<ActionTemplate> listIntellectActions = [];
   List<ActionTemplate> listSocialActions = [];
 
-  SheetTemplate._();
-  static final SheetTemplate _instance = SheetTemplate._();
-  static SheetTemplate get instance {
+  SheetDAO._();
+  static final SheetDAO _instance = SheetDAO._();
+  static SheetDAO get instance {
     return _instance;
   }
 
@@ -48,5 +48,24 @@ class SheetTemplate {
         listStrengthActions.length +
         listSocialActions.length +
         listAgilityActions.length;
+  }
+
+  ActionTemplate? getActionById(String id) {
+    List<ActionTemplate> query =
+        getAll().where((element) => element.id == id).toList();
+
+    if (query.isNotEmpty) {
+      return query[0];
+    }
+
+    return null;
+  }
+
+  List<ActionTemplate> getAll() {
+    return listAgilityActions +
+        listBasicActions +
+        listIntellectActions +
+        listSocialActions +
+        listStrengthActions;
   }
 }

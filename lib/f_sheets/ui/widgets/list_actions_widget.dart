@@ -30,7 +30,7 @@ class ListActionsWidget extends StatelessWidget {
       children: [
         Container(
           width: ((width(context) / 5) < 320) ? width(context) : 320,
-          height: height(context) * 0.5,
+          height: 500,
           decoration: BoxDecoration(
             border: Border.all(
               width: 4,
@@ -72,7 +72,7 @@ class ListActionsWidget extends StatelessWidget {
             name,
             style: TextStyle(
               fontSize: 22,
-              fontFamily: Fonts.bungee,
+              fontFamily: FontsFamilies.bungee,
               fontWeight: FontWeight.bold,
             ),
           ),
