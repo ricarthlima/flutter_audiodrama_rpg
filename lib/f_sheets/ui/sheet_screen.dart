@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../_core/theme_provider.dart';
 import 'widgets/list_actions_widget.dart';
+import 'package:badges/badges.dart' as badges;
 
 class SheetScreen extends StatefulWidget {
   final String id;
@@ -25,6 +26,7 @@ class _SheetScreenState extends State<SheetScreen> {
   Future<SheetModel?> futureGetSheet = Future.delayed(Duration.zero);
   List<ActionValue> listActionValue = [];
   List<RollLog> listRollLog = [];
+  int notificationCount = 0;
 
   @override
   void initState() {
@@ -59,7 +61,7 @@ class _SheetScreenState extends State<SheetScreen> {
         actions: [
           Visibility(
             visible: isEditing,
-            child: Text("Sair da edição para salvar"),
+            child: Text("Saia da edição para salvar"),
           ),
           SizedBox(width: 8),
           Icon(Icons.edit),
@@ -89,8 +91,26 @@ class _SheetScreenState extends State<SheetScreen> {
             builder: (context) => IconButton(
               onPressed: () {
                 Scaffold.of(context).openEndDrawer();
+                setState(() {
+                  notificationCount = 0;
+                });
               },
-              icon: Icon(Icons.chat),
+              icon: badges.Badge(
+                showBadge:
+                    notificationCount > 0, // Esconde se não houver notificações
+                badgeContent: Text(
+                  notificationCount.toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+                position: badges.BadgePosition.topEnd(
+                  top: -10,
+                  end: -12,
+                ), // Ajusta posição
+                child: Icon(Icons.chat),
+              ),
             ),
           ),
           SizedBox(width: 16),
@@ -310,6 +330,7 @@ class _SheetScreenState extends State<SheetScreen> {
   onRoll(RollLog roll) async {
     listRollLog.add(roll);
     await saveChanges();
+    notificationCount++;
     setState(() {});
   }
 }
