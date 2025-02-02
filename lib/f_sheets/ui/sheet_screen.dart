@@ -542,9 +542,11 @@ class _SheetScreenState extends State<SheetScreen> {
       listActionValue.removeWhere((e) => e.actionId == ac.actionId);
     }
     listActionValue.add(ac);
+    setState(() {});
   }
 
   onRoll(RollLog roll) async {
+    showRollDialog(context: context, rollLog: roll);
     listRollLog.add(roll);
     await saveChanges();
     notificationCount++;
@@ -624,4 +626,88 @@ showSnackBarWip(BuildContext context) {
       duration: Duration(milliseconds: 1200),
     ),
   );
+}
+
+Future<dynamic> showRollDialog({
+  required BuildContext context,
+  required RollLog rollLog,
+}) async {
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        elevation: 10,
+        backgroundColor: Colors.transparent,
+        child: RollRowWidget(rollLog: rollLog),
+      );
+    },
+  );
+}
+
+class RollRowWidget extends StatefulWidget {
+  final RollLog rollLog;
+  const RollRowWidget({
+    super.key,
+    required this.rollLog,
+  });
+
+  @override
+  State<RollRowWidget> createState() => _RollRowWidgetState();
+}
+
+class _RollRowWidgetState extends State<RollRowWidget> {
+  int i = 0;
+  List<double> listOpacity = [0, 0, 0];
+  @override
+  void initState() {
+    super.initState();
+    callShowRoll();
+  }
+
+  callShowRoll() async {
+    await Future.delayed(Duration(milliseconds: 250));
+    setState(() {
+      listOpacity[i] = 1;
+    });
+    i++;
+    if (i < widget.rollLog.rolls.length) {
+      callShowRoll();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 64,
+      children: List.generate(
+        widget.rollLog.rolls.length,
+        (index) {
+          return AnimatedOpacity(
+            opacity: listOpacity[index],
+            duration: Duration(milliseconds: 1250),
+            child: SizedBox(
+              width: 200,
+              height: 200,
+              child: Stack(
+                children: [
+                  Image.asset("assets/images/d20-0.png"),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      widget.rollLog.rolls[index].toString(),
+                      style: TextStyle(
+                        fontSize: 44,
+                        fontFamily: FontFamilies.bungee,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 }
