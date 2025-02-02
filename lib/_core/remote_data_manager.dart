@@ -22,11 +22,13 @@ class RemoteDataManager {
         .collection("sheets")
         .doc(sheetId)
         .set(
-          SheetModel(
+          Sheet(
             id: sheetId,
             characterName: characterName,
             listActionValue: [],
             listRollLog: [],
+            effortPoints: 0,
+            stressLevel: 0,
           ).toMap(),
         );
   }
@@ -40,7 +42,7 @@ class RemoteDataManager {
         .snapshots();
   }
 
-  Future<SheetModel?> getSheetId(String id) async {
+  Future<Sheet?> getSheetId(String id) async {
     DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
         .instance
         .collection("users")
@@ -50,12 +52,12 @@ class RemoteDataManager {
         .get();
 
     if (doc.data() != null) {
-      return SheetModel.fromMap(doc.data()!);
+      return Sheet.fromMap(doc.data()!);
     }
     return null;
   }
 
-  Future<void> saveSheet(SheetModel sheet) async {
+  Future<void> saveSheet(Sheet sheet) async {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(uid)

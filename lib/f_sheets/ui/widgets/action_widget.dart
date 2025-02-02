@@ -14,7 +14,7 @@ class ActionWidget extends StatefulWidget {
   final ActionTemplate action;
   final Function(ActionValue ac) onActionValueChanged;
   final Function(RollLog roll) onRoll;
-  final SheetModel sheet;
+  final Sheet sheet;
   final bool isEditing;
   const ActionWidget({
     super.key,

@@ -3,28 +3,36 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-class SheetModel {
+class Sheet {
   String id;
   String characterName;
+  int stressLevel;
+  int effortPoints;
   List<ActionValue> listActionValue;
   List<RollLog> listRollLog;
 
-  SheetModel({
+  Sheet({
     required this.id,
     required this.characterName,
+    required this.stressLevel,
+    required this.effortPoints,
     required this.listActionValue,
     required this.listRollLog,
   });
 
-  SheetModel copyWith({
+  Sheet copyWith({
     String? id,
     String? characterName,
+    int? stressLevel,
+    int? effortPoints,
     List<ActionValue>? listActionValue,
     List<RollLog>? listRollLog,
   }) {
-    return SheetModel(
+    return Sheet(
       id: id ?? this.id,
       characterName: characterName ?? this.characterName,
+      stressLevel: stressLevel ?? this.stressLevel,
+      effortPoints: effortPoints ?? this.effortPoints,
       listActionValue: listActionValue ?? this.listActionValue,
       listRollLog: listRollLog ?? this.listRollLog,
     );
@@ -34,15 +42,19 @@ class SheetModel {
     return <String, dynamic>{
       'id': id,
       'characterName': characterName,
+      'stressLevel': stressLevel,
+      'effortPoints': effortPoints,
       'listActionValue': listActionValue.map((x) => x.toMap()).toList(),
       'listRollLog': listRollLog.map((x) => x.toMap()).toList(),
     };
   }
 
-  factory SheetModel.fromMap(Map<String, dynamic> map) {
-    return SheetModel(
+  factory Sheet.fromMap(Map<String, dynamic> map) {
+    return Sheet(
       id: map['id'] as String,
       characterName: map['characterName'] as String,
+      stressLevel: map['stressLevel'] as int,
+      effortPoints: map['effortPoints'] as int,
       listActionValue: List<ActionValue>.from(
         (map['listActionValue'] as List<dynamic>).map<ActionValue>(
           (x) => ActionValue.fromMap(x as Map<String, dynamic>),
@@ -58,20 +70,22 @@ class SheetModel {
 
   String toJson() => json.encode(toMap());
 
-  factory SheetModel.fromJson(String source) =>
-      SheetModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Sheet.fromJson(String source) =>
+      Sheet.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'SheetModel(id: $id, characterName: $characterName, listActionValue: $listActionValue, listRollLog: $listRollLog)';
+    return 'Sheet(id: $id, characterName: $characterName, stressLevel: $stressLevel, effortPoints: $effortPoints, listActionValue: $listActionValue, listRollLog: $listRollLog)';
   }
 
   @override
-  bool operator ==(covariant SheetModel other) {
+  bool operator ==(covariant Sheet other) {
     if (identical(this, other)) return true;
 
     return other.id == id &&
         other.characterName == characterName &&
+        other.stressLevel == stressLevel &&
+        other.effortPoints == effortPoints &&
         listEquals(other.listActionValue, listActionValue) &&
         listEquals(other.listRollLog, listRollLog);
   }
@@ -80,6 +94,8 @@ class SheetModel {
   int get hashCode {
     return id.hashCode ^
         characterName.hashCode ^
+        stressLevel.hashCode ^
+        effortPoints.hashCode ^
         listActionValue.hashCode ^
         listRollLog.hashCode;
   }

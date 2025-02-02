@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     (index) {
                       Map<String, dynamic> map =
                           snapshot.data!.docs[index].data();
-                      SheetModel sheetModel = SheetModel.fromMap(map);
+                      Sheet sheetModel = Sheet.fromMap(map);
                       return HomeListItemWidget(sheetModel: sheetModel);
                     },
                   ),
@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class HomeListItemWidget extends StatelessWidget {
-  final SheetModel sheetModel;
+  final Sheet sheetModel;
   const HomeListItemWidget({super.key, required this.sheetModel});
 
   @override

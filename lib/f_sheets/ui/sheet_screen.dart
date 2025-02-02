@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/_core/remote_data_manager.dart';
+import 'package:flutter_rpg_audiodrama/f_sheets/data/stress_level.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_model.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/data/sheet_template.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/ui/components/sheet_history_drawer.dart';
@@ -23,10 +26,12 @@ class SheetScreen extends StatefulWidget {
 class _SheetScreenState extends State<SheetScreen> {
   bool isEditing = false;
   final TextEditingController _nameController = TextEditingController();
-  Future<SheetModel?> futureGetSheet = Future.delayed(Duration.zero);
+  Future<Sheet?> futureGetSheet = Future.delayed(Duration.zero);
   List<ActionValue> listActionValue = [];
   List<RollLog> listRollLog = [];
   int notificationCount = 0;
+  int effortPoints = 0;
+  int stressLevel = 0;
 
   @override
   void initState() {
@@ -37,10 +42,12 @@ class _SheetScreenState extends State<SheetScreen> {
   Future<void> refresh() async {
     futureGetSheet = RemoteDataManager().getSheetId(widget.id);
 
-    SheetModel? sheetModel = await futureGetSheet;
+    Sheet? sheetModel = await futureGetSheet;
     if (sheetModel != null) {
       listActionValue = sheetModel.listActionValue;
       listRollLog = sheetModel.listRollLog;
+      effortPoints = sheetModel.effortPoints;
+      stressLevel = sheetModel.stressLevel;
     }
 
     setState(() {});
@@ -153,11 +160,11 @@ class _SheetScreenState extends State<SheetScreen> {
     );
   }
 
-  Widget _generateScreen(SheetModel sheet) {
+  Widget _generateScreen(Sheet sheet) {
     _nameController.text = sheet.characterName;
     return Container(
       margin: EdgeInsets.all(16),
-      padding: const EdgeInsets.all(64),
+      padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
         border: Border.all(
           width: 1,
@@ -172,7 +179,7 @@ class _SheetScreenState extends State<SheetScreen> {
           spacing: 32,
           children: [
             SizedBox(
-              height: 150,
+              height: 175,
               child: Row(
                 spacing: 32,
                 children: [
@@ -232,6 +239,134 @@ class _SheetScreenState extends State<SheetScreen> {
                                   ),
                                 ),
                         ),
+                        SizedBox(height: 8),
+                        Row(
+                          spacing: 16,
+                          children: [
+                            NamedWidget(
+                              title: "Estresse",
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Visibility(
+                                    visible: isEditing,
+                                    child: SizedBox(
+                                      width: 32,
+                                      child: (stressLevel > 0)
+                                          ? IconButton(
+                                              onPressed: () {
+                                                changeStressLevel(
+                                                    isAdding: false);
+                                              },
+                                              padding: EdgeInsets.zero,
+                                              icon: Icon(Icons.remove),
+                                            )
+                                          : Container(),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 100,
+                                    child: Text(
+                                      StressLevel()
+                                          .getByStressLevel(stressLevel),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: FontsFamilies.bungee,
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: isEditing,
+                                    child: SizedBox(
+                                      width: 32,
+                                      child:
+                                          (stressLevel < StressLevel.total - 1)
+                                              ? IconButton(
+                                                  onPressed: () {
+                                                    changeStressLevel();
+                                                  },
+                                                  padding: EdgeInsets.zero,
+                                                  icon: Icon(Icons.add),
+                                                )
+                                              : Container(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text("•"),
+                            NamedWidget(
+                              title: "Esforço",
+                              child: Row(
+                                children: [
+                                  Visibility(
+                                    visible: isEditing,
+                                    child: SizedBox(
+                                      width: 32,
+                                      child: (effortPoints > 0)
+                                          ? IconButton(
+                                              onPressed: () {
+                                                changeEffortPoints(
+                                                  isAdding: false,
+                                                );
+                                              },
+                                              padding: EdgeInsets.zero,
+                                              icon: Icon(Icons.remove),
+                                            )
+                                          : Container(),
+                                    ),
+                                  ),
+                                  Row(
+                                    spacing: 8,
+                                    children: List.generate(
+                                      3,
+                                      (index) {
+                                        return Opacity(
+                                          opacity:
+                                              (index <= effortPoints) ? 1 : 0.5,
+                                          child: Image.asset(
+                                            "assets/images/brain.png",
+                                            width: 16,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: isEditing,
+                                    child: SizedBox(
+                                      width: 32,
+                                      child: (effortPoints < 3)
+                                          ? IconButton(
+                                              onPressed: () {
+                                                changeEffortPoints();
+                                              },
+                                              padding: EdgeInsets.zero,
+                                              icon: Icon(Icons.add),
+                                            )
+                                          : Container(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text("•"),
+                            NamedWidget(
+                              title: "Itens",
+                              child: InkWell(
+                                onTap: () {
+                                  showSnackBarWip(context);
+                                },
+                                child: Image.asset(
+                                  "assets/images/chest.png",
+                                  width: 18,
+                                ),
+                              ),
+                            ),
+                            Text("•"),
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -311,11 +446,13 @@ class _SheetScreenState extends State<SheetScreen> {
   }
 
   Future<void> saveChanges() async {
-    SheetModel sheet = SheetModel(
+    Sheet sheet = Sheet(
       id: widget.id,
       characterName: _nameController.text,
       listActionValue: listActionValue,
       listRollLog: listRollLog,
+      effortPoints: effortPoints,
+      stressLevel: stressLevel,
     );
     await RemoteDataManager().saveSheet(sheet);
   }
@@ -333,4 +470,71 @@ class _SheetScreenState extends State<SheetScreen> {
     notificationCount++;
     setState(() {});
   }
+
+  changeStressLevel({bool isAdding = true}) {
+    if (isAdding) {
+      stressLevel = min(stressLevel + 1, 3);
+    } else {
+      stressLevel = max(stressLevel - 1, 0);
+    }
+    setState(() {});
+  }
+
+  changeEffortPoints({bool isAdding = true}) {
+    if (isAdding) {
+      effortPoints = min(effortPoints + 1, 2);
+    } else {
+      effortPoints = max(effortPoints - 1, 0);
+    }
+    setState(() {});
+  }
+}
+
+class NamedWidget extends StatelessWidget {
+  final String title;
+  final Widget? titleWidget;
+  final Widget child;
+  const NamedWidget({
+    super.key,
+    required this.title,
+    this.titleWidget,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        (titleWidget != null)
+            ? titleWidget!
+            : SizedBox(
+                height: 16,
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontFamily: FontsFamilies.sourceSerif4,
+                    fontSize: 10,
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .color!
+                        .withAlpha(150),
+                  ),
+                ),
+              ),
+        SizedBox(height: 32, child: child),
+      ],
+    );
+  }
+}
+
+showSnackBarWip(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text("Ainda não implementado. Fica pra próxima versão :)"),
+      duration: Duration(milliseconds: 1200),
+    ),
+  );
 }

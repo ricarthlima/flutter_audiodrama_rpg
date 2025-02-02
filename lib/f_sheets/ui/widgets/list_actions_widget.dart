@@ -9,7 +9,7 @@ import 'action_widget.dart';
 class ListActionsWidget extends StatelessWidget {
   final String name;
   final List<ActionTemplate> listActions;
-  final SheetModel sheet;
+  final Sheet sheet;
   final bool isEditing;
   final Function(ActionValue ac) onActionValueChanged;
   final Function(RollLog roll) onRoll;

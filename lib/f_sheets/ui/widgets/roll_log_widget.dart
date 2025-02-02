@@ -80,7 +80,6 @@ class _RollLogWidgetState extends State<RollLogWidget> {
         ),
       );
     }
-
     return Container();
   }
 }
