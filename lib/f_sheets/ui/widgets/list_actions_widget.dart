@@ -72,7 +72,7 @@ class ListActionsWidget extends StatelessWidget {
             name,
             style: TextStyle(
               fontSize: 22,
-              fontFamily: FontsFamilies.bungee,
+              fontFamily: FontFamilies.bungee,
               fontWeight: FontWeight.bold,
             ),
           ),

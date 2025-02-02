@@ -37,7 +37,7 @@ class _SheetHistoryDrawerState extends State<SheetHistoryDrawer> {
             "Histórico de Rolagem",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontFamily: FontsFamilies.bungee,
+              fontFamily: FontFamilies.bungee,
               fontSize: 16,
             ),
           ),

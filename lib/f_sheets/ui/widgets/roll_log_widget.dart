@@ -38,14 +38,14 @@ class _RollLogWidgetState extends State<RollLogWidget> {
             Text(
               action.name,
               style: TextStyle(
-                fontFamily: FontsFamilies.bungee,
+                fontFamily: FontFamilies.bungee,
               ),
             ),
             ExpansionTile(
               title: Text(
                 "Descrição",
                 style: TextStyle(
-                  fontFamily: FontsFamilies.sourceSerif4,
+                  fontFamily: FontFamilies.sourceSerif4,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -72,7 +72,7 @@ class _RollLogWidgetState extends State<RollLogWidget> {
               widget.rollLog.dateTime.toString(),
               textAlign: TextAlign.end,
               style: TextStyle(
-                fontFamily: FontsFamilies.sourceSerif4,
+                fontFamily: FontFamilies.sourceSerif4,
                 fontSize: 10,
               ),
             ),
@@ -110,7 +110,7 @@ class _DiceRoll extends StatelessWidget {
                 : Colors.green[900]
             : Theme.of(context).textTheme.bodyMedium!.color!,
         // fontWeight: FontWeight.bold,
-        fontFamily: FontsFamilies.bungee,
+        fontFamily: FontFamilies.bungee,
       ),
     );
   }

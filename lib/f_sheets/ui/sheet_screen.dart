@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/_core/remote_data_manager.dart';
@@ -181,107 +182,119 @@ class _SheetScreenState extends State<SheetScreen> {
             SizedBox(
               height: 175,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 spacing: 32,
                 children: [
-                  SizedBox(
-                    width: 150,
-                    height: 200,
-                    child: Stack(
-                      children: [
-                        Image.network(
-                          "https://m.media-amazon.com/images/I/71XQaMRKLML._AC_SL1500_.jpg",
-                          width: 150,
-                          height: 200,
-                          fit: BoxFit.cover,
-                        ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Visibility(
-                            visible: isEditing,
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.edit),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // SizedBox(
+                  //   width: 150,
+                  //   height: 200,
+                  //   child: Stack(
+                  //     children: [
+                  //       Image.network(
+                  //         "https://m.media-amazon.com/images/I/71XQaMRKLML._AC_SL1500_.jpg",
+                  //         width: 150,
+                  //         height: 200,
+                  //         fit: BoxFit.cover,
+                  //       ),
+                  //       Align(
+                  //         alignment: Alignment.center,
+                  //         child: Visibility(
+                  //           visible: isEditing,
+                  //           child: IconButton(
+                  //             onPressed: () {},
+                  //             icon: Icon(Icons.edit),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   Flexible(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Nome:",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontFamily: FontsFamilies.sourceSerif4,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                        // Text(
+                        //   "Nome:",
+                        //   textAlign: TextAlign.start,
+                        //   style: TextStyle(
+                        //     fontFamily: FontFamilies.sourceSerif4,
+                        //     fontSize: 16,
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        // ),
+                        NamedWidget(
+                          title: "Nome",
+                          isLeft: true,
+                          child: AnimatedSwitcher(
+                            duration: Duration(seconds: 1),
+                            child: (isEditing)
+                                ? TextField(
+                                    controller: _nameController,
+                                    style: TextStyle(
+                                      fontSize: 48,
+                                      fontFamily: FontFamilies.sourceSerif4,
+                                    ),
+                                  )
+                                : Text(
+                                    sheet.characterName,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 48,
+                                      fontFamily: FontFamilies.bungee,
+                                      color: AppColors.red,
+                                    ),
+                                  ),
                           ),
                         ),
-                        AnimatedSwitcher(
-                          duration: Duration(seconds: 1),
-                          child: (isEditing)
-                              ? TextField(
-                                  controller: _nameController,
-                                  style: TextStyle(
-                                    fontSize: 48,
-                                    fontFamily: FontsFamilies.sourceSerif4,
-                                  ),
-                                )
-                              : Text(
-                                  sheet.characterName,
-                                  style: TextStyle(
-                                    fontSize: 48,
-                                    fontFamily: FontsFamilies.bungee,
-                                  ),
-                                ),
-                        ),
                         SizedBox(height: 8),
-                        Row(
-                          spacing: 16,
-                          children: [
-                            NamedWidget(
-                              title: "Estresse",
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Visibility(
-                                    visible: isEditing,
-                                    child: SizedBox(
-                                      width: 32,
-                                      child: (stressLevel > 0)
-                                          ? IconButton(
-                                              onPressed: () {
-                                                changeStressLevel(
-                                                    isAdding: false);
-                                              },
-                                              padding: EdgeInsets.zero,
-                                              icon: Icon(Icons.remove),
-                                            )
-                                          : Container(),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 100,
-                                    child: Text(
-                                      StressLevel()
-                                          .getByStressLevel(stressLevel),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: FontsFamilies.bungee,
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              spacing: 16,
+                              children: [
+                                NamedWidget(
+                                  title: "Estresse",
+                                  hardHeight: 32,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Visibility(
+                                        visible: isEditing,
+                                        child: SizedBox(
+                                          width: 32,
+                                          child: (stressLevel > 0)
+                                              ? IconButton(
+                                                  onPressed: () {
+                                                    changeStressLevel(
+                                                        isAdding: false);
+                                                  },
+                                                  padding: EdgeInsets.zero,
+                                                  icon: Icon(Icons.remove),
+                                                )
+                                              : Container(),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible: isEditing,
-                                    child: SizedBox(
-                                      width: 32,
-                                      child:
-                                          (stressLevel < StressLevel.total - 1)
+                                      SizedBox(
+                                        width: 100,
+                                        child: Text(
+                                          StressLevel()
+                                              .getByStressLevel(stressLevel),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontFamily: FontFamilies.bungee,
+                                          ),
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: isEditing,
+                                        child: SizedBox(
+                                          width: 32,
+                                          child: (stressLevel <
+                                                  StressLevel.total - 1)
                                               ? IconButton(
                                                   onPressed: () {
                                                     changeStressLevel();
@@ -290,83 +303,150 @@ class _SheetScreenState extends State<SheetScreen> {
                                                   icon: Icon(Icons.add),
                                                 )
                                               : Container(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text("•"),
+                                NamedWidget(
+                                  title: "Esforço",
+                                  hardHeight: 32,
+                                  child: Row(
+                                    children: [
+                                      Visibility(
+                                        visible: isEditing,
+                                        child: SizedBox(
+                                          width: 32,
+                                          child: (effortPoints > 0)
+                                              ? IconButton(
+                                                  onPressed: () {
+                                                    changeEffortPoints(
+                                                      isAdding: false,
+                                                    );
+                                                  },
+                                                  padding: EdgeInsets.zero,
+                                                  icon: Icon(Icons.remove),
+                                                )
+                                              : Container(),
+                                        ),
+                                      ),
+                                      Row(
+                                        spacing: 8,
+                                        children: List.generate(
+                                          3,
+                                          (index) {
+                                            return Opacity(
+                                              opacity: (index <= effortPoints)
+                                                  ? 1
+                                                  : 0.5,
+                                              child: Image.asset(
+                                                "assets/images/brain.png",
+                                                width: 16,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: isEditing,
+                                        child: SizedBox(
+                                          width: 32,
+                                          child: (effortPoints < 3)
+                                              ? IconButton(
+                                                  onPressed: () {
+                                                    changeEffortPoints();
+                                                  },
+                                                  padding: EdgeInsets.zero,
+                                                  icon: Icon(Icons.add),
+                                                )
+                                              : Container(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text("•"),
+                                NamedWidget(
+                                  title: "Itens",
+                                  hardHeight: 32,
+                                  child: InkWell(
+                                    onTap: () {
+                                      showSnackBarWip(context);
+                                    },
+                                    child: Image.asset(
+                                      "assets/images/chest.png",
+                                      width: 18,
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                                Text("•"),
+                              ],
                             ),
-                            Text("•"),
-                            NamedWidget(
-                              title: "Esforço",
-                              child: Row(
-                                children: [
-                                  Visibility(
-                                    visible: isEditing,
-                                    child: SizedBox(
-                                      width: 32,
-                                      child: (effortPoints > 0)
-                                          ? IconButton(
-                                              onPressed: () {
-                                                changeEffortPoints(
-                                                  isAdding: false,
-                                                );
-                                              },
-                                              padding: EdgeInsets.zero,
-                                              icon: Icon(Icons.remove),
-                                            )
-                                          : Container(),
-                                    ),
-                                  ),
-                                  Row(
-                                    spacing: 8,
-                                    children: List.generate(
-                                      3,
-                                      (index) {
-                                        return Opacity(
-                                          opacity:
-                                              (index <= effortPoints) ? 1 : 0.5,
-                                          child: Image.asset(
-                                            "assets/images/brain.png",
-                                            width: 16,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible: isEditing,
-                                    child: SizedBox(
-                                      width: 32,
-                                      child: (effortPoints < 3)
-                                          ? IconButton(
-                                              onPressed: () {
-                                                changeEffortPoints();
-                                              },
-                                              padding: EdgeInsets.zero,
-                                              icon: Icon(Icons.add),
-                                            )
-                                          : Container(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text("•"),
-                            NamedWidget(
-                              title: "Itens",
-                              child: InkWell(
-                                onTap: () {
-                                  showSnackBarWip(context);
-                                },
-                                child: Image.asset(
-                                  "assets/images/chest.png",
-                                  width: 18,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Visibility(
+                    visible: width(context) > 750,
+                    child: Row(
+                      spacing: 32,
+                      children: [
+                        NamedWidget(
+                          title: "Aptidões",
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                listActionValue
+                                    .where(
+                                      (e) => e.value == 2,
+                                    )
+                                    .length
+                                    .toString(),
+                                style: TextStyle(
+                                  fontSize: 64,
+                                  fontFamily: FontFamilies.bungee,
                                 ),
                               ),
-                            ),
-                            Text("•"),
-                          ],
-                        )
+                              Text(
+                                "/25",
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontFamily: FontFamilies.sourceSerif4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        NamedWidget(
+                          title: "Treinamentos",
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                listActionValue
+                                    .where(
+                                      (e) => e.value == 3,
+                                    )
+                                    .length
+                                    .toString(),
+                                style: TextStyle(
+                                  fontSize: 64,
+                                  fontFamily: FontFamilies.bungee,
+                                ),
+                              ),
+                              Text(
+                                "/5",
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontFamily: FontFamilies.sourceSerif4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -494,18 +574,23 @@ class NamedWidget extends StatelessWidget {
   final String title;
   final Widget? titleWidget;
   final Widget child;
+  final double? hardHeight;
+  final bool isLeft;
   const NamedWidget({
     super.key,
     required this.title,
     this.titleWidget,
     required this.child,
+    this.hardHeight,
+    this.isLeft = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment:
+          (isLeft) ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
         (titleWidget != null)
             ? titleWidget!
@@ -514,7 +599,7 @@ class NamedWidget extends StatelessWidget {
                 child: Text(
                   title,
                   style: TextStyle(
-                    fontFamily: FontsFamilies.sourceSerif4,
+                    fontFamily: FontFamilies.sourceSerif4,
                     fontSize: 10,
                     color: Theme.of(context)
                         .textTheme
@@ -524,7 +609,9 @@ class NamedWidget extends StatelessWidget {
                   ),
                 ),
               ),
-        SizedBox(height: 32, child: child),
+        (hardHeight != null)
+            ? SizedBox(height: hardHeight, child: child)
+            : child,
       ],
     );
   }
