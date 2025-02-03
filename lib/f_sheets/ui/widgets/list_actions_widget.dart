@@ -29,7 +29,7 @@ class ListActionsWidget extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          width: ((width(context) / 5) < 320) ? width(context) : 320,
+          width: (isVertical(context)) ? width(context) : 300,
           height: 500,
           decoration: BoxDecoration(
             border: Border.all(

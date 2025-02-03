@@ -162,6 +162,7 @@ class _SheetScreenState extends State<SheetScreen> {
   }
 
   Widget _generateScreen(Sheet sheet) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     _nameController.text = sheet.characterName;
     return Container(
       margin: EdgeInsets.all(16),
@@ -341,7 +342,10 @@ class _SheetScreenState extends State<SheetScreen> {
                                                   ? 1
                                                   : 0.5,
                                               child: Image.asset(
-                                                "assets/images/brain.png",
+                                                (themeProvider.themeMode ==
+                                                        ThemeMode.dark)
+                                                    ? "assets/images/brain.png"
+                                                    : "assets/images/brain-i.png",
                                                 width: 16,
                                               ),
                                             );
@@ -375,7 +379,10 @@ class _SheetScreenState extends State<SheetScreen> {
                                       showSnackBarWip(context);
                                     },
                                     child: Image.asset(
-                                      "assets/images/chest.png",
+                                      (themeProvider.themeMode ==
+                                              ThemeMode.dark)
+                                          ? "assets/images/chest.png"
+                                          : "assets/images/chest-i.png",
                                       width: 18,
                                     ),
                                   ),
@@ -390,62 +397,75 @@ class _SheetScreenState extends State<SheetScreen> {
                   ),
                   Visibility(
                     visible: width(context) > 750,
-                    child: Row(
-                      spacing: 32,
+                    child: Column(
                       children: [
-                        NamedWidget(
-                          title: "Aptidões",
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                listActionValue
-                                    .where(
-                                      (e) => e.value == 2,
-                                    )
-                                    .length
-                                    .toString(),
-                                style: TextStyle(
-                                  fontSize: 64,
-                                  fontFamily: FontFamilies.bungee,
+                        AnimatedSwitcher(
+                          duration: Duration(milliseconds: 750),
+                          child: (isEditing)
+                              ? Text("")
+                              : DropdownButton(
+                                  items: [],
+                                  onChanged: (value) {},
                                 ),
-                              ),
-                              Text(
-                                "/25",
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontFamily: FontFamilies.sourceSerif4,
-                                ),
-                              ),
-                            ],
-                          ),
                         ),
-                        NamedWidget(
-                          title: "Treinamentos",
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                listActionValue
-                                    .where(
-                                      (e) => e.value == 3,
-                                    )
-                                    .length
-                                    .toString(),
-                                style: TextStyle(
-                                  fontSize: 64,
-                                  fontFamily: FontFamilies.bungee,
-                                ),
+                        Row(
+                          spacing: 32,
+                          children: [
+                            NamedWidget(
+                              title: "Aptidões",
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    listActionValue
+                                        .where(
+                                          (e) => e.value == 2,
+                                        )
+                                        .length
+                                        .toString(),
+                                    style: TextStyle(
+                                      fontSize: 64,
+                                      fontFamily: FontFamilies.bungee,
+                                    ),
+                                  ),
+                                  Text(
+                                    "/25",
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontFamily: FontFamilies.sourceSerif4,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                "/5",
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontFamily: FontFamilies.sourceSerif4,
-                                ),
+                            ),
+                            NamedWidget(
+                              title: "Treinamentos",
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    listActionValue
+                                        .where(
+                                          (e) => e.value == 3,
+                                        )
+                                        .length
+                                        .toString(),
+                                    style: TextStyle(
+                                      fontSize: 64,
+                                      fontFamily: FontFamilies.bungee,
+                                    ),
+                                  ),
+                                  Text(
+                                    "/5",
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontFamily: FontFamilies.sourceSerif4,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -546,7 +566,9 @@ class _SheetScreenState extends State<SheetScreen> {
   }
 
   onRoll(RollLog roll) async {
-    showRollDialog(context: context, rollLog: roll);
+    if (!SheetDAO.instance.isOnlyFreeOrPreparation(roll.idAction)) {
+      showRollDialog(context: context, rollLog: roll);
+    }
     listRollLog.add(roll);
     await saveChanges();
     notificationCount++;
@@ -658,6 +680,8 @@ class RollRowWidget extends StatefulWidget {
 class _RollRowWidgetState extends State<RollRowWidget> {
   int i = 0;
   List<double> listOpacity = [0, 0, 0];
+  bool isShowingHighlighted = false;
+
   @override
   void initState() {
     super.initState();
@@ -672,26 +696,49 @@ class _RollRowWidgetState extends State<RollRowWidget> {
     i++;
     if (i < widget.rollLog.rolls.length) {
       callShowRoll();
+    } else {
+      makeCorrectHighlighted();
     }
+  }
+
+  makeCorrectHighlighted() async {
+    await Future.delayed(Duration(milliseconds: 1500));
+    setState(() {
+      isShowingHighlighted = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    return Wrap(
       spacing: 64,
       children: List.generate(
         widget.rollLog.rolls.length,
         (index) {
           return AnimatedOpacity(
             opacity: listOpacity[index],
-            duration: Duration(milliseconds: 1250),
+            duration: Duration(milliseconds: 750),
             child: SizedBox(
               width: 200,
               height: 200,
               child: Stack(
                 children: [
-                  Image.asset("assets/images/d20-0.png"),
+                  AnimatedSwitcher(
+                    duration: Duration(milliseconds: 750),
+                    child: Image.asset(
+                      (!isShowingHighlighted)
+                          ? "assets/images/d20-1.png"
+                          : (widget.rollLog.isGettingLower)
+                              ? (widget.rollLog.rolls.reduce(min) ==
+                                      widget.rollLog.rolls[index])
+                                  ? "assets/images/d20-0.png"
+                                  : "assets/images/d20-1.png"
+                              : (widget.rollLog.rolls.reduce(max) ==
+                                      widget.rollLog.rolls[index])
+                                  ? "assets/images/d20-4.png"
+                                  : "assets/images/d20-1.png",
+                    ),
+                  ),
                   Align(
                     alignment: Alignment.center,
                     child: Text(

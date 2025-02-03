@@ -7,3 +7,7 @@ double height(BuildContext context) {
 double width(BuildContext context) {
   return MediaQuery.of(context).size.width;
 }
+
+bool isVertical(BuildContext context) {
+  return width(context) < height(context);
+}

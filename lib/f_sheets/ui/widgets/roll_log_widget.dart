@@ -51,21 +51,27 @@ class _RollLogWidgetState extends State<RollLogWidget> {
               ),
               dense: true,
               tilePadding: EdgeInsets.zero,
+              initiallyExpanded: SheetDAO.instance
+                  .isOnlyFreeOrPreparation(widget.rollLog.idAction),
               children: [
                 Text(action.description),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: widget.rollLog.rolls
-                  .map(
-                    (e) => _DiceRoll(
-                      roll: e,
-                      rolls: widget.rollLog.rolls,
-                      isGettingLower: widget.rollLog.isGettingLower,
-                    ),
-                  )
-                  .toList(),
+            Visibility(
+              visible: !SheetDAO.instance
+                  .isOnlyFreeOrPreparation(widget.rollLog.idAction),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: widget.rollLog.rolls
+                    .map(
+                      (e) => _DiceRoll(
+                        roll: e,
+                        rolls: widget.rollLog.rolls,
+                        isGettingLower: widget.rollLog.isGettingLower,
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
             SizedBox(height: 16),
             Text(

@@ -22,7 +22,8 @@ class SheetDAO {
   }
 
   Future<void> initialize() async {
-    String jsonString = await rootBundle.loadString('sheets/acoes-0.0.1b.json');
+    String jsonString =
+        await rootBundle.loadString('assets/sheets/acoes-0.0.1b.json');
     Map<String, dynamic> jsonData = json.decode(jsonString);
     listBasicActions = (jsonData[labelBasicActions] as List<dynamic>)
         .map((e) => ActionTemplate.fromMap(e))
@@ -67,5 +68,18 @@ class SheetDAO {
         listIntellectActions +
         listSocialActions +
         listStrengthActions;
+  }
+
+  bool isOnlyFreeOrPreparation(String id) {
+    bool result = false;
+    ActionTemplate? action = getActionById(id);
+    if (action != null) {
+      if ((action.isFree || action.isPreparation) &&
+          !action.isReaction &&
+          !action.isResisted) {
+        result = true;
+      }
+    }
+    return result;
   }
 }

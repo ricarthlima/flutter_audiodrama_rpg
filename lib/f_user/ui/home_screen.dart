@@ -5,9 +5,11 @@ import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_model.dart';
 import 'package:flutter_rpg_audiodrama/f_user/components/create_sheet_dialog.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../_core/fonts.dart';
 import '../../_core/remote_data_manager.dart';
+import '../../_core/theme_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -28,6 +31,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         actions: [
+          Icon(Icons.light_mode),
+          Switch(
+            value: themeProvider.themeMode == ThemeMode.dark,
+            onChanged: (value) {
+              themeProvider.toggleTheme(value);
+            },
+          ),
+          Icon(Icons.dark_mode),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: VerticalDivider(),
+          ),
           IconButton(
             onPressed: () {
               FirebaseAuth.instance.signOut().then(
@@ -39,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             icon: Icon(Icons.logout),
           ),
+          SizedBox(width: 16),
         ],
       ),
       floatingActionButton: FloatingActionButton(
