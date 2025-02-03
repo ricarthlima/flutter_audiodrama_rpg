@@ -31,8 +31,9 @@ class _SheetScreenState extends State<SheetScreen> {
   List<ActionValue> listActionValue = [];
   List<RollLog> listRollLog = [];
   int notificationCount = 0;
-  int effortPoints = 0;
+  int effortPoints = -1;
   int stressLevel = 0;
+  int baseLevel = 0;
 
   @override
   void initState() {
@@ -49,6 +50,7 @@ class _SheetScreenState extends State<SheetScreen> {
       listRollLog = sheetModel.listRollLog;
       effortPoints = sheetModel.effortPoints;
       stressLevel = sheetModel.stressLevel;
+      baseLevel = sheetModel.baseLevel;
     }
 
     setState(() {});
@@ -186,44 +188,11 @@ class _SheetScreenState extends State<SheetScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 spacing: 32,
                 children: [
-                  // SizedBox(
-                  //   width: 150,
-                  //   height: 200,
-                  //   child: Stack(
-                  //     children: [
-                  //       Image.network(
-                  //         "https://m.media-amazon.com/images/I/71XQaMRKLML._AC_SL1500_.jpg",
-                  //         width: 150,
-                  //         height: 200,
-                  //         fit: BoxFit.cover,
-                  //       ),
-                  //       Align(
-                  //         alignment: Alignment.center,
-                  //         child: Visibility(
-                  //           visible: isEditing,
-                  //           child: IconButton(
-                  //             onPressed: () {},
-                  //             icon: Icon(Icons.edit),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                   Flexible(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Text(
-                        //   "Nome:",
-                        //   textAlign: TextAlign.start,
-                        //   style: TextStyle(
-                        //     fontFamily: FontFamilies.sourceSerif4,
-                        //     fontSize: 16,
-                        //     fontWeight: FontWeight.bold,
-                        //   ),
-                        // ),
                         NamedWidget(
                           title: "Nome",
                           isLeft: true,
@@ -319,7 +288,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                         visible: isEditing,
                                         child: SizedBox(
                                           width: 32,
-                                          child: (effortPoints > 0)
+                                          child: (effortPoints > -1)
                                               ? IconButton(
                                                   onPressed: () {
                                                     changeEffortPoints(
@@ -398,14 +367,46 @@ class _SheetScreenState extends State<SheetScreen> {
                   Visibility(
                     visible: width(context) > 750,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      spacing: 16,
                       children: [
                         AnimatedSwitcher(
-                          duration: Duration(milliseconds: 750),
-                          child: (isEditing)
-                              ? Text("")
-                              : DropdownButton(
-                                  items: [],
-                                  onChanged: (value) {},
+                          duration: Duration(seconds: 1),
+                          child: (!isEditing)
+                              ? Text(
+                                  _getBaseLevel(),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontFamily: FontFamilies.sourceSerif4,
+                                  ),
+                                )
+                              : DropdownButton<int>(
+                                  value: baseLevel,
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: 0,
+                                      child: Text("Inexperiente"),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 1,
+                                      child: Text("Mediocre"),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 2,
+                                      child: Text("Vivência"),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 3,
+                                      child: Text("Experiente"),
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      setState(() {
+                                        baseLevel = value;
+                                      });
+                                    }
+                                  },
                                 ),
                         ),
                         Row(
@@ -429,7 +430,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                     ),
                                   ),
                                   Text(
-                                    "/25",
+                                    "/${_getAptidaoMaxByLevel()}",
                                     style: TextStyle(
                                       fontSize: 22,
                                       fontFamily: FontFamilies.sourceSerif4,
@@ -456,7 +457,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                     ),
                                   ),
                                   Text(
-                                    "/5",
+                                    "/${_getTreinamentoMaxByLevel()}",
                                     style: TextStyle(
                                       fontSize: 22,
                                       fontFamily: FontFamilies.sourceSerif4,
@@ -553,6 +554,7 @@ class _SheetScreenState extends State<SheetScreen> {
       listRollLog: listRollLog,
       effortPoints: effortPoints,
       stressLevel: stressLevel,
+      baseLevel: baseLevel,
     );
     await RemoteDataManager().saveSheet(sheet);
   }
@@ -588,9 +590,51 @@ class _SheetScreenState extends State<SheetScreen> {
     if (isAdding) {
       effortPoints = min(effortPoints + 1, 2);
     } else {
-      effortPoints = max(effortPoints - 1, 0);
+      effortPoints = max(effortPoints - 1, -1);
     }
     setState(() {});
+  }
+
+  String _getBaseLevel() {
+    switch (baseLevel) {
+      case 0:
+        return "Inexperiente";
+      case 1:
+        return "Mediocre";
+      case 2:
+        return "Vivência";
+      case 3:
+        return "Experiente";
+    }
+    return "";
+  }
+
+  int _getAptidaoMaxByLevel() {
+    switch (baseLevel) {
+      case 0:
+        return 9;
+      case 1:
+        return 17;
+      case 2:
+        return 25;
+      case 3:
+        return 33;
+    }
+    return 9;
+  }
+
+  int _getTreinamentoMaxByLevel() {
+    switch (baseLevel) {
+      case 0:
+        return 1;
+      case 1:
+        return 3;
+      case 2:
+        return 5;
+      case 3:
+        return 7;
+    }
+    return 9;
   }
 }
 

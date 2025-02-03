@@ -27,8 +27,9 @@ class RemoteDataManager {
             characterName: characterName,
             listActionValue: [],
             listRollLog: [],
-            effortPoints: 0,
+            effortPoints: -1,
             stressLevel: 0,
+            baseLevel: 0,
           ).toMap(),
         );
   }

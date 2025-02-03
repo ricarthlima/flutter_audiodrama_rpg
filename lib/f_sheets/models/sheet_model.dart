@@ -10,6 +10,7 @@ class Sheet {
   int effortPoints;
   List<ActionValue> listActionValue;
   List<RollLog> listRollLog;
+  int baseLevel;
 
   Sheet({
     required this.id,
@@ -18,6 +19,7 @@ class Sheet {
     required this.effortPoints,
     required this.listActionValue,
     required this.listRollLog,
+    required this.baseLevel,
   });
 
   Sheet copyWith({
@@ -27,6 +29,7 @@ class Sheet {
     int? effortPoints,
     List<ActionValue>? listActionValue,
     List<RollLog>? listRollLog,
+    int? baseLevel,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -35,6 +38,7 @@ class Sheet {
       effortPoints: effortPoints ?? this.effortPoints,
       listActionValue: listActionValue ?? this.listActionValue,
       listRollLog: listRollLog ?? this.listRollLog,
+      baseLevel: baseLevel ?? this.baseLevel,
     );
   }
 
@@ -46,6 +50,7 @@ class Sheet {
       'effortPoints': effortPoints,
       'listActionValue': listActionValue.map((x) => x.toMap()).toList(),
       'listRollLog': listRollLog.map((x) => x.toMap()).toList(),
+      'baseLevel': baseLevel,
     };
   }
 
@@ -65,6 +70,7 @@ class Sheet {
           (x) => RollLog.fromMap(x as Map<String, dynamic>),
         ),
       ),
+      baseLevel: map['baseLevel'] as int,
     );
   }
 
@@ -75,7 +81,7 @@ class Sheet {
 
   @override
   String toString() {
-    return 'Sheet(id: $id, characterName: $characterName, stressLevel: $stressLevel, effortPoints: $effortPoints, listActionValue: $listActionValue, listRollLog: $listRollLog)';
+    return 'Sheet(id: $id, characterName: $characterName, stressLevel: $stressLevel, effortPoints: $effortPoints, listActionValue: $listActionValue, listRollLog: $listRollLog, baseLevel: $baseLevel)';
   }
 
   @override
@@ -87,7 +93,8 @@ class Sheet {
         other.stressLevel == stressLevel &&
         other.effortPoints == effortPoints &&
         listEquals(other.listActionValue, listActionValue) &&
-        listEquals(other.listRollLog, listRollLog);
+        listEquals(other.listRollLog, listRollLog) &&
+        other.baseLevel == baseLevel;
   }
 
   @override
@@ -97,7 +104,8 @@ class Sheet {
         stressLevel.hashCode ^
         effortPoints.hashCode ^
         listActionValue.hashCode ^
-        listRollLog.hashCode;
+        listRollLog.hashCode ^
+        baseLevel.hashCode;
   }
 }
 
