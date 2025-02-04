@@ -3,6 +3,7 @@ import 'package:flutter_rpg_audiodrama/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/f_auth/auth_service.dart';
 import 'package:provider/provider.dart';
 
+import '../../_core/auth_buttons.dart';
 import '../../_core/theme_provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -37,12 +38,13 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
       body: Center(
-          child: ElevatedButton(
-        onPressed: () {
-          AuthService().signInWithGoogle(context);
-        },
-        child: Text("Login com o Google"),
-      )),
+        child: GoogleAuthButton(
+          onPressed: () {
+            AuthService().signInWithGoogle(context);
+          },
+          themeMode: themeProvider.themeMode,
+        ),
+      ),
     );
   }
 }

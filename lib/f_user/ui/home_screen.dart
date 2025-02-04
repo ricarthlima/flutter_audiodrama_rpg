@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/_core/helpers.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_model.dart';
 import 'package:flutter_rpg_audiodrama/f_user/components/create_sheet_dialog.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
@@ -30,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
             fontFamily: FontFamilies.bungee,
           ),
         ),
+        elevation: 1,
         actions: [
           Icon(Icons.light_mode),
           Switch(
@@ -70,22 +72,36 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Icon(Icons.add),
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-          stream: RemoteDataManager().getSheetsByUser(),
+          stream: RemoteDataManager().listenSheetsByUser(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
               case ConnectionState.waiting:
                 return Center(child: CircularProgressIndicator());
               case ConnectionState.active:
-                return ListView(
-                  children: List.generate(
-                    snapshot.data!.docs.length,
-                    (index) {
-                      Map<String, dynamic> map =
-                          snapshot.data!.docs[index].data();
-                      Sheet sheetModel = Sheet.fromMap(map);
-                      return HomeListItemWidget(sheetModel: sheetModel);
-                    },
+                if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "Nada por aqui ainda, vamos criar?",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontFamily: FontFamilies.sourceSerif4,
+                      ),
+                    ),
+                  );
+                }
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView(
+                    children: List.generate(
+                      snapshot.data!.docs.length,
+                      (index) {
+                        Map<String, dynamic> map =
+                            snapshot.data!.docs[index].data();
+                        Sheet sheetModel = Sheet.fromMap(map);
+                        return HomeListItemWidget(sheetModel: sheetModel);
+                      },
+                    ),
                   ),
                 );
               case ConnectionState.done:
@@ -105,12 +121,25 @@ class HomeListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(Icons.feed),
-      title: Text(sheetModel.characterName),
+      leading: Icon(
+        Icons.feed,
+        size: 48,
+      ),
+      title: Text(
+        sheetModel.characterName,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       trailing: IconButton(
         onPressed: () {},
-        icon: Icon(Icons.delete),
+        iconSize: 32,
+        icon: Icon(
+          Icons.delete,
+        ),
       ),
+      subtitle: Text(getBaseLevel(sheetModel.baseLevel)),
       onTap: () {
         GoRouter.of(context).go("${AppRouter.sheet}/${sheetModel.id}");
       },

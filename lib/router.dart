@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_rpg_audiodrama/f_auth/ui/login_screen.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/ui/sheet_screen.dart';
 import 'package:flutter_rpg_audiodrama/f_user/ui/home_screen.dart';
@@ -20,7 +21,10 @@ class AppRouter {
         path: "/sheet/:sheetId",
         builder: (context, state) {
           String id = state.pathParameters["sheetId"] ?? "";
-          return SheetScreen(id: id);
+          return SheetScreen(
+            id: id,
+            key: UniqueKey(),
+          );
         },
       ),
       GoRoute(

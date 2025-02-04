@@ -12,6 +12,7 @@ import 'package:flutter_rpg_audiodrama/f_sheets/ui/components/sheet_history_draw
 import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../_core/helpers.dart';
 import '../../_core/theme_provider.dart';
 import 'widgets/list_actions_widget.dart';
 import 'package:badges/badges.dart' as badges;
@@ -35,6 +36,8 @@ class _SheetScreenState extends State<SheetScreen> {
   int stressLevel = 0;
   int baseLevel = 0;
 
+  List<Sheet> listSheets = [];
+
   @override
   void initState() {
     refresh();
@@ -53,6 +56,7 @@ class _SheetScreenState extends State<SheetScreen> {
       baseLevel = sheetModel.baseLevel;
     }
 
+    listSheets = await RemoteDataManager().getSheetsByUser();
     setState(() {});
   }
 
@@ -69,11 +73,40 @@ class _SheetScreenState extends State<SheetScreen> {
           icon: Icon(Icons.arrow_back),
         ),
         actions: [
+          (listSheets.isNotEmpty)
+              ? DropdownButton<Sheet>(
+                  value: listSheets.where((e) => e.id == widget.id).first,
+                  items: listSheets
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(e.characterName),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (Sheet? sheet) {
+                    if (sheet != null) {
+                      GoRouter.of(context).go("${AppRouter.sheet}/${sheet.id}");
+                      setState(() {});
+                    }
+                  },
+                )
+              : Container(),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 20.0,
+              horizontal: 8,
+            ),
+            child: VerticalDivider(),
+          ),
           Visibility(
             visible: isEditing,
             child: Text("Saia da edição para salvar"),
           ),
-          SizedBox(width: 8),
+          Visibility(
+            visible: isEditing,
+            child: SizedBox(width: 8),
+          ),
           Icon(Icons.edit),
           Switch(
             value: isEditing,
@@ -374,7 +407,7 @@ class _SheetScreenState extends State<SheetScreen> {
                           duration: Duration(seconds: 1),
                           child: (!isEditing)
                               ? Text(
-                                  _getBaseLevel(),
+                                  getBaseLevel(baseLevel),
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontFamily: FontFamilies.sourceSerif4,
@@ -595,20 +628,6 @@ class _SheetScreenState extends State<SheetScreen> {
     setState(() {});
   }
 
-  String _getBaseLevel() {
-    switch (baseLevel) {
-      case 0:
-        return "Inexperiente";
-      case 1:
-        return "Mediocre";
-      case 2:
-        return "Vivência";
-      case 3:
-        return "Experiente";
-    }
-    return "";
-  }
-
   int _getAptidaoMaxByLevel() {
     switch (baseLevel) {
       case 0:
@@ -790,6 +809,7 @@ class _RollRowWidgetState extends State<RollRowWidget> {
                       style: TextStyle(
                         fontSize: 44,
                         fontFamily: FontFamilies.bungee,
+                        color: Colors.white,
                       ),
                     ),
                   ),

@@ -6,9 +6,20 @@ Future<dynamic> showCreateSheetDialog(BuildContext context) async {
     builder: (context) {
       TextEditingController nameController = TextEditingController();
       return AlertDialog(
-        title: Text("Qual o nome?"),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        elevation: 10,
+        title: Text(
+          "Aqui começa uma história",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         content: TextFormField(
           controller: nameController,
+          decoration: InputDecoration(
+            label: Text("Nome"),
+          ),
         ),
         actions: [
           TextButton(
