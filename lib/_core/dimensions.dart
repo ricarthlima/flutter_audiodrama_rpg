@@ -11,3 +11,7 @@ double width(BuildContext context) {
 bool isVertical(BuildContext context) {
   return width(context) < height(context);
 }
+
+double getZoomFactor(BuildContext context, double valueAtDefault) {
+  return (width(context) / 1920) * valueAtDefault;
+}

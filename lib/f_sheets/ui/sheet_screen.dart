@@ -202,6 +202,7 @@ class _SheetScreenState extends State<SheetScreen> {
     return Container(
       margin: EdgeInsets.all(16),
       padding: const EdgeInsets.all(32),
+      height: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
           width: 1,
@@ -209,358 +210,350 @@ class _SheetScreenState extends State<SheetScreen> {
         ),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 32,
-          children: [
-            SizedBox(
-              height: 175,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                spacing: 32,
-                children: [
-                  Flexible(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        NamedWidget(
-                          title: "Nome",
-                          isLeft: true,
-                          child: AnimatedSwitcher(
-                            duration: Duration(seconds: 1),
-                            child: (isEditing)
-                                ? TextField(
-                                    controller: _nameController,
-                                    style: TextStyle(
-                                      fontSize: 48,
-                                      fontFamily: FontFamilies.sourceSerif4,
-                                    ),
-                                  )
-                                : Text(
-                                    sheet.characterName,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 48,
-                                      fontFamily: FontFamilies.bungee,
-                                      color: AppColors.red,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 8,
+            children: [
+              Flexible(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    NamedWidget(
+                      title: "Nome",
+                      isLeft: true,
+                      child: AnimatedSwitcher(
+                        duration: Duration(seconds: 1),
+                        child: (isEditing)
+                            ? TextField(
+                                controller: _nameController,
+                                style: TextStyle(
+                                  fontSize: 48,
+                                  fontFamily: FontFamilies.sourceSerif4,
+                                ),
+                              )
+                            : Text(
+                                sheet.characterName,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 48,
+                                  fontFamily: FontFamilies.bungee,
+                                  color: AppColors.red,
+                                ),
+                              ),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        spacing: 16,
+                        children: [
+                          NamedWidget(
+                            title: "Estresse",
+                            hardHeight: 32,
                             child: Row(
-                              spacing: 16,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                NamedWidget(
-                                  title: "Estresse",
-                                  hardHeight: 32,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Visibility(
-                                        visible: isEditing,
-                                        child: SizedBox(
-                                          width: 32,
-                                          child: (stressLevel > 0)
-                                              ? IconButton(
-                                                  onPressed: () {
-                                                    changeStressLevel(
-                                                        isAdding: false);
-                                                  },
-                                                  padding: EdgeInsets.zero,
-                                                  icon: Icon(Icons.remove),
-                                                )
-                                              : Container(),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 100,
-                                        child: Text(
-                                          StressLevel()
-                                              .getByStressLevel(stressLevel),
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontFamily: FontFamilies.bungee,
-                                          ),
-                                        ),
-                                      ),
-                                      Visibility(
-                                        visible: isEditing,
-                                        child: SizedBox(
-                                          width: 32,
-                                          child: (stressLevel <
-                                                  StressLevel.total - 1)
-                                              ? IconButton(
-                                                  onPressed: () {
-                                                    changeStressLevel();
-                                                  },
-                                                  padding: EdgeInsets.zero,
-                                                  icon: Icon(Icons.add),
-                                                )
-                                              : Container(),
-                                        ),
-                                      ),
-                                    ],
+                                Visibility(
+                                  visible: isEditing,
+                                  child: SizedBox(
+                                    width: 32,
+                                    child: (stressLevel > 0)
+                                        ? IconButton(
+                                            onPressed: () {
+                                              changeStressLevel(
+                                                  isAdding: false);
+                                            },
+                                            padding: EdgeInsets.zero,
+                                            icon: Icon(Icons.remove),
+                                          )
+                                        : Container(),
                                   ),
                                 ),
-                                Text("•"),
-                                NamedWidget(
-                                  title: "Esforço",
-                                  hardHeight: 32,
-                                  child: Row(
-                                    children: [
-                                      Visibility(
-                                        visible: isEditing,
-                                        child: SizedBox(
-                                          width: 32,
-                                          child: (effortPoints > -1)
-                                              ? IconButton(
-                                                  onPressed: () {
-                                                    changeEffortPoints(
-                                                      isAdding: false,
-                                                    );
-                                                  },
-                                                  padding: EdgeInsets.zero,
-                                                  icon: Icon(Icons.remove),
-                                                )
-                                              : Container(),
-                                        ),
-                                      ),
-                                      Row(
-                                        spacing: 8,
-                                        children: List.generate(
-                                          3,
-                                          (index) {
-                                            return Opacity(
-                                              opacity: (index <= effortPoints)
-                                                  ? 1
-                                                  : 0.5,
-                                              child: Image.asset(
-                                                (themeProvider.themeMode ==
-                                                        ThemeMode.dark)
-                                                    ? "assets/images/brain.png"
-                                                    : "assets/images/brain-i.png",
-                                                width: 16,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      Visibility(
-                                        visible: isEditing,
-                                        child: SizedBox(
-                                          width: 32,
-                                          child: (effortPoints < 3)
-                                              ? IconButton(
-                                                  onPressed: () {
-                                                    changeEffortPoints();
-                                                  },
-                                                  padding: EdgeInsets.zero,
-                                                  icon: Icon(Icons.add),
-                                                )
-                                              : Container(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Text("•"),
-                                NamedWidget(
-                                  title: "Itens",
-                                  hardHeight: 32,
-                                  child: InkWell(
-                                    onTap: () {
-                                      showSnackBarWip(context);
-                                    },
-                                    child: Image.asset(
-                                      (themeProvider.themeMode ==
-                                              ThemeMode.dark)
-                                          ? "assets/images/chest.png"
-                                          : "assets/images/chest-i.png",
-                                      width: 18,
+                                SizedBox(
+                                  width: 100,
+                                  child: Text(
+                                    StressLevel().getByStressLevel(stressLevel),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: FontFamilies.bungee,
                                     ),
                                   ),
                                 ),
-                                Text("•"),
+                                Visibility(
+                                  visible: isEditing,
+                                  child: SizedBox(
+                                    width: 32,
+                                    child: (stressLevel < StressLevel.total - 1)
+                                        ? IconButton(
+                                            onPressed: () {
+                                              changeStressLevel();
+                                            },
+                                            padding: EdgeInsets.zero,
+                                            icon: Icon(Icons.add),
+                                          )
+                                        : Container(),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Visibility(
-                    visible: width(context) > 750,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      spacing: 16,
-                      children: [
-                        AnimatedSwitcher(
-                          duration: Duration(seconds: 1),
-                          child: (!isEditing)
-                              ? Text(
-                                  getBaseLevel(baseLevel),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontFamily: FontFamilies.sourceSerif4,
+                          Text("•"),
+                          NamedWidget(
+                            title: "Esforço",
+                            hardHeight: 32,
+                            child: Row(
+                              children: [
+                                Visibility(
+                                  visible: isEditing,
+                                  child: SizedBox(
+                                    width: 32,
+                                    child: (effortPoints > -1)
+                                        ? IconButton(
+                                            onPressed: () {
+                                              changeEffortPoints(
+                                                isAdding: false,
+                                              );
+                                            },
+                                            padding: EdgeInsets.zero,
+                                            icon: Icon(Icons.remove),
+                                          )
+                                        : Container(),
                                   ),
-                                )
-                              : DropdownButton<int>(
-                                  value: baseLevel,
-                                  items: [
-                                    DropdownMenuItem(
-                                      value: 0,
-                                      child: Text("Inexperiente"),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: 1,
-                                      child: Text("Mediocre"),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: 2,
-                                      child: Text("Vivência"),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: 3,
-                                      child: Text("Experiente"),
-                                    ),
-                                  ],
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      setState(() {
-                                        baseLevel = value;
-                                      });
-                                    }
-                                  },
                                 ),
+                                Row(
+                                  spacing: 8,
+                                  children: List.generate(
+                                    3,
+                                    (index) {
+                                      return Opacity(
+                                        opacity:
+                                            (index <= effortPoints) ? 1 : 0.5,
+                                        child: Image.asset(
+                                          (themeProvider.themeMode ==
+                                                  ThemeMode.dark)
+                                              ? "assets/images/brain.png"
+                                              : "assets/images/brain-i.png",
+                                          width: 16,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: isEditing,
+                                  child: SizedBox(
+                                    width: 32,
+                                    child: (effortPoints < 3)
+                                        ? IconButton(
+                                            onPressed: () {
+                                              changeEffortPoints();
+                                            },
+                                            padding: EdgeInsets.zero,
+                                            icon: Icon(Icons.add),
+                                          )
+                                        : Container(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text("•"),
+                          NamedWidget(
+                            title: "Itens",
+                            hardHeight: 32,
+                            child: InkWell(
+                              onTap: () {
+                                showSnackBarWip(context);
+                              },
+                              child: Image.asset(
+                                (themeProvider.themeMode == ThemeMode.dark)
+                                    ? "assets/images/chest.png"
+                                    : "assets/images/chest-i.png",
+                                width: 18,
+                              ),
+                            ),
+                          ),
+                          Text("•"),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: width(context) > 750,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  spacing: 16,
+                  children: [
+                    AnimatedSwitcher(
+                      duration: Duration(seconds: 1),
+                      child: (!isEditing)
+                          ? Text(
+                              getBaseLevel(baseLevel),
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontFamily: FontFamilies.sourceSerif4,
+                              ),
+                            )
+                          : DropdownButton<int>(
+                              value: baseLevel,
+                              items: [
+                                DropdownMenuItem(
+                                  value: 0,
+                                  child: Text("Inexperiente"),
+                                ),
+                                DropdownMenuItem(
+                                  value: 1,
+                                  child: Text("Mediocre"),
+                                ),
+                                DropdownMenuItem(
+                                  value: 2,
+                                  child: Text("Vivência"),
+                                ),
+                                DropdownMenuItem(
+                                  value: 3,
+                                  child: Text("Experiente"),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() {
+                                    baseLevel = value;
+                                  });
+                                }
+                              },
+                            ),
+                    ),
+                    Row(
+                      spacing: 32,
+                      children: [
+                        NamedWidget(
+                          title: "Aptidões",
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                listActionValue
+                                    .where(
+                                      (e) => e.value == 2,
+                                    )
+                                    .length
+                                    .toString(),
+                                style: TextStyle(
+                                  fontSize: 64,
+                                  fontFamily: FontFamilies.bungee,
+                                ),
+                              ),
+                              Text(
+                                "/${_getAptidaoMaxByLevel()}",
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontFamily: FontFamilies.sourceSerif4,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        Row(
-                          spacing: 32,
-                          children: [
-                            NamedWidget(
-                              title: "Aptidões",
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    listActionValue
-                                        .where(
-                                          (e) => e.value == 2,
-                                        )
-                                        .length
-                                        .toString(),
-                                    style: TextStyle(
-                                      fontSize: 64,
-                                      fontFamily: FontFamilies.bungee,
-                                    ),
-                                  ),
-                                  Text(
-                                    "/${_getAptidaoMaxByLevel()}",
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      fontFamily: FontFamilies.sourceSerif4,
-                                    ),
-                                  ),
-                                ],
+                        NamedWidget(
+                          title: "Treinamentos",
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                listActionValue
+                                    .where(
+                                      (e) => e.value == 3,
+                                    )
+                                    .length
+                                    .toString(),
+                                style: TextStyle(
+                                  fontSize: 64,
+                                  fontFamily: FontFamilies.bungee,
+                                ),
                               ),
-                            ),
-                            NamedWidget(
-                              title: "Treinamentos",
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    listActionValue
-                                        .where(
-                                          (e) => e.value == 3,
-                                        )
-                                        .length
-                                        .toString(),
-                                    style: TextStyle(
-                                      fontSize: 64,
-                                      fontFamily: FontFamilies.bungee,
-                                    ),
-                                  ),
-                                  Text(
-                                    "/${_getTreinamentoMaxByLevel()}",
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      fontFamily: FontFamilies.sourceSerif4,
-                                    ),
-                                  ),
-                                ],
+                              Text(
+                                "/${_getTreinamentoMaxByLevel()}",
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontFamily: FontFamilies.sourceSerif4,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Divider(),
+          Flexible(
+            child: SingleChildScrollView(
+              child: SizedBox(
+                width: width(context),
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.start,
+                  runAlignment: WrapAlignment.center,
+                  runSpacing: 32,
+                  children: [
+                    ListActionsWidget(
+                      name: "Ações Básicas",
+                      sheet: sheet,
+                      isEditing: isEditing,
+                      listActions: SheetDAO.instance.listBasicActions,
+                      onActionValueChanged: onActionValueChanged,
+                      onRoll: onRoll,
+                    ),
+                    ListActionsWidget(
+                      name: "Ações de Força",
+                      sheet: sheet,
+                      isEditing: isEditing,
+                      listActions: SheetDAO.instance.listStrengthActions,
+                      onActionValueChanged: onActionValueChanged,
+                      onRoll: onRoll,
+                    ),
+                    ListActionsWidget(
+                      name: "Ações de Agilidade",
+                      sheet: sheet,
+                      isEditing: isEditing,
+                      listActions: SheetDAO.instance.listAgilityActions,
+                      onActionValueChanged: onActionValueChanged,
+                      onRoll: onRoll,
+                    ),
+                    ListActionsWidget(
+                      name: "Ações de Intelecto",
+                      sheet: sheet,
+                      isEditing: isEditing,
+                      listActions: SheetDAO.instance.listIntellectActions,
+                      onActionValueChanged: onActionValueChanged,
+                      onRoll: onRoll,
+                    ),
+                    ListActionsWidget(
+                      name: "Ações Sociais",
+                      sheet: sheet,
+                      isEditing: isEditing,
+                      listActions: SheetDAO.instance.listSocialActions,
+                      onActionValueChanged: onActionValueChanged,
+                      onRoll: onRoll,
+                    ),
+                  ],
+                ),
               ),
             ),
-            Divider(),
-            SizedBox(
-              width: width(context),
-              child: Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.start,
-                runAlignment: WrapAlignment.center,
-                runSpacing: 32,
-                children: [
-                  ListActionsWidget(
-                    name: "Ações Básicas",
-                    sheet: sheet,
-                    isEditing: isEditing,
-                    listActions: SheetDAO.instance.listBasicActions,
-                    onActionValueChanged: onActionValueChanged,
-                    onRoll: onRoll,
-                  ),
-                  ListActionsWidget(
-                    name: "Ações de Força",
-                    sheet: sheet,
-                    isEditing: isEditing,
-                    listActions: SheetDAO.instance.listStrengthActions,
-                    onActionValueChanged: onActionValueChanged,
-                    onRoll: onRoll,
-                  ),
-                  ListActionsWidget(
-                    name: "Ações de Agilidade",
-                    sheet: sheet,
-                    isEditing: isEditing,
-                    listActions: SheetDAO.instance.listAgilityActions,
-                    onActionValueChanged: onActionValueChanged,
-                    onRoll: onRoll,
-                  ),
-                  ListActionsWidget(
-                    name: "Ações de Intelecto",
-                    sheet: sheet,
-                    isEditing: isEditing,
-                    listActions: SheetDAO.instance.listIntellectActions,
-                    onActionValueChanged: onActionValueChanged,
-                    onRoll: onRoll,
-                  ),
-                  ListActionsWidget(
-                    name: "Ações Sociais",
-                    sheet: sheet,
-                    isEditing: isEditing,
-                    listActions: SheetDAO.instance.listSocialActions,
-                    onActionValueChanged: onActionValueChanged,
-                    onRoll: onRoll,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

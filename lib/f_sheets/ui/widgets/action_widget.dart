@@ -68,7 +68,7 @@ class _ActionWidgetState extends State<ActionWidget> {
               child: Text(
                 widget.action.name,
                 overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.start,
                 style:
                     const TextStyle(fontSize: 18, fontFamily: "SourceSerif4"),
               ),

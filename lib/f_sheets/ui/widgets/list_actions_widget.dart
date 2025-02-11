@@ -29,7 +29,12 @@ class ListActionsWidget extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          width: (isVertical(context)) ? width(context) : 300,
+          width: (isVertical(context))
+              ? width(context)
+              : getZoomFactor(
+                  context,
+                  330,
+                ),
           height: 500,
           decoration: BoxDecoration(
             border: Border.all(
@@ -71,7 +76,7 @@ class ListActionsWidget extends StatelessWidget {
           child: Text(
             name,
             style: TextStyle(
-              fontSize: 22,
+              fontSize: getZoomFactor(context, 22),
               fontFamily: FontFamilies.bungee,
               fontWeight: FontWeight.bold,
             ),
