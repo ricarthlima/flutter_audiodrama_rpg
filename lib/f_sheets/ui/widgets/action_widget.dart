@@ -57,6 +57,7 @@ class _ActionWidgetState extends State<ActionWidget> {
               rollAction();
             }
           : null,
+      onLongPress: () => _showDialogTip(context),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
@@ -184,6 +185,20 @@ class _ActionWidgetState extends State<ActionWidget> {
         return "Propósito - Role 3d20, pegue o maior";
     }
     return "";
+  }
+
+  Future<dynamic> _showDialogTip(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: SizedBox(
+            height: 300,
+            child: ActionTooltip(action: widget.action),
+          ),
+        );
+      },
+    );
   }
 
   void _showTooltip() {

@@ -76,7 +76,7 @@ class ListActionsWidget extends StatelessWidget {
           child: Text(
             name,
             style: TextStyle(
-              fontSize: getZoomFactor(context, 22),
+              fontSize: isVertical(context) ? 20 : getZoomFactor(context, 22),
               fontFamily: FontFamilies.bungee,
               fontWeight: FontWeight.bold,
             ),

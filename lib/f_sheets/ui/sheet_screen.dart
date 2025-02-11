@@ -73,34 +73,41 @@ class _SheetScreenState extends State<SheetScreen> {
           icon: Icon(Icons.arrow_back),
         ),
         actions: [
-          (listSheets.isNotEmpty)
-              ? DropdownButton<Sheet>(
-                  value: listSheets.where((e) => e.id == widget.id).first,
-                  items: listSheets
-                      .map(
-                        (e) => DropdownMenuItem(
-                          value: e,
-                          child: Text(e.characterName),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (Sheet? sheet) {
-                    if (sheet != null) {
-                      GoRouter.of(context).go("${AppRouter.sheet}/${sheet.id}");
-                      setState(() {});
-                    }
-                  },
-                )
-              : Container(),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 20.0,
-              horizontal: 8,
-            ),
-            child: VerticalDivider(),
+          Visibility(
+            visible: !isVertical(context),
+            child: (listSheets.isNotEmpty)
+                ? DropdownButton<Sheet>(
+                    value: listSheets.where((e) => e.id == widget.id).first,
+                    items: listSheets
+                        .map(
+                          (e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e.characterName),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (Sheet? sheet) {
+                      if (sheet != null) {
+                        GoRouter.of(context)
+                            .go("${AppRouter.sheet}/${sheet.id}");
+                        setState(() {});
+                      }
+                    },
+                  )
+                : Container(),
           ),
           Visibility(
-            visible: isEditing,
+            visible: !isVertical(context),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 20.0,
+                horizontal: 8,
+              ),
+              child: VerticalDivider(),
+            ),
+          ),
+          Visibility(
+            visible: isEditing && !isVertical(context),
             child: Text("Saia da edição para salvar"),
           ),
           Visibility(
@@ -201,7 +208,7 @@ class _SheetScreenState extends State<SheetScreen> {
     _nameController.text = sheet.characterName;
     return Container(
       margin: EdgeInsets.all(16),
-      padding: const EdgeInsets.all(32),
+      padding: EdgeInsets.all(isVertical(context) ? 16 : 32),
       height: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
@@ -233,7 +240,7 @@ class _SheetScreenState extends State<SheetScreen> {
                             ? TextField(
                                 controller: _nameController,
                                 style: TextStyle(
-                                  fontSize: 48,
+                                  fontSize: isVertical(context) ? 18 : 48,
                                   fontFamily: FontFamilies.sourceSerif4,
                                 ),
                               )
@@ -241,7 +248,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                 sheet.characterName,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  fontSize: 48,
+                                  fontSize: isVertical(context) ? 18 : 48,
                                   fontFamily: FontFamilies.bungee,
                                   color: AppColors.red,
                                 ),
