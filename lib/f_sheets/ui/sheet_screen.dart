@@ -389,6 +389,19 @@ class _SheetScreenState extends State<SheetScreen> {
                             ),
                           ),
                           Text("•"),
+                          NamedWidget(
+                            title: "Condições",
+                            hardHeight: 32,
+                            child: InkWell(
+                              onTap: () {
+                                showSnackBarWip(context);
+                              },
+                              child: Icon(
+                                Icons.personal_injury_outlined,
+                                size: 18,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     )
@@ -791,15 +804,32 @@ class _RollRowWidgetState extends State<RollRowWidget> {
                     child: Image.asset(
                       (!isShowingHighlighted)
                           ? "assets/images/d20-1.png"
-                          : (widget.rollLog.isGettingLower)
-                              ? (widget.rollLog.rolls.reduce(min) ==
-                                      widget.rollLog.rolls[index])
-                                  ? "assets/images/d20-0.png"
-                                  : "assets/images/d20-1.png"
-                              : (widget.rollLog.rolls.reduce(max) ==
-                                      widget.rollLog.rolls[index])
+                          : (SheetDAO.instance
+                                      .getActionById(widget.rollLog.idAction)!
+                                      .isResisted &&
+                                  !widget.rollLog.isGettingLower)
+                              ? (widget.rollLog.rolls[index] >= 10)
                                   ? "assets/images/d20-4.png"
-                                  : "assets/images/d20-1.png",
+                                  : "assets/images/d20-0.png"
+                              : (SheetDAO.instance
+                                          .getActionById(
+                                              widget.rollLog.idAction)!
+                                          .isResisted &&
+                                      widget.rollLog.isGettingLower)
+                                  ? (widget.rollLog.rolls.reduce(min) ==
+                                              widget.rollLog.rolls[index] &&
+                                          widget.rollLog.rolls[index] >= 10)
+                                      ? "assets/images/d20-4.png"
+                                      : "assets/images/d20-0.png"
+                                  : (widget.rollLog.isGettingLower)
+                                      ? (widget.rollLog.rolls.reduce(min) ==
+                                              widget.rollLog.rolls[index])
+                                          ? "assets/images/d20-0.png"
+                                          : "assets/images/d20-1.png"
+                                      : (widget.rollLog.rolls.reduce(max) ==
+                                              widget.rollLog.rolls[index])
+                                          ? "assets/images/d20-4.png"
+                                          : "assets/images/d20-1.png",
                     ),
                   ),
                   Align(

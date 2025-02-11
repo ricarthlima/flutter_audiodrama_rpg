@@ -23,7 +23,7 @@ class SheetDAO {
 
   Future<void> initialize() async {
     String jsonString =
-        await rootBundle.loadString('assets/sheets/acoes-0.0.1b.json');
+        await rootBundle.loadString('assets/sheets/acoes-0.0.2.json');
     Map<String, dynamic> jsonData = json.decode(jsonString);
     listBasicActions = (jsonData[labelBasicActions] as List<dynamic>)
         .map((e) => ActionTemplate.fromMap(e))
