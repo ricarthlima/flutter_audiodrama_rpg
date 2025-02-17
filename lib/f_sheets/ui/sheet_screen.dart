@@ -829,68 +829,78 @@ class _RollRowWidgetState extends State<RollRowWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 64,
-      children: List.generate(
-        widget.rollLog.rolls.length,
-        (index) {
-          return AnimatedOpacity(
-            opacity: listOpacity[index],
-            duration: Duration(milliseconds: 750),
-            child: SizedBox(
-              width: 200,
-              height: 200,
-              child: Stack(
-                children: [
-                  AnimatedSwitcher(
-                    duration: Duration(milliseconds: 750),
-                    child: Image.asset(
-                      (!isShowingHighlighted)
-                          ? "assets/images/d20-1.png"
-                          : (SheetDAO.instance
-                                      .getActionById(widget.rollLog.idAction)!
-                                      .isResisted &&
-                                  !widget.rollLog.isGettingLower)
-                              ? (widget.rollLog.rolls[index] >= 10)
-                                  ? "assets/images/d20-4.png"
-                                  : "assets/images/d20-0.png"
-                              : (SheetDAO.instance
-                                          .getActionById(
-                                              widget.rollLog.idAction)!
-                                          .isResisted &&
-                                      widget.rollLog.isGettingLower)
-                                  ? (widget.rollLog.rolls.reduce(min) ==
-                                              widget.rollLog.rolls[index] &&
-                                          widget.rollLog.rolls[index] >= 10)
-                                      ? "assets/images/d20-4.png"
-                                      : "assets/images/d20-0.png"
-                                  : (widget.rollLog.isGettingLower)
-                                      ? (widget.rollLog.rolls.reduce(min) ==
-                                              widget.rollLog.rolls[index])
-                                          ? "assets/images/d20-0.png"
-                                          : "assets/images/d20-1.png"
-                                      : (widget.rollLog.rolls.reduce(max) ==
-                                              widget.rollLog.rolls[index])
-                                          ? "assets/images/d20-4.png"
-                                          : "assets/images/d20-1.png",
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      widget.rollLog.rolls[index].toString(),
-                      style: TextStyle(
-                        fontSize: 44,
-                        fontFamily: FontFamilies.bungee,
-                        color: Colors.white,
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.black.withAlpha(100),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Wrap(
+        spacing: isVertical(context) ? 32 : 64,
+        runSpacing: isVertical(context) ? 32 : 64,
+        alignment: WrapAlignment.center,
+        runAlignment: WrapAlignment.center,
+        children: List.generate(
+          widget.rollLog.rolls.length,
+          (index) {
+            return AnimatedOpacity(
+              opacity: listOpacity[index],
+              duration: Duration(milliseconds: 750),
+              child: SizedBox(
+                width: isVertical(context) ? 128 : 256,
+                height: isVertical(context) ? 128 : 256,
+                child: Stack(
+                  children: [
+                    AnimatedSwitcher(
+                      duration: Duration(milliseconds: 750),
+                      child: Image.asset(
+                        (!isShowingHighlighted)
+                            ? "assets/images/d20-1.png"
+                            : (SheetDAO.instance
+                                        .getActionById(widget.rollLog.idAction)!
+                                        .isResisted &&
+                                    !widget.rollLog.isGettingLower)
+                                ? (widget.rollLog.rolls[index] >= 10)
+                                    ? "assets/images/d20-4.png"
+                                    : "assets/images/d20-0.png"
+                                : (SheetDAO.instance
+                                            .getActionById(
+                                                widget.rollLog.idAction)!
+                                            .isResisted &&
+                                        widget.rollLog.isGettingLower)
+                                    ? (widget.rollLog.rolls.reduce(min) ==
+                                                widget.rollLog.rolls[index] &&
+                                            widget.rollLog.rolls[index] >= 10)
+                                        ? "assets/images/d20-4.png"
+                                        : "assets/images/d20-0.png"
+                                    : (widget.rollLog.isGettingLower)
+                                        ? (widget.rollLog.rolls.reduce(min) ==
+                                                widget.rollLog.rolls[index])
+                                            ? "assets/images/d20-0.png"
+                                            : "assets/images/d20-1.png"
+                                        : (widget.rollLog.rolls.reduce(max) ==
+                                                widget.rollLog.rolls[index])
+                                            ? "assets/images/d20-4.png"
+                                            : "assets/images/d20-1.png",
                       ),
                     ),
-                  ),
-                ],
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        widget.rollLog.rolls[index].toString(),
+                        style: TextStyle(
+                          fontSize: 44,
+                          fontFamily: FontFamilies.bungee,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
