@@ -6,8 +6,10 @@ import 'package:flutter_rpg_audiodrama/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/_core/remote_data_manager.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/data/stress_level.dart';
+import 'package:flutter_rpg_audiodrama/f_sheets/models/action_template.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_model.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/data/sheet_template.dart';
+import 'package:flutter_rpg_audiodrama/f_sheets/ui/components/action_dialog_tooltip.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/ui/components/sheet_history_drawer.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:go_router/go_router.dart';
@@ -643,9 +645,16 @@ class _SheetScreenState extends State<SheetScreen> {
   }
 
   onRoll(RollLog roll) async {
-    if (!SheetDAO.instance.isOnlyFreeOrPreparation(roll.idAction)) {
+    if (!SheetDAO.instance.isOnlyFreeOrPreparation(roll.idAction) ||
+        SheetDAO.instance.isLuckAction(roll.idAction)) {
       showRollDialog(context: context, rollLog: roll);
+    } else {
+      ActionTemplate? action = SheetDAO.instance.getActionById(roll.idAction);
+      if (action != null) {
+        showDialogTip(context, action);
+      }
     }
+
     listRollLog.add(roll);
     await saveChanges();
     notificationCount++;

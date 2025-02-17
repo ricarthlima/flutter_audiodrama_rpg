@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../_core/theme_provider.dart';
+import '../../data/sheet_template.dart';
 import '../../helpers/enum_action_train_level.dart';
 import '../../models/action_template.dart';
 import '../../models/sheet_model.dart';
+import '../components/action_dialog_tooltip.dart';
 import 'action_tooltip.dart';
 
 class ActionWidget extends StatefulWidget {
@@ -57,7 +59,7 @@ class _ActionWidgetState extends State<ActionWidget> {
               rollAction();
             }
           : null,
-      onLongPress: () => _showDialogTip(context),
+      onLongPress: () => showDialogTip(context, widget.action),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
@@ -150,15 +152,20 @@ class _ActionWidgetState extends State<ActionWidget> {
 
   void rollAction() {
     List<int> rolls = [];
-    if (av == 0 || av == 4) {
+
+    if (SheetDAO.instance.isOnlyFreeOrPreparation(widget.action.id)) {
       rolls.add(Random().nextInt(20) + 1);
-      rolls.add(Random().nextInt(20) + 1);
-      rolls.add(Random().nextInt(20) + 1);
-    } else if (av == 1 || av == 3) {
-      rolls.add(Random().nextInt(20) + 1);
-      rolls.add(Random().nextInt(20) + 1);
-    } else if (av == 2) {
-      rolls.add(Random().nextInt(20) + 1);
+    } else {
+      if (av == 0 || av == 4) {
+        rolls.add(Random().nextInt(20) + 1);
+        rolls.add(Random().nextInt(20) + 1);
+        rolls.add(Random().nextInt(20) + 1);
+      } else if (av == 1 || av == 3) {
+        rolls.add(Random().nextInt(20) + 1);
+        rolls.add(Random().nextInt(20) + 1);
+      } else if (av == 2) {
+        rolls.add(Random().nextInt(20) + 1);
+      }
     }
 
     widget.onRoll(
@@ -185,20 +192,6 @@ class _ActionWidgetState extends State<ActionWidget> {
         return "Propósito - Role 3d20, pegue o maior";
     }
     return "";
-  }
-
-  Future<dynamic> _showDialogTip(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          child: SizedBox(
-            height: 300,
-            child: ActionTooltip(action: widget.action),
-          ),
-        );
-      },
-    );
   }
 
   void _showTooltip() {

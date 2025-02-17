@@ -23,7 +23,7 @@ class SheetDAO {
 
   Future<void> initialize() async {
     String jsonString =
-        await rootBundle.loadString('assets/sheets/acoes-0.0.2.json');
+        await rootBundle.loadString('assets/sheets/acoes-0.0.3.json');
     Map<String, dynamic> jsonData = json.decode(jsonString);
     listBasicActions = (jsonData[labelBasicActions] as List<dynamic>)
         .map((e) => ActionTemplate.fromMap(e))
@@ -81,5 +81,9 @@ class SheetDAO {
       }
     }
     return result;
+  }
+
+  bool isLuckAction(String id) {
+    return id == "e025515c-ecd7-11ef-9cd2-0242ac120002";
   }
 }
