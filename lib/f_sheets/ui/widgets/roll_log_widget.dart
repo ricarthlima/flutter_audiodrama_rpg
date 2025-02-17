@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/data/sheet_template.dart';
+import 'package:flutter_rpg_audiodrama/f_sheets/data/action_dao.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/models/action_template.dart';
 
 import '../../models/sheet_model.dart';
@@ -19,7 +19,7 @@ class _RollLogWidgetState extends State<RollLogWidget> {
   @override
   Widget build(BuildContext context) {
     ActionTemplate? action =
-        SheetDAO.instance.getActionById(widget.rollLog.idAction);
+        ActionDAO.instance.getActionById(widget.rollLog.idAction);
 
     if (action != null) {
       return Container(
@@ -51,14 +51,14 @@ class _RollLogWidgetState extends State<RollLogWidget> {
               ),
               dense: true,
               tilePadding: EdgeInsets.zero,
-              initiallyExpanded: SheetDAO.instance
+              initiallyExpanded: ActionDAO.instance
                   .isOnlyFreeOrPreparation(widget.rollLog.idAction),
               children: [
                 Text(action.description),
               ],
             ),
             Visibility(
-              visible: !SheetDAO.instance
+              visible: !ActionDAO.instance
                   .isOnlyFreeOrPreparation(widget.rollLog.idAction),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

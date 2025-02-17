@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/data/sheet_template.dart';
+import 'package:flutter_rpg_audiodrama/f_sheets/data/action_dao.dart';
 
 import 'package:flutter_rpg_audiodrama/firebase_options.dart';
 import 'package:provider/provider.dart';
 
 import '_core/theme_provider.dart';
+import 'f_sheets/data/item_dao.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +18,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  await SheetDAO.instance.initialize();
+  await ActionDAO.instance.initialize();
+  await ItemDAO.instance.initialize();
 
   runApp(
     ChangeNotifierProvider(
