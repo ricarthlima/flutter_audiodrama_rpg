@@ -64,6 +64,17 @@ class _SheetScreenState extends State<SheetScreen> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
+      floatingActionButton: isVertical(context)
+          ? FloatingActionButton(
+              onPressed: () => showSnackBarWip(context),
+              child: Image.asset(
+                (themeProvider.themeMode == ThemeMode.dark)
+                    ? "assets/images/chest.png"
+                    : "assets/images/chest-i.png",
+                width: 32,
+              ),
+            )
+          : null,
       appBar: AppBar(
         toolbarHeight: 64,
         leading: IconButton(
@@ -265,6 +276,7 @@ class _SheetScreenState extends State<SheetScreen> {
                             title: "Estresse",
                             hardHeight: 32,
                             child: Row(
+                              mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -317,6 +329,9 @@ class _SheetScreenState extends State<SheetScreen> {
                             title: "Esforço",
                             hardHeight: 32,
                             child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Visibility(
                                   visible: isEditing,
@@ -374,6 +389,7 @@ class _SheetScreenState extends State<SheetScreen> {
                           ),
                           Text("•"),
                           NamedWidget(
+                            isVisible: !isVertical(context),
                             title: "Itens",
                             hardHeight: 32,
                             child: InkWell(
@@ -388,8 +404,12 @@ class _SheetScreenState extends State<SheetScreen> {
                               ),
                             ),
                           ),
-                          Text("•"),
+                          Visibility(
+                            visible: !isVertical(context),
+                            child: Text("•"),
+                          ),
                           NamedWidget(
+                            isVisible: !isVertical(context),
                             title: "Condições",
                             hardHeight: 32,
                             child: InkWell(
@@ -676,6 +696,7 @@ class NamedWidget extends StatelessWidget {
   final Widget child;
   final double? hardHeight;
   final bool isLeft;
+  final bool isVisible;
   const NamedWidget({
     super.key,
     required this.title,
@@ -683,36 +704,40 @@ class NamedWidget extends StatelessWidget {
     required this.child,
     this.hardHeight,
     this.isLeft = false,
+    this.isVisible = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment:
-          (isLeft) ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-      children: [
-        (titleWidget != null)
-            ? titleWidget!
-            : SizedBox(
-                height: 16,
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontFamily: FontFamilies.sourceSerif4,
-                    fontSize: 10,
-                    color: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .color!
-                        .withAlpha(150),
+    return Visibility(
+      visible: isVisible,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment:
+            (isLeft) ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+        children: [
+          (titleWidget != null)
+              ? titleWidget!
+              : SizedBox(
+                  height: 16,
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: FontFamilies.sourceSerif4,
+                      fontSize: 10,
+                      color: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .color!
+                          .withAlpha(150),
+                    ),
                   ),
                 ),
-              ),
-        (hardHeight != null)
-            ? SizedBox(height: hardHeight, child: child)
-            : child,
-      ],
+          (hardHeight != null)
+              ? SizedBox(height: hardHeight, child: child)
+              : child,
+        ],
+      ),
     );
   }
 }
