@@ -39,6 +39,9 @@ class _SheetScreenState extends State<SheetScreen> {
   int stressLevel = 0;
   int baseLevel = 0;
 
+  int modGlobalTrain = 0;
+  bool modGlobalKeep = false;
+
   List<Sheet> listSheets = [];
 
   @override
@@ -397,6 +400,72 @@ class _SheetScreenState extends State<SheetScreen> {
                           ),
                           Text("•"),
                           NamedWidget(
+                            title: "Mod. Global",
+                            hardHeight: 32,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Visibility(
+                                  visible: isEditing,
+                                  child: SizedBox(
+                                    width: 32,
+                                    child: (modGlobalTrain > -4)
+                                        ? IconButton(
+                                            onPressed: () {
+                                              changeModGlobal(isAdding: false);
+                                            },
+                                            padding: EdgeInsets.zero,
+                                            icon: Icon(Icons.remove),
+                                          )
+                                        : Container(),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 42,
+                                  child: Text(
+                                    modGlobalTrain.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: FontFamilies.bungee,
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: isEditing,
+                                  child: SizedBox(
+                                    width: 32,
+                                    child: (modGlobalTrain < 4)
+                                        ? IconButton(
+                                            onPressed: () {
+                                              changeModGlobal();
+                                            },
+                                            padding: EdgeInsets.zero,
+                                            icon: Icon(Icons.add),
+                                          )
+                                        : Container(),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: isEditing,
+                                  child: Tooltip(
+                                    message: "Manter modificador",
+                                    child: Checkbox(
+                                      value: modGlobalKeep,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          modGlobalKeep = !modGlobalKeep;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Text("•"),
+                          NamedWidget(
                             isVisible: !isVertical(context),
                             title: "Itens",
                             hardHeight: 32,
@@ -563,6 +632,7 @@ class _SheetScreenState extends State<SheetScreen> {
                       listActions: SheetDAO.instance.listBasicActions,
                       onActionValueChanged: onActionValueChanged,
                       onRoll: onRoll,
+                      modRoll: modGlobalTrain,
                     ),
                     ListActionsWidget(
                       name: "Ações de Força",
@@ -571,6 +641,7 @@ class _SheetScreenState extends State<SheetScreen> {
                       listActions: SheetDAO.instance.listStrengthActions,
                       onActionValueChanged: onActionValueChanged,
                       onRoll: onRoll,
+                      modRoll: modGlobalTrain,
                     ),
                     ListActionsWidget(
                       name: "Ações de Agilidade",
@@ -579,6 +650,7 @@ class _SheetScreenState extends State<SheetScreen> {
                       listActions: SheetDAO.instance.listAgilityActions,
                       onActionValueChanged: onActionValueChanged,
                       onRoll: onRoll,
+                      modRoll: modGlobalTrain,
                     ),
                     ListActionsWidget(
                       name: "Ações de Intelecto",
@@ -587,6 +659,7 @@ class _SheetScreenState extends State<SheetScreen> {
                       listActions: SheetDAO.instance.listIntellectActions,
                       onActionValueChanged: onActionValueChanged,
                       onRoll: onRoll,
+                      modRoll: modGlobalTrain,
                     ),
                     ListActionsWidget(
                       name: "Ações Sociais",
@@ -595,6 +668,7 @@ class _SheetScreenState extends State<SheetScreen> {
                       listActions: SheetDAO.instance.listSocialActions,
                       onActionValueChanged: onActionValueChanged,
                       onRoll: onRoll,
+                      modRoll: modGlobalTrain,
                     ),
                   ],
                 ),
@@ -658,6 +732,11 @@ class _SheetScreenState extends State<SheetScreen> {
     listRollLog.add(roll);
     await saveChanges();
     notificationCount++;
+
+    if (!modGlobalKeep) {
+      modGlobalTrain = 0;
+    }
+
     setState(() {});
   }
 
@@ -705,6 +784,16 @@ class _SheetScreenState extends State<SheetScreen> {
         return 7;
     }
     return 9;
+  }
+
+  void changeModGlobal({bool isAdding = true}) {
+    if (isAdding) {
+      modGlobalTrain++;
+    } else {
+      modGlobalTrain--;
+    }
+
+    setState(() {});
   }
 }
 

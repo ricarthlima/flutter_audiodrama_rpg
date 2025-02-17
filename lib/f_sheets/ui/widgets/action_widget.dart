@@ -18,6 +18,7 @@ class ActionWidget extends StatefulWidget {
   final Function(RollLog roll) onRoll;
   final Sheet sheet;
   final bool isEditing;
+  final int? modRoll;
   const ActionWidget({
     super.key,
     required this.action,
@@ -25,6 +26,7 @@ class ActionWidget extends StatefulWidget {
     required this.isEditing,
     required this.onActionValueChanged,
     required this.onRoll,
+    this.modRoll,
   });
 
   @override
@@ -153,17 +155,27 @@ class _ActionWidgetState extends State<ActionWidget> {
   void rollAction() {
     List<int> rolls = [];
 
+    int newActionValue = av + (widget.modRoll ?? 0);
+
+    if (newActionValue < 0) {
+      newActionValue = 0;
+    }
+
+    if (newActionValue > 4) {
+      newActionValue = 4;
+    }
+
     if (SheetDAO.instance.isOnlyFreeOrPreparation(widget.action.id)) {
       rolls.add(Random().nextInt(20) + 1);
     } else {
-      if (av == 0 || av == 4) {
+      if (newActionValue == 0 || newActionValue == 4) {
         rolls.add(Random().nextInt(20) + 1);
         rolls.add(Random().nextInt(20) + 1);
         rolls.add(Random().nextInt(20) + 1);
-      } else if (av == 1 || av == 3) {
+      } else if (newActionValue == 1 || newActionValue == 3) {
         rolls.add(Random().nextInt(20) + 1);
         rolls.add(Random().nextInt(20) + 1);
-      } else if (av == 2) {
+      } else if (newActionValue == 2) {
         rolls.add(Random().nextInt(20) + 1);
       }
     }
@@ -173,7 +185,7 @@ class _ActionWidgetState extends State<ActionWidget> {
         rolls: rolls,
         idAction: widget.action.id,
         dateTime: DateTime.now(),
-        isGettingLower: av <= 1,
+        isGettingLower: newActionValue <= 1,
       ),
     );
   }

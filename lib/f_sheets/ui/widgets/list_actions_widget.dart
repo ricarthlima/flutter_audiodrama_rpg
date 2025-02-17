@@ -13,6 +13,7 @@ class ListActionsWidget extends StatelessWidget {
   final bool isEditing;
   final Function(ActionValue ac) onActionValueChanged;
   final Function(RollLog roll) onRoll;
+  final int? modRoll;
 
   const ListActionsWidget({
     super.key,
@@ -22,6 +23,7 @@ class ListActionsWidget extends StatelessWidget {
     required this.isEditing,
     required this.onActionValueChanged,
     required this.onRoll,
+    this.modRoll,
   });
 
   @override
@@ -63,6 +65,7 @@ class ListActionsWidget extends StatelessWidget {
                     sheet: sheet,
                     onActionValueChanged: onActionValueChanged,
                     onRoll: onRoll,
+                    modRoll: modRoll,
                   );
                 },
               ),
