@@ -8,20 +8,21 @@ import 'release_mode.dart';
 class RemoteDataManager {
   String uid = FirebaseAuth.instance.currentUser!.uid;
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> listenSheetsByUser() {
+  Stream<QuerySnapshot<Map<String, dynamic>>> listenSheetsByUser(
+      {String? userId}) {
     return FirebaseFirestore.instance
         .collection("${releaseCollection}users")
-        .doc(uid)
+        .doc(userId ?? uid)
         .collection("sheets")
         .snapshots();
   }
 
-  Future<List<Sheet>> getSheetsByUser() async {
+  Future<List<Sheet>> getSheetsByUser({String? userId}) async {
     List<Sheet> result = [];
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
         .collection("${releaseCollection}users")
-        .doc(uid)
+        .doc(userId ?? uid)
         .collection("sheets")
         .get();
 
@@ -54,20 +55,21 @@ class RemoteDataManager {
         );
   }
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> listenSheetById(String id) {
+  Stream<DocumentSnapshot<Map<String, dynamic>>> listenSheetById(String id,
+      {String? userId}) {
     return FirebaseFirestore.instance
         .collection("${releaseCollection}users")
-        .doc(uid)
+        .doc(userId ?? uid)
         .collection("sheets")
         .doc(id)
         .snapshots();
   }
 
-  Future<Sheet?> getSheetId(String id) async {
+  Future<Sheet?> getSheetId(String id, {String? userId}) async {
     DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
         .instance
         .collection("${releaseCollection}users")
-        .doc(uid)
+        .doc(userId ?? uid)
         .collection("sheets")
         .doc(id)
         .get();
@@ -78,10 +80,10 @@ class RemoteDataManager {
     return null;
   }
 
-  Future<void> saveSheet(Sheet sheet) async {
+  Future<void> saveSheet(Sheet sheet, {String? userId}) async {
     await FirebaseFirestore.instance
         .collection("${releaseCollection}users")
-        .doc(uid)
+        .doc(userId ?? uid)
         .collection("sheets")
         .doc(sheet.id)
         .set(sheet.toMap());

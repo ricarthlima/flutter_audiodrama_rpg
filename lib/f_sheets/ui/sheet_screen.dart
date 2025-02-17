@@ -19,7 +19,8 @@ import 'package:badges/badges.dart' as badges;
 
 class SheetScreen extends StatefulWidget {
   final String id;
-  const SheetScreen({super.key, required this.id});
+  final String? userId;
+  const SheetScreen({super.key, required this.id, this.userId});
 
   @override
   State<SheetScreen> createState() => _SheetScreenState();
@@ -45,7 +46,10 @@ class _SheetScreenState extends State<SheetScreen> {
   }
 
   Future<void> refresh() async {
-    futureGetSheet = RemoteDataManager().getSheetId(widget.id);
+    futureGetSheet = RemoteDataManager().getSheetId(
+      widget.id,
+      userId: widget.userId,
+    );
 
     Sheet? sheetModel = await futureGetSheet;
     if (sheetModel != null) {
@@ -56,7 +60,9 @@ class _SheetScreenState extends State<SheetScreen> {
       baseLevel = sheetModel.baseLevel;
     }
 
-    listSheets = await RemoteDataManager().getSheetsByUser();
+    listSheets = await RemoteDataManager().getSheetsByUser(
+      userId: widget.userId,
+    );
     setState(() {});
   }
 
@@ -622,7 +628,10 @@ class _SheetScreenState extends State<SheetScreen> {
       stressLevel: stressLevel,
       baseLevel: baseLevel,
     );
-    await RemoteDataManager().saveSheet(sheet);
+    await RemoteDataManager().saveSheet(
+      sheet,
+      userId: widget.userId,
+    );
   }
 
   onActionValueChanged(ActionValue ac) {
