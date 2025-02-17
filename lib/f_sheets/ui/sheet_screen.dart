@@ -285,6 +285,7 @@ class _SheetScreenState extends State<SheetScreen> {
                         children: [
                           NamedWidget(
                             title: "Estresse",
+                            tooltip: "Nível de estresse atual",
                             hardHeight: 32,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -338,6 +339,7 @@ class _SheetScreenState extends State<SheetScreen> {
                           Text("•"),
                           NamedWidget(
                             title: "Esforço",
+                            tooltip: "Carga de esforço acumulada",
                             hardHeight: 32,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -401,6 +403,7 @@ class _SheetScreenState extends State<SheetScreen> {
                           Text("•"),
                           NamedWidget(
                             title: "Mod. Global",
+                            tooltip: "Modificador global de treinamento",
                             hardHeight: 32,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -468,6 +471,7 @@ class _SheetScreenState extends State<SheetScreen> {
                           NamedWidget(
                             isVisible: !isVertical(context),
                             title: "Itens",
+                            tooltip: "Clique para abrir inventário",
                             hardHeight: 32,
                             child: InkWell(
                               onTap: () {
@@ -488,6 +492,7 @@ class _SheetScreenState extends State<SheetScreen> {
                           NamedWidget(
                             isVisible: !isVertical(context),
                             title: "Condições",
+                            tooltip: "Clique visualizar condições atuais",
                             hardHeight: 32,
                             child: InkWell(
                               onTap: () {
@@ -804,6 +809,7 @@ class NamedWidget extends StatelessWidget {
   final double? hardHeight;
   final bool isLeft;
   final bool isVisible;
+  final String tooltip;
   const NamedWidget({
     super.key,
     required this.title,
@@ -812,38 +818,42 @@ class NamedWidget extends StatelessWidget {
     this.hardHeight,
     this.isLeft = false,
     this.isVisible = true,
+    this.tooltip = "",
   });
 
   @override
   Widget build(BuildContext context) {
     return Visibility(
       visible: isVisible,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment:
-            (isLeft) ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-        children: [
-          (titleWidget != null)
-              ? titleWidget!
-              : SizedBox(
-                  height: 16,
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontFamily: FontFamilies.sourceSerif4,
-                      fontSize: 10,
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .color!
-                          .withAlpha(150),
+      child: Tooltip(
+        message: tooltip,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment:
+              (isLeft) ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+          children: [
+            (titleWidget != null)
+                ? titleWidget!
+                : SizedBox(
+                    height: 16,
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        fontFamily: FontFamilies.sourceSerif4,
+                        fontSize: 10,
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .color!
+                            .withAlpha(150),
+                      ),
                     ),
                   ),
-                ),
-          (hardHeight != null)
-              ? SizedBox(height: hardHeight, child: child)
-              : child,
-        ],
+            (hardHeight != null)
+                ? SizedBox(height: hardHeight, child: child)
+                : child,
+          ],
+        ),
       ),
     );
   }

@@ -215,9 +215,7 @@ class _ActionWidgetState extends State<ActionWidget> {
 
     _overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        left: offset.dx +
-            renderBox.size.width / 2 -
-            50, // Centraliza horizontalmente
+        left: offset.dx + 50, // Centraliza horizontalmente
         top: offset.dy + renderBox.size.height + 8, // Abaixo do widget alvo
         child: Material(
           color: Colors.transparent,
