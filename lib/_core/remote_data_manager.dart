@@ -51,6 +51,7 @@ class RemoteDataManager {
             effortPoints: -1,
             stressLevel: 0,
             baseLevel: 0,
+            listItemSheet: [],
           ).toMap(),
         );
   }

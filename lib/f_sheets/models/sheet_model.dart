@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:flutter_rpg_audiodrama/f_sheets/models/item_sheet.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class Sheet {
   String id;
@@ -11,7 +13,7 @@ class Sheet {
   List<ActionValue> listActionValue;
   List<RollLog> listRollLog;
   int baseLevel;
-
+  List<ItemSheet> listItemSheet;
   Sheet({
     required this.id,
     required this.characterName,
@@ -20,6 +22,7 @@ class Sheet {
     required this.listActionValue,
     required this.listRollLog,
     required this.baseLevel,
+    required this.listItemSheet,
   });
 
   Sheet copyWith({
@@ -30,6 +33,7 @@ class Sheet {
     List<ActionValue>? listActionValue,
     List<RollLog>? listRollLog,
     int? baseLevel,
+    List<ItemSheet>? listItemSheet,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -39,6 +43,7 @@ class Sheet {
       listActionValue: listActionValue ?? this.listActionValue,
       listRollLog: listRollLog ?? this.listRollLog,
       baseLevel: baseLevel ?? this.baseLevel,
+      listItemSheet: listItemSheet ?? this.listItemSheet,
     );
   }
 
@@ -51,6 +56,7 @@ class Sheet {
       'listActionValue': listActionValue.map((x) => x.toMap()).toList(),
       'listRollLog': listRollLog.map((x) => x.toMap()).toList(),
       'baseLevel': baseLevel,
+      'listItemSheet': listItemSheet.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -71,6 +77,13 @@ class Sheet {
         ),
       ),
       baseLevel: map['baseLevel'] as int,
+      listItemSheet: map['listItemSheet'] != null
+          ? List<ItemSheet>.from(
+              (map['listItemSheet'] as List<dynamic>).map<ItemSheet>(
+                (x) => ItemSheet.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : [],
     );
   }
 
@@ -81,7 +94,7 @@ class Sheet {
 
   @override
   String toString() {
-    return 'Sheet(id: $id, characterName: $characterName, stressLevel: $stressLevel, effortPoints: $effortPoints, listActionValue: $listActionValue, listRollLog: $listRollLog, baseLevel: $baseLevel)';
+    return 'Sheet(id: $id, characterName: $characterName, stressLevel: $stressLevel, effortPoints: $effortPoints, listActionValue: $listActionValue, listRollLog: $listRollLog, baseLevel: $baseLevel, listItemSheet: $listItemSheet)';
   }
 
   @override
@@ -94,7 +107,8 @@ class Sheet {
         other.effortPoints == effortPoints &&
         listEquals(other.listActionValue, listActionValue) &&
         listEquals(other.listRollLog, listRollLog) &&
-        other.baseLevel == baseLevel;
+        other.baseLevel == baseLevel &&
+        listEquals(other.listItemSheet, listItemSheet);
   }
 
   @override
@@ -105,7 +119,8 @@ class Sheet {
         effortPoints.hashCode ^
         listActionValue.hashCode ^
         listRollLog.hashCode ^
-        baseLevel.hashCode;
+        baseLevel.hashCode ^
+        listItemSheet.hashCode;
   }
 }
 

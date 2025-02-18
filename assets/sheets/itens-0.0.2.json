@@ -348,7 +348,7 @@
         {
             "id": "c82e5e0d-5013-4f01-b4d9-ac32e1f0a192",
             "name": "Drone para exploração",
-            "price": 350,
+            "price": 400,
             "description": "Veículo aéreo remoto utilizado para explorar áreas inacessíveis.",
             "mechanic": "Permite analisar terrenos até 10 km.",
             "isFinite": true,

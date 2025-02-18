@@ -7,6 +7,7 @@ import 'package:flutter_rpg_audiodrama/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/_core/remote_data_manager.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/data/stress_level.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/models/action_template.dart';
+import 'package:flutter_rpg_audiodrama/f_sheets/models/item_sheet.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_model.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/data/action_dao.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/ui/components/action_dialog_tooltip.dart';
@@ -43,6 +44,8 @@ class _SheetScreenState extends State<SheetScreen> {
   int modGlobalTrain = 0;
   bool modGlobalKeep = false;
 
+  List<ItemSheet> listSheetItems = [];
+
   List<Sheet> listSheets = [];
 
   @override
@@ -64,6 +67,7 @@ class _SheetScreenState extends State<SheetScreen> {
       effortPoints = sheetModel.effortPoints;
       stressLevel = sheetModel.stressLevel;
       baseLevel = sheetModel.baseLevel;
+      listSheetItems = sheetModel.listItemSheet;
     }
 
     listSheets = await RemoteDataManager().getSheetsByUser(
@@ -707,6 +711,7 @@ class _SheetScreenState extends State<SheetScreen> {
       effortPoints: effortPoints,
       stressLevel: stressLevel,
       baseLevel: baseLevel,
+      listItemSheet: listSheetItems,
     );
     await RemoteDataManager().saveSheet(
       sheet,
@@ -800,8 +805,18 @@ class _SheetScreenState extends State<SheetScreen> {
     setState(() {});
   }
 
-  onItemsButtonClicked() {
-    showShoppingDialog(context, isEditing: isEditing);
+  onItemsButtonClicked() async {
+    List<ItemSheet>? listResult = await showShoppingDialog(
+      context,
+      isEditing: isEditing,
+      listSheetItems: listSheetItems,
+      trainLevel: baseLevel,
+    );
+
+    if (listResult != null) {
+      listSheetItems = listResult;
+    }
+    setState(() {});
   }
 }
 

@@ -24,7 +24,9 @@ class ItemDAO {
         .map((e) => Item.fromMap(e))
         .toList();
 
-    print("${_listItems.length} itens carregados");
+    int total = _listItems.map((e) => e.price).toList().reduce((v, e) => v + e);
+    print(
+        "${_listItems.length} itens carregados, custando um total de: $total");
   }
 
   List<Item> get getItems {
