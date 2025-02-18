@@ -190,12 +190,14 @@ class _ShoppingDialogScreenState extends State<_ShoppingDialogScreen> {
 
   void _calculateSpent() {
     totalScore = getCreditByLevel(widget.trainLevel);
-    totalSpent = widget.listSheetItems.map(
-      (e) {
-        int price = ItemDAO.instance.getItemById(e.itemId)!.price;
-        return price * e.amount;
-      },
-    ).reduce((v, e) => v + e);
+    totalSpent = (widget.listSheetItems.isEmpty)
+        ? 0
+        : widget.listSheetItems.map(
+            (e) {
+              int price = ItemDAO.instance.getItemById(e.itemId)!.price;
+              return price * e.amount;
+            },
+          ).reduce((v, e) => v + e);
   }
 }
 
