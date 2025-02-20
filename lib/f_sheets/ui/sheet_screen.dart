@@ -7,10 +7,12 @@ import 'package:flutter_rpg_audiodrama/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/_core/remote_data_manager.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/data/stress_level.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/models/action_template.dart';
+import 'package:flutter_rpg_audiodrama/f_sheets/models/item_sheet.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_model.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/data/sheet_template.dart';
+import 'package:flutter_rpg_audiodrama/f_sheets/data/action_dao.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/ui/components/action_dialog_tooltip.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/ui/components/sheet_history_drawer.dart';
+import 'package:flutter_rpg_audiodrama/f_sheets/ui/components/shop_dialog.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +44,8 @@ class _SheetScreenState extends State<SheetScreen> {
   int modGlobalTrain = 0;
   bool modGlobalKeep = false;
 
+  List<ItemSheet> listSheetItems = [];
+
   List<Sheet> listSheets = [];
 
   @override
@@ -63,6 +67,7 @@ class _SheetScreenState extends State<SheetScreen> {
       effortPoints = sheetModel.effortPoints;
       stressLevel = sheetModel.stressLevel;
       baseLevel = sheetModel.baseLevel;
+      listSheetItems = sheetModel.listItemSheet;
     }
 
     listSheets = await RemoteDataManager().getSheetsByUser(
@@ -77,7 +82,7 @@ class _SheetScreenState extends State<SheetScreen> {
     return Scaffold(
       floatingActionButton: isVertical(context)
           ? FloatingActionButton(
-              onPressed: () => showSnackBarWip(context),
+              onPressed: () => onItemsButtonClicked(),
               child: Image.asset(
                 (themeProvider.themeMode == ThemeMode.dark)
                     ? "assets/images/chest.png"
@@ -474,9 +479,7 @@ class _SheetScreenState extends State<SheetScreen> {
                             tooltip: "Clique para abrir inventário",
                             hardHeight: 32,
                             child: InkWell(
-                              onTap: () {
-                                showSnackBarWip(context);
-                              },
+                              onTap: () => onItemsButtonClicked(),
                               child: Image.asset(
                                 (themeProvider.themeMode == ThemeMode.dark)
                                     ? "assets/images/chest.png"
@@ -634,7 +637,7 @@ class _SheetScreenState extends State<SheetScreen> {
                       name: "Ações Básicas",
                       sheet: sheet,
                       isEditing: isEditing,
-                      listActions: SheetDAO.instance.listBasicActions,
+                      listActions: ActionDAO.instance.listBasicActions,
                       onActionValueChanged: onActionValueChanged,
                       onRoll: onRoll,
                       modRoll: modGlobalTrain,
@@ -643,7 +646,7 @@ class _SheetScreenState extends State<SheetScreen> {
                       name: "Ações de Força",
                       sheet: sheet,
                       isEditing: isEditing,
-                      listActions: SheetDAO.instance.listStrengthActions,
+                      listActions: ActionDAO.instance.listStrengthActions,
                       onActionValueChanged: onActionValueChanged,
                       onRoll: onRoll,
                       modRoll: modGlobalTrain,
@@ -652,7 +655,7 @@ class _SheetScreenState extends State<SheetScreen> {
                       name: "Ações de Agilidade",
                       sheet: sheet,
                       isEditing: isEditing,
-                      listActions: SheetDAO.instance.listAgilityActions,
+                      listActions: ActionDAO.instance.listAgilityActions,
                       onActionValueChanged: onActionValueChanged,
                       onRoll: onRoll,
                       modRoll: modGlobalTrain,
@@ -661,7 +664,7 @@ class _SheetScreenState extends State<SheetScreen> {
                       name: "Ações de Intelecto",
                       sheet: sheet,
                       isEditing: isEditing,
-                      listActions: SheetDAO.instance.listIntellectActions,
+                      listActions: ActionDAO.instance.listIntellectActions,
                       onActionValueChanged: onActionValueChanged,
                       onRoll: onRoll,
                       modRoll: modGlobalTrain,
@@ -670,7 +673,7 @@ class _SheetScreenState extends State<SheetScreen> {
                       name: "Ações Sociais",
                       sheet: sheet,
                       isEditing: isEditing,
-                      listActions: SheetDAO.instance.listSocialActions,
+                      listActions: ActionDAO.instance.listSocialActions,
                       onActionValueChanged: onActionValueChanged,
                       onRoll: onRoll,
                       modRoll: modGlobalTrain,
@@ -708,6 +711,7 @@ class _SheetScreenState extends State<SheetScreen> {
       effortPoints: effortPoints,
       stressLevel: stressLevel,
       baseLevel: baseLevel,
+      listItemSheet: listSheetItems,
     );
     await RemoteDataManager().saveSheet(
       sheet,
@@ -724,11 +728,11 @@ class _SheetScreenState extends State<SheetScreen> {
   }
 
   onRoll(RollLog roll) async {
-    if (!SheetDAO.instance.isOnlyFreeOrPreparation(roll.idAction) ||
-        SheetDAO.instance.isLuckAction(roll.idAction)) {
+    if (!ActionDAO.instance.isOnlyFreeOrPreparation(roll.idAction) ||
+        ActionDAO.instance.isLuckAction(roll.idAction)) {
       showRollDialog(context: context, rollLog: roll);
     } else {
-      ActionTemplate? action = SheetDAO.instance.getActionById(roll.idAction);
+      ActionTemplate? action = ActionDAO.instance.getActionById(roll.idAction);
       if (action != null) {
         showDialogTip(context, action);
       }
@@ -798,6 +802,20 @@ class _SheetScreenState extends State<SheetScreen> {
       modGlobalTrain--;
     }
 
+    setState(() {});
+  }
+
+  onItemsButtonClicked() async {
+    List<ItemSheet>? listResult = await showShoppingDialog(
+      context,
+      isEditing: isEditing,
+      listSheetItems: listSheetItems,
+      trainLevel: baseLevel,
+    );
+
+    if (listResult != null) {
+      listSheetItems = listResult;
+    }
     setState(() {});
   }
 }
@@ -955,14 +973,14 @@ class _RollRowWidgetState extends State<RollRowWidget> {
                       child: Image.asset(
                         (!isShowingHighlighted)
                             ? "assets/images/d20-1.png"
-                            : (SheetDAO.instance
+                            : (ActionDAO.instance
                                         .getActionById(widget.rollLog.idAction)!
                                         .isResisted &&
                                     !widget.rollLog.isGettingLower)
                                 ? (widget.rollLog.rolls[index] >= 10)
                                     ? "assets/images/d20-4.png"
                                     : "assets/images/d20-0.png"
-                                : (SheetDAO.instance
+                                : (ActionDAO.instance
                                             .getActionById(
                                                 widget.rollLog.idAction)!
                                             .isResisted &&

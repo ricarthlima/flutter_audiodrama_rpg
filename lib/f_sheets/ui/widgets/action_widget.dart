@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../_core/theme_provider.dart';
-import '../../data/sheet_template.dart';
+import '../../data/action_dao.dart';
 import '../../helpers/enum_action_train_level.dart';
 import '../../models/action_template.dart';
 import '../../models/sheet_model.dart';
@@ -165,7 +165,7 @@ class _ActionWidgetState extends State<ActionWidget> {
       newActionValue = 4;
     }
 
-    if (SheetDAO.instance.isOnlyFreeOrPreparation(widget.action.id)) {
+    if (ActionDAO.instance.isOnlyFreeOrPreparation(widget.action.id)) {
       rolls.add(Random().nextInt(20) + 1);
     } else {
       if (newActionValue == 0 || newActionValue == 4) {

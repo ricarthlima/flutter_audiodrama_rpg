@@ -11,3 +11,17 @@ String getBaseLevel(int baseLevel) {
   }
   return "";
 }
+
+int getCreditByLevel(int level) {
+  switch (level) {
+    case 0:
+      return 500;
+    case 1:
+      return 750;
+    case 2:
+      return 1500;
+    case 3:
+      return 2500;
+  }
+  return 0;
+}
