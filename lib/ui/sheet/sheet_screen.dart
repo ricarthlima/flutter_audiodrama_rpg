@@ -1,23 +1,23 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/theme/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/_core/theme/fonts.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/services/sheet_service.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/data/stress_level.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/models/action_template.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/models/item_sheet.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_model.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/data/action_dao.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/ui/components/action_dialog_tooltip.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/ui/components/sheet_history_drawer.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/ui/components/shop_dialog.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/stress_level.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/item_sheet.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
+import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/action_dialog_tooltip.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_history_drawer.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/shop_dialog.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../_core/helpers.dart';
-import '../../_core/theme/theme_provider.dart';
+import '../_core/helpers.dart';
+import '../_core/theme_provider.dart';
 import 'widgets/list_actions_widget.dart';
 import 'package:badges/badges.dart' as badges;
 

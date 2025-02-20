@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/helpers.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/helpers.dart';
 import 'package:flutter_rpg_audiodrama/_core/private/auth_user.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_model.dart';
-import 'package:flutter_rpg_audiodrama/f_home/components/create_sheet_dialog.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/components/create_sheet_dialog.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../_core/theme/fonts.dart';
-import '../../f_sheets/services/sheet_service.dart';
-import '../../_core/theme/theme_provider.dart';
+import '../_core/fonts.dart';
+import '../../data/services/sheet_service.dart';
+import '../_core/theme_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_model.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/ui/widgets/roll_log_widget.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/roll_log_widget.dart';
 
-import '../../../_core/theme/fonts.dart';
+import '../../_core/fonts.dart';
 
 class SheetHistoryDrawer extends StatefulWidget {
   final List<RollLog> listRollLog;

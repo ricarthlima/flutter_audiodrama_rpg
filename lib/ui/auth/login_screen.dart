@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/theme/fonts.dart';
-import 'package:flutter_rpg_audiodrama/f_auth/auth_service.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/auth_buttons.dart';
-import '../../_core/theme/theme_provider.dart';
+import '../_core/theme_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/theme/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/_core/theme/fonts.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 
 class AppTheme {
   AppTheme._();

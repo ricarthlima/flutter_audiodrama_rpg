@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/theme/app_colors.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 
 class GoogleAuthButtonWidget extends StatelessWidget {
   final Function onPressed;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../_core/theme/fonts.dart';
-import '../../models/action_template.dart';
+import '../../_core/fonts.dart';
+import '../../../domain/models/action_template.dart';
 
 class ActionTooltip extends StatelessWidget {
   final ActionTemplate action;

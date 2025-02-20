@@ -1,13 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/_core/theme/fonts.dart';
-import 'package:flutter_rpg_audiodrama/_core/helpers.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/data/item_dao.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/models/item_sheet.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/helpers.dart';
+import 'package:flutter_rpg_audiodrama/data/daos/item_dao.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/item_sheet.dart';
 
-import '../../models/item.dart';
+import '../../../domain/models/item.dart';
 
 Future<dynamic> showShoppingDialog(
   BuildContext context, {

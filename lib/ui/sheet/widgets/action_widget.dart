@@ -4,11 +4,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../_core/theme/theme_provider.dart';
-import '../../data/action_dao.dart';
-import '../../helpers/enum_action_train_level.dart';
-import '../../models/action_template.dart';
-import '../../models/sheet_model.dart';
+import '../../_core/theme_provider.dart';
+import '../../../data/daos/action_dao.dart';
+import '../helpers/enum_action_train_level.dart';
+import '../../../domain/models/action_template.dart';
+import '../../../domain/models/sheet_model.dart';
 import '../components/action_dialog_tooltip.dart';
 import 'action_tooltip.dart';
 

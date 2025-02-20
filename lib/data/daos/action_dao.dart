@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_rpg_audiodrama/f_sheets/models/action_template.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
 
 class ActionDAO {
   static const String labelBasicActions = "basic";

@@ -1,14 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/theme/theme.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/theme.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/data/action_dao.dart';
+import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
 
 import 'package:flutter_rpg_audiodrama/firebase_options.dart';
 import 'package:provider/provider.dart';
 
-import '_core/theme/theme_provider.dart';
-import 'f_sheets/data/item_dao.dart';
+import 'ui/_core/theme_provider.dart';
+import 'data/daos/item_dao.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

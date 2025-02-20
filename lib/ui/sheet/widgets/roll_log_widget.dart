@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/theme/fonts.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/data/action_dao.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/models/action_template.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
 
-import '../../models/sheet_model.dart';
+import '../../../domain/models/sheet_model.dart';
 
 class RollLogWidget extends StatefulWidget {
   final RollLog rollLog;

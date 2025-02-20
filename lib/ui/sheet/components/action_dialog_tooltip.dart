@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/action_template.dart';
+import '../../../domain/models/action_template.dart';
 import '../widgets/action_tooltip.dart';
 
 Future<dynamic> showDialogTip(

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
-import '../models/item.dart';
+import '../../domain/models/item.dart';
 
 class ItemDAO {
   static const String _filePath = 'assets/sheets/itens-0.0.2.json';
