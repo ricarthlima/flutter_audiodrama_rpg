@@ -268,7 +268,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                 controller: _nameController,
                                 style: TextStyle(
                                   fontSize: isVertical(context) ? 18 : 48,
-                                  fontFamily: FontFamilies.sourceSerif4,
+                                  fontFamily: FontFamily.sourceSerif4,
                                 ),
                               )
                             : Text(
@@ -276,7 +276,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: isVertical(context) ? 18 : 48,
-                                  fontFamily: FontFamilies.bungee,
+                                  fontFamily: FontFamily.bungee,
                                   color: AppColors.red,
                                 ),
                               ),
@@ -319,7 +319,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                     StressLevel().getByStressLevel(stressLevel),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontFamily: FontFamilies.bungee,
+                                      fontFamily: FontFamily.bungee,
                                     ),
                                   ),
                                 ),
@@ -436,7 +436,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                     modGlobalTrain.toString(),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontFamily: FontFamilies.bungee,
+                                      fontFamily: FontFamily.bungee,
                                     ),
                                   ),
                                 ),
@@ -526,7 +526,7 @@ class _SheetScreenState extends State<SheetScreen> {
                               getBaseLevel(baseLevel),
                               style: TextStyle(
                                 fontSize: 20,
-                                fontFamily: FontFamilies.sourceSerif4,
+                                fontFamily: FontFamily.sourceSerif4,
                               ),
                             )
                           : DropdownButton<int>(
@@ -575,14 +575,14 @@ class _SheetScreenState extends State<SheetScreen> {
                                     .toString(),
                                 style: TextStyle(
                                   fontSize: 64,
-                                  fontFamily: FontFamilies.bungee,
+                                  fontFamily: FontFamily.bungee,
                                 ),
                               ),
                               Text(
                                 "/${_getAptidaoMaxByLevel()}",
                                 style: TextStyle(
                                   fontSize: 22,
-                                  fontFamily: FontFamilies.sourceSerif4,
+                                  fontFamily: FontFamily.sourceSerif4,
                                 ),
                               ),
                             ],
@@ -602,14 +602,14 @@ class _SheetScreenState extends State<SheetScreen> {
                                     .toString(),
                                 style: TextStyle(
                                   fontSize: 64,
-                                  fontFamily: FontFamilies.bungee,
+                                  fontFamily: FontFamily.bungee,
                                 ),
                               ),
                               Text(
                                 "/${_getTreinamentoMaxByLevel()}",
                                 style: TextStyle(
                                   fontSize: 22,
-                                  fontFamily: FontFamilies.sourceSerif4,
+                                  fontFamily: FontFamily.sourceSerif4,
                                 ),
                               ),
                             ],
@@ -857,7 +857,7 @@ class NamedWidget extends StatelessWidget {
                     child: Text(
                       title,
                       style: TextStyle(
-                        fontFamily: FontFamilies.sourceSerif4,
+                        fontFamily: FontFamily.sourceSerif4,
                         fontSize: 10,
                         color: Theme.of(context)
                             .textTheme
@@ -1007,7 +1007,7 @@ class _RollRowWidgetState extends State<RollRowWidget> {
                         widget.rollLog.rolls[index].toString(),
                         style: TextStyle(
                           fontSize: 44,
-                          fontFamily: FontFamilies.bungee,
+                          fontFamily: FontFamily.bungee,
                           color: Colors.white,
                         ),
                       ),

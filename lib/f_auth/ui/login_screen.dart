@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
         title: Text(
           "AUDIODRAMA RPG",
           style: TextStyle(
-            fontFamily: FontFamilies.bungee,
+            fontFamily: FontFamily.bungee,
           ),
         ),
         actions: [

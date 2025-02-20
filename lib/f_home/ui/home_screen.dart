@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(
           "AUDIODRAMA RPG",
           style: TextStyle(
-            fontFamily: FontFamilies.bungee,
+            fontFamily: FontFamily.bungee,
           ),
         ),
         elevation: 1,
@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         "Nada por aqui ainda, vamos criar?",
                         style: TextStyle(
                           fontSize: 24,
-                          fontFamily: FontFamilies.sourceSerif4,
+                          fontFamily: FontFamily.sourceSerif4,
                         ),
                       ),
                     ),

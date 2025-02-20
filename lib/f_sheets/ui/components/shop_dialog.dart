@@ -248,7 +248,7 @@ class __ShoppingWidgetState extends State<_ShoppingWidget> {
               widget.isSeller ? "Comprar" : "Seus itens",
               style: TextStyle(
                 fontSize: 20,
-                fontFamily: FontFamilies.bungee,
+                fontFamily: FontFamily.bungee,
               ),
             ),
             Row(
