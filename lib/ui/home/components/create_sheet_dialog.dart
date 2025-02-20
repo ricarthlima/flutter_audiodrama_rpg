@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Future<dynamic> showCreateSheetDialog(BuildContext context) async {
+Future<String?> showCreateSheetDialog(BuildContext context) async {
   return showDialog(
     context: context,
     builder: (context) {

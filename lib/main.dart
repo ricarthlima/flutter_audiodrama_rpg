@@ -5,6 +5,7 @@ import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
 
 import 'package:flutter_rpg_audiodrama/firebase_options.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:provider/provider.dart';
 
 import 'ui/_core/theme_provider.dart';
@@ -21,8 +22,11 @@ void main() async {
   await ItemDAO.instance.initialize();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
+      ],
       child: const MainApp(),
     ),
   );
