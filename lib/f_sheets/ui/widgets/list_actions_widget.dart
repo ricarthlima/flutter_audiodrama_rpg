@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../_core/dimensions.dart';
-import '../../../_core/fonts.dart';
+import '../../../_core/theme/fonts.dart';
 import '../../models/action_template.dart';
 import '../../models/sheet_model.dart';
 import 'action_widget.dart';

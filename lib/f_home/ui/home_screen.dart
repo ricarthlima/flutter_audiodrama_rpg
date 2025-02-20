@@ -9,9 +9,9 @@ import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../_core/fonts.dart';
-import '../../_core/remote_data_manager.dart';
-import '../../_core/theme_provider.dart';
+import '../../_core/theme/fonts.dart';
+import '../../f_sheets/services/sheet_service.dart';
+import '../../_core/theme/theme_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
           showCreateSheetDialog(context).then(
             (value) {
               if (value != null) {
-                RemoteDataManager().createSheet(value);
+                SheetService().createSheet(value);
               }
             },
           );
@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             : Container(),
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-          stream: RemoteDataManager().listenSheetsByUser(userId: userId),
+          stream: SheetService().listenSheetsByUser(userId: userId),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:

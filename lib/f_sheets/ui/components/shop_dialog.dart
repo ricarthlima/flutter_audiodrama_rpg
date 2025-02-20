@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/_core/theme/fonts.dart';
 import 'package:flutter_rpg_audiodrama/_core/helpers.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/data/item_dao.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/models/item_sheet.dart';

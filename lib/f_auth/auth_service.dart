@@ -6,7 +6,7 @@ import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
-import '../_core/local_data_manager.dart';
+import '../_core/data/local_data_manager.dart';
 
 class AuthService {
   Future<void> signInWithGoogle(BuildContext context) async {

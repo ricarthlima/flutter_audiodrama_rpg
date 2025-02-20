@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/app_colors.dart';
+import 'package:flutter_rpg_audiodrama/_core/theme/app_colors.dart';
 
-class GoogleAuthButton extends StatelessWidget {
+class GoogleAuthButtonWidget extends StatelessWidget {
   final Function onPressed;
   final ThemeMode themeMode;
-  const GoogleAuthButton({
+  const GoogleAuthButtonWidget({
     super.key,
     required this.onPressed,
     required this.themeMode,

@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/models/sheet_model.dart';
 import 'package:uuid/uuid.dart';
 
-import 'release_mode.dart';
+import '../../_core/release_mode.dart';
 
-class RemoteDataManager {
+class SheetService {
   String uid = FirebaseAuth.instance.currentUser!.uid;
 
   Stream<QuerySnapshot<Map<String, dynamic>>> listenSheetsByUser(
