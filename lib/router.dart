@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/f_auth/ui/login_screen.dart';
 import 'package:flutter_rpg_audiodrama/f_sheets/ui/sheet_screen.dart';
 import 'package:flutter_rpg_audiodrama/f_home/ui/home_screen.dart';
@@ -22,6 +23,16 @@ class AppRouter {
         builder: (context, state) {
           String id = state.pathParameters["sheetId"] ?? "";
           String? userId = state.extra as String?;
+
+          if (FirebaseAuth.instance.currentUser == null) {
+            GoRouter.of(context).go(root);
+          }
+
+          if (userId != null &&
+              FirebaseAuth.instance.currentUser!.uid != userId) {
+            GoRouter.of(context).go(root);
+          }
+
           return SheetScreen(
             id: id,
             userId: userId,
