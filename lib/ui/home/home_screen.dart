@@ -9,6 +9,7 @@ import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../_core/fonts.dart';
+import '../_core/widgets/loading_widget.dart';
 import 'widgets/home_list_item_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -89,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
               case ConnectionState.waiting:
-                return Center(child: CircularProgressIndicator());
+                return LoadingWidget();
               case ConnectionState.active:
                 if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
                   return Visibility(

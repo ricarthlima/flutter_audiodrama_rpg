@@ -27,12 +27,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
-        ChangeNotifierProvider(
-          create: (_) => SheetViewModel(
-            id: "",
-            userId: "",
-          ),
-        ),
+        ChangeNotifierProvider(create: (_) => SheetViewModel(id: "")),
       ],
       child: const MainApp(),
     ),

@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import '../_core/components/wip_snackbar.dart';
 import '../_core/helpers.dart';
 import '../_core/theme_provider.dart';
+import '../_core/widgets/loading_widget.dart';
 import '../_core/widgets/named_widget.dart';
 import 'widgets/list_actions_widget.dart';
 
@@ -54,7 +55,7 @@ class _SheetScreenState extends State<SheetScreen> {
           case ConnectionState.none:
           case ConnectionState.waiting:
           case ConnectionState.active:
-            return Center(child: CircularProgressIndicator());
+            return LoadingWidget();
           case ConnectionState.done:
             if (snapshot.data != null) {
               return _generateScreen(snapshot.data!);
