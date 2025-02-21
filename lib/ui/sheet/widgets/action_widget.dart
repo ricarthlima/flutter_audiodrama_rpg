@@ -10,23 +10,15 @@ import '../helpers/enum_action_train_level.dart';
 import '../../../domain/models/action_template.dart';
 import '../../../domain/models/sheet_model.dart';
 import '../components/action_dialog_tooltip.dart';
+import '../view/sheet_view_model.dart';
 import 'action_tooltip.dart';
 
 class ActionWidget extends StatefulWidget {
   final ActionTemplate action;
-  final Function(ActionValue ac) onActionValueChanged;
-  final Function(RollLog roll) onRoll;
-  final Sheet sheet;
-  final bool isEditing;
-  final int? modRoll;
+
   const ActionWidget({
     super.key,
     required this.action,
-    required this.sheet,
-    required this.isEditing,
-    required this.onActionValueChanged,
-    required this.onRoll,
-    this.modRoll,
   });
 
   @override
@@ -39,8 +31,10 @@ class _ActionWidgetState extends State<ActionWidget> {
   int av = 0;
 
   @override
-  void initState() {
-    av = widget.sheet.listActionValue
+  Widget build(BuildContext context) {
+    final viewModel = Provider.of<SheetViewModel>(context, listen: false);
+
+    av = viewModel.sheet!.listActionValue
         .firstWhere(
           (av) => av.actionId == widget.action.id,
           orElse: () => ActionValue(
@@ -49,14 +43,11 @@ class _ActionWidgetState extends State<ActionWidget> {
           ),
         )
         .value;
-    _trainLevel = ActionTrainLevel.values[av];
-    super.initState();
-  }
 
-  @override
-  Widget build(BuildContext context) {
+    _trainLevel = ActionTrainLevel.values[av];
+
     return InkWell(
-      onTap: (!widget.isEditing)
+      onTap: (!viewModel.isEditing)
           ? () {
               rollAction();
             }
@@ -85,7 +76,7 @@ class _ActionWidgetState extends State<ActionWidget> {
                 widget.action.isResisted,
             child: AnimatedSwitcher(
               duration: Duration(milliseconds: 1000),
-              child: widget.isEditing
+              child: viewModel.isEditing
                   ? DropdownButton<ActionTrainLevel>(
                       value: _trainLevel,
                       isDense: true,
@@ -116,7 +107,7 @@ class _ActionWidgetState extends State<ActionWidget> {
                           setState(() {
                             _trainLevel = value;
                           });
-                          widget.onActionValueChanged(
+                          viewModel.onActionValueChanged(
                             ActionValue(
                               actionId: widget.action.id,
                               value: value.index,
@@ -153,9 +144,11 @@ class _ActionWidgetState extends State<ActionWidget> {
   }
 
   void rollAction() {
+    final viewModel = Provider.of<SheetViewModel>(context, listen: false);
+
     List<int> rolls = [];
 
-    int newActionValue = av + (widget.modRoll ?? 0);
+    int newActionValue = av + (viewModel.modGlobalTrain);
 
     if (newActionValue < 0) {
       newActionValue = 0;
@@ -180,8 +173,9 @@ class _ActionWidgetState extends State<ActionWidget> {
       }
     }
 
-    widget.onRoll(
-      RollLog(
+    viewModel.onRoll(
+      context,
+      roll: RollLog(
         rolls: rolls,
         idAction: widget.action.id,
         dateTime: DateTime.now(),

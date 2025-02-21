@@ -3,27 +3,18 @@ import 'package:flutter/material.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import '../../../domain/models/action_template.dart';
-import '../../../domain/models/sheet_model.dart';
 import 'action_widget.dart';
 
 class ListActionsWidget extends StatelessWidget {
   final String name;
   final List<ActionTemplate> listActions;
-  final Sheet sheet;
   final bool isEditing;
-  final Function(ActionValue ac) onActionValueChanged;
-  final Function(RollLog roll) onRoll;
-  final int? modRoll;
 
   const ListActionsWidget({
     super.key,
     required this.name,
     required this.listActions,
-    required this.sheet,
     required this.isEditing,
-    required this.onActionValueChanged,
-    required this.onRoll,
-    this.modRoll,
   });
 
   @override
@@ -61,11 +52,6 @@ class ListActionsWidget extends StatelessWidget {
                   ActionTemplate action = listActions[index];
                   return ActionWidget(
                     action: action,
-                    isEditing: isEditing,
-                    sheet: sheet,
-                    onActionValueChanged: onActionValueChanged,
-                    onRoll: onRoll,
-                    modRoll: modRoll,
                   );
                 },
               ),

@@ -31,19 +31,38 @@ class SheetViewModel extends ChangeNotifier {
   int baseLevel = 0;
 
   int modGlobalTrain = 0;
-  bool modGlobalKeep = false;
+  bool isKeepingGlobalModifier = false;
 
   List<ItemSheet> listSheetItems = [];
 
   List<Sheet> listSheets = [];
 
+  Sheet? sheet;
+
+  bool _isLoading = true;
+
+  get isLoading => _isLoading;
+
+  void startLoading() {
+    _isLoading = true;
+    notifyListeners();
+  }
+
+  void stopLoading() {
+    _isLoading = false;
+    notifyListeners();
+  }
+
   Future<void> refresh() async {
+    startLoading();
+
     futureGetSheet = sheetService.getSheetId(
       id,
       userId: userId,
     );
 
     Sheet? sheetModel = await futureGetSheet;
+
     if (sheetModel != null) {
       listActionValue = sheetModel.listActionValue;
       listRollLog = sheetModel.listRollLog;
@@ -51,12 +70,15 @@ class SheetViewModel extends ChangeNotifier {
       stressLevel = sheetModel.stressLevel;
       baseLevel = sheetModel.baseLevel;
       listSheetItems = sheetModel.listItemSheet;
+
+      sheet = sheetModel;
     }
 
     listSheets = await SheetService().getSheetsByUser(
       userId: userId,
     );
-    notifyListeners();
+
+    stopLoading();
   }
 
   void toggleEditMode() async {
@@ -111,7 +133,7 @@ class SheetViewModel extends ChangeNotifier {
     await saveChanges();
     notificationCount++;
 
-    if (!modGlobalKeep) {
+    if (!isKeepingGlobalModifier) {
       modGlobalTrain = 0;
     }
 
@@ -185,6 +207,11 @@ class SheetViewModel extends ChangeNotifier {
     if (listResult != null) {
       listSheetItems = listResult;
     }
+    notifyListeners();
+  }
+
+  void toggleKeepingGlobalModifier() {
+    isKeepingGlobalModifier = !isKeepingGlobalModifier;
     notifyListeners();
   }
 }

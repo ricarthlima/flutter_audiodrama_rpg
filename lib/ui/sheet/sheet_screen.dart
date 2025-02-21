@@ -2,21 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/stress_level.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_app_bar.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_drawer.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_floating_action_button.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/sheet_actions_columns_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/sheet_not_found_widget.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/sheet_subtitle_row_widget.dart';
 import 'package:provider/provider.dart';
-import '../_core/components/wip_snackbar.dart';
 import '../_core/helpers.dart';
-import '../_core/theme_provider.dart';
 import '../_core/widgets/loading_widget.dart';
 import '../_core/widgets/named_widget.dart';
-import 'widgets/list_actions_widget.dart';
 
 class SheetScreen extends StatefulWidget {
   const SheetScreen({super.key});
@@ -48,29 +44,17 @@ class _SheetScreenState extends State<SheetScreen> {
   Widget _buildBody() {
     final viewModel = Provider.of<SheetViewModel>(context);
 
-    return FutureBuilder<Sheet?>(
-      future: viewModel.futureGetSheet,
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-          case ConnectionState.waiting:
-          case ConnectionState.active:
-            return LoadingWidget();
-          case ConnectionState.done:
-            if (snapshot.data != null) {
-              return _generateScreen(snapshot.data!);
-            }
-            return SheetNotFoundWidget();
-        }
-      },
-    );
+    return (viewModel.isLoading)
+        ? LoadingWidget()
+        : (viewModel.sheet != null)
+            ? _generateScreen()
+            : SheetNotFoundWidget();
   }
 
-  Widget _generateScreen(Sheet sheet) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+  Widget _generateScreen() {
     final viewModel = Provider.of<SheetViewModel>(context);
 
-    viewModel.nameController.text = sheet.characterName;
+    viewModel.nameController.text = viewModel.sheet!.characterName;
 
     return Container(
       margin: EdgeInsets.all(16),
@@ -96,6 +80,7 @@ class _SheetScreenState extends State<SheetScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 8,
                   children: [
                     NamedWidget(
                       title: "Nome",
@@ -111,7 +96,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                 ),
                               )
                             : Text(
-                                sheet.characterName,
+                                viewModel.sheet!.characterName,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: isVertical(context) ? 18 : 48,
@@ -121,241 +106,7 @@ class _SheetScreenState extends State<SheetScreen> {
                               ),
                       ),
                     ),
-                    SizedBox(height: 8),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        spacing: 16,
-                        children: [
-                          NamedWidget(
-                            title: "Estresse",
-                            tooltip: "Nível de estresse atual",
-                            hardHeight: 32,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Visibility(
-                                  visible: viewModel.isEditing,
-                                  child: SizedBox(
-                                    width: 32,
-                                    child: (viewModel.stressLevel > 0)
-                                        ? IconButton(
-                                            onPressed: () {
-                                              viewModel.changeStressLevel(
-                                                  isAdding: false);
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            icon: Icon(Icons.remove),
-                                          )
-                                        : Container(),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 100,
-                                  child: Text(
-                                    StressLevel().getByStressLevel(
-                                        viewModel.stressLevel),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: FontFamily.bungee,
-                                    ),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: viewModel.isEditing,
-                                  child: SizedBox(
-                                    width: 32,
-                                    child: (viewModel.stressLevel <
-                                            StressLevel.total - 1)
-                                        ? IconButton(
-                                            onPressed: () {
-                                              viewModel.changeStressLevel();
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            icon: Icon(Icons.add),
-                                          )
-                                        : Container(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text("•"),
-                          NamedWidget(
-                            title: "Esforço",
-                            tooltip: "Carga de esforço acumulada",
-                            hardHeight: 32,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Visibility(
-                                  visible: viewModel.isEditing,
-                                  child: SizedBox(
-                                    width: 32,
-                                    child: (viewModel.effortPoints > -1)
-                                        ? IconButton(
-                                            onPressed: () {
-                                              viewModel.changeEffortPoints(
-                                                isAdding: false,
-                                              );
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            icon: Icon(Icons.remove),
-                                          )
-                                        : Container(),
-                                  ),
-                                ),
-                                Row(
-                                  spacing: 8,
-                                  children: List.generate(
-                                    3,
-                                    (index) {
-                                      return Opacity(
-                                        opacity:
-                                            (index <= viewModel.effortPoints)
-                                                ? 1
-                                                : 0.5,
-                                        child: Image.asset(
-                                          (themeProvider.themeMode ==
-                                                  ThemeMode.dark)
-                                              ? "assets/images/brain.png"
-                                              : "assets/images/brain-i.png",
-                                          width: 16,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: viewModel.isEditing,
-                                  child: SizedBox(
-                                    width: 32,
-                                    child: (viewModel.effortPoints < 3)
-                                        ? IconButton(
-                                            onPressed: () {
-                                              viewModel.changeEffortPoints();
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            icon: Icon(Icons.add),
-                                          )
-                                        : Container(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text("•"),
-                          NamedWidget(
-                            title: "Mod. Global",
-                            tooltip: "Modificador global de treinamento",
-                            hardHeight: 32,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Visibility(
-                                  visible: viewModel.isEditing,
-                                  child: SizedBox(
-                                    width: 32,
-                                    child: (viewModel.modGlobalTrain > -4)
-                                        ? IconButton(
-                                            onPressed: () {
-                                              viewModel.changeModGlobal(
-                                                  isAdding: false);
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            icon: Icon(Icons.remove),
-                                          )
-                                        : Container(),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 42,
-                                  child: Text(
-                                    viewModel.modGlobalTrain.toString(),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: FontFamily.bungee,
-                                    ),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: viewModel.isEditing,
-                                  child: SizedBox(
-                                    width: 32,
-                                    child: (viewModel.modGlobalTrain < 4)
-                                        ? IconButton(
-                                            onPressed: () {
-                                              viewModel.changeModGlobal();
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            icon: Icon(Icons.add),
-                                          )
-                                        : Container(),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: viewModel.isEditing,
-                                  child: Tooltip(
-                                    message: "Manter modificador",
-                                    child: Checkbox(
-                                      value: viewModel.modGlobalKeep,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          viewModel.modGlobalKeep =
-                                              !viewModel.modGlobalKeep;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          Text("•"),
-                          NamedWidget(
-                            isVisible: !isVertical(context),
-                            title: "Itens",
-                            tooltip: "Clique para abrir inventário",
-                            hardHeight: 32,
-                            child: InkWell(
-                              onTap: () =>
-                                  viewModel.onItemsButtonClicked(context),
-                              child: Image.asset(
-                                (themeProvider.themeMode == ThemeMode.dark)
-                                    ? "assets/images/chest.png"
-                                    : "assets/images/chest-i.png",
-                                width: 18,
-                              ),
-                            ),
-                          ),
-                          Visibility(
-                            visible: !isVertical(context),
-                            child: Text("•"),
-                          ),
-                          NamedWidget(
-                            isVisible: !isVertical(context),
-                            title: "Condições",
-                            tooltip: "Clique visualizar condições atuais",
-                            hardHeight: 32,
-                            child: InkWell(
-                              onTap: () {
-                                showSnackBarWip(context);
-                              },
-                              child: Icon(
-                                Icons.personal_injury_outlined,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
+                    SheetSubtitleRowWidget(),
                   ],
                 ),
               ),
@@ -469,66 +220,7 @@ class _SheetScreenState extends State<SheetScreen> {
             ],
           ),
           Divider(),
-          Flexible(
-            child: SingleChildScrollView(
-              child: SizedBox(
-                width: width(context),
-                child: Wrap(
-                  alignment: WrapAlignment.spaceBetween,
-                  crossAxisAlignment: WrapCrossAlignment.start,
-                  runAlignment: WrapAlignment.center,
-                  runSpacing: 32,
-                  children: [
-                    ListActionsWidget(
-                      name: "Ações Básicas",
-                      sheet: sheet,
-                      isEditing: viewModel.isEditing,
-                      listActions: ActionDAO.instance.listBasicActions,
-                      onActionValueChanged: viewModel.onActionValueChanged,
-                      onRoll: (roll) => viewModel.onRoll(context, roll: roll),
-                      modRoll: viewModel.modGlobalTrain,
-                    ),
-                    ListActionsWidget(
-                      name: "Ações de Força",
-                      sheet: sheet,
-                      isEditing: viewModel.isEditing,
-                      listActions: ActionDAO.instance.listStrengthActions,
-                      onActionValueChanged: viewModel.onActionValueChanged,
-                      onRoll: (roll) => viewModel.onRoll(context, roll: roll),
-                      modRoll: viewModel.modGlobalTrain,
-                    ),
-                    ListActionsWidget(
-                      name: "Ações de Agilidade",
-                      sheet: sheet,
-                      isEditing: viewModel.isEditing,
-                      listActions: ActionDAO.instance.listAgilityActions,
-                      onActionValueChanged: viewModel.onActionValueChanged,
-                      onRoll: (roll) => viewModel.onRoll(context, roll: roll),
-                      modRoll: viewModel.modGlobalTrain,
-                    ),
-                    ListActionsWidget(
-                      name: "Ações de Intelecto",
-                      sheet: sheet,
-                      isEditing: viewModel.isEditing,
-                      listActions: ActionDAO.instance.listIntellectActions,
-                      onActionValueChanged: viewModel.onActionValueChanged,
-                      onRoll: (roll) => viewModel.onRoll(context, roll: roll),
-                      modRoll: viewModel.modGlobalTrain,
-                    ),
-                    ListActionsWidget(
-                      name: "Ações Sociais",
-                      sheet: sheet,
-                      isEditing: viewModel.isEditing,
-                      listActions: ActionDAO.instance.listSocialActions,
-                      onActionValueChanged: viewModel.onActionValueChanged,
-                      onRoll: (roll) => viewModel.onRoll(context, roll: roll),
-                      modRoll: viewModel.modGlobalTrain,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          Flexible(child: SheetActionsColumnsWidget()),
         ],
       ),
     );
