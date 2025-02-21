@@ -1,9 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_rpg_audiodrama/f_auth/ui/login_screen.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/ui/sheet_screen.dart';
-import 'package:flutter_rpg_audiodrama/f_home/ui/home_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/auth/login_screen.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/home_screen.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
+import 'ui/sheet/view/sheet_view_model.dart';
 
 class AppRouter {
   static const String root = "/";
@@ -22,9 +26,23 @@ class AppRouter {
         builder: (context, state) {
           String id = state.pathParameters["sheetId"] ?? "";
           String? userId = state.extra as String?;
+
+          if (FirebaseAuth.instance.currentUser == null) {
+            GoRouter.of(context).go(root);
+            return SizedBox.shrink();
+          }
+
+          if (userId != null &&
+              FirebaseAuth.instance.currentUser!.uid != userId) {
+            GoRouter.of(context).go(root);
+            return SizedBox.shrink();
+          }
+
+          final viewModel = Provider.of<SheetViewModel>(context, listen: false);
+          viewModel.id = id;
+          viewModel.userId = userId;
+
           return SheetScreen(
-            id: id,
-            userId: userId,
             key: UniqueKey(),
           );
         },

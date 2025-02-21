@@ -1,15 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/theme.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
-import 'package:flutter_rpg_audiodrama/f_sheets/data/action_dao.dart';
+import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
 
 import 'package:flutter_rpg_audiodrama/firebase_options.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '_core/theme_provider.dart';
-import 'f_sheets/data/item_dao.dart';
+import 'ui/_core/theme_provider.dart';
+import 'data/daos/item_dao.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,8 +23,12 @@ void main() async {
   await ItemDAO.instance.initialize();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => SheetViewModel(id: "")),
+      ],
       child: const MainApp(),
     ),
   );
@@ -35,28 +40,13 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter.router,
       themeMode: themeProvider.themeMode,
-      theme: ThemeData.light().copyWith(
-        textTheme: ThemeData.light().textTheme.apply(
-              fontFamily: FontFamilies.sourceSerif4,
-            ),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.red,
-          brightness: Brightness.light,
-        ),
-      ),
-      darkTheme: ThemeData.dark().copyWith(
-        textTheme: ThemeData.dark().textTheme.apply(
-              fontFamily: FontFamilies.sourceSerif4,
-            ),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.red,
-          brightness: Brightness.dark,
-        ),
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
     );
   }
 }
