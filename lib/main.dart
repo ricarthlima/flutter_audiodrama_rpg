@@ -6,6 +6,7 @@ import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
 
 import 'package:flutter_rpg_audiodrama/firebase_options.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
 import 'ui/_core/theme_provider.dart';
@@ -26,6 +27,12 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => SheetViewModel(
+            id: "",
+            userId: "",
+          ),
+        ),
       ],
       child: const MainApp(),
     ),

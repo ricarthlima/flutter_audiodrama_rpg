@@ -5,6 +5,9 @@ import 'package:flutter_rpg_audiodrama/ui/auth/login_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/home_screen.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
+import 'ui/sheet/view/sheet_view_model.dart';
 
 class AppRouter {
   static const String root = "/";
@@ -26,16 +29,20 @@ class AppRouter {
 
           if (FirebaseAuth.instance.currentUser == null) {
             GoRouter.of(context).go(root);
+            return SizedBox.shrink();
           }
 
           if (userId != null &&
               FirebaseAuth.instance.currentUser!.uid != userId) {
             GoRouter.of(context).go(root);
+            return SizedBox.shrink();
           }
 
+          final viewModel = Provider.of<SheetViewModel>(context, listen: false);
+          viewModel.id = id;
+          viewModel.userId = userId;
+
           return SheetScreen(
-            id: id,
-            userId: userId,
             key: UniqueKey(),
           );
         },

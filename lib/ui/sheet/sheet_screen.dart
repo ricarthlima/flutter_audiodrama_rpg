@@ -1,88 +1,48 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/stress_level.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/item_sheet.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
 import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/action_dialog_tooltip.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_history_drawer.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/shop_dialog.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../_core/components/wip_snackbar.dart';
 import '../_core/helpers.dart';
 import '../_core/theme_provider.dart';
+import '../_core/widgets/named_widget.dart';
 import 'widgets/list_actions_widget.dart';
 import 'package:badges/badges.dart' as badges;
 
 class SheetScreen extends StatefulWidget {
-  final String id;
-  final String? userId;
-  const SheetScreen({super.key, required this.id, this.userId});
+  const SheetScreen({super.key});
 
   @override
   State<SheetScreen> createState() => _SheetScreenState();
 }
 
 class _SheetScreenState extends State<SheetScreen> {
-  bool isEditing = false;
-  final TextEditingController _nameController = TextEditingController();
-  Future<Sheet?> futureGetSheet = Future.delayed(Duration.zero);
-  List<ActionValue> listActionValue = [];
-  List<RollLog> listRollLog = [];
-  int notificationCount = 0;
-  int effortPoints = -1;
-  int stressLevel = 0;
-  int baseLevel = 0;
-
-  int modGlobalTrain = 0;
-  bool modGlobalKeep = false;
-
-  List<ItemSheet> listSheetItems = [];
-
-  List<Sheet> listSheets = [];
-
   @override
   void initState() {
-    refresh();
     super.initState();
-  }
-
-  Future<void> refresh() async {
-    futureGetSheet = SheetService().getSheetId(
-      widget.id,
-      userId: widget.userId,
-    );
-
-    Sheet? sheetModel = await futureGetSheet;
-    if (sheetModel != null) {
-      listActionValue = sheetModel.listActionValue;
-      listRollLog = sheetModel.listRollLog;
-      effortPoints = sheetModel.effortPoints;
-      stressLevel = sheetModel.stressLevel;
-      baseLevel = sheetModel.baseLevel;
-      listSheetItems = sheetModel.listItemSheet;
-    }
-
-    listSheets = await SheetService().getSheetsByUser(
-      userId: widget.userId,
-    );
-    setState(() {});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewModel = Provider.of<SheetViewModel>(context, listen: false);
+      viewModel.refresh();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final viewModel = Provider.of<SheetViewModel>(context);
+
     return Scaffold(
       floatingActionButton: isVertical(context)
           ? FloatingActionButton(
-              onPressed: () => onItemsButtonClicked(),
+              onPressed: () => viewModel.onItemsButtonClicked(context),
               child: Image.asset(
                 (themeProvider.themeMode == ThemeMode.dark)
                     ? "assets/images/chest.png"
@@ -102,10 +62,12 @@ class _SheetScreenState extends State<SheetScreen> {
         actions: [
           Visibility(
             visible: !isVertical(context),
-            child: (listSheets.isNotEmpty)
+            child: (viewModel.listSheets.isNotEmpty)
                 ? DropdownButton<Sheet>(
-                    value: listSheets.where((e) => e.id == widget.id).first,
-                    items: listSheets
+                    value: viewModel.listSheets
+                        .where((e) => e.id == viewModel.id)
+                        .first,
+                    items: viewModel.listSheets
                         .map(
                           (e) => DropdownMenuItem(
                             value: e,
@@ -134,18 +96,18 @@ class _SheetScreenState extends State<SheetScreen> {
             ),
           ),
           Visibility(
-            visible: isEditing && !isVertical(context),
+            visible: viewModel.isEditing && !isVertical(context),
             child: Text("Saia da edição para salvar"),
           ),
           Visibility(
-            visible: isEditing,
+            visible: viewModel.isEditing,
             child: SizedBox(width: 8),
           ),
           Icon(Icons.edit),
           Switch(
-            value: isEditing,
+            value: viewModel.isEditing,
             onChanged: (value) {
-              toggleEditMode();
+              viewModel.toggleEditMode();
             },
           ),
           Padding(
@@ -169,14 +131,14 @@ class _SheetScreenState extends State<SheetScreen> {
               onPressed: () {
                 Scaffold.of(context).openEndDrawer();
                 setState(() {
-                  notificationCount = 0;
+                  viewModel.notificationCount = 0;
                 });
               },
               icon: badges.Badge(
-                showBadge:
-                    notificationCount > 0, // Esconde se não houver notificações
+                showBadge: viewModel.notificationCount >
+                    0, // Esconde se não houver notificações
                 badgeContent: Text(
-                  notificationCount.toString(),
+                  viewModel.notificationCount.toString(),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12,
@@ -194,10 +156,10 @@ class _SheetScreenState extends State<SheetScreen> {
         ],
       ),
       endDrawer: Drawer(
-        child: SheetHistoryDrawer(listRollLog: listRollLog),
+        child: SheetHistoryDrawer(listRollLog: viewModel.listRollLog),
       ),
       body: FutureBuilder(
-        future: futureGetSheet,
+        future: viewModel.futureGetSheet,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -232,7 +194,9 @@ class _SheetScreenState extends State<SheetScreen> {
 
   Widget _generateScreen(Sheet sheet) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    _nameController.text = sheet.characterName;
+    final viewModel = Provider.of<SheetViewModel>(context);
+
+    viewModel.nameController.text = sheet.characterName;
     return Container(
       margin: EdgeInsets.all(16),
       padding: EdgeInsets.all(isVertical(context) ? 16 : 32),
@@ -263,9 +227,9 @@ class _SheetScreenState extends State<SheetScreen> {
                       isLeft: true,
                       child: AnimatedSwitcher(
                         duration: Duration(seconds: 1),
-                        child: (isEditing)
+                        child: (viewModel.isEditing)
                             ? TextField(
-                                controller: _nameController,
+                                controller: viewModel.nameController,
                                 style: TextStyle(
                                   fontSize: isVertical(context) ? 18 : 48,
                                   fontFamily: FontFamily.sourceSerif4,
@@ -298,13 +262,13 @@ class _SheetScreenState extends State<SheetScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Visibility(
-                                  visible: isEditing,
+                                  visible: viewModel.isEditing,
                                   child: SizedBox(
                                     width: 32,
-                                    child: (stressLevel > 0)
+                                    child: (viewModel.stressLevel > 0)
                                         ? IconButton(
                                             onPressed: () {
-                                              changeStressLevel(
+                                              viewModel.changeStressLevel(
                                                   isAdding: false);
                                             },
                                             padding: EdgeInsets.zero,
@@ -316,7 +280,8 @@ class _SheetScreenState extends State<SheetScreen> {
                                 SizedBox(
                                   width: 100,
                                   child: Text(
-                                    StressLevel().getByStressLevel(stressLevel),
+                                    StressLevel().getByStressLevel(
+                                        viewModel.stressLevel),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: FontFamily.bungee,
@@ -324,13 +289,14 @@ class _SheetScreenState extends State<SheetScreen> {
                                   ),
                                 ),
                                 Visibility(
-                                  visible: isEditing,
+                                  visible: viewModel.isEditing,
                                   child: SizedBox(
                                     width: 32,
-                                    child: (stressLevel < StressLevel.total - 1)
+                                    child: (viewModel.stressLevel <
+                                            StressLevel.total - 1)
                                         ? IconButton(
                                             onPressed: () {
-                                              changeStressLevel();
+                                              viewModel.changeStressLevel();
                                             },
                                             padding: EdgeInsets.zero,
                                             icon: Icon(Icons.add),
@@ -352,13 +318,13 @@ class _SheetScreenState extends State<SheetScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Visibility(
-                                  visible: isEditing,
+                                  visible: viewModel.isEditing,
                                   child: SizedBox(
                                     width: 32,
-                                    child: (effortPoints > -1)
+                                    child: (viewModel.effortPoints > -1)
                                         ? IconButton(
                                             onPressed: () {
-                                              changeEffortPoints(
+                                              viewModel.changeEffortPoints(
                                                 isAdding: false,
                                               );
                                             },
@@ -375,7 +341,9 @@ class _SheetScreenState extends State<SheetScreen> {
                                     (index) {
                                       return Opacity(
                                         opacity:
-                                            (index <= effortPoints) ? 1 : 0.5,
+                                            (index <= viewModel.effortPoints)
+                                                ? 1
+                                                : 0.5,
                                         child: Image.asset(
                                           (themeProvider.themeMode ==
                                                   ThemeMode.dark)
@@ -388,13 +356,13 @@ class _SheetScreenState extends State<SheetScreen> {
                                   ),
                                 ),
                                 Visibility(
-                                  visible: isEditing,
+                                  visible: viewModel.isEditing,
                                   child: SizedBox(
                                     width: 32,
-                                    child: (effortPoints < 3)
+                                    child: (viewModel.effortPoints < 3)
                                         ? IconButton(
                                             onPressed: () {
-                                              changeEffortPoints();
+                                              viewModel.changeEffortPoints();
                                             },
                                             padding: EdgeInsets.zero,
                                             icon: Icon(Icons.add),
@@ -416,13 +384,14 @@ class _SheetScreenState extends State<SheetScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Visibility(
-                                  visible: isEditing,
+                                  visible: viewModel.isEditing,
                                   child: SizedBox(
                                     width: 32,
-                                    child: (modGlobalTrain > -4)
+                                    child: (viewModel.modGlobalTrain > -4)
                                         ? IconButton(
                                             onPressed: () {
-                                              changeModGlobal(isAdding: false);
+                                              viewModel.changeModGlobal(
+                                                  isAdding: false);
                                             },
                                             padding: EdgeInsets.zero,
                                             icon: Icon(Icons.remove),
@@ -433,7 +402,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                 SizedBox(
                                   width: 42,
                                   child: Text(
-                                    modGlobalTrain.toString(),
+                                    viewModel.modGlobalTrain.toString(),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: FontFamily.bungee,
@@ -441,13 +410,13 @@ class _SheetScreenState extends State<SheetScreen> {
                                   ),
                                 ),
                                 Visibility(
-                                  visible: isEditing,
+                                  visible: viewModel.isEditing,
                                   child: SizedBox(
                                     width: 32,
-                                    child: (modGlobalTrain < 4)
+                                    child: (viewModel.modGlobalTrain < 4)
                                         ? IconButton(
                                             onPressed: () {
-                                              changeModGlobal();
+                                              viewModel.changeModGlobal();
                                             },
                                             padding: EdgeInsets.zero,
                                             icon: Icon(Icons.add),
@@ -456,14 +425,15 @@ class _SheetScreenState extends State<SheetScreen> {
                                   ),
                                 ),
                                 Visibility(
-                                  visible: isEditing,
+                                  visible: viewModel.isEditing,
                                   child: Tooltip(
                                     message: "Manter modificador",
                                     child: Checkbox(
-                                      value: modGlobalKeep,
+                                      value: viewModel.modGlobalKeep,
                                       onChanged: (value) {
                                         setState(() {
-                                          modGlobalKeep = !modGlobalKeep;
+                                          viewModel.modGlobalKeep =
+                                              !viewModel.modGlobalKeep;
                                         });
                                       },
                                     ),
@@ -479,7 +449,8 @@ class _SheetScreenState extends State<SheetScreen> {
                             tooltip: "Clique para abrir inventário",
                             hardHeight: 32,
                             child: InkWell(
-                              onTap: () => onItemsButtonClicked(),
+                              onTap: () =>
+                                  viewModel.onItemsButtonClicked(context),
                               child: Image.asset(
                                 (themeProvider.themeMode == ThemeMode.dark)
                                     ? "assets/images/chest.png"
@@ -521,16 +492,16 @@ class _SheetScreenState extends State<SheetScreen> {
                   children: [
                     AnimatedSwitcher(
                       duration: Duration(seconds: 1),
-                      child: (!isEditing)
+                      child: (!viewModel.isEditing)
                           ? Text(
-                              getBaseLevel(baseLevel),
+                              getBaseLevel(viewModel.baseLevel),
                               style: TextStyle(
                                 fontSize: 20,
                                 fontFamily: FontFamily.sourceSerif4,
                               ),
                             )
                           : DropdownButton<int>(
-                              value: baseLevel,
+                              value: viewModel.baseLevel,
                               items: [
                                 DropdownMenuItem(
                                   value: 0,
@@ -552,7 +523,7 @@ class _SheetScreenState extends State<SheetScreen> {
                               onChanged: (value) {
                                 if (value != null) {
                                   setState(() {
-                                    baseLevel = value;
+                                    viewModel.baseLevel = value;
                                   });
                                 }
                               },
@@ -567,7 +538,7 @@ class _SheetScreenState extends State<SheetScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                listActionValue
+                                viewModel.listActionValue
                                     .where(
                                       (e) => e.value == 2,
                                     )
@@ -579,7 +550,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                 ),
                               ),
                               Text(
-                                "/${_getAptidaoMaxByLevel()}",
+                                "/${viewModel.getAptidaoMaxByLevel()}",
                                 style: TextStyle(
                                   fontSize: 22,
                                   fontFamily: FontFamily.sourceSerif4,
@@ -594,7 +565,7 @@ class _SheetScreenState extends State<SheetScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                listActionValue
+                                viewModel.listActionValue
                                     .where(
                                       (e) => e.value == 3,
                                     )
@@ -606,7 +577,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                 ),
                               ),
                               Text(
-                                "/${_getTreinamentoMaxByLevel()}",
+                                "/${viewModel.getTreinamentoMaxByLevel()}",
                                 style: TextStyle(
                                   fontSize: 22,
                                   fontFamily: FontFamily.sourceSerif4,
@@ -636,47 +607,47 @@ class _SheetScreenState extends State<SheetScreen> {
                     ListActionsWidget(
                       name: "Ações Básicas",
                       sheet: sheet,
-                      isEditing: isEditing,
+                      isEditing: viewModel.isEditing,
                       listActions: ActionDAO.instance.listBasicActions,
-                      onActionValueChanged: onActionValueChanged,
-                      onRoll: onRoll,
-                      modRoll: modGlobalTrain,
+                      onActionValueChanged: viewModel.onActionValueChanged,
+                      onRoll: (roll) => viewModel.onRoll(context, roll: roll),
+                      modRoll: viewModel.modGlobalTrain,
                     ),
                     ListActionsWidget(
                       name: "Ações de Força",
                       sheet: sheet,
-                      isEditing: isEditing,
+                      isEditing: viewModel.isEditing,
                       listActions: ActionDAO.instance.listStrengthActions,
-                      onActionValueChanged: onActionValueChanged,
-                      onRoll: onRoll,
-                      modRoll: modGlobalTrain,
+                      onActionValueChanged: viewModel.onActionValueChanged,
+                      onRoll: (roll) => viewModel.onRoll(context, roll: roll),
+                      modRoll: viewModel.modGlobalTrain,
                     ),
                     ListActionsWidget(
                       name: "Ações de Agilidade",
                       sheet: sheet,
-                      isEditing: isEditing,
+                      isEditing: viewModel.isEditing,
                       listActions: ActionDAO.instance.listAgilityActions,
-                      onActionValueChanged: onActionValueChanged,
-                      onRoll: onRoll,
-                      modRoll: modGlobalTrain,
+                      onActionValueChanged: viewModel.onActionValueChanged,
+                      onRoll: (roll) => viewModel.onRoll(context, roll: roll),
+                      modRoll: viewModel.modGlobalTrain,
                     ),
                     ListActionsWidget(
                       name: "Ações de Intelecto",
                       sheet: sheet,
-                      isEditing: isEditing,
+                      isEditing: viewModel.isEditing,
                       listActions: ActionDAO.instance.listIntellectActions,
-                      onActionValueChanged: onActionValueChanged,
-                      onRoll: onRoll,
-                      modRoll: modGlobalTrain,
+                      onActionValueChanged: viewModel.onActionValueChanged,
+                      onRoll: (roll) => viewModel.onRoll(context, roll: roll),
+                      modRoll: viewModel.modGlobalTrain,
                     ),
                     ListActionsWidget(
                       name: "Ações Sociais",
                       sheet: sheet,
-                      isEditing: isEditing,
+                      isEditing: viewModel.isEditing,
                       listActions: ActionDAO.instance.listSocialActions,
-                      onActionValueChanged: onActionValueChanged,
-                      onRoll: onRoll,
-                      modRoll: modGlobalTrain,
+                      onActionValueChanged: viewModel.onActionValueChanged,
+                      onRoll: (roll) => viewModel.onRoll(context, roll: roll),
+                      modRoll: viewModel.modGlobalTrain,
                     ),
                   ],
                 ),
@@ -684,340 +655,6 @@ class _SheetScreenState extends State<SheetScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  void toggleEditMode() async {
-    if (!isEditing) {
-      setState(() {
-        isEditing = true;
-      });
-    } else {
-      await saveChanges();
-      setState(() {
-        isEditing = false;
-      });
-      refresh();
-    }
-  }
-
-  Future<void> saveChanges() async {
-    Sheet sheet = Sheet(
-      id: widget.id,
-      characterName: _nameController.text,
-      listActionValue: listActionValue,
-      listRollLog: listRollLog,
-      effortPoints: effortPoints,
-      stressLevel: stressLevel,
-      baseLevel: baseLevel,
-      listItemSheet: listSheetItems,
-    );
-    await SheetService().saveSheet(
-      sheet,
-      userId: widget.userId,
-    );
-  }
-
-  onActionValueChanged(ActionValue ac) {
-    if (listActionValue.where((e) => e.actionId == ac.actionId).isNotEmpty) {
-      listActionValue.removeWhere((e) => e.actionId == ac.actionId);
-    }
-    listActionValue.add(ac);
-    setState(() {});
-  }
-
-  onRoll(RollLog roll) async {
-    if (!ActionDAO.instance.isOnlyFreeOrPreparation(roll.idAction) ||
-        ActionDAO.instance.isLuckAction(roll.idAction)) {
-      showRollDialog(context: context, rollLog: roll);
-    } else {
-      ActionTemplate? action = ActionDAO.instance.getActionById(roll.idAction);
-      if (action != null) {
-        showDialogTip(context, action);
-      }
-    }
-
-    listRollLog.add(roll);
-    await saveChanges();
-    notificationCount++;
-
-    if (!modGlobalKeep) {
-      modGlobalTrain = 0;
-    }
-
-    setState(() {});
-  }
-
-  changeStressLevel({bool isAdding = true}) {
-    if (isAdding) {
-      stressLevel = min(stressLevel + 1, 3);
-    } else {
-      stressLevel = max(stressLevel - 1, 0);
-    }
-    setState(() {});
-  }
-
-  changeEffortPoints({bool isAdding = true}) {
-    if (isAdding) {
-      effortPoints = min(effortPoints + 1, 2);
-    } else {
-      effortPoints = max(effortPoints - 1, -1);
-    }
-    setState(() {});
-  }
-
-  int _getAptidaoMaxByLevel() {
-    switch (baseLevel) {
-      case 0:
-        return 9;
-      case 1:
-        return 17;
-      case 2:
-        return 25;
-      case 3:
-        return 33;
-    }
-    return 9;
-  }
-
-  int _getTreinamentoMaxByLevel() {
-    switch (baseLevel) {
-      case 0:
-        return 1;
-      case 1:
-        return 3;
-      case 2:
-        return 5;
-      case 3:
-        return 7;
-    }
-    return 9;
-  }
-
-  void changeModGlobal({bool isAdding = true}) {
-    if (isAdding) {
-      modGlobalTrain++;
-    } else {
-      modGlobalTrain--;
-    }
-
-    setState(() {});
-  }
-
-  onItemsButtonClicked() async {
-    List<ItemSheet>? listResult = await showShoppingDialog(
-      context,
-      isEditing: isEditing,
-      listSheetItems: listSheetItems,
-      trainLevel: baseLevel,
-    );
-
-    if (listResult != null) {
-      listSheetItems = listResult;
-    }
-    setState(() {});
-  }
-}
-
-class NamedWidget extends StatelessWidget {
-  final String title;
-  final Widget? titleWidget;
-  final Widget child;
-  final double? hardHeight;
-  final bool isLeft;
-  final bool isVisible;
-  final String tooltip;
-  const NamedWidget({
-    super.key,
-    required this.title,
-    this.titleWidget,
-    required this.child,
-    this.hardHeight,
-    this.isLeft = false,
-    this.isVisible = true,
-    this.tooltip = "",
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Visibility(
-      visible: isVisible,
-      child: Tooltip(
-        message: tooltip,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment:
-              (isLeft) ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-          children: [
-            (titleWidget != null)
-                ? titleWidget!
-                : SizedBox(
-                    height: 16,
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontFamily: FontFamily.sourceSerif4,
-                        fontSize: 10,
-                        color: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .color!
-                            .withAlpha(150),
-                      ),
-                    ),
-                  ),
-            (hardHeight != null)
-                ? SizedBox(height: hardHeight, child: child)
-                : child,
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-showSnackBarWip(BuildContext context) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text("Ainda não implementado. Fica pra próxima versão :)"),
-      duration: Duration(milliseconds: 1200),
-    ),
-  );
-}
-
-Future<dynamic> showRollDialog({
-  required BuildContext context,
-  required RollLog rollLog,
-}) async {
-  return showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        elevation: 10,
-        backgroundColor: Colors.transparent,
-        child: RollRowWidget(rollLog: rollLog),
-      );
-    },
-  );
-}
-
-class RollRowWidget extends StatefulWidget {
-  final RollLog rollLog;
-  const RollRowWidget({
-    super.key,
-    required this.rollLog,
-  });
-
-  @override
-  State<RollRowWidget> createState() => _RollRowWidgetState();
-}
-
-class _RollRowWidgetState extends State<RollRowWidget> {
-  int i = 0;
-  List<double> listOpacity = [0, 0, 0];
-  bool isShowingHighlighted = false;
-
-  @override
-  void initState() {
-    super.initState();
-    callShowRoll();
-  }
-
-  callShowRoll() async {
-    await Future.delayed(Duration(milliseconds: 250));
-    setState(() {
-      listOpacity[i] = 1;
-    });
-    i++;
-    if (i < widget.rollLog.rolls.length) {
-      callShowRoll();
-    } else {
-      makeCorrectHighlighted();
-    }
-  }
-
-  makeCorrectHighlighted() async {
-    await Future.delayed(Duration(milliseconds: 1500));
-    setState(() {
-      isShowingHighlighted = true;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.black.withAlpha(100),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Wrap(
-        spacing: isVertical(context) ? 32 : 64,
-        runSpacing: isVertical(context) ? 32 : 64,
-        alignment: WrapAlignment.center,
-        runAlignment: WrapAlignment.center,
-        children: List.generate(
-          widget.rollLog.rolls.length,
-          (index) {
-            return AnimatedOpacity(
-              opacity: listOpacity[index],
-              duration: Duration(milliseconds: 750),
-              child: SizedBox(
-                width: isVertical(context) ? 128 : 256,
-                height: isVertical(context) ? 128 : 256,
-                child: Stack(
-                  children: [
-                    AnimatedSwitcher(
-                      duration: Duration(milliseconds: 750),
-                      child: Image.asset(
-                        (!isShowingHighlighted)
-                            ? "assets/images/d20-1.png"
-                            : (ActionDAO.instance
-                                        .getActionById(widget.rollLog.idAction)!
-                                        .isResisted &&
-                                    !widget.rollLog.isGettingLower)
-                                ? (widget.rollLog.rolls[index] >= 10)
-                                    ? "assets/images/d20-4.png"
-                                    : "assets/images/d20-0.png"
-                                : (ActionDAO.instance
-                                            .getActionById(
-                                                widget.rollLog.idAction)!
-                                            .isResisted &&
-                                        widget.rollLog.isGettingLower)
-                                    ? (widget.rollLog.rolls.reduce(min) ==
-                                                widget.rollLog.rolls[index] &&
-                                            widget.rollLog.rolls[index] >= 10)
-                                        ? "assets/images/d20-4.png"
-                                        : "assets/images/d20-0.png"
-                                    : (widget.rollLog.isGettingLower)
-                                        ? (widget.rollLog.rolls.reduce(min) ==
-                                                widget.rollLog.rolls[index])
-                                            ? "assets/images/d20-0.png"
-                                            : "assets/images/d20-1.png"
-                                        : (widget.rollLog.rolls.reduce(max) ==
-                                                widget.rollLog.rolls[index])
-                                            ? "assets/images/d20-4.png"
-                                            : "assets/images/d20-1.png",
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        widget.rollLog.rolls[index].toString(),
-                        style: TextStyle(
-                          fontSize: 44,
-                          fontFamily: FontFamily.bungee,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
       ),
     );
   }
