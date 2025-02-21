@@ -5,17 +5,17 @@ import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/stress_level.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
 import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_history_drawer.dart';
-import 'package:flutter_rpg_audiodrama/router.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_app_bar.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_drawer.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_floating_action_button.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/sheet_not_found_widget.dart';
 import 'package:provider/provider.dart';
 import '../_core/components/wip_snackbar.dart';
 import '../_core/helpers.dart';
 import '../_core/theme_provider.dart';
 import '../_core/widgets/named_widget.dart';
 import 'widgets/list_actions_widget.dart';
-import 'package:badges/badges.dart' as badges;
 
 class SheetScreen extends StatefulWidget {
   const SheetScreen({super.key});
@@ -36,159 +36,32 @@ class _SheetScreenState extends State<SheetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    return Scaffold(
+      floatingActionButton: getSheetFloatingActionButton(context),
+      appBar: getSheetAppBar(context),
+      endDrawer: getSheetDrawer(context),
+      body: _buildBody(),
+    );
+  }
+
+  Widget _buildBody() {
     final viewModel = Provider.of<SheetViewModel>(context);
 
-    return Scaffold(
-      floatingActionButton: isVertical(context)
-          ? FloatingActionButton(
-              onPressed: () => viewModel.onItemsButtonClicked(context),
-              child: Image.asset(
-                (themeProvider.themeMode == ThemeMode.dark)
-                    ? "assets/images/chest.png"
-                    : "assets/images/chest-i.png",
-                width: 32,
-              ),
-            )
-          : null,
-      appBar: AppBar(
-        toolbarHeight: 64,
-        leading: IconButton(
-          onPressed: () {
-            GoRouter.of(context).go(AppRouter.home);
-          },
-          icon: Icon(Icons.arrow_back),
-        ),
-        actions: [
-          Visibility(
-            visible: !isVertical(context),
-            child: (viewModel.listSheets.isNotEmpty)
-                ? DropdownButton<Sheet>(
-                    value: viewModel.listSheets
-                        .where((e) => e.id == viewModel.id)
-                        .first,
-                    items: viewModel.listSheets
-                        .map(
-                          (e) => DropdownMenuItem(
-                            value: e,
-                            child: Text(e.characterName),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (Sheet? sheet) {
-                      if (sheet != null) {
-                        GoRouter.of(context)
-                            .go("${AppRouter.sheet}/${sheet.id}");
-                        setState(() {});
-                      }
-                    },
-                  )
-                : Container(),
-          ),
-          Visibility(
-            visible: !isVertical(context),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 20.0,
-                horizontal: 8,
-              ),
-              child: VerticalDivider(),
-            ),
-          ),
-          Visibility(
-            visible: viewModel.isEditing && !isVertical(context),
-            child: Text("Saia da edição para salvar"),
-          ),
-          Visibility(
-            visible: viewModel.isEditing,
-            child: SizedBox(width: 8),
-          ),
-          Icon(Icons.edit),
-          Switch(
-            value: viewModel.isEditing,
-            onChanged: (value) {
-              viewModel.toggleEditMode();
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: VerticalDivider(),
-          ),
-          Icon(Icons.light_mode),
-          Switch(
-            value: themeProvider.themeMode == ThemeMode.dark,
-            onChanged: (value) {
-              themeProvider.toggleTheme(value);
-            },
-          ),
-          Icon(Icons.dark_mode),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: VerticalDivider(),
-          ),
-          Builder(
-            builder: (context) => IconButton(
-              onPressed: () {
-                Scaffold.of(context).openEndDrawer();
-                setState(() {
-                  viewModel.notificationCount = 0;
-                });
-              },
-              icon: badges.Badge(
-                showBadge: viewModel.notificationCount >
-                    0, // Esconde se não houver notificações
-                badgeContent: Text(
-                  viewModel.notificationCount.toString(),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                ),
-                position: badges.BadgePosition.topEnd(
-                  top: -10,
-                  end: -12,
-                ), // Ajusta posição
-                child: Icon(Icons.chat),
-              ),
-            ),
-          ),
-          SizedBox(width: 16),
-        ],
-      ),
-      endDrawer: Drawer(
-        child: SheetHistoryDrawer(listRollLog: viewModel.listRollLog),
-      ),
-      body: FutureBuilder(
-        future: viewModel.futureGetSheet,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-            case ConnectionState.active:
-              return Center(child: CircularProgressIndicator());
-            case ConnectionState.done:
-              if (snapshot.data != null) {
-                return _generateScreen(snapshot.data!);
-              }
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  spacing: 16,
-                  children: [
-                    Text("Ficha não encontrada"),
-                    ElevatedButton(
-                      onPressed: () {
-                        GoRouter.of(context).go(AppRouter.home);
-                      },
-                      child: Text("Voltar"),
-                    ),
-                  ],
-                ),
-              );
-          }
-        },
-      ),
+    return FutureBuilder<Sheet?>(
+      future: viewModel.futureGetSheet,
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+          case ConnectionState.active:
+            return Center(child: CircularProgressIndicator());
+          case ConnectionState.done:
+            if (snapshot.data != null) {
+              return _generateScreen(snapshot.data!);
+            }
+            return SheetNotFoundWidget();
+        }
+      },
     );
   }
 
@@ -197,6 +70,7 @@ class _SheetScreenState extends State<SheetScreen> {
     final viewModel = Provider.of<SheetViewModel>(context);
 
     viewModel.nameController.text = sheet.characterName;
+
     return Container(
       margin: EdgeInsets.all(16),
       padding: EdgeInsets.all(isVertical(context) ? 16 : 32),
