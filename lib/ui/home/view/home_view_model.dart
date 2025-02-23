@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../_core/private/auth_user.dart';
@@ -34,6 +35,17 @@ class HomeViewModel extends ChangeNotifier {
     String? resultName = await showCreateSheetDialog(context);
     if (resultName != null) {
       sheetService.createSheet(resultName);
+    }
+  }
+
+  onRemoveSheet({required BuildContext context, required Sheet sheet}) async {
+    bool? isRemoving = await showRemoveSheetDialog(
+      context: context,
+      name: sheet.characterName,
+    );
+
+    if (isRemoving != null && isRemoving) {
+      await sheetService.removeSheet(sheet);
     }
   }
 }

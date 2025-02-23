@@ -89,4 +89,13 @@ class SheetService {
         .doc(sheet.id)
         .set(sheet.toMap());
   }
+
+  Future<void> removeSheet(Sheet sheet) async {
+    await FirebaseFirestore.instance
+        .collection("${releaseCollection}users")
+        .doc(uid)
+        .collection("sheets")
+        .doc(sheet.id)
+        .delete();
+  }
 }

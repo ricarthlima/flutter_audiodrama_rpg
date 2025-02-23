@@ -31,7 +31,9 @@ class HomeListItemWidget extends StatelessWidget {
       ),
       trailing: (userId == FirebaseAuth.instance.currentUser!.uid)
           ? IconButton(
-              onPressed: () {},
+              onPressed: () {
+                viewModel.onRemoveSheet(context: context, sheet: sheet);
+              },
               iconSize: 32,
               icon: Icon(
                 Icons.delete,
