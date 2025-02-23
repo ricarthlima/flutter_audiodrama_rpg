@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import '../../_core/fonts.dart';
 import '../../../domain/models/action_template.dart';
 
 class ActionTooltip extends StatelessWidget {
   final ActionTemplate action;
+  final bool isEffortUsed;
   const ActionTooltip({
     super.key,
     required this.action,
+    this.isEffortUsed = false,
   });
 
   @override
@@ -18,40 +21,55 @@ class ActionTooltip extends StatelessWidget {
         color: Colors.black,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            action.name,
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: FontFamily.bungee,
-              fontWeight: FontWeight.bold,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                action.name,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: FontFamily.bungee,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Visibility(
+                visible: action.isFree ||
+                    action.isPreparation ||
+                    action.isReaction ||
+                    action.isResisted,
+                child: Text(
+                  "($_generateModifiersText)",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: FontFamily.sourceSerif4,
+                  ),
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                action.description,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: FontFamily.sourceSerif4,
+                ),
+                textAlign: TextAlign.justify,
+              ),
+            ],
           ),
           Visibility(
-            visible: action.isFree ||
-                action.isPreparation ||
-                action.isReaction ||
-                action.isResisted,
+            visible: isEffortUsed,
             child: Text(
-              "($_generateModifiersText)",
+              "ESFORÇO USADO",
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontStyle: FontStyle.italic,
-                fontFamily: FontFamily.sourceSerif4,
+                color: AppColors.red,
+                fontFamily: FontFamily.bungee,
               ),
             ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            action.description,
-            style: const TextStyle(
-              color: Colors.white,
-              fontFamily: FontFamily.sourceSerif4,
-            ),
-            textAlign: TextAlign.justify,
-          ),
+          )
         ],
       ),
     );

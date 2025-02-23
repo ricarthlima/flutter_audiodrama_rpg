@@ -126,7 +126,11 @@ class SheetViewModel extends ChangeNotifier {
       showRollDialog(context: context, rollLog: roll);
     } else {
       if (action != null) {
-        showDialogTip(context, action);
+        showDialogTip(
+          context,
+          action,
+          isEffortUsed: action.isPreparation,
+        );
       }
     }
 

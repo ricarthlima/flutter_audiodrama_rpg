@@ -5,8 +5,9 @@ import '../widgets/action_tooltip.dart';
 
 Future<dynamic> showDialogTip(
   BuildContext context,
-  ActionTemplate action,
-) {
+  ActionTemplate action, {
+  bool isEffortUsed = false,
+}) {
   return showDialog(
     context: context,
     builder: (context) {
@@ -19,7 +20,10 @@ Future<dynamic> showDialogTip(
               color: Colors.white,
             ),
           ),
-          child: ActionTooltip(action: action),
+          child: ActionTooltip(
+            action: action,
+            isEffortUsed: isEffortUsed,
+          ),
         ),
       );
     },
