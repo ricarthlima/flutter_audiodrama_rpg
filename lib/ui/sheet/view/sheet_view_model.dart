@@ -119,11 +119,12 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   onRoll(BuildContext context, {required RollLog roll}) async {
+    ActionTemplate? action = _actionDAO.getActionById(roll.idAction);
+
     if (!_actionDAO.isOnlyFreeOrPreparation(roll.idAction) ||
         _actionDAO.isLuckAction(roll.idAction)) {
       showRollDialog(context: context, rollLog: roll);
     } else {
-      ActionTemplate? action = _actionDAO.getActionById(roll.idAction);
       if (action != null) {
         showDialogTip(context, action);
       }
@@ -138,6 +139,15 @@ class SheetViewModel extends ChangeNotifier {
     }
 
     notifyListeners();
+
+    if (action != null && action.isPreparation) {
+      effortPoints++;
+      if (effortPoints >= 2) {
+        effortPoints = -1;
+        changeStressLevel(isAdding: true);
+      }
+      saveChanges();
+    }
   }
 
   changeStressLevel({bool isAdding = true}) {
