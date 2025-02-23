@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../_core/fonts.dart';
 import '../../../domain/models/action_template.dart';
 

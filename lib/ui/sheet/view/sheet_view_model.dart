@@ -214,4 +214,57 @@ class SheetViewModel extends ChangeNotifier {
     isKeepingGlobalModifier = !isKeepingGlobalModifier;
     notifyListeners();
   }
+
+  String getHelperText(ActionTemplate action) {
+    int trainingLevel = listActionValue
+        .firstWhere(
+          (ActionValue actionValue) => actionValue.actionId == action.id,
+          orElse: () => ActionValue(actionId: "", value: 1),
+        )
+        .value;
+
+    if (action.isFree) {
+      return "Ação Livre: a ação acontece instantaneamente.";
+    } else if (action.isPreparation) {
+      return "Ação de Preparação: uma ação livre que exige Esforço.";
+    } else {
+      if (action.isResisted) {
+        String result =
+            "Teste Resistido: conte os sucessos DT10 baseado no seu treinamento.";
+        if (trainingLevel <= 1) {
+          result +=
+              "\nComo seu treinamento é '${getTrainingLevel(trainingLevel)}', apenas o menor dado será considerado para o teste contra a DT10.";
+        }
+        return result;
+      } else {
+        String result =
+            "Teste de Dificuldade: pegue um número baseado no seu treinamento.";
+        if (trainingLevel <= 1) {
+          result +=
+              "\nComo seu treinamento é '${getTrainingLevel(trainingLevel)}', pegue o menor dado.";
+        } else {
+          result +=
+              "\nComo seu treinamento é '${getTrainingLevel(trainingLevel)}', pegue o maior dado.";
+        }
+        return result;
+      }
+    }
+  }
+
+  String getTrainingLevel(int ac) {
+    switch (ac) {
+      case 0:
+        return "Aversão";
+      case 1:
+        return "Sem Aptidão";
+      case 2:
+        return "Com Aptidão";
+      case 3:
+        return "Com Treinamento";
+      case 4:
+        return "Propósito";
+      default:
+        return "";
+    }
+  }
 }

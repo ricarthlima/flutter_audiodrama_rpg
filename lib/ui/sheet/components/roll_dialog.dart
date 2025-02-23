@@ -5,6 +5,8 @@ import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
 import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
+import 'package:provider/provider.dart';
 
 Future<dynamic> showRollDialog({
   required BuildContext context,
@@ -66,78 +68,96 @@ class _RollRowWidgetState extends State<RollRowWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<SheetViewModel>(context);
+
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.black.withAlpha(100),
+        color: Colors.black.withAlpha(150),
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Wrap(
-        spacing: isVertical(context) ? 32 : 64,
-        runSpacing: isVertical(context) ? 32 : 64,
-        alignment: WrapAlignment.center,
-        runAlignment: WrapAlignment.center,
-        children: List.generate(
-          widget.rollLog.rolls.length,
-          (index) {
-            return AnimatedOpacity(
-              opacity: listOpacity[index],
-              duration: Duration(milliseconds: 750),
-              child: SizedBox(
-                width: isVertical(context) ? 128 : 256,
-                height: isVertical(context) ? 128 : 256,
-                child: Stack(
-                  children: [
-                    AnimatedSwitcher(
-                      duration: Duration(milliseconds: 750),
-                      child: Image.asset(
-                        (!isShowingHighlighted)
-                            ? "assets/images/d20-1.png"
-                            : (ActionDAO.instance
-                                        .getActionById(widget.rollLog.idAction)!
-                                        .isResisted &&
-                                    !widget.rollLog.isGettingLower)
-                                ? (widget.rollLog.rolls[index] >= 10)
-                                    ? "assets/images/d20-4.png"
-                                    : "assets/images/d20-0.png"
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Wrap(
+            spacing: isVertical(context) ? 32 : 64,
+            runSpacing: isVertical(context) ? 32 : 64,
+            alignment: WrapAlignment.center,
+            runAlignment: WrapAlignment.center,
+            children: List.generate(
+              widget.rollLog.rolls.length,
+              (index) {
+                return AnimatedOpacity(
+                  opacity: listOpacity[index],
+                  duration: Duration(milliseconds: 750),
+                  child: SizedBox(
+                    width: isVertical(context) ? 128 : 256,
+                    height: isVertical(context) ? 128 : 256,
+                    child: Stack(
+                      children: [
+                        AnimatedSwitcher(
+                          duration: Duration(milliseconds: 750),
+                          child: Image.asset(
+                            (!isShowingHighlighted)
+                                ? "assets/images/d20-1.png"
                                 : (ActionDAO.instance
                                             .getActionById(
                                                 widget.rollLog.idAction)!
                                             .isResisted &&
-                                        widget.rollLog.isGettingLower)
-                                    ? (widget.rollLog.rolls.reduce(min) ==
-                                                widget.rollLog.rolls[index] &&
-                                            widget.rollLog.rolls[index] >= 10)
+                                        !widget.rollLog.isGettingLower)
+                                    ? (widget.rollLog.rolls[index] >= 10)
                                         ? "assets/images/d20-4.png"
                                         : "assets/images/d20-0.png"
-                                    : (widget.rollLog.isGettingLower)
+                                    : (ActionDAO.instance
+                                                .getActionById(
+                                                    widget.rollLog.idAction)!
+                                                .isResisted &&
+                                            widget.rollLog.isGettingLower)
                                         ? (widget.rollLog.rolls.reduce(min) ==
-                                                widget.rollLog.rolls[index])
-                                            ? "assets/images/d20-0.png"
-                                            : "assets/images/d20-1.png"
-                                        : (widget.rollLog.rolls.reduce(max) ==
-                                                widget.rollLog.rolls[index])
+                                                    widget
+                                                        .rollLog.rolls[index] &&
+                                                widget.rollLog.rolls[index] >=
+                                                    10)
                                             ? "assets/images/d20-4.png"
-                                            : "assets/images/d20-1.png",
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        widget.rollLog.rolls[index].toString(),
-                        style: TextStyle(
-                          fontSize: 44,
-                          fontFamily: FontFamily.bungee,
-                          color: Colors.white,
+                                            : "assets/images/d20-0.png"
+                                        : (widget.rollLog.isGettingLower)
+                                            ? (widget.rollLog.rolls
+                                                        .reduce(min) ==
+                                                    widget.rollLog.rolls[index])
+                                                ? "assets/images/d20-0.png"
+                                                : "assets/images/d20-1.png"
+                                            : (widget.rollLog.rolls
+                                                        .reduce(max) ==
+                                                    widget.rollLog.rolls[index])
+                                                ? "assets/images/d20-4.png"
+                                                : "assets/images/d20-1.png",
+                          ),
                         ),
-                      ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            widget.rollLog.rolls[index].toString(),
+                            style: TextStyle(
+                              fontSize: 44,
+                              fontFamily: FontFamily.bungee,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
+                  ),
+                );
+              },
+            ),
+          ),
+          SizedBox(height: 16),
+          Text(
+            viewModel.getHelperText(
+                ActionDAO.instance.getActionById(widget.rollLog.idAction)!),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
