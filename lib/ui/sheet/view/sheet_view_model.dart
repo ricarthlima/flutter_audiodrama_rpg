@@ -27,7 +27,15 @@ class SheetViewModel extends ChangeNotifier {
   Future<Sheet?> futureGetSheet = Future.delayed(Duration.zero);
   List<ActionValue> listActionValue = [];
   List<RollLog> listRollLog = [];
-  int notificationCount = 0;
+
+  int _notificationCount = 0;
+
+  int get notificationCount => _notificationCount;
+  set notificationCount(int value) {
+    _notificationCount = value;
+    notifyListeners();
+  }
+
   int effortPoints = -1;
   int stressLevel = 0;
   int baseLevel = 0;
