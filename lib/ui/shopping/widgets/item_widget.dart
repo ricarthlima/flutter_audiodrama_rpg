@@ -23,6 +23,9 @@ class ItemWidget extends StatelessWidget {
     final shoppingViewModel = Provider.of<ShoppingViewModel>(context);
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         ListTile(
           leading: (shoppingViewModel.isBuying)
@@ -67,6 +70,43 @@ class ItemWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 spacing: 8,
                 children: [
+                  if (item.isFinite)
+                    Row(
+                      spacing: 8,
+                      children: [
+                        Tooltip(
+                          message:
+                              (isSeller) ? "Máximo de usos" : "Usos restantes",
+                          child: Icon(Icons.numbers),
+                        ),
+                        Visibility(
+                          visible: !isSeller,
+                          child: Text(
+                            _getTotalAmount(
+                              shoppingViewModel.listSheetItems
+                                  .firstWhere((e) => e.itemId == item.id)
+                                  .uses,
+                            ),
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: isSeller,
+                          child: Text(
+                            item.maxUses.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text("•"),
+                        ),
+                      ],
+                    ),
                   Tooltip(
                       message: "Preço", child: Icon(Icons.attach_money_sharp)),
                   Text(
@@ -81,25 +121,6 @@ class ItemWidget extends StatelessWidget {
                   Text(
                     item.weight.toString(),
                     style: TextStyle(fontSize: 16),
-                  ),
-                  Visibility(
-                    visible: item.isFinite,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text("•"),
-                    ),
-                  ),
-                  Visibility(
-                    visible: item.isFinite,
-                    child: Tooltip(
-                        message: "Máximo de usos", child: Icon(Icons.numbers)),
-                  ),
-                  Visibility(
-                    visible: item.isFinite,
-                    child: Text(
-                      item.maxUses.toString(),
-                      style: TextStyle(fontSize: 16),
-                    ),
                   ),
                 ],
               )
@@ -116,41 +137,56 @@ class ItemWidget extends StatelessWidget {
                     icon: Icon(Icons.keyboard_arrow_right),
                   ),
                 )
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Visibility(
-                      visible: item.isFinite,
-                      child: IconButton(
-                        onPressed: () => shoppingViewModel.useItem(
-                          context: context,
-                          itemId: item.id,
-                        ),
-                        tooltip: "Usar",
-                        iconSize: 48,
-                        icon: Icon(
-                          Icons.remove,
-                          color: AppColors.red,
-                        ),
-                      ),
+              : null,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: SingleChildScrollView(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (item.isFinite)
+                  TextButton(
+                    onPressed: () => shoppingViewModel.useItem(
+                      context: context,
+                      itemId: item.id,
                     ),
-                    IconButton(
-                      onPressed: () => shoppingViewModel.removeItem(
-                        context: context,
-                        itemId: item.id,
-                      ),
-                      tooltip: "Remover",
-                      iconSize: 48,
-                      icon: Icon(
-                        Icons.delete,
-                        color: AppColors.red,
-                      ),
+                    child: Text("Usar"),
+                  ),
+                if (item.isFinite)
+                  TextButton(
+                    onPressed: () => shoppingViewModel.reloadUses(
+                      context: context,
+                      itemId: item.id,
                     ),
-                  ],
+                    child: Text("Recarregar usos"),
+                  ),
+                TextButton(
+                  onPressed: () => shoppingViewModel.removeItem(
+                    context: context,
+                    itemId: item.id,
+                  ),
+                  child: Text("Remover"),
                 ),
+                TextButton(
+                  onPressed: () => shoppingViewModel.removeAllFromItem(
+                    context: context,
+                    itemId: item.id,
+                  ),
+                  child: Text("Remover tudo"),
+                ),
+              ],
+            ),
+          ),
         ),
         Divider()
       ],
     );
+  }
+
+  String _getTotalAmount(int currentAmount) {
+    return "${item.maxUses! - currentAmount} usos restantes";
   }
 }

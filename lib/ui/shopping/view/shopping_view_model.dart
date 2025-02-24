@@ -49,6 +49,17 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  reloadUses({required BuildContext context, required String itemId}) {
+    listSheetItems
+        .firstWhere(
+          (ItemSheet itemSheet) => itemSheet.itemId == itemId,
+        )
+        .uses = 0;
+
+    notifyListeners();
+    saveChanges(context);
+  }
+
   useItem({required BuildContext context, required String itemId}) {
     Item item = ItemDAO.instance.getItemById(itemId)!;
 
@@ -60,9 +71,10 @@ class ShoppingViewModel extends ChangeNotifier {
         listSheetItems[index].uses++;
         if (listSheetItems[index].uses >= item.maxUses!) {
           listSheetItems[index].amount--;
+          listSheetItems[index].uses = 0;
         }
         if (listSheetItems[index].amount <= 0) {
-          removeItem(context: context, itemId: itemId, isOver: true);
+          removeAllFromItem(context: context, itemId: itemId, isOver: true);
         }
       }
     }
@@ -77,11 +89,39 @@ class ShoppingViewModel extends ChangeNotifier {
     bool isOver = false,
   }) async {
     Item item = ItemDAO.instance.getItemById(itemId)!;
+
+    bool? result = await showRemoveItemDialog(
+      context: context,
+      name: item.name,
+    );
+
+    if (result != null && result) {
+      listSheetItems
+          .firstWhere(
+            (ItemSheet itemSheet) => itemSheet.itemId == itemId,
+          )
+          .amount--;
+    }
+
+    notifyListeners();
+
+    if (!context.mounted) return;
+    saveChanges(context);
+  }
+
+  removeAllFromItem({
+    required BuildContext context,
+    required String itemId,
+    bool isOver = false,
+  }) async {
+    Item item = ItemDAO.instance.getItemById(itemId)!;
+
     bool? result = await showRemoveItemDialog(
       context: context,
       name: item.name,
       isOver: isOver,
     );
+
     if (result != null && result) {
       listSheetItems.removeWhere(
         (ItemSheet itemSheet) => itemSheet.itemId == itemId,
@@ -95,7 +135,7 @@ class ShoppingViewModel extends ChangeNotifier {
   }
 
   saveChanges(BuildContext context) async {
-    final sheetViewModel = Provider.of<SheetViewModel>(context);
+    final sheetViewModel = context.read<SheetViewModel>();
     sheetViewModel.listSheetItems = listSheetItems;
     await sheetViewModel.saveChanges();
   }

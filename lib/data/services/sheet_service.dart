@@ -4,6 +4,7 @@ import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../_core/release_mode.dart';
+import '../../domain/models/item_sheet.dart';
 
 class SheetService {
   String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -99,5 +100,31 @@ class SheetService {
         .collection("sheets")
         .doc(sheet.id)
         .delete();
+  }
+
+  Future<void> updateSheet(
+    Sheet sheet, {
+    String? characterName,
+    int? stressLevel,
+    int? effortPoints,
+    List<ActionValue>? listActionValue,
+    List<RollLog>? listRollLog,
+    int? baseLevel,
+    List<ItemSheet>? listItemSheet,
+    double? money,
+    double? weight,
+  }) async {
+    Sheet newSheet = sheet.copyWith(
+      characterName: characterName,
+      stressLevel: stressLevel,
+      effortPoints: effortPoints,
+      listActionValue: listActionValue,
+      listRollLog: listRollLog,
+      baseLevel: baseLevel,
+      listItemSheet: listItemSheet,
+      money: money,
+      weight: weight,
+    );
+    await saveSheet(newSheet);
   }
 }

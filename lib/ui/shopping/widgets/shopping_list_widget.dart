@@ -97,7 +97,7 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-                width: 4,
+                width: 1,
                 color: Theme.of(context).textTheme.bodyMedium!.color!),
           ),
           child: (!widget.isSeller)
