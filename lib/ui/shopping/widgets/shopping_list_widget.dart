@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/helpers.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/daos/item_dao.dart';
@@ -26,6 +27,8 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
 
   bool isOrderedByName = true;
   bool isOrderedByPrice = false;
+  bool isOrderedByWeight = false;
+  bool isOrderedByAmount = false;
   bool isAscendent = true;
 
   @override
@@ -63,9 +66,12 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                     } else {
                       isOrderedByName = true;
                       isOrderedByPrice = false;
+                      isOrderedByWeight = false;
+                      isOrderedByAmount = false;
                       isAscendent = true;
                     }
                     _orderItems();
+                    _orderItemsMine();
                   },
                   tooltip: "Ordenar por nome",
                   icon: Icon(Icons.sort_by_alpha),
@@ -77,13 +83,51 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                     } else {
                       isOrderedByPrice = true;
                       isOrderedByName = false;
+                      isOrderedByWeight = false;
+                      isOrderedByAmount = false;
                       isAscendent = true;
                     }
                     _orderItems();
+                    _orderItemsMine();
                   },
                   tooltip: "Ordenar por preço",
-                  icon: Icon(Icons.sort),
+                  icon: Icon(Icons.attach_money_rounded),
                 ),
+                IconButton(
+                  onPressed: () {
+                    if (isOrderedByWeight) {
+                      isAscendent = !isAscendent;
+                    } else {
+                      isOrderedByWeight = true;
+                      isOrderedByPrice = false;
+                      isOrderedByName = false;
+                      isOrderedByAmount = false;
+                      isAscendent = true;
+                    }
+                    _orderItems();
+                    _orderItemsMine();
+                  },
+                  tooltip: "Ordenar por peso",
+                  icon: Icon(Icons.fitness_center_rounded),
+                ),
+                if (!widget.isSeller)
+                  IconButton(
+                    onPressed: () {
+                      if (isOrderedByWeight) {
+                        isAscendent = !isAscendent;
+                      } else {
+                        isOrderedByAmount = true;
+                        isOrderedByWeight = false;
+                        isOrderedByPrice = false;
+                        isOrderedByName = false;
+                        isAscendent = true;
+                      }
+                      _orderItems();
+                      _orderItemsMine();
+                    },
+                    tooltip: "Ordenar por quantidade",
+                    icon: Icon(Icons.numbers),
+                  ),
               ],
             )
           ],
@@ -153,11 +197,16 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
       listItem = ItemDAO.instance.getItems;
     }
     _orderItems();
+    _orderItemsMine();
   }
 
   _orderItems() {
     if (isOrderedByName) {
-      listItem.sort((a, b) => a.name.compareTo(b.name));
+      listItem.sort(
+        (a, b) => removeDiacritics(a.name).compareTo(
+          removeDiacritics(b.name),
+        ),
+      );
       if (!isAscendent) {
         listItem = listItem.reversed.toList();
       }
@@ -167,6 +216,66 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
       listItem.sort((a, b) => a.price.compareTo(b.price));
       if (!isAscendent) {
         listItem = listItem.reversed.toList();
+      }
+    }
+
+    if (isOrderedByWeight) {
+      listItem.sort((a, b) => a.weight.compareTo(b.weight));
+      if (!isAscendent) {
+        listItem = listItem.reversed.toList();
+      }
+    }
+
+    setState(() {});
+  }
+
+  _orderItemsMine() {
+    final shoppingViewModel = context.read<ShoppingViewModel>();
+
+    if (isOrderedByName) {
+      shoppingViewModel.listSheetItems.sort((a, b) {
+        Item itemA = ItemDAO.instance.getItemById(a.itemId)!;
+        Item itemB = ItemDAO.instance.getItemById(b.itemId)!;
+        return removeDiacritics(itemA.name).compareTo(
+          removeDiacritics(itemB.name),
+        );
+      });
+      if (!isAscendent) {
+        shoppingViewModel.listSheetItems =
+            shoppingViewModel.listSheetItems.reversed.toList();
+      }
+    }
+
+    if (isOrderedByPrice) {
+      shoppingViewModel.listSheetItems.sort((a, b) {
+        Item itemA = ItemDAO.instance.getItemById(a.itemId)!;
+        Item itemB = ItemDAO.instance.getItemById(b.itemId)!;
+        return itemA.price.compareTo(itemB.price);
+      });
+      if (!isAscendent) {
+        shoppingViewModel.listSheetItems =
+            shoppingViewModel.listSheetItems.reversed.toList();
+      }
+    }
+
+    if (isOrderedByWeight) {
+      shoppingViewModel.listSheetItems.sort((a, b) {
+        Item itemA = ItemDAO.instance.getItemById(a.itemId)!;
+        Item itemB = ItemDAO.instance.getItemById(b.itemId)!;
+        return itemA.weight.compareTo(itemB.weight);
+      });
+      if (!isAscendent) {
+        shoppingViewModel.listSheetItems =
+            shoppingViewModel.listSheetItems.reversed.toList();
+      }
+    }
+
+    if (isOrderedByAmount) {
+      shoppingViewModel.listSheetItems
+          .sort((a, b) => a.amount.compareTo(b.amount));
+      if (!isAscendent) {
+        shoppingViewModel.listSheetItems =
+            shoppingViewModel.listSheetItems.reversed.toList();
       }
     }
     setState(() {});
