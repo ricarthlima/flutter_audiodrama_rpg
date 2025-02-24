@@ -2,14 +2,16 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
+import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../../../data/daos/action_dao.dart';
 import '../../../domain/models/action_template.dart';
 import '../../../domain/models/item_sheet.dart';
 import '../../../domain/models/sheet_model.dart';
+import '../../shopping/shopping_screen.dart';
 import '../components/action_dialog_tooltip.dart';
 import '../components/roll_dialog.dart';
-import '../components/shop_dialog.dart';
 
 class SheetViewModel extends ChangeNotifier {
   String id;
@@ -29,6 +31,8 @@ class SheetViewModel extends ChangeNotifier {
   int effortPoints = -1;
   int stressLevel = 0;
   int baseLevel = 0;
+  double money = 0;
+  double weight = 0;
 
   int modGlobalTrain = 0;
   bool isKeepingGlobalModifier = false;
@@ -70,6 +74,8 @@ class SheetViewModel extends ChangeNotifier {
       stressLevel = sheetModel.stressLevel;
       baseLevel = sheetModel.baseLevel;
       listSheetItems = sheetModel.listItemSheet;
+      money = sheetModel.money;
+      weight = sheetModel.weight;
 
       sheet = sheetModel;
     }
@@ -103,6 +109,8 @@ class SheetViewModel extends ChangeNotifier {
       stressLevel: stressLevel,
       baseLevel: baseLevel,
       listItemSheet: listSheetItems,
+      money: money,
+      weight: weight,
     );
     await SheetService().saveSheet(
       sheet,
@@ -211,17 +219,12 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   onItemsButtonClicked(BuildContext context) async {
-    List<ItemSheet>? listResult = await showShoppingDialog(
+    final shoppingViewModel = Provider.of<ShoppingViewModel>(
       context,
-      isEditing: isEditing,
-      listSheetItems: listSheetItems,
-      trainLevel: baseLevel,
+      listen: false,
     );
-
-    if (listResult != null) {
-      listSheetItems = listResult;
-    }
-    notifyListeners();
+    shoppingViewModel.openInventory(listSheetItems);
+    await showShoppingDialog(context);
   }
 
   void toggleKeepingGlobalModifier() {

@@ -14,6 +14,10 @@ class Sheet {
   List<RollLog> listRollLog;
   int baseLevel;
   List<ItemSheet> listItemSheet;
+
+  double money;
+  double weight;
+
   Sheet({
     required this.id,
     required this.characterName,
@@ -23,6 +27,8 @@ class Sheet {
     required this.listRollLog,
     required this.baseLevel,
     required this.listItemSheet,
+    required this.money,
+    required this.weight,
   });
 
   Sheet copyWith({
@@ -34,6 +40,8 @@ class Sheet {
     List<RollLog>? listRollLog,
     int? baseLevel,
     List<ItemSheet>? listItemSheet,
+    double? money,
+    double? weight,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -44,6 +52,8 @@ class Sheet {
       listRollLog: listRollLog ?? this.listRollLog,
       baseLevel: baseLevel ?? this.baseLevel,
       listItemSheet: listItemSheet ?? this.listItemSheet,
+      money: money ?? this.money,
+      weight: weight ?? this.weight,
     );
   }
 
@@ -57,6 +67,8 @@ class Sheet {
       'listRollLog': listRollLog.map((x) => x.toMap()).toList(),
       'baseLevel': baseLevel,
       'listItemSheet': listItemSheet.map((x) => x.toMap()).toList(),
+      "money": money,
+      "weight": weight,
     };
   }
 
@@ -84,6 +96,8 @@ class Sheet {
               ),
             )
           : [],
+      money: (map["money"] ?? 0) as double,
+      weight: (map["weight"] ?? 0) as double,
     );
   }
 

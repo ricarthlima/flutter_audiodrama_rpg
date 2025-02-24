@@ -52,6 +52,8 @@ class SheetService {
             stressLevel: 0,
             baseLevel: 0,
             listItemSheet: [],
+            money: 500,
+            weight: 0,
           ).toMap(),
         );
   }
