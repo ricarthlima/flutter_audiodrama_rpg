@@ -223,17 +223,37 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           ),
           NamedWidget(
             isVisible: !isVertical(context),
-            title: "Condições",
-            tooltip: "Clique visualizar condições atuais",
+            title: "Descansos",
             hardHeight: 32,
-            child: InkWell(
-              onTap: () {
-                showSnackBarWip(context);
-              },
-              child: Icon(
-                Icons.personal_injury_outlined,
-                size: 18,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 8,
+              children: [
+                Tooltip(
+                  message: "Descanso curto",
+                  child: InkWell(
+                    onTap: () {
+                      showSnackBarWip(context);
+                    },
+                    child: Icon(
+                      Icons.fastfood_outlined,
+                      size: 18,
+                    ),
+                  ),
+                ),
+                Tooltip(
+                  message: "Descanso longo",
+                  child: InkWell(
+                    onTap: () {
+                      showSnackBarWip(context);
+                    },
+                    child: Icon(
+                      Icons.bed,
+                      size: 18,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
