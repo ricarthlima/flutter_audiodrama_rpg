@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/item.dart';
@@ -110,12 +111,43 @@ class ItemWidget extends StatelessWidget {
                   child: IconButton(
                     onPressed: () => shoppingViewModel.sellItem(item.id),
                     tooltip: "Vender",
-                    color: Colors.red[900],
+                    color: AppColors.red,
                     iconSize: 48,
                     icon: Icon(Icons.keyboard_arrow_right),
                   ),
                 )
-              : null,
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Visibility(
+                      visible: item.isFinite,
+                      child: IconButton(
+                        onPressed: () => shoppingViewModel.useItem(
+                          context: context,
+                          itemId: item.id,
+                        ),
+                        tooltip: "Usar",
+                        iconSize: 48,
+                        icon: Icon(
+                          Icons.remove,
+                          color: AppColors.red,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => shoppingViewModel.removeItem(
+                        context: context,
+                        itemId: item.id,
+                      ),
+                      tooltip: "Remover",
+                      iconSize: 48,
+                      icon: Icon(
+                        Icons.delete,
+                        color: AppColors.red,
+                      ),
+                    ),
+                  ],
+                ),
         ),
         Divider()
       ],

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/data/daos/item_dao.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/item_sheet.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../../../domain/models/item.dart';
 
@@ -43,5 +47,56 @@ class ShoppingViewModel extends ChangeNotifier {
     listSheetItems = listItems;
     isBuying = false;
     notifyListeners();
+  }
+
+  useItem({required BuildContext context, required String itemId}) {
+    Item item = ItemDAO.instance.getItemById(itemId)!;
+
+    int index = listSheetItems.indexWhere(
+      (ItemSheet itemSheet) => itemSheet.itemId == itemId,
+    );
+    if (index != -1) {
+      if (item.isFinite) {
+        listSheetItems[index].uses++;
+        if (listSheetItems[index].uses >= item.maxUses!) {
+          listSheetItems[index].amount--;
+        }
+        if (listSheetItems[index].amount <= 0) {
+          removeItem(context: context, itemId: itemId, isOver: true);
+        }
+      }
+    }
+
+    notifyListeners();
+    saveChanges(context);
+  }
+
+  removeItem({
+    required BuildContext context,
+    required String itemId,
+    bool isOver = false,
+  }) async {
+    Item item = ItemDAO.instance.getItemById(itemId)!;
+    bool? result = await showRemoveItemDialog(
+      context: context,
+      name: item.name,
+      isOver: isOver,
+    );
+    if (result != null && result) {
+      listSheetItems.removeWhere(
+        (ItemSheet itemSheet) => itemSheet.itemId == itemId,
+      );
+    }
+
+    notifyListeners();
+
+    if (!context.mounted) return;
+    saveChanges(context);
+  }
+
+  saveChanges(BuildContext context) async {
+    final sheetViewModel = Provider.of<SheetViewModel>(context);
+    sheetViewModel.listSheetItems = listSheetItems;
+    await sheetViewModel.saveChanges();
   }
 }

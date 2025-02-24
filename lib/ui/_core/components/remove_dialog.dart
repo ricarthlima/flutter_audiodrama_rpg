@@ -12,6 +12,19 @@ Future<bool?> showRemoveSheetDialog({
   );
 }
 
+Future<bool?> showRemoveItemDialog({
+  required BuildContext context,
+  required String name,
+  bool isOver = false,
+}) {
+  return showRemoveDialog(
+    context: context,
+    message: (isOver)
+        ? "$name acabou. Deseja remover?"
+        : "Você tem certeza que deseja remover $name?",
+  );
+}
+
 Future<bool?> showRemoveDialog(
     {required BuildContext context, required String message}) {
   return showDialog(
