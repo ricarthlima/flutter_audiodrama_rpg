@@ -52,50 +52,54 @@ class ItemInventoryWidget extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 8),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 8,
-                children: [
-                  if (item.isFinite)
-                    Row(
-                      spacing: 8,
-                      children: [
-                        Tooltip(
-                          message: "Usos restantes",
-                          child: Icon(Icons.numbers),
-                        ),
-                        Text(
-                          _getTotalAmount(
-                            shoppingViewModel.listSheetItems
-                                .firstWhere((e) => e.itemId == item.id)
-                                .uses,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  spacing: 8,
+                  children: [
+                    if (item.isFinite)
+                      Row(
+                        spacing: 8,
+                        children: [
+                          Tooltip(
+                            message: "Usos restantes",
+                            child: Icon(Icons.numbers),
                           ),
-                          style: TextStyle(
-                            fontSize: 16,
+                          Text(
+                            _getTotalAmount(
+                              shoppingViewModel.listSheetItems
+                                  .firstWhere((e) => e.itemId == item.id)
+                                  .uses,
+                            ),
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text("•"),
-                        ),
-                      ],
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text("•"),
+                          ),
+                        ],
+                      ),
+                    Tooltip(
+                        message: "Preço",
+                        child: Icon(Icons.attach_money_sharp)),
+                    Text(
+                      item.price.toString(),
+                      style: TextStyle(fontSize: 16),
                     ),
-                  Tooltip(
-                      message: "Preço", child: Icon(Icons.attach_money_sharp)),
-                  Text(
-                    item.price.toString(),
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text("•"),
-                  ),
-                  Tooltip(message: "Peso", child: Icon(Icons.fitness_center)),
-                  Text(
-                    item.weight.toString(),
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text("•"),
+                    ),
+                    Tooltip(message: "Peso", child: Icon(Icons.fitness_center)),
+                    Text(
+                      item.weight.toString(),
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
               )
             ],
           ),
@@ -116,10 +120,10 @@ class ItemInventoryWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (item.isFinite)
                     TextButton(

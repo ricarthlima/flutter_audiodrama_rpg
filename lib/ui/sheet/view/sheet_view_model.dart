@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -247,7 +248,17 @@ class SheetViewModel extends ChangeNotifier {
       listen: false,
     );
     shoppingViewModel.openInventory(listSheetItems);
-    await showShoppingDialog(context);
+
+    if (!isVertical(context)) {
+      await showShoppingDialog(context);
+    } else {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ShoppingDialogScreen(),
+        ),
+      );
+    }
   }
 
   void toggleKeepingGlobalModifier() {

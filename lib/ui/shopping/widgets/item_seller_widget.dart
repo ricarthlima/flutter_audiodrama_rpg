@@ -61,46 +61,51 @@ class ItemSellerWidget extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 8),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 8,
-                children: [
-                  if (item.isFinite)
-                    Row(
-                      spacing: 8,
-                      children: [
-                        Tooltip(
-                          message: "Máximo de usos",
-                          child: Icon(Icons.numbers),
-                        ),
-                        Text(
-                          (item.maxUses ?? 0).toString(),
-                          style: TextStyle(
-                            fontSize: 16,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 8,
+                  children: [
+                    if (item.isFinite)
+                      Row(
+                        spacing: 8,
+                        children: [
+                          Tooltip(
+                            message: "Máximo de usos",
+                            child: Icon(Icons.numbers),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text("•"),
-                        ),
-                      ],
+                          Text(
+                            (item.maxUses ?? 0).toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text("•"),
+                          ),
+                        ],
+                      ),
+                    Tooltip(
+                        message: "Preço",
+                        child: Icon(Icons.attach_money_sharp)),
+                    Text(
+                      item.price.toString(),
+                      style: TextStyle(fontSize: 16),
                     ),
-                  Tooltip(
-                      message: "Preço", child: Icon(Icons.attach_money_sharp)),
-                  Text(
-                    item.price.toString(),
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text("•"),
-                  ),
-                  Tooltip(message: "Peso", child: Icon(Icons.fitness_center)),
-                  Text(
-                    item.weight.toString(),
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text("•"),
+                    ),
+                    Tooltip(message: "Peso", child: Icon(Icons.fitness_center)),
+                    Text(
+                      item.weight.toString(),
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
               )
             ],
           ),

@@ -58,85 +58,90 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                 fontFamily: FontFamily.bungee,
               ),
             ),
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    if (isOrderedByName) {
-                      isAscendent = !isAscendent;
-                    } else {
-                      isOrderedByName = true;
-                      isOrderedByPrice = false;
-                      isOrderedByWeight = false;
-                      isOrderedByAmount = false;
-                      isAscendent = true;
-                    }
-                    _orderItems();
-                    _orderItemsMine();
-                  },
-                  tooltip: "Ordenar por nome",
-                  icon: Icon(Icons.sort_by_alpha),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        if (isOrderedByName) {
+                          isAscendent = !isAscendent;
+                        } else {
+                          isOrderedByName = true;
+                          isOrderedByPrice = false;
+                          isOrderedByWeight = false;
+                          isOrderedByAmount = false;
+                          isAscendent = true;
+                        }
+                        _orderItems();
+                        _orderItemsMine();
+                      },
+                      tooltip: "Ordenar por nome",
+                      icon: Icon(Icons.sort_by_alpha),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        if (isOrderedByPrice) {
+                          isAscendent = !isAscendent;
+                        } else {
+                          isOrderedByPrice = true;
+                          isOrderedByName = false;
+                          isOrderedByWeight = false;
+                          isOrderedByAmount = false;
+                          isAscendent = true;
+                        }
+                        _orderItems();
+                        _orderItemsMine();
+                      },
+                      tooltip: "Ordenar por preço",
+                      icon: Icon(Icons.attach_money_rounded),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        if (isOrderedByWeight) {
+                          isAscendent = !isAscendent;
+                        } else {
+                          isOrderedByWeight = true;
+                          isOrderedByPrice = false;
+                          isOrderedByName = false;
+                          isOrderedByAmount = false;
+                          isAscendent = true;
+                        }
+                        _orderItems();
+                        _orderItemsMine();
+                      },
+                      tooltip: "Ordenar por peso",
+                      icon: Icon(Icons.fitness_center_rounded),
+                    ),
+                    if (!widget.isSeller)
+                      IconButton(
+                        onPressed: () {
+                          if (isOrderedByWeight) {
+                            isAscendent = !isAscendent;
+                          } else {
+                            isOrderedByAmount = true;
+                            isOrderedByWeight = false;
+                            isOrderedByPrice = false;
+                            isOrderedByName = false;
+                            isAscendent = true;
+                          }
+                          _orderItems();
+                          _orderItemsMine();
+                        },
+                        tooltip: "Ordenar por quantidade",
+                        icon: Icon(Icons.numbers),
+                      ),
+                  ],
                 ),
-                IconButton(
-                  onPressed: () {
-                    if (isOrderedByPrice) {
-                      isAscendent = !isAscendent;
-                    } else {
-                      isOrderedByPrice = true;
-                      isOrderedByName = false;
-                      isOrderedByWeight = false;
-                      isOrderedByAmount = false;
-                      isAscendent = true;
-                    }
-                    _orderItems();
-                    _orderItemsMine();
-                  },
-                  tooltip: "Ordenar por preço",
-                  icon: Icon(Icons.attach_money_rounded),
-                ),
-                IconButton(
-                  onPressed: () {
-                    if (isOrderedByWeight) {
-                      isAscendent = !isAscendent;
-                    } else {
-                      isOrderedByWeight = true;
-                      isOrderedByPrice = false;
-                      isOrderedByName = false;
-                      isOrderedByAmount = false;
-                      isAscendent = true;
-                    }
-                    _orderItems();
-                    _orderItemsMine();
-                  },
-                  tooltip: "Ordenar por peso",
-                  icon: Icon(Icons.fitness_center_rounded),
-                ),
-                if (!widget.isSeller)
-                  IconButton(
-                    onPressed: () {
-                      if (isOrderedByWeight) {
-                        isAscendent = !isAscendent;
-                      } else {
-                        isOrderedByAmount = true;
-                        isOrderedByWeight = false;
-                        isOrderedByPrice = false;
-                        isOrderedByName = false;
-                        isAscendent = true;
-                      }
-                      _orderItems();
-                      _orderItemsMine();
-                    },
-                    tooltip: "Ordenar por quantidade",
-                    icon: Icon(Icons.numbers),
-                  ),
-              ],
+              ),
             )
           ],
         ),
         Container(
           constraints: BoxConstraints(
             maxHeight:
-                height(context) - 200, // Define um limite máximo de altura
+                height(context) - 220, // Define um limite máximo de altura
           ),
           padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
