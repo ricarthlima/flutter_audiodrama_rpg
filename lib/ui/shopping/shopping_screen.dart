@@ -69,13 +69,50 @@ class _ShoppingDialogScreenState extends State<ShoppingDialogScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 8,
                 children: [
-                  Text(
-                    "\$ ${viewModel.money}",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+                  if (!shoppingViewModel.isBuying)
+                    Text(
+                      "\$ ${viewModel.money}",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+                  if (shoppingViewModel.isBuying)
+                    SizedBox(
+                      width: 150,
+                      child: TextFormField(
+                        controller: shoppingViewModel.moneyController(context),
+                        textAlign: TextAlign.right,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.attach_money_rounded),
+                          suffix: InkWell(
+                            onTap: (shoppingViewModel.isShowingMoneyFeedback ==
+                                    null)
+                                ? () {
+                                    shoppingViewModel.onEditingMoney(context);
+                                  }
+                                : null,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Icon(
+                                (shoppingViewModel.isShowingMoneyFeedback ==
+                                        null)
+                                    ? Icons.save
+                                    : (shoppingViewModel
+                                            .isShowingMoneyFeedback!)
+                                        ? Icons.check
+                                        : Icons.error,
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                        ),
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   SizedBox(width: 16),
                   SizedBox(
                     width: 150,

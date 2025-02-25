@@ -24,6 +24,14 @@ class ShoppingViewModel extends ChangeNotifier {
 
   List<ItemSheet> listSheetItems = [];
 
+  final TextEditingController _moneyController = TextEditingController();
+
+  TextEditingController moneyController(BuildContext context) {
+    final sheetViewModel = context.read<SheetViewModel>();
+    _moneyController.text = sheetViewModel.money.toString();
+    return _moneyController;
+  }
+
   buyItem(Item item) {
     if (listSheetItems.where((e) => e.itemId == item.id).isNotEmpty) {
       listSheetItems.where((e) => e.itemId == item.id).first.amount++;
@@ -134,9 +142,37 @@ class ShoppingViewModel extends ChangeNotifier {
     saveChanges(context);
   }
 
-  saveChanges(BuildContext context) async {
+  onEditingMoney(BuildContext context) async {
+    double? money = double.tryParse(_moneyController.text);
+    if (money != null) {
+      _showMoneyFeedback(true);
+      await saveChanges(context, money: money);
+    } else {
+      final sheetViewModel = context.read<SheetViewModel>();
+      _moneyController.text = sheetViewModel.money.toString();
+      _showMoneyFeedback(false);
+      notifyListeners();
+    }
+  }
+
+  saveChanges(BuildContext context, {double? money}) async {
     final sheetViewModel = context.read<SheetViewModel>();
     sheetViewModel.listSheetItems = listSheetItems;
+
+    if (money != null) {
+      sheetViewModel.money = money;
+    }
+
     await sheetViewModel.saveChanges();
+  }
+
+  bool? isShowingMoneyFeedback;
+
+  _showMoneyFeedback(bool isSuccess) async {
+    isShowingMoneyFeedback = isSuccess;
+    notifyListeners();
+    await Future.delayed(Duration(milliseconds: 1250));
+    isShowingMoneyFeedback = null;
+    notifyListeners();
   }
 }
