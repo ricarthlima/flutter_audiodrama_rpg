@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
 import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,15 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   SheetViewModel({required this.id, this.userId});
+
+  GlobalKey<ExpandableFabState> fabKey = GlobalKey<ExpandableFabState>();
+
+  closeFab() {
+    final state = fabKey.currentState;
+    if (state != null) {
+      state.toggle();
+    }
+  }
 
   SheetService sheetService = SheetService();
   final ActionDAO _actionDAO = ActionDAO.instance;

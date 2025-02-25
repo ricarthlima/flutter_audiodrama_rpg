@@ -221,41 +221,41 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             visible: !isVertical(context),
             child: Text("•"),
           ),
-          NamedWidget(
-            isVisible: !isVertical(context),
-            title: "Descansos",
-            hardHeight: 32,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 8,
-              children: [
-                Tooltip(
-                  message: "Descanso curto",
-                  child: InkWell(
-                    onTap: () {
-                      showSnackBarWip(context);
-                    },
-                    child: Icon(
-                      Icons.fastfood_outlined,
-                      size: 18,
+          if (!viewModel.isEditing)
+            NamedWidget(
+              title: "Descansos",
+              hardHeight: 32,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8,
+                children: [
+                  Tooltip(
+                    message: "Descanso curto",
+                    child: InkWell(
+                      onTap: () {
+                        showSnackBarWip(context);
+                      },
+                      child: Icon(
+                        Icons.fastfood_outlined,
+                        size: 18,
+                      ),
                     ),
                   ),
-                ),
-                Tooltip(
-                  message: "Descanso longo",
-                  child: InkWell(
-                    onTap: () {
-                      showSnackBarWip(context);
-                    },
-                    child: Icon(
-                      Icons.bed,
-                      size: 18,
+                  Tooltip(
+                    message: "Descanso longo",
+                    child: InkWell(
+                      onTap: () {
+                        showSnackBarWip(context);
+                      },
+                      child: Icon(
+                        Icons.bed,
+                        size: 18,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

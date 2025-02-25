@@ -57,7 +57,7 @@ AppBar getSheetAppBar(BuildContext context) {
         ),
       ),
       Visibility(
-        visible: viewModel.isEditing && !isVertical(context),
+        visible: viewModel.isEditing,
         child: Text("Saia da edição para salvar"),
       ),
       Visibility(
@@ -71,46 +71,50 @@ AppBar getSheetAppBar(BuildContext context) {
           viewModel.toggleEditMode();
         },
       ),
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0),
-        child: VerticalDivider(),
-      ),
-      Icon(Icons.light_mode),
-      Switch(
-        value: themeProvider.themeMode == ThemeMode.dark,
-        onChanged: (value) {
-          themeProvider.toggleTheme(value);
-        },
-      ),
-      Icon(Icons.dark_mode),
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0),
-        child: VerticalDivider(),
-      ),
-      Builder(
-        builder: (context) => IconButton(
-          onPressed: () {
-            Scaffold.of(context).openEndDrawer();
-            viewModel.notificationCount = 0;
+      if (!isVertical(context))
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          child: VerticalDivider(),
+        ),
+      if (!isVertical(context)) Icon(Icons.light_mode),
+      if (!isVertical(context))
+        Switch(
+          value: themeProvider.themeMode == ThemeMode.dark,
+          onChanged: (value) {
+            themeProvider.toggleTheme(value);
           },
-          icon: badges.Badge(
-            showBadge: viewModel.notificationCount >
-                0, // Esconde se não houver notificações
-            badgeContent: Text(
-              viewModel.notificationCount.toString(),
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12,
+        ),
+      if (!isVertical(context)) Icon(Icons.dark_mode),
+      if (!isVertical(context))
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          child: VerticalDivider(),
+        ),
+      if (!isVertical(context))
+        Builder(
+          builder: (context) => IconButton(
+            onPressed: () {
+              Scaffold.of(context).openEndDrawer();
+              viewModel.notificationCount = 0;
+            },
+            icon: badges.Badge(
+              showBadge: viewModel.notificationCount >
+                  0, // Esconde se não houver notificações
+              badgeContent: Text(
+                viewModel.notificationCount.toString(),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
               ),
+              position: badges.BadgePosition.topEnd(
+                top: -10,
+                end: -12,
+              ), // Ajusta posição
+              child: Icon(Icons.chat),
             ),
-            position: badges.BadgePosition.topEnd(
-              top: -10,
-              end: -12,
-            ), // Ajusta posição
-            child: Icon(Icons.chat),
           ),
         ),
-      ),
       SizedBox(width: 16),
     ],
   );
