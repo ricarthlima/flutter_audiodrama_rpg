@@ -6,14 +6,12 @@ import '../../../domain/models/item.dart';
 import '../../../domain/models/item_sheet.dart';
 import '../view/shopping_view_model.dart';
 
-class ItemWidget extends StatelessWidget {
-  final bool isSeller;
+class ItemInventoryWidget extends StatelessWidget {
   final Item item;
   final ItemSheet? itemSheet;
 
-  const ItemWidget({
+  const ItemInventoryWidget({
     super.key,
-    required this.isSeller,
     required this.item,
     this.itemSheet,
   });
@@ -28,20 +26,8 @@ class ItemWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ListTile(
-          leading: (shoppingViewModel.isBuying)
-              ? Visibility(
-                  visible: isSeller,
-                  child: IconButton(
-                    onPressed: () => shoppingViewModel.buyItem(item),
-                    tooltip: "Comprar",
-                    color: Colors.green[900],
-                    iconSize: 48,
-                    icon: Icon(Icons.keyboard_arrow_left),
-                  ),
-                )
-              : null,
           title: Text(
-            (!isSeller && itemSheet != null)
+            (itemSheet != null)
                 ? "${item.name} (x${itemSheet!.amount})"
                 : item.name,
             style: TextStyle(
@@ -75,30 +61,23 @@ class ItemWidget extends StatelessWidget {
                       spacing: 8,
                       children: [
                         Tooltip(
-                          message:
-                              (isSeller) ? "Máximo de usos" : "Usos restantes",
+                          message: "Usos restantes",
                           child: Icon(Icons.numbers),
                         ),
-                        Visibility(
-                          visible: !isSeller,
-                          child: Text(
-                            _getTotalAmount(
-                              shoppingViewModel.listSheetItems
-                                  .firstWhere((e) => e.itemId == item.id)
-                                  .uses,
-                            ),
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
+                        Text(
+                          _getTotalAmount(
+                            shoppingViewModel.listSheetItems
+                                .firstWhere((e) => e.itemId == item.id)
+                                .uses,
+                          ),
+                          style: TextStyle(
+                            fontSize: 16,
                           ),
                         ),
-                        Visibility(
-                          visible: isSeller,
-                          child: Text(
-                            item.maxUses.toString(),
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
+                        Text(
+                          item.maxUses.toString(),
+                          style: TextStyle(
+                            fontSize: 16,
                           ),
                         ),
                         Padding(
@@ -127,60 +106,58 @@ class ItemWidget extends StatelessWidget {
             ],
           ),
           trailing: (shoppingViewModel.isBuying)
-              ? Visibility(
-                  visible: !isSeller,
-                  child: IconButton(
-                    onPressed: () => shoppingViewModel.sellItem(item.id),
-                    tooltip: "Vender",
-                    color: AppColors.red,
-                    iconSize: 48,
-                    icon: Icon(Icons.keyboard_arrow_right),
-                  ),
+              ? IconButton(
+                  onPressed: () => shoppingViewModel.sellItem(item.id),
+                  tooltip: "Vender",
+                  color: AppColors.red,
+                  iconSize: 48,
+                  icon: Icon(Icons.keyboard_arrow_right),
                 )
               : null,
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: SingleChildScrollView(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (item.isFinite)
+        if (!shoppingViewModel.isBuying)
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: SingleChildScrollView(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (item.isFinite)
+                    TextButton(
+                      onPressed: () => shoppingViewModel.useItem(
+                        context: context,
+                        itemId: item.id,
+                      ),
+                      child: Text("Usar"),
+                    ),
+                  if (item.isFinite)
+                    TextButton(
+                      onPressed: () => shoppingViewModel.reloadUses(
+                        context: context,
+                        itemId: item.id,
+                      ),
+                      child: Text("Recarregar usos"),
+                    ),
                   TextButton(
-                    onPressed: () => shoppingViewModel.useItem(
+                    onPressed: () => shoppingViewModel.removeItem(
                       context: context,
                       itemId: item.id,
                     ),
-                    child: Text("Usar"),
+                    child: Text("Remover"),
                   ),
-                if (item.isFinite)
                   TextButton(
-                    onPressed: () => shoppingViewModel.reloadUses(
+                    onPressed: () => shoppingViewModel.removeAllFromItem(
                       context: context,
                       itemId: item.id,
                     ),
-                    child: Text("Recarregar usos"),
+                    child: Text("Remover tudo"),
                   ),
-                TextButton(
-                  onPressed: () => shoppingViewModel.removeItem(
-                    context: context,
-                    itemId: item.id,
-                  ),
-                  child: Text("Remover"),
-                ),
-                TextButton(
-                  onPressed: () => shoppingViewModel.removeAllFromItem(
-                    context: context,
-                    itemId: item.id,
-                  ),
-                  child: Text("Remover tudo"),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
         Divider()
       ],
     );

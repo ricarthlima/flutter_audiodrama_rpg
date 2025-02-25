@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/helpers.dart';
+import 'package:flutter_rpg_audiodrama/ui/shopping/widgets/item_seller_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/daos/item_dao.dart';
@@ -8,7 +9,7 @@ import '../../../domain/models/item_sheet.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import '../view/shopping_view_model.dart';
-import 'item_widget.dart';
+import 'item_inventory_widget.dart';
 
 class ShoppingListWidget extends StatefulWidget {
   final bool isSeller;
@@ -163,9 +164,8 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                                 shoppingViewModel.listSheetItems[index];
                             Item item =
                                 ItemDAO.instance.getItemById(itemSheet.itemId)!;
-                            return ItemWidget(
+                            return ItemInventoryWidget(
                               item: item,
-                              isSeller: widget.isSeller,
                               itemSheet: itemSheet,
                             );
                           },
@@ -175,14 +175,12 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
               : SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: List.generate(
                       listItem.length,
                       (index) {
                         Item item = listItem[index];
-                        return ItemWidget(
-                          item: item,
-                          isSeller: widget.isSeller,
-                        );
+                        return ItemSellerWidget(item: item);
                       },
                     ),
                   ),

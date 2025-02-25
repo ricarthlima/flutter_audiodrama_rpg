@@ -39,6 +39,7 @@ class HomeListItemWidget extends StatelessWidget {
                     viewModel.onDuplicateSheet(context: context, sheet: sheet);
                   },
                   iconSize: 32,
+                  tooltip: "Duplicar",
                   icon: Icon(Icons.copy),
                 ),
                 IconButton(
@@ -46,6 +47,7 @@ class HomeListItemWidget extends StatelessWidget {
                     viewModel.onRemoveSheet(context: context, sheet: sheet);
                   },
                   iconSize: 32,
+                  tooltip: "Remover",
                   icon: Icon(
                     Icons.delete,
                     color: AppColors.red,
