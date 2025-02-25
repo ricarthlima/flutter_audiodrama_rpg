@@ -5,7 +5,6 @@ String get releaseCollection {
     return "release-";
   }
   if (kDebugMode) {
-    return "release-";
     return "debug-";
   }
   return "profile-";
