@@ -31,8 +31,10 @@ class AppRouter {
             GoRouter.of(context).go(root);
           }
 
-          final viewModel = context.read<SheetViewModel>();
-          viewModel.updateCredentials(id: id, userId: userId);
+          final viewModel = Provider.of<SheetViewModel>(context, listen: false);
+          viewModel.id = id;
+          viewModel.userId = userId;
+          // viewModel.updateCredentials(id: id, userId: userId);
 
           return SheetScreen(
             key: UniqueKey(),
