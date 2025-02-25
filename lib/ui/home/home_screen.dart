@@ -107,18 +107,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   );
                 }
+
+                List<Sheet> listSheets = snapshot.data!.docs
+                    .map((e) => Sheet.fromMap(e.data()))
+                    .toList();
+
+                listSheets.sort(
+                  (a, b) => a.characterName.compareTo(b.characterName),
+                );
+
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: List.generate(
-                      snapshot.data!.docs.length,
+                      listSheets.length,
                       (index) {
-                        Map<String, dynamic> map =
-                            snapshot.data!.docs[index].data();
-                        Sheet sheetModel = Sheet.fromMap(map);
                         return HomeListItemWidget(
-                          sheet: sheetModel,
+                          sheet: listSheets[index],
                           userId:
                               userId ?? FirebaseAuth.instance.currentUser!.uid,
                         );
