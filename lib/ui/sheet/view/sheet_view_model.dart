@@ -17,6 +17,11 @@ class SheetViewModel extends ChangeNotifier {
   String id;
   String? userId;
 
+  updateCredentials({String? id, String? userId}) {
+    this.id = id ?? this.id;
+    this.userId = userId;
+  }
+
   SheetViewModel({required this.id, this.userId});
 
   SheetService sheetService = SheetService();

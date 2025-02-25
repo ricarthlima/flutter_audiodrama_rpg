@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final viewModel = Provider.of<HomeViewModel>(context);
+      final viewModel = Provider.of<HomeViewModel>(context, listen: false);
       viewModel.loadGuestIds();
     });
   }
@@ -68,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String? name,
   }) {
     final viewModel = Provider.of<HomeViewModel>(context);
+    // final viewModel = context.read<HomeViewModel>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

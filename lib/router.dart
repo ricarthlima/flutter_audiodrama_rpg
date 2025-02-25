@@ -29,18 +29,10 @@ class AppRouter {
 
           if (FirebaseAuth.instance.currentUser == null) {
             GoRouter.of(context).go(root);
-            return SizedBox.shrink();
           }
 
-          if (userId != null &&
-              FirebaseAuth.instance.currentUser!.uid != userId) {
-            GoRouter.of(context).go(root);
-            return SizedBox.shrink();
-          }
-
-          final viewModel = Provider.of<SheetViewModel>(context, listen: false);
-          viewModel.id = id;
-          viewModel.userId = userId;
+          final viewModel = context.read<SheetViewModel>();
+          viewModel.updateCredentials(id: id, userId: userId);
 
           return SheetScreen(
             key: UniqueKey(),
