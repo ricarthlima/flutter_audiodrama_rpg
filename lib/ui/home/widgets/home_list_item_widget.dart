@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:provider/provider.dart';
 import '../../../domain/models/sheet_model.dart';
 import '../../_core/helpers.dart';
@@ -30,14 +31,27 @@ class HomeListItemWidget extends StatelessWidget {
         ),
       ),
       trailing: (userId == FirebaseAuth.instance.currentUser!.uid)
-          ? IconButton(
-              onPressed: () {
-                viewModel.onRemoveSheet(context: context, sheet: sheet);
-              },
-              iconSize: 32,
-              icon: Icon(
-                Icons.delete,
-              ),
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    viewModel.onDuplicateSheet(context: context, sheet: sheet);
+                  },
+                  iconSize: 32,
+                  icon: Icon(Icons.copy),
+                ),
+                IconButton(
+                  onPressed: () {
+                    viewModel.onRemoveSheet(context: context, sheet: sheet);
+                  },
+                  iconSize: 32,
+                  icon: Icon(
+                    Icons.delete,
+                    color: AppColors.red,
+                  ),
+                ),
+              ],
             )
           : null,
       subtitle: Text(getBaseLevel(sheet.baseLevel)),

@@ -31,14 +31,15 @@ class HomeViewModel extends ChangeNotifier {
     );
   }
 
-  onCreateSheetClicked(context) async {
+  Future<void> onCreateSheetClicked(context) async {
     String? resultName = await showCreateSheetDialog(context);
     if (resultName != null) {
-      sheetService.createSheet(resultName);
+      await sheetService.createSheet(resultName);
     }
   }
 
-  onRemoveSheet({required BuildContext context, required Sheet sheet}) async {
+  Future<void> onRemoveSheet(
+      {required BuildContext context, required Sheet sheet}) async {
     bool? isRemoving = await showRemoveSheetDialog(
       context: context,
       name: sheet.characterName,
@@ -47,5 +48,12 @@ class HomeViewModel extends ChangeNotifier {
     if (isRemoving != null && isRemoving) {
       await sheetService.removeSheet(sheet);
     }
+  }
+
+  Future<void> onDuplicateSheet({
+    required BuildContext context,
+    required Sheet sheet,
+  }) async {
+    await sheetService.duplicateSheet(sheet);
   }
 }

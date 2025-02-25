@@ -59,6 +59,23 @@ class SheetService {
         );
   }
 
+  Future<void> duplicateSheet(Sheet sheet) async {
+    String sheetId = Uuid().v1();
+    return FirebaseFirestore.instance
+        .collection("${releaseCollection}users")
+        .doc(uid)
+        .collection("sheets")
+        .doc(sheetId)
+        .set(
+          sheet
+              .copyWith(
+                id: sheetId,
+                characterName: "${sheet.characterName} cópia",
+              )
+              .toMap(),
+        );
+  }
+
   Stream<DocumentSnapshot<Map<String, dynamic>>> listenSheetById(String id,
       {String? userId}) {
     return FirebaseFirestore.instance
