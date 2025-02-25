@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/theme_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../_core/components/wip_snackbar.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import '../../_core/stress_level.dart';
@@ -233,7 +232,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                     message: "Descanso curto",
                     child: InkWell(
                       onTap: () {
-                        showSnackBarWip(context);
+                        viewModel.changeEffortPoints(isAdding: false);
                       },
                       child: Icon(
                         Icons.fastfood_outlined,
@@ -245,7 +244,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                     message: "Descanso longo",
                     child: InkWell(
                       onTap: () {
-                        showSnackBarWip(context);
+                        viewModel.changeStressLevel(isAdding: false);
                       },
                       child: Icon(
                         Icons.bed,
