@@ -62,6 +62,7 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     IconButton(
                       onPressed: () {
@@ -131,6 +132,24 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                         },
                         tooltip: "Ordenar por quantidade",
                         icon: Icon(Icons.numbers),
+                      ),
+                    if (widget.isSeller)
+                      SizedBox(
+                        width: 120,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: CheckboxListTile(
+                            value: shoppingViewModel.isFree,
+                            dense: true,
+                            visualDensity: VisualDensity.compact,
+                            title: Text("De graça"),
+                            contentPadding: EdgeInsets.zero,
+                            onChanged: (value) {
+                              shoppingViewModel.isFree =
+                                  !shoppingViewModel.isFree;
+                            },
+                          ),
+                        ),
                       ),
                   ],
                 ),

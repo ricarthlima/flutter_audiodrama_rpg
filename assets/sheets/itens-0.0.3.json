@@ -1,6 +1,34 @@
 {
     "items": [
         {
+            "id": "l2m3n4o5-6789-1121-3141-516171820212",
+            "name": "Lanterna",
+            "price": 45,
+            "description": "Dispositivo portátil que projeta luz em ambientes escuros.",
+            "mechanic": "Permite iluminar áreas escuras. Pode reduzir a DT de Procurar e Investigar em locais com pouca visibilidade.",
+            "isFinite": false,
+            "weight": 1.2
+        },
+        {
+            "id": "m3n4o5p6-7890-1121-3141-516171820313",
+            "name": "Taser",
+            "price": 150,
+            "description": "Arma de choque projetada para incapacitar temporariamente o alvo.",
+            "mechanic": "Se atingir um alvo, este deve fazer um teste de Resistir (Físico) DT12. Em caso de falha, fica na condição Vulnerável.",
+            "isFinite": true,
+            "maxUses": 10,
+            "weight": 0.9
+        },
+        {
+            "id": "n4o5p6q7-8901-1121-3141-516171820414",
+            "name": "Colete de Kevlar",
+            "price": 300,
+            "description": "Proteção corporal contra ataques de projéteis e armas brancas.",
+            "mechanic": "Se for atingido por um ataque de Atirar ou Lutar que levaria à condição Morrendo, o personagem fica apenas na condição Vulnerável.",
+            "isFinite": false,
+            "weight": 4.0
+        },
+        {
             "id": "a1b2c3d4-5678-9101-1121-314151617181",
             "name": "Pistola",
             "price": 250,
@@ -103,15 +131,6 @@
             "isFinite": true,
             "maxUses": 5,
             "weight": 0.3
-        },
-        {
-            "id": "8c4b6552-59a1-49ce-a10e-f249a9d72eb5",
-            "name": "Barraca",
-            "price": 12,
-            "description": "Estrutura portátil para abrigo ao ar livre, protegendo contra vento e chuva.",
-            "mechanic": "Diminui em 5 a DT para Resistir (Fisiológico) contra o frio.",
-            "isFinite": false,
-            "weight": 5
         },
         {
             "id": "8c4b6552-59a1-49ce-a10e-f249a9d72eb5",

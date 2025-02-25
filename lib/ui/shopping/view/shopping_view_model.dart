@@ -22,6 +22,15 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isFree = false;
+
+  bool get isFree => _isFree;
+
+  set isFree(bool value) {
+    _isFree = value;
+    notifyListeners();
+  }
+
   List<ItemSheet> listSheetItems = [];
 
   final TextEditingController _moneyController = TextEditingController();
@@ -35,7 +44,7 @@ class ShoppingViewModel extends ChangeNotifier {
   buyItem({required BuildContext context, required Item item}) {
     double money = double.parse(_moneyController.text);
 
-    if (money >= item.price) {
+    if (money >= item.price || isFree) {
       if (listSheetItems.where((e) => e.itemId == item.id).isNotEmpty) {
         listSheetItems.where((e) => e.itemId == item.id).first.amount++;
       } else {
@@ -43,8 +52,13 @@ class ShoppingViewModel extends ChangeNotifier {
           ItemSheet(itemId: item.id, uses: 0, amount: 1),
         );
       }
-      money = money - item.price;
-      saveChanges(context, money: money);
+
+      if (!isFree) {
+        money = money - item.price;
+        saveChanges(context, money: money);
+      }
+
+      saveChanges(context);
     } else {
       _showHaveNoMoneyFeedback();
     }
