@@ -27,7 +27,10 @@ class ItemSellerWidget extends StatelessWidget {
         ListTile(
           leading: (shoppingViewModel.isBuying)
               ? IconButton(
-                  onPressed: () => shoppingViewModel.buyItem(item),
+                  onPressed: () => shoppingViewModel.buyItem(
+                    context: context,
+                    item: item,
+                  ),
                   tooltip: "Comprar",
                   color: Colors.green[900],
                   iconSize: 48,

@@ -26,28 +26,49 @@ class ShoppingViewModel extends ChangeNotifier {
 
   final TextEditingController _moneyController = TextEditingController();
 
-  TextEditingController moneyController(BuildContext context) {
-    final sheetViewModel = context.read<SheetViewModel>();
+  TextEditingController getMoneyTextController(BuildContext context) {
+    final sheetViewModel = Provider.of<SheetViewModel>(context);
     _moneyController.text = sheetViewModel.money.toString();
     return _moneyController;
   }
 
-  buyItem(Item item) {
-    if (listSheetItems.where((e) => e.itemId == item.id).isNotEmpty) {
-      listSheetItems.where((e) => e.itemId == item.id).first.amount++;
+  buyItem({required BuildContext context, required Item item}) {
+    double money = double.parse(_moneyController.text);
+
+    if (money >= item.price) {
+      if (listSheetItems.where((e) => e.itemId == item.id).isNotEmpty) {
+        listSheetItems.where((e) => e.itemId == item.id).first.amount++;
+      } else {
+        listSheetItems.add(
+          ItemSheet(itemId: item.id, uses: 0, amount: 1),
+        );
+      }
+      money = money - item.price;
+      saveChanges(context, money: money);
     } else {
-      listSheetItems.add(
-        ItemSheet(itemId: item.id, uses: 0, amount: 1),
-      );
+      _showHaveNoMoneyFeedback();
     }
+  }
+
+  bool showingHaveNoMoney = false;
+
+  _showHaveNoMoneyFeedback() async {
+    showingHaveNoMoney = true;
+    notifyListeners();
+    await Future.delayed(Duration(milliseconds: 1750));
+    showingHaveNoMoney = false;
     notifyListeners();
   }
 
-  sellItem(String itemId) {
+  sellItem({required BuildContext context, required String itemId}) {
+    Item item = ItemDAO.instance.getItemById(itemId)!;
     listSheetItems.where((e) => e.itemId == itemId).first.amount--;
     if (listSheetItems.where((e) => e.itemId == itemId).first.amount <= 0) {
       listSheetItems.removeWhere((e) => e.itemId == itemId);
     }
+    double money = double.parse(_moneyController.text);
+    money = money + item.price;
+    saveChanges(context, money: money);
     notifyListeners();
   }
 
@@ -164,6 +185,8 @@ class ShoppingViewModel extends ChangeNotifier {
     }
 
     await sheetViewModel.saveChanges();
+
+    notifyListeners();
   }
 
   bool? isShowingMoneyFeedback;

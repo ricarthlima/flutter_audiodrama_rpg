@@ -74,12 +74,6 @@ class ItemInventoryWidget extends StatelessWidget {
                             fontSize: 16,
                           ),
                         ),
-                        Text(
-                          item.maxUses.toString(),
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text("•"),
@@ -107,7 +101,10 @@ class ItemInventoryWidget extends StatelessWidget {
           ),
           trailing: (shoppingViewModel.isBuying)
               ? IconButton(
-                  onPressed: () => shoppingViewModel.sellItem(item.id),
+                  onPressed: () => shoppingViewModel.sellItem(
+                    context: context,
+                    itemId: item.id,
+                  ),
                   tooltip: "Vender",
                   color: AppColors.red,
                   iconSize: 48,

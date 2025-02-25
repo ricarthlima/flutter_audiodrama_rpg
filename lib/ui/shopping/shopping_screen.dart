@@ -81,10 +81,16 @@ class _ShoppingDialogScreenState extends State<ShoppingDialogScreen> {
                     SizedBox(
                       width: 150,
                       child: TextFormField(
-                        controller: shoppingViewModel.moneyController(context),
+                        controller:
+                            shoppingViewModel.getMoneyTextController(context),
                         textAlign: TextAlign.right,
                         decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.attach_money_rounded),
+                          prefixIcon: Icon(
+                            Icons.attach_money_rounded,
+                            color: shoppingViewModel.showingHaveNoMoney
+                                ? AppColors.red
+                                : null,
+                          ),
                           suffix: InkWell(
                             onTap: (shoppingViewModel.isShowingMoneyFeedback ==
                                     null)
@@ -110,6 +116,9 @@ class _ShoppingDialogScreenState extends State<ShoppingDialogScreen> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
+                          color: shoppingViewModel.showingHaveNoMoney
+                              ? AppColors.red
+                              : null,
                         ),
                       ),
                     ),
