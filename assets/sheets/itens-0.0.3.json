@@ -14,7 +14,7 @@
             "name": "Taser",
             "price": 150,
             "description": "Arma de choque projetada para incapacitar temporariamente o alvo.",
-            "mechanic": "Se atingir um alvo, este deve fazer um teste de Resistir (Físico) DT12. Em caso de falha, fica na condição Vulnerável.",
+            "mechanic": "Se atingir um alvo, este deve fazer um teste de Resistir (Físico) com 3 sucessos. Em caso de falha, fica na condição Vulnerável.",
             "isFinite": true,
             "maxUses": 10,
             "weight": 0.9
@@ -131,6 +131,15 @@
             "isFinite": true,
             "maxUses": 5,
             "weight": 0.3
+        },
+        {
+            "id": "8c4b6552-59a1-49ce-a10e-f249a9d72eb5",
+            "name": "Barraca",
+            "price": 12,
+            "description": "Estrutura portátil para abrigo ao ar livre, protegendo contra vento e chuva.",
+            "mechanic": "Diminui em 5 a DT para Resistir (Fisiológico) contra o frio.",
+            "isFinite": false,
+            "weight": 5
         },
         {
             "id": "8c4b6552-59a1-49ce-a10e-f249a9d72eb5",
