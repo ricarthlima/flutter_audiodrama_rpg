@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -55,6 +57,7 @@ class SheetService {
             listItemSheet: [],
             money: 500,
             weight: 0,
+            listActionLore: [],
           ).toMap(),
         );
   }

@@ -3,6 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/action_lore.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
 import 'package:provider/provider.dart';
@@ -43,6 +46,7 @@ class SheetViewModel extends ChangeNotifier {
   Future<Sheet?> futureGetSheet = Future.delayed(Duration.zero);
   List<ActionValue> listActionValue = [];
   List<RollLog> listRollLog = [];
+  List<ActionLore> listActionLore = [];
 
   int _notificationCount = 0;
 
@@ -102,6 +106,7 @@ class SheetViewModel extends ChangeNotifier {
       weight = sheetModel.weight;
 
       sheet = sheetModel;
+      listActionLore = sheetModel.listActionLore;
     }
 
     listSheets = await SheetService().getSheetsByUser(
@@ -135,6 +140,7 @@ class SheetViewModel extends ChangeNotifier {
       listItemSheet: listSheetItems,
       money: money,
       weight: weight,
+      listActionLore: listActionLore,
     );
     await SheetService().saveSheet(
       sheet,
@@ -324,5 +330,31 @@ class SheetViewModel extends ChangeNotifier {
     int totalAversao = listActionValue.where((e) => e.value == 0).length;
 
     return (totalProposito * 3) - totalAversao;
+  }
+
+  String getTrainLevelByActionName(String actionId) {
+    return getTrainingLevel(listActionValue
+        .firstWhere((e) => e.actionId == actionId,
+            orElse: () => ActionValue(actionId: actionId, value: 1))
+        .value);
+  }
+
+  int getTrainLevelByAction(String actionId) {
+    return listActionValue
+        .firstWhere((e) => e.actionId == actionId,
+            orElse: () => ActionValue(actionId: actionId, value: 1))
+        .value;
+  }
+
+  void saveActionLore(
+      {required String actionId, required String loreText}) async {
+    if (listActionLore.where((e) => e.actionId == actionId).isNotEmpty) {
+      int index = listActionLore.indexWhere((e) => e.actionId == actionId);
+      listActionLore[index].loreText = loreText;
+    } else {
+      listActionLore.add(ActionLore(actionId: actionId, loreText: loreText));
+    }
+    saveChanges();
+    notifyListeners();
   }
 }

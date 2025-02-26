@@ -8,3 +8,12 @@ showSnackBarWip(BuildContext context) {
     ),
   );
 }
+
+showSnackBar({required BuildContext context, required String message}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 2000),
+    ),
+  );
+}

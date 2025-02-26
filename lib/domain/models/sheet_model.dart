@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/action_lore.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
 
 import 'package:flutter_rpg_audiodrama/domain/models/item_sheet.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class Sheet {
@@ -18,6 +21,8 @@ class Sheet {
   double money;
   double weight;
 
+  List<ActionLore> listActionLore;
+
   Sheet({
     required this.id,
     required this.characterName,
@@ -29,6 +34,7 @@ class Sheet {
     required this.listItemSheet,
     required this.money,
     required this.weight,
+    required this.listActionLore,
   });
 
   Sheet copyWith({
@@ -42,6 +48,7 @@ class Sheet {
     List<ItemSheet>? listItemSheet,
     double? money,
     double? weight,
+    List<ActionLore>? listActionLore,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -54,6 +61,7 @@ class Sheet {
       listItemSheet: listItemSheet ?? this.listItemSheet,
       money: money ?? this.money,
       weight: weight ?? this.weight,
+      listActionLore: listActionLore ?? this.listActionLore,
     );
   }
 
@@ -69,6 +77,7 @@ class Sheet {
       'listItemSheet': listItemSheet.map((x) => x.toMap()).toList(),
       "money": money,
       "weight": weight,
+      'listActionLore': listActionLore.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -98,6 +107,13 @@ class Sheet {
           : [],
       money: (map["money"] ?? 0) as double,
       weight: (map["weight"] ?? 0) as double,
+      listActionLore: map['listActionLore'] != null
+          ? List<ActionLore>.from(
+              (map['listActionLore'] as List<dynamic>).map<ActionLore>(
+                (x) => ActionLore.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : [],
     );
   }
 
@@ -122,7 +138,8 @@ class Sheet {
         listEquals(other.listActionValue, listActionValue) &&
         listEquals(other.listRollLog, listRollLog) &&
         other.baseLevel == baseLevel &&
-        listEquals(other.listItemSheet, listItemSheet);
+        listEquals(other.listItemSheet, listItemSheet) &&
+        listEquals(listActionLore, other.listActionLore);
   }
 
   @override
@@ -134,132 +151,7 @@ class Sheet {
         listActionValue.hashCode ^
         listRollLog.hashCode ^
         baseLevel.hashCode ^
-        listItemSheet.hashCode;
-  }
-}
-
-class ActionValue {
-  String actionId;
-  int value;
-
-  ActionValue({
-    required this.actionId,
-    required this.value,
-  });
-
-  ActionValue copyWith({
-    String? actionId,
-    int? value,
-  }) {
-    return ActionValue(
-      actionId: actionId ?? this.actionId,
-      value: value ?? this.value,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'actionId': actionId,
-      'value': value,
-    };
-  }
-
-  factory ActionValue.fromMap(Map<String, dynamic> map) {
-    return ActionValue(
-      actionId: map['actionId'] as String,
-      value: map['value'] as int,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ActionValue.fromJson(String source) =>
-      ActionValue.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() => 'ActionValue(actionId: $actionId, value: $value)';
-
-  @override
-  bool operator ==(covariant ActionValue other) {
-    if (identical(this, other)) return true;
-
-    return other.actionId == actionId && other.value == value;
-  }
-
-  @override
-  int get hashCode => actionId.hashCode ^ value.hashCode;
-}
-
-class RollLog {
-  List<int> rolls;
-  String idAction;
-  DateTime dateTime;
-  bool isGettingLower;
-
-  RollLog({
-    required this.rolls,
-    required this.idAction,
-    required this.dateTime,
-    required this.isGettingLower,
-  });
-
-  RollLog copyWith({
-    List<int>? rolls,
-    String? idAction,
-    DateTime? dateTime,
-    bool? isGettingLower,
-  }) {
-    return RollLog(
-      rolls: rolls ?? this.rolls,
-      idAction: idAction ?? this.idAction,
-      dateTime: dateTime ?? this.dateTime,
-      isGettingLower: isGettingLower ?? this.isGettingLower,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'rolls': rolls,
-      'idAction': idAction,
-      'dateTime': dateTime.millisecondsSinceEpoch,
-      'isGettingLower': isGettingLower,
-    };
-  }
-
-  factory RollLog.fromMap(Map<String, dynamic> map) {
-    return RollLog(
-      rolls: List<int>.from((map['rolls'] as List<dynamic>)),
-      idAction: map['idAction'] as String,
-      dateTime: DateTime.fromMillisecondsSinceEpoch(map['dateTime'] as int),
-      isGettingLower: map['isGettingLower'] as bool,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory RollLog.fromJson(String source) =>
-      RollLog.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() {
-    return 'RollLog(rolls: $rolls, idAction: $idAction, dateTime: $dateTime, isGettingLower: $isGettingLower)';
-  }
-
-  @override
-  bool operator ==(covariant RollLog other) {
-    if (identical(this, other)) return true;
-
-    return listEquals(other.rolls, rolls) &&
-        other.idAction == idAction &&
-        other.dateTime == dateTime &&
-        other.isGettingLower == isGettingLower;
-  }
-
-  @override
-  int get hashCode {
-    return rolls.hashCode ^
-        idAction.hashCode ^
-        dateTime.hashCode ^
-        isGettingLower.hashCode;
+        listItemSheet.hashCode ^
+        listActionLore.hashCode;
   }
 }

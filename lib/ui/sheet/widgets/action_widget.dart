@@ -2,15 +2,18 @@ import 'dart:math';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/color_filter_inverter.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/components/wip_snackbar.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/action_lore_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/theme_provider.dart';
 import '../../../data/daos/action_dao.dart';
 import '../helpers/enum_action_train_level.dart';
 import '../../../domain/models/action_template.dart';
-import '../../../domain/models/sheet_model.dart';
 import '../components/action_dialog_tooltip.dart';
 import '../view/sheet_view_model.dart';
 import 'action_tooltip.dart';
@@ -79,6 +82,17 @@ class _ActionWidgetState extends State<ActionWidget> {
                       }
                     : null,
                 onLongPress: () => showDialogTip(context, widget.action),
+                onDoubleTap: () {
+                  if (viewModel.getTrainLevelByAction(widget.action.id) != 1) {
+                    showActionLoreDialog(context, widget.action);
+                  } else {
+                    showSnackBar(
+                      context: context,
+                      message:
+                          "Você não possui treinamento ou aversão nessa ação.",
+                    );
+                  }
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   mainAxisSize: MainAxisSize.max,
