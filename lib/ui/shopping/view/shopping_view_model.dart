@@ -258,6 +258,9 @@ class ShoppingViewModel extends ChangeNotifier {
       listInventoryItems = _listSheetItems;
     }
 
+    searchInventoryController.text = "";
+    searchSellerController.text = "";
+
     notifyListeners();
   }
 }

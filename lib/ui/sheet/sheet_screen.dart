@@ -90,11 +90,19 @@ class _SheetScreenState extends State<SheetScreen> {
                       child: AnimatedSwitcher(
                         duration: Duration(seconds: 1),
                         child: (viewModel.isEditing)
-                            ? TextField(
-                                controller: viewModel.nameController,
-                                style: TextStyle(
-                                  fontSize: isVertical(context) ? 18 : 48,
-                                  fontFamily: FontFamily.sourceSerif4,
+                            ? ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: width(context) * 0.8,
+                                  minWidth: width(context) * 0.2,
+                                ),
+                                child: IntrinsicWidth(
+                                  child: TextField(
+                                    controller: viewModel.nameController,
+                                    style: TextStyle(
+                                      fontSize: isVertical(context) ? 18 : 48,
+                                      fontFamily: FontFamily.sourceSerif4,
+                                    ),
+                                  ),
                                 ),
                               )
                             : Text(
@@ -116,7 +124,6 @@ class _SheetScreenState extends State<SheetScreen> {
                 visible: width(context) > 750,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  spacing: 16,
                   children: [
                     AnimatedSwitcher(
                       duration: Duration(seconds: 1),
@@ -157,6 +164,7 @@ class _SheetScreenState extends State<SheetScreen> {
                               },
                             ),
                     ),
+                    SizedBox(height: 16),
                     Row(
                       spacing: 32,
                       children: [
@@ -216,6 +224,14 @@ class _SheetScreenState extends State<SheetScreen> {
                         ),
                       ],
                     ),
+                    if (viewModel.getPropositoMinusAversao() > 0)
+                      Text(
+                        "Faltam ${viewModel.getPropositoMinusAversao()} aversões.",
+                        style: TextStyle(
+                          color: AppColors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                   ],
                 ),
               ),

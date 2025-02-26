@@ -34,6 +34,7 @@ class NamedWidget extends StatelessWidget {
       child: Tooltip(
         message: tooltip,
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           spacing: 8,
           children: [
             if (isShowLeftSeparator)

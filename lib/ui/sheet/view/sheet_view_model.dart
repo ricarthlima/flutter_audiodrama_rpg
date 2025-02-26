@@ -318,4 +318,11 @@ class SheetViewModel extends ChangeNotifier {
         return "";
     }
   }
+
+  int getPropositoMinusAversao() {
+    int totalProposito = listActionValue.where((e) => e.value == 4).length;
+    int totalAversao = listActionValue.where((e) => e.value == 0).length;
+
+    return (totalProposito * 3) - totalAversao;
+  }
 }
