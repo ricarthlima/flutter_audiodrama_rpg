@@ -27,19 +27,35 @@ class _SheetNotesScreenState extends State<SheetNotesScreen> {
       width: width(context),
       height: height(context),
       padding: EdgeInsets.all(16),
-      child: DefaultTabController(
-        length: 2,
-        child: Column(
-          children: [
-            TabBar(tabs: [Tab(text: "Bio"), Tab(text: "Anotações")]),
-            Expanded(
-              child: TabBarView(children: [
-                BioWidget(),
-                NotesWidget(),
-              ]),
+      child: Stack(
+        children: [
+          DefaultTabController(
+            length: 2,
+            child: Column(
+              children: [
+                TabBar(tabs: [
+                  Tab(icon: Icon(Icons.edit), text: "Bio"),
+                  Tab(icon: Icon(Icons.note_alt), text: "Anotações"),
+                ]),
+                Expanded(
+                  child: TabBarView(children: [
+                    BioWidget(),
+                    NotesWidget(),
+                  ]),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.close),
+            ),
+          ),
+        ],
       ),
     );
   }

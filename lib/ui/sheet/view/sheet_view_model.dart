@@ -369,6 +369,7 @@ class SheetViewModel extends ChangeNotifier {
     showSheetNotesDialog(context);
   }
 
+  bool? isSavingNotes;
   final TextEditingController _notesTextController = TextEditingController();
 
   TextEditingController notesTextController() {
@@ -392,18 +393,27 @@ class SheetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool? isSavingNotes;
-
+  bool? isSavingBio;
   final TextEditingController _bioEditingController = TextEditingController();
 
   TextEditingController bioEditingController() {
-    _bioEditingController.text = notes;
+    _bioEditingController.text = bio;
     return _bioEditingController;
   }
 
   void saveBio() async {
     bio = _bioEditingController.text;
-    saveChanges();
+    notifyListeners();
+
+    isSavingBio = true;
+    notifyListeners();
+
+    await saveChanges();
+    isSavingBio = false;
+    notifyListeners();
+
+    await Future.delayed(Duration(milliseconds: 2000));
+    isSavingBio = null;
     notifyListeners();
   }
 }

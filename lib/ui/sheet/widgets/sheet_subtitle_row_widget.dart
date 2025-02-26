@@ -198,6 +198,20 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           ),
           NamedWidget(
             isVisible: !isVertical(context) && !viewModel.isEditing,
+            title: "Caderneta",
+            tooltip: "Clique para abrir sua caderneta",
+            hardHeight: 32,
+            isShowRightSeparator: true,
+            child: InkWell(
+              onTap: () => viewModel.onNotesButtonClicked(context),
+              child: Icon(
+                Icons.description_outlined,
+                size: 18,
+              ),
+            ),
+          ),
+          NamedWidget(
+            isVisible: !isVertical(context) && !viewModel.isEditing,
             title: "Itens",
             tooltip: "Clique para abrir inventário",
             hardHeight: 32,
