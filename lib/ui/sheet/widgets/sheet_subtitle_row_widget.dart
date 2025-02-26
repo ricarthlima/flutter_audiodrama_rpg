@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -145,58 +146,51 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Visibility(
-                  visible: viewModel.isEditing,
+                SizedBox(
+                  width: 32,
+                  child: (viewModel.modGlobalTrain > -4)
+                      ? IconButton(
+                          onPressed: () {
+                            viewModel.changeModGlobal(isAdding: false);
+                          },
+                          padding: EdgeInsets.zero,
+                          icon: Icon(Icons.remove),
+                        )
+                      : Container(),
+                ),
+                Tooltip(
+                  message: "Clique para manter o modificador",
                   child: SizedBox(
-                    width: 32,
-                    child: (viewModel.modGlobalTrain > -4)
-                        ? IconButton(
-                            onPressed: () {
-                              viewModel.changeModGlobal(isAdding: false);
-                            },
-                            padding: EdgeInsets.zero,
-                            icon: Icon(Icons.remove),
-                          )
-                        : Container(),
+                    width: 42,
+                    child: InkWell(
+                      onTap: () {
+                        viewModel.toggleKeepingGlobalModifier();
+                      },
+                      child: Text(
+                        viewModel.modGlobalTrain.toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: FontFamily.bungee,
+                          color: (viewModel.isKeepingGlobalModifier)
+                              ? AppColors.red
+                              : null,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(
-                  width: 42,
-                  child: Text(
-                    viewModel.modGlobalTrain.toString(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: FontFamily.bungee,
-                    ),
-                  ),
+                  width: 32,
+                  child: (viewModel.modGlobalTrain < 4)
+                      ? IconButton(
+                          onPressed: () {
+                            viewModel.changeModGlobal();
+                          },
+                          padding: EdgeInsets.zero,
+                          icon: Icon(Icons.add),
+                        )
+                      : Container(),
                 ),
-                Visibility(
-                  visible: viewModel.isEditing,
-                  child: SizedBox(
-                    width: 32,
-                    child: (viewModel.modGlobalTrain < 4)
-                        ? IconButton(
-                            onPressed: () {
-                              viewModel.changeModGlobal();
-                            },
-                            padding: EdgeInsets.zero,
-                            icon: Icon(Icons.add),
-                          )
-                        : Container(),
-                  ),
-                ),
-                Visibility(
-                  visible: viewModel.isEditing,
-                  child: Tooltip(
-                    message: "Manter modificador",
-                    child: Checkbox(
-                      value: viewModel.isKeepingGlobalModifier,
-                      onChanged: (value) {
-                        viewModel.toggleKeepingGlobalModifier();
-                      },
-                    ),
-                  ),
-                )
               ],
             ),
           ),
