@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/daos/item_dao.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/item_sheet.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/helpers.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +32,7 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<ItemSheet> listSheetItems = [];
+  List<ItemSheet> _listSheetItems = [];
 
   final TextEditingController _moneyController = TextEditingController();
 
@@ -45,10 +46,10 @@ class ShoppingViewModel extends ChangeNotifier {
     double money = double.parse(_moneyController.text);
 
     if (money >= item.price || isFree) {
-      if (listSheetItems.where((e) => e.itemId == item.id).isNotEmpty) {
-        listSheetItems.where((e) => e.itemId == item.id).first.amount++;
+      if (_listSheetItems.where((e) => e.itemId == item.id).isNotEmpty) {
+        _listSheetItems.where((e) => e.itemId == item.id).first.amount++;
       } else {
-        listSheetItems.add(
+        _listSheetItems.add(
           ItemSheet(itemId: item.id, uses: 0, amount: 1),
         );
       }
@@ -76,9 +77,9 @@ class ShoppingViewModel extends ChangeNotifier {
 
   sellItem({required BuildContext context, required String itemId}) {
     Item item = ItemDAO.instance.getItemById(itemId)!;
-    listSheetItems.where((e) => e.itemId == itemId).first.amount--;
-    if (listSheetItems.where((e) => e.itemId == itemId).first.amount <= 0) {
-      listSheetItems.removeWhere((e) => e.itemId == itemId);
+    _listSheetItems.where((e) => e.itemId == itemId).first.amount--;
+    if (_listSheetItems.where((e) => e.itemId == itemId).first.amount <= 0) {
+      _listSheetItems.removeWhere((e) => e.itemId == itemId);
     }
     double money = double.parse(_moneyController.text);
     money = money + item.price;
@@ -87,13 +88,13 @@ class ShoppingViewModel extends ChangeNotifier {
   }
 
   openInventory(List<ItemSheet> listItems) {
-    listSheetItems = listItems;
+    _listSheetItems = listItems;
     isBuying = false;
     notifyListeners();
   }
 
   reloadUses({required BuildContext context, required String itemId}) {
-    listSheetItems
+    _listSheetItems
         .firstWhere(
           (ItemSheet itemSheet) => itemSheet.itemId == itemId,
         )
@@ -106,17 +107,17 @@ class ShoppingViewModel extends ChangeNotifier {
   useItem({required BuildContext context, required String itemId}) {
     Item item = ItemDAO.instance.getItemById(itemId)!;
 
-    int index = listSheetItems.indexWhere(
+    int index = _listSheetItems.indexWhere(
       (ItemSheet itemSheet) => itemSheet.itemId == itemId,
     );
     if (index != -1) {
       if (item.isFinite) {
-        listSheetItems[index].uses++;
-        if (listSheetItems[index].uses >= item.maxUses!) {
-          listSheetItems[index].amount--;
-          listSheetItems[index].uses = 0;
+        _listSheetItems[index].uses++;
+        if (_listSheetItems[index].uses >= item.maxUses!) {
+          _listSheetItems[index].amount--;
+          _listSheetItems[index].uses = 0;
         }
-        if (listSheetItems[index].amount <= 0) {
+        if (_listSheetItems[index].amount <= 0) {
           removeAllFromItem(context: context, itemId: itemId, isOver: true);
         }
       }
@@ -139,7 +140,7 @@ class ShoppingViewModel extends ChangeNotifier {
     );
 
     if (result != null && result) {
-      listSheetItems
+      _listSheetItems
           .firstWhere(
             (ItemSheet itemSheet) => itemSheet.itemId == itemId,
           )
@@ -166,7 +167,7 @@ class ShoppingViewModel extends ChangeNotifier {
     );
 
     if (result != null && result) {
-      listSheetItems.removeWhere(
+      _listSheetItems.removeWhere(
         (ItemSheet itemSheet) => itemSheet.itemId == itemId,
       );
     }
@@ -192,7 +193,7 @@ class ShoppingViewModel extends ChangeNotifier {
 
   saveChanges(BuildContext context, {double? money}) async {
     final sheetViewModel = context.read<SheetViewModel>();
-    sheetViewModel.listSheetItems = listSheetItems;
+    sheetViewModel.listSheetItems = _listSheetItems;
 
     if (money != null) {
       sheetViewModel.money = money;
@@ -210,6 +211,53 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
     await Future.delayed(Duration(milliseconds: 1250));
     isShowingMoneyFeedback = null;
+    notifyListeners();
+  }
+
+  List<Item> listSellerItems = ItemDAO.instance.getItems;
+  List<ItemSheet> listInventoryItems = [];
+
+  TextEditingController searchInventoryController = TextEditingController();
+  TextEditingController searchSellerController = TextEditingController();
+
+  onSearchItem(bool isSeller) {
+    String search = searchInventoryController.text;
+
+    if (isSeller) {
+      search = searchSellerController.text;
+    }
+
+    if (search == "") {
+      resetSearch(isSeller);
+      return;
+    }
+
+    search = removeDiacritics(search).toLowerCase();
+
+    if (isSeller) {
+      listSellerItems = listSellerItems
+          .where((Item item) =>
+              removeDiacritics(item.name).toLowerCase().contains(search))
+          .toList();
+    } else {
+      listInventoryItems = _listSheetItems.where(
+        (ItemSheet itemSheet) {
+          Item item = ItemDAO.instance.getItemById(itemSheet.itemId)!;
+          return removeDiacritics(item.name).toLowerCase().contains(search);
+        },
+      ).toList();
+    }
+
+    notifyListeners();
+  }
+
+  resetSearch(bool isSeller) {
+    if (isSeller) {
+      listSellerItems = ItemDAO.instance.getItems;
+    } else {
+      listInventoryItems = _listSheetItems;
+    }
+
     notifyListeners();
   }
 }

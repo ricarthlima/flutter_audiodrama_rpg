@@ -67,7 +67,7 @@ class ItemInventoryWidget extends StatelessWidget {
                           ),
                           Text(
                             _getTotalAmount(
-                              shoppingViewModel.listSheetItems
+                              shoppingViewModel.listInventoryItems
                                   .firstWhere((e) => e.itemId == item.id)
                                   .uses,
                             ),

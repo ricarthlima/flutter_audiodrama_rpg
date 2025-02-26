@@ -24,8 +24,6 @@ class ShoppingListWidget extends StatefulWidget {
 }
 
 class _ShoppingListWidgetState extends State<ShoppingListWidget> {
-  List<Item> listItem = [];
-
   bool isOrderedByName = true;
   bool isOrderedByPrice = false;
   bool isOrderedByWeight = false;
@@ -43,7 +41,6 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
     final shoppingViewModel = Provider.of<ShoppingViewModel>(context);
 
     return Column(
-      spacing: 16,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -157,10 +154,31 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
             )
           ],
         ),
+        TextFormField(
+          controller: !widget.isSeller
+              ? shoppingViewModel.searchInventoryController
+              : shoppingViewModel.searchSellerController,
+          decoration: InputDecoration(
+            label: Text("Pesquisar item"),
+            suffix: InkWell(
+              onTap: () {
+                shoppingViewModel.onSearchItem(widget.isSeller);
+              },
+              child: Icon(Icons.search),
+            ),
+          ),
+          onFieldSubmitted: (value) {
+            shoppingViewModel.onSearchItem(widget.isSeller);
+          },
+          onChanged: (value) {
+            shoppingViewModel.onSearchItem(widget.isSeller);
+          },
+        ),
+        SizedBox(height: 16),
         Container(
           constraints: BoxConstraints(
-            maxHeight:
-                height(context) - 220, // Define um limite máximo de altura
+            maxHeight: height(context) - 260,
+            minHeight: 400,
           ),
           padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
@@ -170,44 +188,48 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                 color: Theme.of(context).textTheme.bodyMedium!.color!),
           ),
           child: (!widget.isSeller)
-              ? (shoppingViewModel.listSheetItems.isEmpty)
-                  ? Center(
-                      child: Text(
-                        "Mochila vazia",
-                        style: TextStyle(fontSize: 24),
-                      ),
-                    )
-                  : SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(
-                          shoppingViewModel.listSheetItems.length,
-                          (index) {
-                            ItemSheet itemSheet =
-                                shoppingViewModel.listSheetItems[index];
-                            Item item =
-                                ItemDAO.instance.getItemById(itemSheet.itemId)!;
-                            return ItemInventoryWidget(
-                              item: item,
-                              itemSheet: itemSheet,
-                            );
-                          },
+              ? (shoppingViewModel.listInventoryItems.isEmpty)
+                  ? Center(child: Text("Nada por aqui"))
+                  : SizedBox(
+                      height: double.infinity,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            shoppingViewModel.listInventoryItems.length,
+                            (index) {
+                              ItemSheet itemSheet =
+                                  shoppingViewModel.listInventoryItems[index];
+                              Item item = ItemDAO.instance
+                                  .getItemById(itemSheet.itemId)!;
+                              return ItemInventoryWidget(
+                                item: item,
+                                itemSheet: itemSheet,
+                              );
+                            },
+                          ),
                         ),
                       ),
                     )
-              : SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(
-                      listItem.length,
-                      (index) {
-                        Item item = listItem[index];
-                        return ItemSellerWidget(item: item);
-                      },
-                    ),
-                  ),
+              : SizedBox(
+                  height: double.infinity,
+                  child: (shoppingViewModel.listSellerItems.isEmpty)
+                      ? Center(child: Text("Nada por aqui"))
+                      : SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(
+                              shoppingViewModel.listSellerItems.length,
+                              (index) {
+                                Item item =
+                                    shoppingViewModel.listSellerItems[index];
+                                return ItemSellerWidget(item: item);
+                              },
+                            ),
+                          ),
+                        ),
                 ),
         ),
       ],
@@ -215,36 +237,43 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
   }
 
   Future<void> _loadItems() async {
-    if (widget.isSeller) {
-      listItem = ItemDAO.instance.getItems;
-    }
+    final shoppingViewModel = context.read<ShoppingViewModel>();
+    shoppingViewModel.resetSearch(true);
+    shoppingViewModel.resetSearch(false);
     _orderItems();
     _orderItemsMine();
   }
 
   _orderItems() {
+    final shoppingViewModel = context.read<ShoppingViewModel>();
+
     if (isOrderedByName) {
-      listItem.sort(
+      shoppingViewModel.listSellerItems.sort(
         (a, b) => removeDiacritics(a.name).compareTo(
           removeDiacritics(b.name),
         ),
       );
       if (!isAscendent) {
-        listItem = listItem.reversed.toList();
+        shoppingViewModel.listSellerItems =
+            shoppingViewModel.listSellerItems.reversed.toList();
       }
     }
 
     if (isOrderedByPrice) {
-      listItem.sort((a, b) => a.price.compareTo(b.price));
+      shoppingViewModel.listSellerItems
+          .sort((a, b) => a.price.compareTo(b.price));
       if (!isAscendent) {
-        listItem = listItem.reversed.toList();
+        shoppingViewModel.listSellerItems =
+            shoppingViewModel.listSellerItems.reversed.toList();
       }
     }
 
     if (isOrderedByWeight) {
-      listItem.sort((a, b) => a.weight.compareTo(b.weight));
+      shoppingViewModel.listSellerItems
+          .sort((a, b) => a.weight.compareTo(b.weight));
       if (!isAscendent) {
-        listItem = listItem.reversed.toList();
+        shoppingViewModel.listSellerItems =
+            shoppingViewModel.listSellerItems.reversed.toList();
       }
     }
 
@@ -255,7 +284,7 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
     final shoppingViewModel = context.read<ShoppingViewModel>();
 
     if (isOrderedByName) {
-      shoppingViewModel.listSheetItems.sort((a, b) {
+      shoppingViewModel.listInventoryItems.sort((a, b) {
         Item itemA = ItemDAO.instance.getItemById(a.itemId)!;
         Item itemB = ItemDAO.instance.getItemById(b.itemId)!;
         return removeDiacritics(itemA.name).compareTo(
@@ -263,41 +292,41 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
         );
       });
       if (!isAscendent) {
-        shoppingViewModel.listSheetItems =
-            shoppingViewModel.listSheetItems.reversed.toList();
+        shoppingViewModel.listInventoryItems =
+            shoppingViewModel.listInventoryItems.reversed.toList();
       }
     }
 
     if (isOrderedByPrice) {
-      shoppingViewModel.listSheetItems.sort((a, b) {
+      shoppingViewModel.listInventoryItems.sort((a, b) {
         Item itemA = ItemDAO.instance.getItemById(a.itemId)!;
         Item itemB = ItemDAO.instance.getItemById(b.itemId)!;
         return itemA.price.compareTo(itemB.price);
       });
       if (!isAscendent) {
-        shoppingViewModel.listSheetItems =
-            shoppingViewModel.listSheetItems.reversed.toList();
+        shoppingViewModel.listInventoryItems =
+            shoppingViewModel.listInventoryItems.reversed.toList();
       }
     }
 
     if (isOrderedByWeight) {
-      shoppingViewModel.listSheetItems.sort((a, b) {
+      shoppingViewModel.listInventoryItems.sort((a, b) {
         Item itemA = ItemDAO.instance.getItemById(a.itemId)!;
         Item itemB = ItemDAO.instance.getItemById(b.itemId)!;
         return itemA.weight.compareTo(itemB.weight);
       });
       if (!isAscendent) {
-        shoppingViewModel.listSheetItems =
-            shoppingViewModel.listSheetItems.reversed.toList();
+        shoppingViewModel.listInventoryItems =
+            shoppingViewModel.listInventoryItems.reversed.toList();
       }
     }
 
     if (isOrderedByAmount) {
-      shoppingViewModel.listSheetItems
+      shoppingViewModel.listInventoryItems
           .sort((a, b) => a.amount.compareTo(b.amount));
       if (!isAscendent) {
-        shoppingViewModel.listSheetItems =
-            shoppingViewModel.listSheetItems.reversed.toList();
+        shoppingViewModel.listInventoryItems =
+            shoppingViewModel.listInventoryItems.reversed.toList();
       }
     }
     setState(() {});

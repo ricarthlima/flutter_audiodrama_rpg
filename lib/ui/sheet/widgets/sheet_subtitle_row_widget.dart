@@ -26,6 +26,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             title: "Estresse",
             tooltip: "Nível de estresse atual",
             hardHeight: 32,
+            isShowRightSeparator: true,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -74,11 +75,11 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               ],
             ),
           ),
-          Text("•"),
           NamedWidget(
             title: "Esforço",
             tooltip: "Carga de esforço acumulada",
             hardHeight: 32,
+            isShowRightSeparator: true,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -136,11 +137,12 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               ],
             ),
           ),
-          Text("•"),
           NamedWidget(
+            isVisible: !viewModel.isEditing,
             title: "Mod. Global",
             tooltip: "Modificador global de treinamento",
             hardHeight: 32,
+            isShowRightSeparator: true,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -194,12 +196,12 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               ],
             ),
           ),
-          Text("•"),
           NamedWidget(
-            isVisible: !isVertical(context),
+            isVisible: !isVertical(context) && !viewModel.isEditing,
             title: "Itens",
             tooltip: "Clique para abrir inventário",
             hardHeight: 32,
+            isShowRightSeparator: true,
             child: InkWell(
               onTap: () => viewModel.onItemsButtonClicked(context),
               child: Image.asset(
@@ -209,10 +211,6 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                 width: 18,
               ),
             ),
-          ),
-          Visibility(
-            visible: !isVertical(context),
-            child: Text("•"),
           ),
           if (!viewModel.isEditing)
             NamedWidget(
