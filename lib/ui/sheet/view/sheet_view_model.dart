@@ -7,6 +7,7 @@ import 'package:flutter_rpg_audiodrama/domain/models/action_lore.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet_notes/sheet_notes.dart';
 import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -61,6 +62,8 @@ class SheetViewModel extends ChangeNotifier {
   int baseLevel = 0;
   double money = 0;
   double weight = 0;
+  String bio = "";
+  String notes = "";
 
   int modGlobalTrain = 0;
   bool isKeepingGlobalModifier = false;
@@ -96,6 +99,8 @@ class SheetViewModel extends ChangeNotifier {
     Sheet? sheetModel = await futureGetSheet;
 
     if (sheetModel != null) {
+      sheet = sheetModel;
+
       listActionValue = sheetModel.listActionValue;
       listRollLog = sheetModel.listRollLog;
       effortPoints = sheetModel.effortPoints;
@@ -104,9 +109,9 @@ class SheetViewModel extends ChangeNotifier {
       listSheetItems = sheetModel.listItemSheet;
       money = sheetModel.money;
       weight = sheetModel.weight;
-
-      sheet = sheetModel;
       listActionLore = sheetModel.listActionLore;
+      bio = sheetModel.bio;
+      notes = sheetModel.notes;
     }
 
     listSheets = await SheetService().getSheetsByUser(
@@ -141,6 +146,8 @@ class SheetViewModel extends ChangeNotifier {
       money: money,
       weight: weight,
       listActionLore: listActionLore,
+      bio: bio,
+      notes: notes,
     );
     await SheetService().saveSheet(
       sheet,
@@ -354,6 +361,48 @@ class SheetViewModel extends ChangeNotifier {
     } else {
       listActionLore.add(ActionLore(actionId: actionId, loreText: loreText));
     }
+    saveChanges();
+    notifyListeners();
+  }
+
+  onNotesButtonClicked(BuildContext context) async {
+    showSheetNotesDialog(context);
+  }
+
+  final TextEditingController _notesTextController = TextEditingController();
+
+  TextEditingController notesTextController() {
+    _notesTextController.text = notes;
+    return _notesTextController;
+  }
+
+  void saveNotes() async {
+    notes = _notesTextController.text;
+    notifyListeners();
+
+    isSavingNotes = true;
+    notifyListeners();
+
+    await saveChanges();
+    isSavingNotes = false;
+    notifyListeners();
+
+    await Future.delayed(Duration(milliseconds: 2000));
+    isSavingNotes = null;
+    notifyListeners();
+  }
+
+  bool? isSavingNotes;
+
+  final TextEditingController _bioEditingController = TextEditingController();
+
+  TextEditingController bioEditingController() {
+    _bioEditingController.text = notes;
+    return _bioEditingController;
+  }
+
+  void saveBio() async {
+    bio = _bioEditingController.text;
     saveChanges();
     notifyListeners();
   }

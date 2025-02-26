@@ -58,6 +58,8 @@ class SheetService {
             money: 500,
             weight: 0,
             listActionLore: [],
+            bio: "",
+            notes: "",
           ).toMap(),
         );
   }

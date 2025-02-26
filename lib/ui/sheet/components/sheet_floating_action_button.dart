@@ -74,6 +74,21 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
           ),
         ],
       ),
+      Row(
+        children: [
+          Text('Caderneta'),
+          SizedBox(width: 20),
+          FloatingActionButton(
+            heroTag: null,
+            tooltip: "Caderneta",
+            onPressed: () {
+              viewModel.closeFab();
+              viewModel.onNotesButtonClicked(context);
+            },
+            child: Icon(Icons.description),
+          ),
+        ],
+      ),
     ],
   );
 }

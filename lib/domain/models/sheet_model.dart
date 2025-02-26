@@ -23,6 +23,9 @@ class Sheet {
 
   List<ActionLore> listActionLore;
 
+  String bio;
+  String notes;
+
   Sheet({
     required this.id,
     required this.characterName,
@@ -35,6 +38,8 @@ class Sheet {
     required this.money,
     required this.weight,
     required this.listActionLore,
+    required this.bio,
+    required this.notes,
   });
 
   Sheet copyWith({
@@ -49,6 +54,8 @@ class Sheet {
     double? money,
     double? weight,
     List<ActionLore>? listActionLore,
+    String? bio,
+    String? notes,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -62,6 +69,8 @@ class Sheet {
       money: money ?? this.money,
       weight: weight ?? this.weight,
       listActionLore: listActionLore ?? this.listActionLore,
+      bio: bio ?? this.bio,
+      notes: notes ?? this.notes,
     );
   }
 
@@ -78,6 +87,8 @@ class Sheet {
       "money": money,
       "weight": weight,
       'listActionLore': listActionLore.map((x) => x.toMap()).toList(),
+      "bio": bio,
+      "notes": notes,
     };
   }
 
@@ -114,6 +125,8 @@ class Sheet {
               ),
             )
           : [],
+      bio: (map["bio"] != null) ? map["bio"] : "",
+      notes: (map["notes"] != null) ? map["notes"] : "",
     );
   }
 
@@ -139,7 +152,9 @@ class Sheet {
         listEquals(other.listRollLog, listRollLog) &&
         other.baseLevel == baseLevel &&
         listEquals(other.listItemSheet, listItemSheet) &&
-        listEquals(listActionLore, other.listActionLore);
+        listEquals(listActionLore, other.listActionLore) &&
+        other.bio == bio &&
+        other.notes == notes;
   }
 
   @override
@@ -152,6 +167,8 @@ class Sheet {
         listRollLog.hashCode ^
         baseLevel.hashCode ^
         listItemSheet.hashCode ^
-        listActionLore.hashCode;
+        listActionLore.hashCode ^
+        notes.hashCode ^
+        bio.hashCode;
   }
 }
