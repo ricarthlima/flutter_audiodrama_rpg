@@ -60,15 +60,15 @@ class _SheetScreenState extends State<SheetScreen> {
 
     return Container(
       margin: EdgeInsets.all(16),
-      padding: EdgeInsets.all(isVertical(context) ? 16 : 32),
+      // padding: EdgeInsets.all(isVertical(context) ? 16 : 32),
       height: double.infinity,
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: 1,
-          color: Theme.of(context).textTheme.bodyMedium!.color!,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
+      // decoration: BoxDecoration(
+      //   border: Border.all(
+      //     width: 1,
+      //     color: Theme.of(context).textTheme.bodyMedium!.color!,
+      //   ),
+      //   borderRadius: BorderRadius.circular(8),
+      // ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,7 +226,7 @@ class _SheetScreenState extends State<SheetScreen> {
                     ),
                     if (viewModel.getPropositoMinusAversao() > 0)
                       Text(
-                        "Faltam ${viewModel.getPropositoMinusAversao()} aversões.",
+                        "Faltam ${viewModel.getPropositoMinusAversao()} aversões",
                         style: TextStyle(
                           color: AppColors.red,
                           fontWeight: FontWeight.bold,

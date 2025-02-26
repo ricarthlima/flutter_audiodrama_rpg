@@ -26,9 +26,9 @@ class ListActionsWidget extends StatelessWidget {
               ? width(context)
               : getZoomFactor(
                   context,
-                  330,
+                  350,
                 ),
-          height: 500,
+          height: 550,
           decoration: BoxDecoration(
             border: Border.all(
               width: 4,

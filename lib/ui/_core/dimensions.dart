@@ -16,6 +16,10 @@ double getZoomFactor(BuildContext context, double valueAtDefault) {
   return (width(context) / 1920) * valueAtDefault;
 }
 
+double getZoomFactorVertical(BuildContext context, double valueAtDefault) {
+  return (height(context) / 1000) * valueAtDefault;
+}
+
 double getZoomValue(BuildContext context) {
   return width(context) / 1920;
 }
