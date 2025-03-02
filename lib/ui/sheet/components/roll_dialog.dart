@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
@@ -106,8 +107,8 @@ class _RollRowWidgetState extends State<RollRowWidget> {
                                             .isResisted &&
                                         !widget.rollLog.isGettingLower)
                                     ? (widget.rollLog.rolls[index] >= 10)
-                                        ? "assets/images/d20-4.png"
-                                        : "assets/images/d20-0.png"
+                                        ? "assets/images/d20-2.png"
+                                        : "assets/images/d20-1.png"
                                     : (ActionDAO.instance
                                                 .getActionById(
                                                     widget.rollLog.idAction)!
@@ -118,8 +119,8 @@ class _RollRowWidgetState extends State<RollRowWidget> {
                                                         .rollLog.rolls[index] &&
                                                 widget.rollLog.rolls[index] >=
                                                     10)
-                                            ? "assets/images/d20-4.png"
-                                            : "assets/images/d20-0.png"
+                                            ? "assets/images/d20-2.png"
+                                            : "assets/images/d20-1.png"
                                         : (widget.rollLog.isGettingLower)
                                             ? (widget.rollLog.rolls
                                                         .reduce(min) ==
@@ -151,7 +152,47 @@ class _RollRowWidgetState extends State<RollRowWidget> {
               },
             ),
           ),
-          SizedBox(height: 16),
+          AnimatedOpacity(
+            duration: Duration(milliseconds: 750),
+            opacity: (ActionDAO.instance
+                        .getActionById(widget.rollLog.idAction)!
+                        .isResisted &&
+                    isShowingHighlighted)
+                ? 1
+                : 0,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Você obteve ",
+                    style: TextStyle(fontSize: 24),
+                  ),
+                  Text(
+                    _calculateAmountSuccess().toString(),
+                    style: TextStyle(fontSize: 48),
+                  ),
+                  Text(
+                    " sucesso",
+                    style: TextStyle(fontSize: 24),
+                  ),
+                  if (_calculateAmountSuccess() != 1)
+                    Text(
+                      "s",
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  Text(
+                    ".",
+                    style: TextStyle(fontSize: 24),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 8),
           Text(
             viewModel.getHelperText(
                 ActionDAO.instance.getActionById(widget.rollLog.idAction)!),
@@ -160,5 +201,23 @@ class _RollRowWidgetState extends State<RollRowWidget> {
         ],
       ),
     );
+  }
+
+  int _calculateAmountSuccess() {
+    ActionTemplate action =
+        ActionDAO.instance.getActionById(widget.rollLog.idAction)!;
+
+    if (action.isResisted) {
+      if (widget.rollLog.isGettingLower) {
+        int roll = widget.rollLog.rolls
+            .reduce((current, next) => (current) < next ? current : next);
+        if (roll >= 10) return 1;
+      } else {
+        List<int> rolls = widget.rollLog.rolls.where((e) => e >= 10).toList();
+        return rolls.length;
+      }
+    }
+
+    return 0;
   }
 }
