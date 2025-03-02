@@ -12,13 +12,13 @@ Future<void> showSheetStatisticsDialog(BuildContext context) {
     context: context,
     barrierDismissible: false,
     builder: (context) {
-      return Dialog(child: StatisticsScreen());
+      return Dialog(child: SheetStatisticsScreen());
     },
   );
 }
 
-class StatisticsScreen extends StatelessWidget {
-  const StatisticsScreen({super.key});
+class SheetStatisticsScreen extends StatelessWidget {
+  const SheetStatisticsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -120,9 +120,15 @@ class StatisticsScreen extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Flexible(flex: 10, child: RollsHorizontalBar()),
+                  Flexible(
+                    flex: (!isVertical(context)) ? 10 : 6,
+                    child: RollsHorizontalBar(),
+                  ),
                   VerticalDivider(),
-                  Flexible(flex: 2, child: RollsOrderedListWidget()),
+                  Flexible(
+                    flex: (!isVertical(context)) ? 2 : 6,
+                    child: RollsOrderedListWidget(),
+                  ),
                 ],
               ),
             ),

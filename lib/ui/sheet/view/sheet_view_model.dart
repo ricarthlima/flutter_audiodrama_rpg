@@ -368,12 +368,31 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   onNotesButtonClicked(BuildContext context) async {
-    showSheetNotesDialog(context);
+    if (!isVertical(context)) {
+      await showSheetNotesDialog(context);
+    } else {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SheetNotesScreen(),
+        ),
+      );
+    }
   }
 
   onStatisticsButtonClicked(BuildContext context) async {
     context.read<StatisticsViewModel>().listCompleteRollLog = listRollLog;
-    showSheetStatisticsDialog(context);
+
+    if (!isVertical(context)) {
+      await showSheetStatisticsDialog(context);
+    } else {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SheetStatisticsScreen(),
+        ),
+      );
+    }
   }
 
   bool? isSavingNotes;

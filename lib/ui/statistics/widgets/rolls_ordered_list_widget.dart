@@ -3,6 +3,7 @@ import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../view/statistics_view_model.dart';
@@ -14,6 +15,8 @@ class RollsOrderedListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     StatisticsViewModel statisticsViewModel =
         Provider.of<StatisticsViewModel>(context);
+
+    SheetViewModel sheetViewModel = Provider.of<SheetViewModel>(context);
 
     return SingleChildScrollView(
       child: Column(
@@ -33,6 +36,8 @@ class RollsOrderedListWidget extends StatelessWidget {
                     fontWeight: (index == 0) ? FontWeight.bold : null,
                     color: (index == 0) ? AppColors.red : null),
               ),
+              subtitle:
+                  Text(sheetViewModel.getTrainLevelByActionName(action.id)),
               trailing: Text(
                 map.values.first.toString(),
                 style: TextStyle(

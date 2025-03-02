@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
 import 'package:flutter_rpg_audiodrama/ui/statistics/view/statistics_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -15,12 +16,19 @@ class RollsHorizontalBar extends StatelessWidget {
       BarChartData(
         barGroups: statisticsViewModel.listHorizontalBarGroup,
         titlesData: FlTitlesData(
+          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           leftTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: true),
-          ),
-          bottomTitles: AxisTitles(
+            axisNameWidget: Text("Quantidade de rolagens por ação"),
             sideTitles: SideTitles(
               showTitles: true,
+              reservedSize: 32,
+            ),
+          ),
+          bottomTitles: AxisTitles(
+            axisNameWidget: Text("Data das Rolagens"),
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 32,
               getTitlesWidget: (double value, TitleMeta meta) {
                 int index = value.toInt();
                 if (index < statisticsViewModel.mapByDate.keys.length) {
@@ -49,6 +57,34 @@ class RollsHorizontalBar extends StatelessWidget {
         gridData: FlGridData(show: true),
         borderData: FlBorderData(show: false),
         groupsSpace: 12,
+        barTouchData: BarTouchData(
+          enabled: true,
+          touchTooltipData: BarTouchTooltipData(
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              // Pegamos a data associada ao grupo atual
+              DateTime date =
+                  statisticsViewModel.mapByDate.keys.elementAt(group.x);
+
+              // Pegamos a ação correspondente dentro do grupo
+              String? idAction;
+              if (group.barRods.length > rodIndex) {
+                idAction = statisticsViewModel.mapByDate[date]?.keys
+                    .elementAt(rodIndex);
+              }
+
+              if (idAction != null) {
+                idAction = ActionDAO.instance.getActionById(idAction)!.name;
+              }
+
+              return BarTooltipItem(
+                idAction != null
+                    ? "$idAction (${rod.toY.toInt()})"
+                    : "Desconhecido (${rod.toY.toInt()})",
+                TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

@@ -69,34 +69,23 @@ class StatisticsViewModel extends ChangeNotifier {
     data.forEach((date, actions) {
       List<BarChartRodData> barRods = [];
       actions.forEach((action, count) {
-        barRods.add(BarChartRodData(
-          toY: count.toDouble(),
-          color: _getColorForAction(action), // Função para definir cor por ação
-          width: 8,
-        ));
+        barRods.add(
+          BarChartRodData(
+            toY: count.toDouble(),
+            width: 8,
+          ),
+        );
       });
-      barGroups.add(BarChartGroupData(
-        x: x,
-        barRods: barRods,
-        barsSpace: 4,
-      ));
+      barGroups.add(
+        BarChartGroupData(
+          x: x,
+          barRods: barRods,
+          barsSpace: 4,
+        ),
+      );
       x++;
     });
     return barGroups;
-  }
-
-  Color _getColorForAction(String action) {
-    // Defina cores específicas para cada ação
-    switch (action) {
-      case 'attack':
-        return Colors.red;
-      case 'defense':
-        return Colors.blue;
-      case 'spell_cast':
-        return Colors.green;
-      default:
-        return Colors.grey;
-    }
   }
 
   final TextEditingController _startDateEditingController =

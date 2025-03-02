@@ -24,26 +24,6 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
     children: [
       Row(
         children: [
-          Text('Itens'),
-          SizedBox(width: 20),
-          FloatingActionButton(
-            heroTag: null,
-            tooltip: "Itens",
-            onPressed: () {
-              viewModel.closeFab();
-              viewModel.onItemsButtonClicked(context);
-            },
-            child: Image.asset(
-              (themeProvider.themeMode == ThemeMode.dark)
-                  ? "assets/images/chest.png"
-                  : "assets/images/chest-i.png",
-              width: 32,
-            ),
-          ),
-        ],
-      ),
-      Row(
-        children: [
           Text('Histórico'),
           SizedBox(width: 20),
           Builder(
@@ -70,6 +50,26 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
                 ), // Ajusta posição
                 child: Icon(Icons.chat),
               ),
+            ),
+          ),
+        ],
+      ),
+      Row(
+        children: [
+          Text('Itens'),
+          SizedBox(width: 20),
+          FloatingActionButton(
+            heroTag: null,
+            tooltip: "Itens",
+            onPressed: () {
+              viewModel.closeFab();
+              viewModel.onItemsButtonClicked(context);
+            },
+            child: Image.asset(
+              (themeProvider.themeMode == ThemeMode.dark)
+                  ? "assets/images/chest.png"
+                  : "assets/images/chest-i.png",
+              width: 32,
             ),
           ),
         ],
