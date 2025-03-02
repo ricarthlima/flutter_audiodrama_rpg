@@ -29,9 +29,14 @@ class RollsHorizontalBar extends StatelessWidget {
                   return SideTitleWidget(
                     // axisSide: meta.axisSide,
                     meta: meta,
-                    child: Text(
-                      DateFormat('dd/MM').format(date),
-                      style: TextStyle(fontSize: 10),
+                    child: InkWell(
+                      onTap: () {
+                        statisticsViewModel.defineOneDay(date);
+                      },
+                      child: Text(
+                        DateFormat('dd/MM').format(date),
+                        style: TextStyle(fontSize: 10),
+                      ),
                     ),
                   );
                 } else {

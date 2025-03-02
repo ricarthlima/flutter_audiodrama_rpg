@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/components/date_time_picker.dart';
+import 'package:flutter_rpg_audiodrama/ui/statistics/view/statistics_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/statistics/widgets/rolls_horizontal_bar.dart';
+import 'package:flutter_rpg_audiodrama/ui/statistics/widgets/rolls_ordered_list_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../_core/dimensions.dart';
 
@@ -18,30 +22,111 @@ class StatisticsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    StatisticsViewModel statisticsViewModel =
+        Provider.of<StatisticsViewModel>(context);
     return Scaffold(
       appBar: AppBar(title: Text("Estatísticas")),
       body: Container(
         width: width(context),
         height: height(context),
         padding: EdgeInsets.all(16),
-        child: DefaultTabController(
-          length: 2,
-          child: Column(
-            children: [
-              TabBar(tabs: [
-                Tab(text: "Linha do Tempo"),
-                Tab(text: "Anotações"),
-              ]),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    RollsHorizontalBar(),
-                    Placeholder(),
-                  ],
-                ),
+        child: Column(
+          children: [
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8,
+                children: [
+                  Text("Data inicial: "),
+                  SizedBox(
+                    width: 150,
+                    child: TextFormField(
+                      controller:
+                          statisticsViewModel.startDateEditingController,
+                      enabled: false,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      showDateTimePickerDialog(
+                        context: context,
+                        initialDate: statisticsViewModel.filterDateStart,
+                        firstDate: statisticsViewModel.getFirstDate(),
+                      ).then(
+                        (DateTime? dateTimeResult) {
+                          if (dateTimeResult != null) {
+                            if (dateTimeResult
+                                .isAfter(statisticsViewModel.filterDateEnd)) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      "A data inicial não pode ser depois da final"),
+                                ),
+                              );
+                            } else {
+                              statisticsViewModel.filterDateStart =
+                                  dateTimeResult;
+                            }
+                          }
+                        },
+                      );
+                    },
+                    icon: Icon(Icons.date_range),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: VerticalDivider(),
+                  ),
+                  Text("Data final: "),
+                  SizedBox(
+                    width: 150,
+                    child: TextFormField(
+                      controller: statisticsViewModel.endDateEditingController,
+                      enabled: false,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      showDateTimePickerDialog(
+                        context: context,
+                        initialDate: statisticsViewModel.filterDateEnd,
+                        lastDate: DateTime.now(),
+                      ).then(
+                        (DateTime? dateTimeResult) {
+                          if (dateTimeResult != null) {
+                            statisticsViewModel.filterDateEnd = dateTimeResult;
+                          }
+                        },
+                      );
+                    },
+                    icon: Icon(Icons.date_range),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: VerticalDivider(),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      statisticsViewModel.resetDates();
+                    },
+                    child: Text("Redefinir"),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 16),
+            Expanded(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(flex: 10, child: RollsHorizontalBar()),
+                  VerticalDivider(),
+                  Flexible(flex: 2, child: RollsOrderedListWidget()),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -11,10 +11,10 @@ abstract class RollLogStatistics {
     }).toList();
   }
 
-  static Map<RollLog, int> countActions(List<RollLog> listLogs) {
-    Map<RollLog, int> count = {};
-    for (var log in listLogs) {
-      count[log] = (count[log] ?? 0) + 1;
+  static Map<String, int> countActions(List<RollLog> listLogs) {
+    Map<String, int> count = {};
+    for (RollLog log in listLogs) {
+      count[log.idAction] = (count[log.idAction] ?? 0) + 1;
     }
     return count;
   }

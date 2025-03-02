@@ -10,6 +10,7 @@ import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/statistics/view/statistics_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'ui/_core/theme_provider.dart';
 import 'data/daos/item_dao.dart';
@@ -31,9 +32,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => SheetViewModel(id: "")),
         ChangeNotifierProvider(create: (_) => ShoppingViewModel()),
-        ChangeNotifierProvider(
-          create: (_) => StatisticsViewModel(listCompleteRollLog: []),
-        ),
+        ChangeNotifierProvider(create: (_) => StatisticsViewModel()),
       ],
       child: const MainApp(),
     ),
@@ -53,6 +52,14 @@ class MainApp extends StatelessWidget {
       themeMode: themeProvider.themeMode,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
+      supportedLocales: [
+        Locale('pt', 'BR'), // Adiciona suporte ao português do Brasil
+      ],
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate, // Suporte para iOS também
+      ],
     );
   }
 }
