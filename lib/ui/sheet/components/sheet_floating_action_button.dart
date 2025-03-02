@@ -89,6 +89,21 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
           ),
         ],
       ),
+      Row(
+        children: [
+          Text('Estatísticas'),
+          SizedBox(width: 20),
+          FloatingActionButton(
+            heroTag: null,
+            tooltip: "Estatísticas",
+            onPressed: () {
+              viewModel.closeFab();
+              viewModel.onStatisticsButtonClicked(context);
+            },
+            child: Icon(Icons.description),
+          ),
+        ],
+      ),
     ],
   );
 }

@@ -9,6 +9,8 @@ import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet_notes/sheet_notes.dart';
 import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/statistics/statistics_screen.dart';
+import 'package:flutter_rpg_audiodrama/ui/statistics/view/statistics_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/daos/action_dao.dart';
@@ -367,6 +369,11 @@ class SheetViewModel extends ChangeNotifier {
 
   onNotesButtonClicked(BuildContext context) async {
     showSheetNotesDialog(context);
+  }
+
+  onStatisticsButtonClicked(BuildContext context) async {
+    context.read<StatisticsViewModel>().listCompleteRollLog = listRollLog;
+    showSheetStatisticsDialog(context);
   }
 
   bool? isSavingNotes;

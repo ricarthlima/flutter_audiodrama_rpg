@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/components/wip_snackbar.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -230,6 +231,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             NamedWidget(
               title: "Descansos",
               hardHeight: 32,
+              isShowRightSeparator: true,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 spacing: 8,
@@ -261,6 +263,34 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                 ],
               ),
             ),
+          NamedWidget(
+            isVisible: !isVertical(context) && !viewModel.isEditing,
+            title: "Condições",
+            tooltip: "Clique para gerenciar suas condições",
+            hardHeight: 32,
+            isShowRightSeparator: true,
+            child: InkWell(
+              onTap: () => showSnackBarWip(context),
+              child: Icon(
+                Icons.personal_injury_outlined,
+                size: 18,
+              ),
+            ),
+          ),
+          NamedWidget(
+            isVisible: !isVertical(context) && !viewModel.isEditing,
+            title: "Ofícios",
+            tooltip: "Clique para gerenciar seus ofícios",
+            hardHeight: 32,
+            isShowRightSeparator: true,
+            child: InkWell(
+              onTap: () => showSnackBarWip(context),
+              child: Icon(
+                Icons.workspace_premium_outlined,
+                size: 18,
+              ),
+            ),
+          ),
         ],
       ),
     );
