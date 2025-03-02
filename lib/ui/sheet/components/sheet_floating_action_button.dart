@@ -100,7 +100,7 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
               viewModel.closeFab();
               viewModel.onStatisticsButtonClicked(context);
             },
-            child: Icon(Icons.description),
+            child: Icon(Icons.bar_chart),
           ),
         ],
       ),
