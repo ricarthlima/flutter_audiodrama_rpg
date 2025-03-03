@@ -26,6 +26,8 @@ class Sheet {
   String bio;
   String notes;
 
+  List<String> listActiveConditions;
+
   Sheet({
     required this.id,
     required this.characterName,
@@ -40,6 +42,7 @@ class Sheet {
     required this.listActionLore,
     required this.bio,
     required this.notes,
+    required this.listActiveConditions,
   });
 
   Sheet copyWith({
@@ -56,6 +59,7 @@ class Sheet {
     List<ActionLore>? listActionLore,
     String? bio,
     String? notes,
+    List<String>? listActiveConditions,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -71,6 +75,7 @@ class Sheet {
       listActionLore: listActionLore ?? this.listActionLore,
       bio: bio ?? this.bio,
       notes: notes ?? this.notes,
+      listActiveConditions: listActiveConditions ?? this.listActiveConditions,
     );
   }
 
@@ -89,6 +94,7 @@ class Sheet {
       'listActionLore': listActionLore.map((x) => x.toMap()).toList(),
       "bio": bio,
       "notes": notes,
+      "listActiveConditions": listActiveConditions,
     };
   }
 
@@ -127,6 +133,11 @@ class Sheet {
           : [],
       bio: (map["bio"] != null) ? map["bio"] : "",
       notes: (map["notes"] != null) ? map["notes"] : "",
+      listActiveConditions: (map["listActiveConditions"] != null)
+          ? (map["listActiveConditions"] as List<dynamic>)
+              .map((e) => e.toString())
+              .toList()
+          : [],
     );
   }
 
@@ -154,7 +165,8 @@ class Sheet {
         listEquals(other.listItemSheet, listItemSheet) &&
         listEquals(listActionLore, other.listActionLore) &&
         other.bio == bio &&
-        other.notes == notes;
+        other.notes == notes &&
+        other.listActiveConditions == listActiveConditions;
   }
 
   @override
@@ -169,6 +181,7 @@ class Sheet {
         listItemSheet.hashCode ^
         listActionLore.hashCode ^
         notes.hashCode ^
-        bio.hashCode;
+        bio.hashCode ^
+        listActiveConditions.hashCode;
   }
 }

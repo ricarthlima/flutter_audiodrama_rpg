@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/data/daos/condition_dao.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/theme.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
@@ -24,6 +25,7 @@ void main() async {
 
   await ActionDAO.instance.initialize();
   await ItemDAO.instance.initialize();
+  await ConditionDAO.instance.initialize();
 
   runApp(
     MultiProvider(

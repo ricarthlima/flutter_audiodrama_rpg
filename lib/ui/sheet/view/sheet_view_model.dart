@@ -2,11 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:flutter_rpg_audiodrama/data/daos/condition_dao.dart';
 import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/action_lore.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/conditions_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet_notes/sheet_notes.dart';
 import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/statistics/statistics_screen.dart';
@@ -66,6 +68,7 @@ class SheetViewModel extends ChangeNotifier {
   double weight = 0;
   String bio = "";
   String notes = "";
+  List<String> listActiveConditions = [];
 
   int modGlobalTrain = 0;
   bool isKeepingGlobalModifier = false;
@@ -114,6 +117,7 @@ class SheetViewModel extends ChangeNotifier {
       listActionLore = sheetModel.listActionLore;
       bio = sheetModel.bio;
       notes = sheetModel.notes;
+      listActiveConditions = sheetModel.listActiveConditions;
     }
 
     listSheets = await SheetService().getSheetsByUser(
@@ -150,7 +154,10 @@ class SheetViewModel extends ChangeNotifier {
       listActionLore: listActionLore,
       bio: bio,
       notes: notes,
+      listActiveConditions: listActiveConditions,
     );
+    // Beleza, mas você colocou também no refresh?
+
     await SheetService().saveSheet(
       sheet,
       userId: userId,
@@ -274,6 +281,10 @@ class SheetViewModel extends ChangeNotifier {
         ),
       );
     }
+  }
+
+  onConditionButtonClicked(BuildContext context) async {
+    await showSheetConditionsDialog(context);
   }
 
   void toggleKeepingGlobalModifier() {
@@ -441,5 +452,42 @@ class SheetViewModel extends ChangeNotifier {
     await Future.delayed(Duration(milliseconds: 2000));
     isSavingBio = null;
     notifyListeners();
+  }
+
+  bool getHasCondition(String id) {
+    return listActiveConditions.contains(id);
+  }
+
+  toggleCondition(String id) {
+    if (listActiveConditions.contains(id)) {
+      listActiveConditions.remove(id);
+    } else {
+      listActiveConditions.add(id);
+    }
+    saveChanges();
+    notifyListeners();
+  }
+
+  String getMajorCondition() {
+    String result = "DESPERTO";
+
+    if (listActiveConditions.isNotEmpty) {
+      listActiveConditions.sort(
+        (a, b) {
+          int showA = ConditionDAO.instance.getConditionById(a)!.showingOrder;
+          int showB = ConditionDAO.instance.getConditionById(b)!.showingOrder;
+
+          return showA.compareTo(showB);
+        },
+      );
+
+      String idMajor = listActiveConditions.last;
+      return ConditionDAO.instance
+          .getConditionById(idMajor)!
+          .name
+          .toUpperCase();
+    }
+
+    return result;
   }
 }

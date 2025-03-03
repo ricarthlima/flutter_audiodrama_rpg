@@ -60,6 +60,7 @@ class SheetService {
             listActionLore: [],
             bio: "",
             notes: "",
+            listActiveConditions: [],
           ).toMap(),
         );
   }
