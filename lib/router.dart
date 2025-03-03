@@ -20,6 +20,13 @@ class AppRouter {
       GoRoute(
         path: "/auth",
         builder: (context, state) => LoginScreen(),
+        redirect: (context, state) {
+          bool loggedIn = FirebaseAuth.instance.currentUser != null;
+          if (loggedIn) {
+            return root;
+          }
+          return null;
+        },
       ),
       GoRoute(
         path: "/sheet/:sheetId",

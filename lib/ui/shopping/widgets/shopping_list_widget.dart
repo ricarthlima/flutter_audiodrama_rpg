@@ -33,8 +33,13 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
 
   @override
   void initState() {
-    _loadItems();
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        _loadItems();
+      },
+    );
   }
 
   @override
