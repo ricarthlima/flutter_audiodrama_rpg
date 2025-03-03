@@ -1,13 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/utils/i18n_categories.dart';
 
 import '../../domain/models/item.dart';
 
 class ItemDAO {
-  static const String _filePath = 'assets/sheets/itens-0.0.3.json';
+  static const String _filePath = 'assets/sheets/itens-0.0.4.json';
 
   List<Item> _listItems = [];
+  final List<String> _listCategories = [];
 
   ItemDAO._();
 
@@ -15,6 +17,8 @@ class ItemDAO {
   static ItemDAO get instance {
     return _instance;
   }
+
+  List<String> get listCategories => _listCategories;
 
   Future<void> initialize() async {
     String jsonString = await rootBundle.loadString(_filePath);
@@ -27,6 +31,24 @@ class ItemDAO {
     int total = _listItems.map((e) => e.price).toList().reduce((v, e) => v + e);
     print(
         "${_listItems.length} itens carregados, custando um total de: $total");
+
+    for (Item item in _listItems) {
+      for (String category in item.listCategories) {
+        if (!_listCategories.contains(category)) {
+          _listCategories.add(category);
+        }
+      }
+    }
+
+    _listCategories.sort(
+      (a, b) {
+        String iA = i18nCategories(a);
+        String iB = i18nCategories(b);
+        return iA.compareTo(iB);
+      },
+    );
+
+    print(_listCategories);
   }
 
   List<Item> get getItems {

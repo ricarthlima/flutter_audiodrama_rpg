@@ -173,11 +173,13 @@ class SheetService {
     String bucket = SupabasePrefs.storageBucketSheet;
     String filePath = "bios/$fileName";
 
-    await _supabase.storage.from(bucket).uploadBinary(filePath, file);
+    await _supabase.storage.from(bucket).uploadBinary(
+          filePath,
+          file,
+          fileOptions: FileOptions(upsert: true),
+        );
 
     final publicUrl = _supabase.storage.from(bucket).getPublicUrl(filePath);
-
-    print(publicUrl);
 
     return publicUrl;
   }

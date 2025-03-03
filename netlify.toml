@@ -1,0 +1,8 @@
+[build]
+  command = "flutter build web"
+  publish = "build/web"
+
+[[headers]]
+  for = "/*"
+    [headers.values]
+      Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'"

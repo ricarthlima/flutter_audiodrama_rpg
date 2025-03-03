@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/utils/i18n_categories.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/item.dart';
@@ -47,6 +48,18 @@ class ItemSellerWidget extends StatelessWidget {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                children: item.listCategories
+                    .map((e) => Padding(
+                          padding: const EdgeInsets.only(right: 6.0),
+                          child: Text(
+                            i18nCategories(e),
+                            style: TextStyle(fontSize: 10),
+                          ),
+                        ))
+                    .toList(),
+              ),
+              SizedBox(height: 8),
               Text(item.description),
               Text(
                 item.mechanic,

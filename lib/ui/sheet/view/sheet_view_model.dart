@@ -516,7 +516,7 @@ class SheetViewModel extends ChangeNotifier {
         if (!kIsWeb) {
           path = await sheetService.uploadBioImage(
             File(image.path),
-            "$id${image.name.split(".").last}",
+            "$id.${image.name.split(".").last}",
           );
         } else {
           Uint8List bytes = await image.readAsBytes();

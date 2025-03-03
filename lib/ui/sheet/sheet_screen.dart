@@ -3,7 +3,6 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/theme_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_app_bar.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_drawer.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_floating_action_button.dart';

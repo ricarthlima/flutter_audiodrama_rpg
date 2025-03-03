@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 class Item {
   final String id;
   final String name;
@@ -7,6 +10,7 @@ class Item {
   final String mechanic;
   final bool isFinite;
   final int? maxUses;
+  final List<String> listCategories;
 
   Item({
     required this.id,
@@ -17,23 +21,11 @@ class Item {
     required this.mechanic,
     required this.isFinite,
     this.maxUses,
+    required this.listCategories,
   });
 
-  factory Item.fromMap(Map<String, dynamic> json) {
-    return Item(
-      id: json['id'],
-      name: json['name'],
-      weight: (json['weight'] as num).toDouble(),
-      price: json['price'],
-      description: json['description'],
-      mechanic: json['mechanic'],
-      isFinite: json['isFinite'],
-      maxUses: json.containsKey('maxUses') ? json['maxUses'] : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
       'id': id,
       'name': name,
       'weight': weight,
@@ -41,7 +33,29 @@ class Item {
       'description': description,
       'mechanic': mechanic,
       'isFinite': isFinite,
-      if (maxUses != null) 'maxUses': maxUses,
+      'maxUses': maxUses,
+      'categories': listCategories,
     };
   }
+
+  factory Item.fromMap(Map<String, dynamic> map) {
+    return Item(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      weight: map['weight'] as double,
+      price: map['price'] as int,
+      description: map['description'] as String,
+      mechanic: map['mechanic'] as String,
+      isFinite: map['isFinite'] as bool,
+      maxUses: map['maxUses'] != null ? map['maxUses'] as int : null,
+      listCategories: (map['categories'] as List<dynamic>)
+          .map((e) => e.toString())
+          .toList(),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Item.fromJson(String source) =>
+      Item.fromMap(json.decode(source) as Map<String, dynamic>);
 }

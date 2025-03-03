@@ -220,46 +220,88 @@ class ShoppingViewModel extends ChangeNotifier {
   TextEditingController searchInventoryController = TextEditingController();
   TextEditingController searchSellerController = TextEditingController();
 
-  onSearchItem(bool isSeller) {
-    String search = searchInventoryController.text;
+  List<String> listFilteredCategories = [];
+  List<String> listFilteredCategoriesSeller = [];
 
-    if (isSeller) {
-      search = searchSellerController.text;
-    }
-
-    if (search == "") {
-      resetSearch(isSeller);
-      return;
-    }
-
-    search = removeDiacritics(search).toLowerCase();
-
-    if (isSeller) {
-      listSellerItems = listSellerItems
-          .where((Item item) =>
-              removeDiacritics(item.name).toLowerCase().contains(search))
-          .toList();
+  toggleCategory(String category, bool isSeller) {
+    if (!isSeller) {
+      if (listFilteredCategories.contains(category)) {
+        listFilteredCategories.remove(category);
+      } else {
+        listFilteredCategories.add(category);
+      }
+      onSearchOnInventory();
     } else {
-      listInventoryItems = _listSheetItems.where(
-        (ItemSheet itemSheet) {
-          Item item = ItemDAO.instance.getItemById(itemSheet.itemId)!;
-          return removeDiacritics(item.name).toLowerCase().contains(search);
-        },
-      ).toList();
+      if (listFilteredCategoriesSeller.contains(category)) {
+        listFilteredCategoriesSeller.remove(category);
+      } else {
+        listFilteredCategoriesSeller.add(category);
+      }
+      onSearchOnSeller();
+    }
+  }
+
+  onSearchOnInventory() {
+    String search =
+        removeDiacritics(searchInventoryController.text).toLowerCase();
+
+    listInventoryItems = _listSheetItems.map((e) => e).toList();
+
+    if (listFilteredCategories.isNotEmpty || search != "") {
+      if (search != "") {
+        listInventoryItems = listInventoryItems.where(
+          (ItemSheet itemSheet) {
+            Item item = ItemDAO.instance.getItemById(itemSheet.itemId)!;
+            return removeDiacritics(item.name).toLowerCase().contains(search);
+          },
+        ).toList();
+      }
+
+      if (listFilteredCategories.isNotEmpty) {
+        listInventoryItems.retainWhere(
+          (itemSheet) {
+            Item item = ItemDAO.instance.getItemById(itemSheet.itemId)!;
+
+            for (String category in item.listCategories) {
+              if (listFilteredCategories.contains(category)) {
+                return true;
+              }
+            }
+            return false;
+          },
+        );
+      }
     }
 
     notifyListeners();
   }
 
-  resetSearch(bool isSeller) {
-    if (isSeller) {
-      listSellerItems = ItemDAO.instance.getItems;
-    } else {
-      listInventoryItems = _listSheetItems;
-    }
+  onSearchOnSeller() {
+    String search = removeDiacritics(searchSellerController.text).toLowerCase();
 
-    searchInventoryController.text = "";
-    searchSellerController.text = "";
+    listSellerItems = ItemDAO.instance.getItems.map((e) => e).toList();
+
+    if (listFilteredCategoriesSeller.isNotEmpty || search != "") {
+      if (search != "") {
+        listSellerItems = listSellerItems
+            .where((Item item) =>
+                removeDiacritics(item.name).toLowerCase().contains(search))
+            .toList();
+      }
+
+      if (listFilteredCategoriesSeller.isNotEmpty) {
+        listSellerItems.retainWhere(
+          (item) {
+            for (String category in item.listCategories) {
+              if (listFilteredCategoriesSeller.contains(category)) {
+                return true;
+              }
+            }
+            return false;
+          },
+        );
+      }
+    }
 
     notifyListeners();
   }

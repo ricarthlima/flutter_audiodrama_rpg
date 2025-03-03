@@ -21,7 +21,8 @@ import 'data/daos/item_dao.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load();
+  await dotenv.load(fileName: "dotenv");
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
