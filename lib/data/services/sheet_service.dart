@@ -1,14 +1,21 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_rpg_audiodrama/_core/utils/supabase_prefs.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../_core/release_mode.dart';
 import '../../domain/models/item_sheet.dart';
 
 class SheetService {
+  final _supabase = Supabase.instance.client;
+
   String uid = FirebaseAuth.instance.currentUser!.uid;
 
   Stream<QuerySnapshot<Map<String, dynamic>>> listenSheetsByUser(
@@ -61,6 +68,7 @@ class SheetService {
             bio: "",
             notes: "",
             listActiveConditions: [],
+            imageUrl: null,
           ).toMap(),
         );
   }
@@ -149,5 +157,34 @@ class SheetService {
       weight: weight,
     );
     await saveSheet(newSheet);
+  }
+
+  Future<String> uploadBioImage(File file, String fileName) async {
+    String result = await _supabase.storage
+        .from(SupabasePrefs.storageBucketSheet)
+        .upload("bios/$fileName", file);
+
+    print(result);
+
+    return result;
+  }
+
+  Future<String> uploadBioImageBytes(Uint8List file, String fileName) async {
+    String bucket = SupabasePrefs.storageBucketSheet;
+    String filePath = "bios/$fileName";
+
+    await _supabase.storage.from(bucket).uploadBinary(filePath, file);
+
+    final publicUrl = _supabase.storage.from(bucket).getPublicUrl(filePath);
+
+    print(publicUrl);
+
+    return publicUrl;
+  }
+
+  Future<void> deleteBioImage(String fileName) {
+    return _supabase.storage
+        .from(SupabasePrefs.storageBucketSheet)
+        .remove([fileName]);
   }
 }

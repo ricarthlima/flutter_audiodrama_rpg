@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/data/daos/condition_dao.dart';
@@ -13,6 +16,7 @@ import 'package:flutter_rpg_audiodrama/ui/sheet_notes/sheet_notes.dart';
 import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/statistics/statistics_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/statistics/view/statistics_view_model.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/daos/action_dao.dart';
@@ -69,6 +73,7 @@ class SheetViewModel extends ChangeNotifier {
   String bio = "";
   String notes = "";
   List<String> listActiveConditions = [];
+  String? imageUrl;
 
   int modGlobalTrain = 0;
   bool isKeepingGlobalModifier = false;
@@ -118,6 +123,7 @@ class SheetViewModel extends ChangeNotifier {
       bio = sheetModel.bio;
       notes = sheetModel.notes;
       listActiveConditions = sheetModel.listActiveConditions;
+      imageUrl = sheetModel.imageUrl;
     }
 
     listSheets = await SheetService().getSheetsByUser(
@@ -155,6 +161,7 @@ class SheetViewModel extends ChangeNotifier {
       bio: bio,
       notes: notes,
       listActiveConditions: listActiveConditions,
+      imageUrl: imageUrl,
     );
     // Beleza, mas você colocou também no refresh?
 
@@ -489,5 +496,53 @@ class SheetViewModel extends ChangeNotifier {
     }
 
     return result;
+  }
+
+  onUploadBioImageClicked(BuildContext context) async {
+    ImagePicker picker = ImagePicker();
+
+    XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+      requestFullMetadata: false,
+    );
+
+    if (image != null) {
+      int sizeInBytes = await image.length();
+
+      if (sizeInBytes >= 2000000) {
+        //TODO: Sua imagem é muito pesada.
+      } else {
+        String? path;
+        if (!kIsWeb) {
+          path = await sheetService.uploadBioImage(
+            File(image.path),
+            "$id${image.name.split(".").last}",
+          );
+        } else {
+          Uint8List bytes = await image.readAsBytes();
+          path = await sheetService.uploadBioImageBytes(
+            bytes,
+            "$id${image.name.split(".").last}",
+          );
+        }
+
+        imageUrl = path;
+
+        notifyListeners();
+        saveChanges();
+      }
+    }
+  }
+
+  onRemoveImageClicked() async {
+    if (imageUrl == null) return;
+
+    String fileName = imageUrl!.split("/").last;
+
+    await sheetService.deleteBioImage(fileName);
+    imageUrl = null;
+
+    notifyListeners();
+    saveChanges();
   }
 }

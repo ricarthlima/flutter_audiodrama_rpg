@@ -46,3 +46,6 @@ app.*.map.json
 
 /lib/_core/private/*
 /lib/_core/private/auth_user.dart
+
+# .env
+*.env

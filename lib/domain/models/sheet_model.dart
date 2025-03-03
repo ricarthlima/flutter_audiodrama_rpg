@@ -28,6 +28,8 @@ class Sheet {
 
   List<String> listActiveConditions;
 
+  String? imageUrl;
+
   Sheet({
     required this.id,
     required this.characterName,
@@ -43,6 +45,7 @@ class Sheet {
     required this.bio,
     required this.notes,
     required this.listActiveConditions,
+    this.imageUrl,
   });
 
   Sheet copyWith({
@@ -60,6 +63,7 @@ class Sheet {
     String? bio,
     String? notes,
     List<String>? listActiveConditions,
+    String? imageUrl,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -76,6 +80,7 @@ class Sheet {
       bio: bio ?? this.bio,
       notes: notes ?? this.notes,
       listActiveConditions: listActiveConditions ?? this.listActiveConditions,
+      imageUrl: imageUrl ?? this.imageUrl,
     );
   }
 
@@ -95,6 +100,7 @@ class Sheet {
       "bio": bio,
       "notes": notes,
       "listActiveConditions": listActiveConditions,
+      "imageUrl": imageUrl,
     };
   }
 
@@ -138,6 +144,7 @@ class Sheet {
               .map((e) => e.toString())
               .toList()
           : [],
+      imageUrl: map["imageUrl"],
     );
   }
 
@@ -166,7 +173,8 @@ class Sheet {
         listEquals(listActionLore, other.listActionLore) &&
         other.bio == bio &&
         other.notes == notes &&
-        other.listActiveConditions == listActiveConditions;
+        other.listActiveConditions == listActiveConditions &&
+        other.imageUrl == imageUrl;
   }
 
   @override
@@ -182,6 +190,7 @@ class Sheet {
         listActionLore.hashCode ^
         notes.hashCode ^
         bio.hashCode ^
-        listActiveConditions.hashCode;
+        listActiveConditions.hashCode ^
+        imageUrl.hashCode;
   }
 }

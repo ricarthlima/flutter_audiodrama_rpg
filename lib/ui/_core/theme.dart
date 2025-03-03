@@ -20,6 +20,9 @@ class AppTheme {
       brightness: Brightness.light,
     ),
     floatingActionButtonTheme: _fabTD,
+    dividerTheme: DividerThemeData(
+      color: Colors.black,
+    ),
   );
 
   static ThemeData darkTheme = ThemeData.dark().copyWith(
@@ -32,5 +35,8 @@ class AppTheme {
     ),
     floatingActionButtonTheme: _fabTD,
     appBarTheme: AppBarTheme(elevation: 1, toolbarHeight: 64),
+    dividerTheme: DividerThemeData(
+      color: Colors.white,
+    ),
   );
 }

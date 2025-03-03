@@ -3,6 +3,7 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/theme_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_app_bar.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_drawer.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_floating_action_button.dart';
@@ -78,47 +79,125 @@ class _SheetScreenState extends State<SheetScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             spacing: 8,
             children: [
-              Flexible(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 8,
-                  children: [
-                    NamedWidget(
-                      title: "Nome",
-                      isLeft: true,
-                      child: AnimatedSwitcher(
-                        duration: Duration(seconds: 1),
-                        child: (viewModel.isEditing)
-                            ? ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxWidth: width(context) * 0.8,
-                                  minWidth: width(context) * 0.2,
-                                ),
-                                child: IntrinsicWidth(
-                                  child: TextField(
-                                    controller: viewModel.nameController,
-                                    style: TextStyle(
-                                      fontSize: isVertical(context) ? 18 : 48,
-                                      fontFamily: FontFamily.sourceSerif4,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                spacing: 16,
+                children: [
+                  if (!isVertical(context))
+                    AnimatedContainer(
+                      width: 120,
+                      duration: Duration(milliseconds: 750),
+                      child: (viewModel.imageUrl != null)
+                          ? SizedBox(
+                              height: 150,
+                              width: 120,
+                              child: Stack(
+                                children: [
+                                  Image.network(
+                                    viewModel.imageUrl!,
+                                    fit: BoxFit.cover,
+                                    height: 150,
+                                    width: 120,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Tooltip(
+                                        message: "Remover imagem",
+                                        child: InkWell(
+                                          onTap: () =>
+                                              viewModel.onRemoveImageClicked(),
+                                          child: Icon(
+                                            Icons.delete,
+                                            size: 14,
+                                            color: AppColors.red,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          : Container(
+                              height: 150,
+                              decoration: BoxDecoration(
+                                color: AppColors.redDark,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      viewModel
+                                          .onUploadBioImageClicked(context);
+                                    },
+                                    icon: Icon(
+                                      Icons.file_upload_outlined,
+                                      color: Colors.white,
                                     ),
                                   ),
-                                ),
-                              )
-                            : Text(
-                                viewModel.sheet!.characterName,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: isVertical(context) ? 18 : 48,
-                                  fontFamily: FontFamily.bungee,
-                                  color: AppColors.red,
-                                ),
+                                  Text(
+                                    "Proporção ideal 4:5\nAté 2MB.",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
-                      ),
+                            ),
                     ),
-                    SheetSubtitleRowWidget(),
-                  ],
-                ),
+                  Flexible(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 8,
+                      children: [
+                        NamedWidget(
+                          title: "Nome",
+                          isLeft: true,
+                          child: AnimatedSwitcher(
+                            duration: Duration(seconds: 1),
+                            child: (viewModel.isEditing)
+                                ? ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: width(context) * 0.8,
+                                      minWidth: width(context) * 0.2,
+                                    ),
+                                    child: IntrinsicWidth(
+                                      child: TextField(
+                                        controller: viewModel.nameController,
+                                        style: TextStyle(
+                                          fontSize:
+                                              isVertical(context) ? 18 : 48,
+                                          fontFamily: FontFamily.sourceSerif4,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    viewModel.sheet!.characterName,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: isVertical(context) ? 18 : 48,
+                                      fontFamily: FontFamily.bungee,
+                                      color: AppColors.red,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        SheetSubtitleRowWidget(),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               Visibility(
                 visible: width(context) > 750,
@@ -237,7 +316,10 @@ class _SheetScreenState extends State<SheetScreen> {
               ),
             ],
           ),
-          Divider(),
+          Divider(
+            thickness: 2,
+            height: 48,
+          ),
           Flexible(child: SheetActionsColumnsWidget()),
         ],
       ),

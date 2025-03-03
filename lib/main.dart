@@ -12,6 +12,8 @@ import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart
 import 'package:flutter_rpg_audiodrama/ui/statistics/view/statistics_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'ui/_core/theme_provider.dart';
 import 'data/daos/item_dao.dart';
@@ -19,18 +21,27 @@ import 'data/daos/item_dao.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await dotenv.load();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await Supabase.initialize(
+    url: dotenv.env["SUPABASE_URL"]!,
+    anonKey: dotenv.env["SUPABASE_ANON_KEY"]!,
   );
 
   await ActionDAO.instance.initialize();
   await ItemDAO.instance.initialize();
   await ConditionDAO.instance.initialize();
 
+  ThemeProvider themeProvider = ThemeProvider();
+  await themeProvider.loadTheme();
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => themeProvider),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => SheetViewModel(id: "")),
         ChangeNotifierProvider(create: (_) => ShoppingViewModel()),
