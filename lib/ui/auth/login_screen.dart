@@ -3,6 +3,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
+import '../_core/app_colors.dart';
 import 'widgets/auth_buttons.dart';
 import '../settings/view/settings_provider.dart';
 
@@ -19,11 +20,23 @@ class _LoginScreenState extends State<LoginScreen> {
     final themeProvider = Provider.of<SettingsProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "AUDIODRAMA RPG",
-          style: TextStyle(
-            fontFamily: FontFamily.bungee,
-          ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "AUDIODRAMA ",
+              style: TextStyle(
+                fontFamily: FontFamily.bungee,
+              ),
+            ),
+            Text(
+              "RPG",
+              style: TextStyle(
+                fontFamily: FontFamily.bungee,
+                color: AppColors.red,
+              ),
+            ),
+          ],
         ),
         actions: [
           Icon(Icons.light_mode),

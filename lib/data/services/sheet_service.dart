@@ -187,6 +187,6 @@ class SheetService {
   Future<void> deleteBioImage(String fileName) {
     return _supabase.storage
         .from(SupabasePrefs.storageBucketSheet)
-        .remove([fileName]);
+        .remove(["bios/$fileName"]);
   }
 }

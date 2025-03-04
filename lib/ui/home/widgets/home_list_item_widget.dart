@@ -24,8 +24,8 @@ class HomeListItemWidget extends StatelessWidget {
           ? ClipOval(
               child: Image.network(
                 sheet.imageUrl!,
-                width: 48,
-                height: 48,
+                width: 40,
+                height: 40,
                 fit: BoxFit.cover,
               ),
             )

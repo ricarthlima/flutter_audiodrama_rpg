@@ -516,13 +516,13 @@ class SheetViewModel extends ChangeNotifier {
         if (!kIsWeb) {
           path = await sheetService.uploadBioImage(
             File(image.path),
-            "$id.${image.name.split(".").last}",
+            "${DateTime.now().millisecondsSinceEpoch}-$id.${image.name.split(".").last}",
           );
         } else {
           Uint8List bytes = await image.readAsBytes();
           path = await sheetService.uploadBioImageBytes(
             bytes,
-            "$id${image.name.split(".").last}",
+            "${DateTime.now().millisecondsSinceEpoch}-$id.${image.name.split(".").last}",
           );
         }
 
