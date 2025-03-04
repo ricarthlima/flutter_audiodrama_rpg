@@ -102,6 +102,7 @@ class _ShoppingDialogScreenState extends State<ShoppingDialogScreen> {
                 },
               ),
             ),
+          SizedBox(width: 16),
         ],
       ),
       floatingActionButton: (isVertical(context))

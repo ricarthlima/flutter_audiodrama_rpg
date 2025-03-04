@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:provider/provider.dart';
 import '../../../domain/models/sheet_model.dart';
 import '../../_core/helpers.dart';
@@ -19,14 +20,23 @@ class HomeListItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<HomeViewModel>(context);
     return ListTile(
-      leading: Icon(
-        Icons.feed,
-        size: 48,
-      ),
+      leading: (sheet.imageUrl != null)
+          ? ClipOval(
+              child: Image.network(
+                sheet.imageUrl!,
+                width: 48,
+                height: 48,
+                fit: BoxFit.cover,
+              ),
+            )
+          : Icon(
+              Icons.feed,
+              size: 40,
+            ),
       title: Text(
         sheet.characterName,
         style: TextStyle(
-          fontSize: 20,
+          fontSize: (isVertical(context)) ? 16 : 20,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -38,7 +48,7 @@ class HomeListItemWidget extends StatelessWidget {
                   onPressed: () {
                     viewModel.onDuplicateSheet(context: context, sheet: sheet);
                   },
-                  iconSize: 32,
+                  iconSize: (isVertical(context)) ? 24 : 32,
                   tooltip: "Duplicar",
                   icon: Icon(Icons.copy),
                 ),
@@ -46,7 +56,7 @@ class HomeListItemWidget extends StatelessWidget {
                   onPressed: () {
                     viewModel.onRemoveSheet(context: context, sheet: sheet);
                   },
-                  iconSize: 32,
+                  iconSize: (isVertical(context)) ? 24 : 32,
                   tooltip: "Remover",
                   icon: Icon(
                     Icons.delete,
