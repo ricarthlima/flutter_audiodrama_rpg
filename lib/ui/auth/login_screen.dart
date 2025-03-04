@@ -4,7 +4,7 @@ import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/auth_buttons.dart';
-import '../_core/theme_provider.dart';
+import '../settings/view/settings_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = Provider.of<SettingsProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:provider/provider.dart';
 
-import '../../_core/theme_provider.dart';
+import '../../settings/view/settings_provider.dart';
 import '../view/sheet_view_model.dart';
 
 import 'package:badges/badges.dart' as badges;
 
 Widget? getSheetFloatingActionButton(BuildContext context) {
-  final themeProvider = Provider.of<ThemeProvider>(context);
+  final themeProvider = Provider.of<SettingsProvider>(context);
   final viewModel = Provider.of<SheetViewModel>(context);
 
   return ExpandableFab(

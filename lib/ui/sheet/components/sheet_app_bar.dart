@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/settings/settings_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sheet_model.dart';
 import '../../../router.dart';
 import '../../_core/dimensions.dart';
-import '../../_core/theme_provider.dart';
 import '../view/sheet_view_model.dart';
 
 import 'package:badges/badges.dart' as badges;
 
 AppBar getSheetAppBar(BuildContext context) {
   final viewModel = Provider.of<SheetViewModel>(context);
-  final themeProvider = Provider.of<ThemeProvider>(context);
 
   return AppBar(
     toolbarHeight: 64,
@@ -49,11 +48,8 @@ AppBar getSheetAppBar(BuildContext context) {
       Visibility(
         visible: !isVertical(context),
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 20.0,
-            horizontal: 8,
-          ),
-          child: VerticalDivider(),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text("•"),
         ),
       ),
       Visibility(
@@ -71,24 +67,20 @@ AppBar getSheetAppBar(BuildContext context) {
           viewModel.toggleEditMode();
         },
       ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Text("•"),
+      ),
+      IconButton(
+        onPressed: () {
+          showSettingsDialog(context);
+        },
+        icon: Icon(Icons.settings),
+      ),
       if (!isVertical(context))
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
-          child: VerticalDivider(),
-        ),
-      if (!isVertical(context)) Icon(Icons.light_mode),
-      if (!isVertical(context))
-        Switch(
-          value: themeProvider.themeMode == ThemeMode.dark,
-          onChanged: (value) {
-            themeProvider.toggleTheme(value);
-          },
-        ),
-      if (!isVertical(context)) Icon(Icons.dark_mode),
-      if (!isVertical(context))
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
-          child: VerticalDivider(),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text("•"),
         ),
       if (!isVertical(context))
         Builder(

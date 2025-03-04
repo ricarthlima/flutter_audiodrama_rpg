@@ -10,7 +10,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/action_lore_dialog.dart';
 import 'package:provider/provider.dart';
 
-import '../../_core/theme_provider.dart';
+import '../../settings/view/settings_provider.dart';
 import '../../../data/daos/action_dao.dart';
 import '../helpers/enum_action_train_level.dart';
 import '../../../domain/models/action_template.dart';
@@ -38,7 +38,7 @@ class _ActionWidgetState extends State<ActionWidget> {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<SheetViewModel>(context, listen: false);
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = Provider.of<SettingsProvider>(context);
 
     av = viewModel.sheet!.listActionValue
         .firstWhere(
@@ -170,7 +170,7 @@ class _ActionWidgetState extends State<ActionWidget> {
                                       return Image.asset(
                                         (av == index)
                                             ? "assets/images/d20-$av.png"
-                                            : (Provider.of<ThemeProvider>(
+                                            : (Provider.of<SettingsProvider>(
                                                             context)
                                                         .themeMode ==
                                                     ThemeMode.dark)

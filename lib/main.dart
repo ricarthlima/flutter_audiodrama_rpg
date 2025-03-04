@@ -15,7 +15,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'ui/_core/theme_provider.dart';
+import 'ui/settings/view/settings_provider.dart';
 import 'data/daos/item_dao.dart';
 
 void main() async {
@@ -36,7 +36,7 @@ void main() async {
   await ItemDAO.instance.initialize();
   await ConditionDAO.instance.initialize();
 
-  ThemeProvider themeProvider = ThemeProvider();
+  SettingsProvider themeProvider = SettingsProvider();
   await themeProvider.loadTheme();
 
   runApp(
@@ -58,7 +58,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = Provider.of<SettingsProvider>(context);
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,

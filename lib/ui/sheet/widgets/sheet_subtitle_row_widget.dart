@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/theme_provider.dart';
+import 'package:flutter_rpg_audiodrama/ui/settings/view/settings_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/dimensions.dart';
@@ -15,7 +15,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<SheetViewModel>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = Provider.of<SettingsProvider>(context);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
