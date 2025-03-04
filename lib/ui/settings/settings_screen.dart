@@ -44,15 +44,14 @@ class SettingsScreen extends StatelessWidget {
                     Text("Modo escuro"),
                     Row(
                       children: [
-                        if (!isVertical(context)) Icon(Icons.light_mode),
-                        if (!isVertical(context))
-                          Switch(
-                            value: settingsProvider.themeMode == ThemeMode.dark,
-                            onChanged: (value) {
-                              settingsProvider.toggleTheme(value);
-                            },
-                          ),
-                        if (!isVertical(context)) Icon(Icons.dark_mode),
+                        Icon(Icons.light_mode),
+                        Switch(
+                          value: settingsProvider.themeMode == ThemeMode.dark,
+                          onChanged: (value) {
+                            settingsProvider.toggleTheme(value);
+                          },
+                        ),
+                        Icon(Icons.dark_mode),
                       ],
                     ),
                   ],

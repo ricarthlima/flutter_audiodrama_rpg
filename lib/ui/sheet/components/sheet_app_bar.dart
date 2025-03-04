@@ -21,6 +21,9 @@ AppBar getSheetAppBar(BuildContext context) {
       },
       icon: Icon(Icons.arrow_back),
     ),
+    backgroundColor: viewModel.imageUrl != null
+        ? Theme.of(context).scaffoldBackgroundColor.withAlpha(75)
+        : null,
     actions: [
       Visibility(
         visible: !isVertical(context),
