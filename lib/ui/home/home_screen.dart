@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/private/auth_user.dart';
+import 'package:flutter_rpg_audiodrama/_core/version.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_app_bar.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_floating_action_button.dart';
@@ -44,22 +45,38 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isOwnerId =
         FirebaseAuth.instance.currentUser!.uid == SecretAuthIds.ricarthId;
 
-    return SingleChildScrollView(
-      child: (isOwnerId && viewModel.mapGuestIds != null)
-          ? Column(
-              children: <Widget>[
-                    SizedBox(height: 16),
-                    _buildListSheets(name: "Meus personagens"),
-                  ] +
-                  viewModel.mapGuestIds!.keys.map(
-                    (String name) {
-                      return _buildListSheets(
-                        name: name,
-                        userId: viewModel.mapGuestIds![name],
-                      );
-                    },
-                  ).toList())
-          : _buildListSheets(),
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: (isOwnerId && viewModel.mapGuestIds != null)
+              ? Column(
+                  children: <Widget>[
+                        SizedBox(height: 16),
+                        _buildListSheets(name: "Meus personagens"),
+                      ] +
+                      viewModel.mapGuestIds!.keys.map(
+                        (String name) {
+                          return _buildListSheets(
+                            name: name,
+                            userId: viewModel.mapGuestIds![name],
+                          );
+                        },
+                      ).toList())
+              : _buildListSheets(),
+        ),
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "dev - $versionDev | rules - $versionBook",
+              style: TextStyle(
+                fontSize: 11,
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 
