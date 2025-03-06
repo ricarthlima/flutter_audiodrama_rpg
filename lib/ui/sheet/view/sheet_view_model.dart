@@ -12,6 +12,7 @@ import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/conditions_dialog.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_body_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet_notes/sheet_notes.dart';
 import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/statistics/statistics_screen.dart';
@@ -213,6 +214,11 @@ class SheetViewModel extends ChangeNotifier {
       }
       saveChanges();
     }
+  }
+
+  onRollBodyDice({required BuildContext context, required bool isSerious}) {
+    int roll = Random().nextInt(6) + 1;
+    showRollBodyDialog(context: context, roll: roll, isSerious: isSerious);
   }
 
   changeStressLevel({bool isAdding = true}) {

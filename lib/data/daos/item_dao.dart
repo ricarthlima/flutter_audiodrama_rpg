@@ -6,7 +6,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/utils/i18n_categories.dart';
 import '../../domain/models/item.dart';
 
 class ItemDAO {
-  static const String _filePath = 'assets/sheets/itens-0.0.4.json';
+  static const String _filePath = 'assets/sheets/itens-0.0.5.json';
 
   List<Item> _listItems = [];
   final List<String> _listCategories = [];

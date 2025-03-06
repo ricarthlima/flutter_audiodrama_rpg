@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/condition.dart';
 
 class ConditionDAO {
-  static const String _filePath = 'assets/sheets/conditions-0.0.1.json';
+  static const String _filePath = 'assets/sheets/conditions-0.0.2.json';
   List<Condition> _listCondition = [];
 
   ConditionDAO._();
@@ -21,7 +21,7 @@ class ConditionDAO {
         .map((e) => Condition.fromMap(e))
         .toList();
 
-    print("${_listCondition.length} condições carregadas");
+    print("${_listCondition.length} estados carregados");
   }
 
   List<Condition> get getConditions {

@@ -96,6 +96,11 @@ class ActionTooltip extends StatelessWidget {
       count++;
     }
 
+    if (action.isCollective) {
+      result += "Coletiva ";
+      count++;
+    }
+
     if (count > 1) {
       result = result.replaceAll(" ", ", ");
       result = result.substring(0, result.length - 2);

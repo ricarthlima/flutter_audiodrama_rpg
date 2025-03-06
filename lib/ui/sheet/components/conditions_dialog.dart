@@ -23,7 +23,7 @@ class SheetConditionsScreen extends StatelessWidget {
       width: min(400, width(context)),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Condições"),
+          title: Text("Estados"),
         ),
         body: SingleChildScrollView(
           child: Column(

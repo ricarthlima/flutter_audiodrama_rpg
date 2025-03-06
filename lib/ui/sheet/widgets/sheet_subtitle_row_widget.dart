@@ -240,8 +240,8 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         ),
       NamedWidget(
         isVisible: !isVertical(context) && !viewModel.isEditing,
-        title: "Condições",
-        tooltip: "Clique para gerenciar suas condições",
+        title: "Estado",
+        tooltip: "Clique para gerenciar seu estado.",
         hardHeight: 32,
         isShowRightSeparator: true,
         child: Padding(
@@ -259,6 +259,48 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               )),
         ),
       ),
+      if (!viewModel.isEditing)
+        NamedWidget(
+          title: "Dados de Corpo",
+          hardHeight: 32,
+          isShowRightSeparator: true,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 8,
+            children: [
+              Tooltip(
+                message: "Leve",
+                child: InkWell(
+                  onTap: () {
+                    viewModel.onRollBodyDice(
+                      context: context,
+                      isSerious: false,
+                    );
+                  },
+                  child: Icon(
+                    Icons.personal_injury_outlined,
+                    size: 18,
+                  ),
+                ),
+              ),
+              Tooltip(
+                message: "Grave",
+                child: InkWell(
+                  onTap: () {
+                    viewModel.onRollBodyDice(
+                      context: context,
+                      isSerious: true,
+                    );
+                  },
+                  child: Icon(
+                    Icons.dangerous_outlined,
+                    size: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       // NamedWidget(
       //   isVisible: !isVertical(context) && !viewModel.isEditing,
       //   title: "Ofícios",
