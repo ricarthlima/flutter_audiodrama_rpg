@@ -13,6 +13,7 @@ import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/conditions_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_body_dialog.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_works_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet_notes/sheet_notes.dart';
 import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/statistics/statistics_screen.dart';
@@ -75,6 +76,7 @@ class SheetViewModel extends ChangeNotifier {
   String notes = "";
   List<String> listActiveConditions = [];
   String? imageUrl;
+  List<ActionValue> listWorks = [];
 
   int modGlobalTrain = 0;
   bool isKeepingGlobalModifier = false;
@@ -125,6 +127,7 @@ class SheetViewModel extends ChangeNotifier {
       notes = sheetModel.notes;
       listActiveConditions = sheetModel.listActiveConditions;
       imageUrl = sheetModel.imageUrl;
+      listWorks = sheetModel.listWorks;
     }
 
     listSheets = await SheetService().getSheetsByUser(
@@ -163,6 +166,7 @@ class SheetViewModel extends ChangeNotifier {
       notes: notes,
       listActiveConditions: listActiveConditions,
       imageUrl: imageUrl,
+      listWorks: listWorks,
     );
     // Beleza, mas você colocou também no refresh?
 
@@ -172,11 +176,18 @@ class SheetViewModel extends ChangeNotifier {
     );
   }
 
-  onActionValueChanged(ActionValue ac) {
-    if (listActionValue.where((e) => e.actionId == ac.actionId).isNotEmpty) {
-      listActionValue.removeWhere((e) => e.actionId == ac.actionId);
+  onActionValueChanged({required ActionValue ac, required bool isWork}) {
+    if (!isWork) {
+      if (listActionValue.where((e) => e.actionId == ac.actionId).isNotEmpty) {
+        listActionValue.removeWhere((e) => e.actionId == ac.actionId);
+      }
+      listActionValue.add(ac);
+    } else {
+      if (listWorks.where((e) => e.actionId == ac.actionId).isNotEmpty) {
+        listWorks.removeWhere((e) => e.actionId == ac.actionId);
+      }
+      listWorks.add(ac);
     }
-    listActionValue.add(ac);
     notifyListeners();
   }
 
@@ -373,10 +384,38 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   int getTrainLevelByAction(String actionId) {
-    return listActionValue
-        .firstWhere((e) => e.actionId == actionId,
-            orElse: () => ActionValue(actionId: actionId, value: 1))
-        .value;
+    List<ActionValue> listFromBaseActions = listActionValue
+        .where(
+          (e) => e.actionId == actionId,
+        )
+        .toList();
+
+    if (listFromBaseActions.isNotEmpty) {
+      return listFromBaseActions[0].value;
+    }
+
+    List<ActionValue> listFromWorks = listWorks
+        .where(
+          (e) => e.actionId == actionId,
+        )
+        .toList();
+
+    if (listFromWorks.isNotEmpty) {
+      return listFromWorks[0].value;
+    }
+
+    return 1;
+  }
+
+  List<String> getWorkIds() {
+    List<String> result = [];
+    for (ActionValue ac in listWorks) {
+      ActionTemplate action = ActionDAO.instance.getActionById(ac.actionId)!;
+      if (!result.contains(action.work)) {
+        result.add(action.work ?? "");
+      }
+    }
+    return result;
   }
 
   void saveActionLore(
@@ -414,6 +453,19 @@ class SheetViewModel extends ChangeNotifier {
         context,
         MaterialPageRoute(
           builder: (context) => SheetStatisticsScreen(),
+        ),
+      );
+    }
+  }
+
+  void onWorksButtonClicked(BuildContext context) async {
+    if (!isVertical(context)) {
+      await showSheetWorksDialog(context);
+    } else {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SheetWorksDialog(),
         ),
       );
     }

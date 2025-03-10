@@ -30,6 +30,8 @@ class Sheet {
 
   String? imageUrl;
 
+  List<ActionValue> listWorks;
+
   Sheet({
     required this.id,
     required this.characterName,
@@ -46,6 +48,7 @@ class Sheet {
     required this.notes,
     required this.listActiveConditions,
     this.imageUrl,
+    required this.listWorks,
   });
 
   Sheet copyWith({
@@ -64,6 +67,7 @@ class Sheet {
     String? notes,
     List<String>? listActiveConditions,
     String? imageUrl,
+    List<ActionValue>? listWorks,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -81,6 +85,7 @@ class Sheet {
       notes: notes ?? this.notes,
       listActiveConditions: listActiveConditions ?? this.listActiveConditions,
       imageUrl: imageUrl ?? this.imageUrl,
+      listWorks: listWorks ?? this.listWorks,
     );
   }
 
@@ -101,6 +106,7 @@ class Sheet {
       "notes": notes,
       "listActiveConditions": listActiveConditions,
       "imageUrl": imageUrl,
+      "listWorks": listWorks.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -145,6 +151,13 @@ class Sheet {
               .toList()
           : [],
       imageUrl: map["imageUrl"],
+      listWorks: (map["listWorks"] != null)
+          ? List<ActionValue>.from(
+              (map['listWorks'] as List<dynamic>).map<ActionValue>(
+                (x) => ActionValue.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : [],
     );
   }
 
@@ -174,7 +187,8 @@ class Sheet {
         other.bio == bio &&
         other.notes == notes &&
         other.listActiveConditions == listActiveConditions &&
-        other.imageUrl == imageUrl;
+        other.imageUrl == imageUrl &&
+        other.listWorks == listWorks;
   }
 
   @override
@@ -191,6 +205,7 @@ class Sheet {
         notes.hashCode ^
         bio.hashCode ^
         listActiveConditions.hashCode ^
-        imageUrl.hashCode;
+        imageUrl.hashCode ^
+        listWorks.hashCode;
   }
 }

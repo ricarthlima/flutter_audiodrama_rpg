@@ -3,7 +3,6 @@ import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/settings/view/settings_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import '../../_core/stress_level.dart';
 import '../../_core/widgets/named_widget.dart';
@@ -239,7 +238,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           ),
         ),
       NamedWidget(
-        isVisible: !isVertical(context) && !viewModel.isEditing,
+        isVisible: !viewModel.isEditing,
         title: "Estado",
         tooltip: "Clique para gerenciar seu estado.",
         hardHeight: 32,
@@ -301,20 +300,19 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             ],
           ),
         ),
-      // NamedWidget(
-      //   isVisible: !isVertical(context) && !viewModel.isEditing,
-      //   title: "Ofícios",
-      //   tooltip: "Clique para gerenciar seus ofícios",
-      //   hardHeight: 32,
-      //   isShowRightSeparator: true,
-      //   child: InkWell(
-      //     onTap: () => showSnackBarWip(context),
-      //     child: Icon(
-      //       Icons.workspace_premium_outlined,
-      //       size: 18,
-      //     ),
-      //   ),
-      // ),
+      NamedWidget(
+        title: "Ofícios",
+        tooltip: "Clique para gerenciar seus ofícios",
+        hardHeight: 32,
+        isShowRightSeparator: true,
+        child: InkWell(
+          onTap: () => viewModel.onWorksButtonClicked(context),
+          child: Icon(
+            Icons.workspace_premium_outlined,
+            size: 18,
+          ),
+        ),
+      ),
     ];
   }
 }

@@ -92,6 +92,7 @@ class __RollBodyDialogState extends State<_RollBodyDialog> {
                           )
                         : Text(
                             _bodyPartByResult(),
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 44,
                               fontFamily: FontFamily.bungee,

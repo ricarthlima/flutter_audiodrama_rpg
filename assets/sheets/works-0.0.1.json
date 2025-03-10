@@ -1,0 +1,258 @@
+{
+    "pessoa-do-mar": [
+        {
+            "id": "5d56bc5c-38c5-3f35-9cbe-4b40a79ed9a5",
+            "name": "Ler Mapas",
+            "description": "Trata-se da sua habilidade de ler mapas. Cite um local específico onde você queira encontrar uma rota em um mapa específico. A qualidade do mapa pode diminuir a DT no teste de Orientar-se (Mar).",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": true,
+            "isCollective": false
+        },
+        {
+            "id": "aec5c060-355e-378a-b065-468634bac877",
+            "name": "Lutar (Embarcação)",
+            "description": "Apenas para quem estiver no leme. Equivalente a uma luta corpo-a-corpo, porém com embarcações. Em situações onde os barcos se colidam, os capitães deverão fazer Testes Resistidos uns contra os outros de Lutar (Embarcação), a embarcação de quem tiver menos sucesso, sofrerá o maior dano.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "915a7384-00ea-3864-b26b-9c89540799a3",
+            "name": "Cartografar",
+            "description": "Trata-se da sua habilidade em criar mapas e registrar suas observações astronômicas. Use essa ação para registrar alguma localização nova nos seus registros, o valor rolado determinará a qualidade do registro. Bons registros podem garantir uma diminuição na DT do teste Orientar-se (Mar) caso a ação Ler Mapas seja utilizada.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "7b013b19-4860-32b9-9177-958f77505de2",
+            "name": "Manobrar Velas",
+            "description": "Apenas para quem estiver nas velas. Todos os marujos nas velas deverão fazer um teste juntos contra o Mar, somando seus resultados. Um mar tranquilo pode exigir uma DT baixa, o suficiente para um único marujo passar. Já uma tempestade brutal, pode exigir uma DT que parece beirar a impossibilidade, mesmo para uma dúzia de marujos. O Pilotar (Aquáticos) da pessoa no leme contribuirá para esse teste com o dobro do seu valor.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": true
+        },
+        {
+            "id": "120b9410-5eba-3a4e-ab50-d0f5330dbcf9",
+            "name": "Orientar-se (Mar)",
+            "description": "Trata-se da sua capacidade de se guiar no mar. Uma boa orientação pode levar o grupo para águas de mar calmo e vento constante. Uma má orientação pode levar para o mar revolto, criaturas marinhas e até mesmo para os temíveis marasmos.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "32908912-39fa-3fa8-a2c0-8f6fc16e8321",
+            "name": "Pescar",
+            "description": "Pode ser usada coletiva ou individualmente, trata-se da sua capacidade de usar varas ou redes para pegar peixes ou quaisquer outras coisas que estejam no mar.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": true
+        },
+        {
+            "id": "99c43128-12da-335d-9439-b3b7c45be98c",
+            "name": "Refletir (Clima)",
+            "description": "Trata da sua capacidade de prever o clima, como a vinda de tempestades, mudanças do vento e todas as outras condições que possam facilitar ou dificultar a navegação.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "d1b1807c-8a2b-32a3-aff6-6e8eecbd60cd",
+            "name": "Refletir (Criaturas Marinhas)",
+            "description": "Trata-se da sua capacidade de inferir sobre criaturas do mar, seus hábitos, habitats, perigos e formas de lidar.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "cfe2dd34-8843-312e-8979-4e6647826c91",
+            "name": "Refletir (Malícia do Mar)",
+            "description": "Conhecimento que você tem sobre a política do mar, quais portos são perigosos e seguros, facções e outros conhecimentos.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        }
+    ],
+    "pessoa-alquimista": [
+        {
+            "id": "0c6f63f1-92ba-3f92-bbec-2756085a4549",
+            "name": "Catalisar reações",
+            "description": "Trata-se da sua capacidade de tornar uma reação mais forte ou mais rápida. Quer acelerar uma explosão ou tornar uma poção mais potente? Role bem em Catalisar reações! É claro que, rolar mal, pode ter consequências graves.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "600b01d3-09d5-3bfb-bc5f-aa6ab827ecae",
+            "name": "Coletar materiais",
+            "description": "Quão bem você consegue tirar insumos do ambiente sem os estragar.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "2822516f-da13-39e1-b680-4c35aec30057",
+            "name": "Criar (Alquimia)",
+            "description": "A principal ação da Pessoa-Alquimista. Quando quiser criar qualquer coisa que envolva alquimia e você ou já saiba fazer ou possua um guia, use essa ação para saber se tudo deu certo.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "ba8ef52d-8667-348c-a16e-edf3be7920b9",
+            "name": "Destilar essências",
+            "description": "Nem todos os insumos vêm prontos para uso da natureza, muitas vezes é preciso tratá-los, cortá-los, espremê-los, assá-los ou destilá-los para que se tornem úteis.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "8cc80065-bbe3-3b74-96ed-d6b86fa58dcd",
+            "name": "Manipular (Alquimia)",
+            "description": "Trata-se da sua capacidade de manipular um produto alquímico em algo.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "1060f3f7-6257-3f10-bbba-397c20f73afd",
+            "name": "Enfraquecer reações",
+            "description": "Oposto ao Catalisar reações, aqui você quer atrasar, ou mesmo parar, uma reação. Uma bomba química vai explodir? Quer criar um veneno que só vai fazer muito mal, mas não vai matar? Enfraqueça suas reações.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "ff36c9d9-7aec-3bc7-957f-883e13455672",
+            "name": "Fermentar o desconhecido",
+            "description": "Às vezes experimentação é essencial para criar algo. Nomeie o que está tentando fazer, quais ferramentas e materiais você tem, a pessoa narradora dirá se é possível, e se for, qual a DT.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "57442933-01a8-3b07-b272-ae634fedc1f3",
+            "name": "Neutralizar impurezas",
+            "description": "Uma bebida está com veneno? A água de um vilarejo contaminada com um ácido mórbido? Talvez com um Neutralizar impurezas você consiga se livrar do agente contaminante.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        }
+    ],
+    "pessoa-neon": [
+        {
+            "id": "1e4c7199-c3bc-3302-943a-66a414f22805",
+            "name": "Defender sistema",
+            "description": "Apenas com acesso à rede. Trata-se de ativamente defender um sistema contra invasões e expulsar invasores.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "96ca0367-2065-35fd-a1df-9ca016dd372f",
+            "name": "Invadir sistema",
+            "description": "Semelhante ao Hackear, trata-se de invadir (e se manter dentro de) um sistema que está sendo ativamente defendido.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": true,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "08a4848a-e4cb-336a-a23a-c540b7c24f16",
+            "name": "Desativar seguranças",
+            "description": "Trata-se de desativar, fisicamente, as seguranças de um local. Para isso, você deve, obviamente, ter acesso a um terminal do sistema. Passar na DT de desativar seguranças pode diminuir ou anular a DT de Hackear.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "94fb3ac5-a55b-3a7a-81e2-323829d95137",
+            "name": "Hackear",
+            "description": "Trata-se de um teste para obter acesso a um sistema interno, dispositivo, implante ou qualquer outro MAC conectado à rede. Para usar a ação Hackear, o sistema não pode estar sendo ativamente defendido.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "b156b9d3-5d9f-3e91-aaa4-80e0e54c42e5",
+            "name": "Manipular (Digital)",
+            "description": "Apenas com acesso restrito. Trata-se de manipular informações digitais, seja para criar documentos falsos, espalhar fake news, manipular biometrias, entre outros.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "b89bbc93-1ebc-3322-88dc-1569b8f681dc",
+            "name": "Pesquisar na rede",
+            "description": "Apenas com acesso à rede (mesmo que pública). Nomeie algo ou alguém que você deseja obter informações na rede, este teste determinará se você consegue obter essas informações e a qualidade delas.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "61ec1073-9b74-3f3a-b0f0-b7a2eacddcaf",
+            "name": "Resistir (Cyberpsicose)",
+            "description": "Utilizar exageradamente seus implantes experimentais pode sobrecarregar sua mente. Falhar em um teste de Resistir (Cyberpsicose) com uma DT determinada pela pessoa narradora pode causar um severo dano de Estresse.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        },
+        {
+            "id": "54bfa4af-3372-3ba1-8cad-994eb34a5a72",
+            "name": "Sobrecarregar",
+            "description": "Uma vez com acesso a um sistema ou dispositivo, caso você queira torná-lo inutilizável, basta sobrecarregá-lo. Seja um sistema por meio de um ataque DDoS, seja um dispositivo ou implante, sobrecarregando a bateria.",
+            "isFree": false,
+            "isReaction": false,
+            "isResisted": false,
+            "isPreparation": false,
+            "isCollective": false
+        }
+    ]
+}

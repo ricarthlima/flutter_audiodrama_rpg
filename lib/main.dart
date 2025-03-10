@@ -37,7 +37,7 @@ void main() async {
   await ConditionDAO.instance.initialize();
 
   SettingsProvider themeProvider = SettingsProvider();
-  await themeProvider.loadTheme();
+  await themeProvider.loadSettings();
 
   runApp(
     MultiProvider(

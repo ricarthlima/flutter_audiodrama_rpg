@@ -9,12 +9,14 @@ class ListActionsWidget extends StatelessWidget {
   final String name;
   final List<ActionTemplate> listActions;
   final bool isEditing;
+  final bool isWork;
 
   const ListActionsWidget({
     super.key,
     required this.name,
     required this.listActions,
     required this.isEditing,
+    this.isWork = false,
   });
 
   @override
@@ -52,6 +54,7 @@ class ListActionsWidget extends StatelessWidget {
                   ActionTemplate action = listActions[index];
                   return ActionWidget(
                     action: action,
+                    isWork: isWork,
                   );
                 },
               ),

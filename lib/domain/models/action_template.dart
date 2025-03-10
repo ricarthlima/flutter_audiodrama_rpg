@@ -11,6 +11,8 @@ class ActionTemplate {
   bool isReaction;
   bool isCollective;
 
+  String? work;
+
   ActionTemplate({
     required this.id,
     required this.name,
@@ -20,6 +22,7 @@ class ActionTemplate {
     required this.isPreparation,
     required this.isReaction,
     required this.isCollective,
+    this.work,
   });
 
   ActionTemplate copyWith({
@@ -31,6 +34,7 @@ class ActionTemplate {
     bool? isPreparation,
     bool? isReaction,
     bool? isCollective,
+    String? work,
   }) {
     return ActionTemplate(
       id: id ?? this.id,
@@ -41,6 +45,7 @@ class ActionTemplate {
       isPreparation: isPreparation ?? this.isPreparation,
       isReaction: isReaction ?? this.isReaction,
       isCollective: isCollective ?? this.isCollective,
+      work: work ?? this.work,
     );
   }
 
@@ -54,6 +59,7 @@ class ActionTemplate {
       'isPreparation': isPreparation,
       'isReaction': isReaction,
       'isCollective': isCollective,
+      'work': work,
     };
   }
 
@@ -68,6 +74,7 @@ class ActionTemplate {
       isReaction: map['isReaction'] as bool,
       isCollective:
           (map['isCollective'] != null) ? (map['isCollective'] as bool) : false,
+      work: map['work'],
     );
   }
 
@@ -92,7 +99,8 @@ class ActionTemplate {
         other.isResisted == isResisted &&
         other.isPreparation == isPreparation &&
         other.isReaction == isReaction &&
-        other.isCollective == isCollective;
+        other.isCollective == isCollective &&
+        other.work == work;
   }
 
   @override
@@ -104,6 +112,7 @@ class ActionTemplate {
         isResisted.hashCode ^
         isPreparation.hashCode ^
         isReaction.hashCode ^
-        isCollective.hashCode;
+        isCollective.hashCode ^
+        work.hashCode;
   }
 }

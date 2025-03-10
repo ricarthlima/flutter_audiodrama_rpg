@@ -20,10 +20,12 @@ import 'action_tooltip.dart';
 
 class ActionWidget extends StatefulWidget {
   final ActionTemplate action;
+  final bool isWork;
 
   const ActionWidget({
     super.key,
     required this.action,
+    required this.isWork,
   });
 
   @override
@@ -40,15 +42,7 @@ class _ActionWidgetState extends State<ActionWidget> {
     final viewModel = Provider.of<SheetViewModel>(context, listen: false);
     final themeProvider = Provider.of<SettingsProvider>(context);
 
-    av = viewModel.sheet!.listActionValue
-        .firstWhere(
-          (av) => av.actionId == widget.action.id,
-          orElse: () => ActionValue(
-            actionId: widget.action.id,
-            value: 1,
-          ),
-        )
-        .value;
+    av = viewModel.getTrainLevelByAction(widget.action.id);
 
     _trainLevel = ActionTrainLevel.values[av];
 
@@ -152,10 +146,11 @@ class _ActionWidgetState extends State<ActionWidget> {
                                           _trainLevel = value;
                                         });
                                         viewModel.onActionValueChanged(
-                                          ActionValue(
+                                          ac: ActionValue(
                                             actionId: widget.action.id,
                                             value: value.index,
                                           ),
+                                          isWork: widget.isWork,
                                         );
                                       }
                                     },
@@ -222,10 +217,11 @@ class _ActionWidgetState extends State<ActionWidget> {
                   _trainLevel = value;
                 });
                 viewModel.onActionValueChanged(
-                  ActionValue(
+                  ac: ActionValue(
                     actionId: widget.action.id,
                     value: value.index,
                   ),
+                  isWork: widget.isWork,
                 );
               }
             },

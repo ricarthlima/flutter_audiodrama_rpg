@@ -104,6 +104,21 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
           ),
         ],
       ),
+      Row(
+        children: [
+          Text('Ofícios'),
+          SizedBox(width: 20),
+          FloatingActionButton(
+            heroTag: null,
+            tooltip: "Ofícios",
+            onPressed: () {
+              viewModel.closeFab();
+              viewModel.onWorksButtonClicked(context);
+            },
+            child: Icon(Icons.workspace_premium_outlined),
+          ),
+        ],
+      ),
     ],
   );
 }
