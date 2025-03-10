@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/auth/login_screen.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_works_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/home_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -46,6 +47,24 @@ class AppRouter {
           return SheetScreen(
             key: UniqueKey(),
           );
+        },
+      ),
+      GoRoute(
+        path: "/sheet/:sheetId/works",
+        builder: (context, state) {
+          String id = state.pathParameters["sheetId"] ?? "";
+          String? userId = state.extra as String?;
+
+          if (FirebaseAuth.instance.currentUser == null) {
+            GoRouter.of(context).go(root);
+          }
+
+          final viewModel = Provider.of<SheetViewModel>(context, listen: false);
+          viewModel.id = id;
+          viewModel.userId = userId;
+          // viewModel.updateCredentials(id: id, userId: userId);
+
+          return SheetWorksDialog(isPopup: true);
         },
       ),
       GoRoute(
