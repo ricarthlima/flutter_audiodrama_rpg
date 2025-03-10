@@ -49,7 +49,7 @@ class _SheetScreenState extends State<SheetScreen> {
 
     return (viewModel.isLoading)
         ? LoadingWidget()
-        : (viewModel.sheet != null)
+        : (viewModel.isFoundSheet)
             ? _generateScreen()
             : SheetNotFoundWidget();
   }
@@ -57,7 +57,7 @@ class _SheetScreenState extends State<SheetScreen> {
   Widget _generateScreen() {
     final viewModel = Provider.of<SheetViewModel>(context);
 
-    viewModel.nameController.text = viewModel.sheet!.characterName;
+    viewModel.nameController.text = viewModel.characterName;
 
     return Stack(
       children: [
@@ -265,7 +265,8 @@ class _SheetScreenState extends State<SheetScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      viewModel.listActionValue
+                                      viewModel
+                                          .getActionsValuesWithWorks()
                                           .where(
                                             (e) => e.value == 2,
                                           )
@@ -292,7 +293,8 @@ class _SheetScreenState extends State<SheetScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      viewModel.listActionValue
+                                      viewModel
+                                          .getActionsValuesWithWorks()
                                           .where(
                                             (e) => e.value == 3,
                                           )
@@ -382,7 +384,7 @@ class _SheetScreenState extends State<SheetScreen> {
                 ),
               )
             : Text(
-                viewModel.sheet!.characterName,
+                viewModel.characterName,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: isVertical(context) ? 18 : 48,

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -33,14 +32,54 @@ class SheetViewModel extends ChangeNotifier {
   String id;
   String? userId;
 
+  SheetViewModel({required this.id, this.userId});
+  SheetService sheetService = SheetService();
+
+  // Atributos de ficha
+  String characterName = "";
+  int stressLevel = 0;
+  int effortPoints = -1;
+  List<ActionValue> listActionValue = [];
+  List<RollLog> listRollLog = [];
+  int baseLevel = 0;
+  List<ItemSheet> listSheetItems = [];
+  double money = 0;
+  double weight = 0;
+  List<ActionLore> listActionLore = [];
+  String bio = "";
+  String notes = "";
+  List<String> listActiveConditions = [];
+  String? imageUrl;
+  List<ActionValue> listWorks = [];
+
+  // Atributos locais
+  int modGlobalTrain = 0;
+  bool isKeepingGlobalModifier = false;
+
+  // Outras fichas
+  List<Sheet> listSheets = [];
+
+  // Controladores de estado
+  bool _isLoading = true;
+  get isLoading => _isLoading;
+  bool isFoundSheet = false;
+  bool isEditing = false;
+  int _notificationCount = 0;
+  int get notificationCount => _notificationCount;
+  set notificationCount(int value) {
+    _notificationCount = value;
+    notifyListeners();
+  }
+
+  // Objetos externos
+  GlobalKey<ExpandableFabState> fabKey = GlobalKey<ExpandableFabState>();
+  Future<Sheet?> futureGetSheet = Future.delayed(Duration.zero);
+  final TextEditingController nameController = TextEditingController();
+
   updateCredentials({String? id, String? userId}) {
     this.id = id ?? this.id;
     this.userId = userId;
   }
-
-  SheetViewModel({required this.id, this.userId});
-
-  GlobalKey<ExpandableFabState> fabKey = GlobalKey<ExpandableFabState>();
 
   closeFab() {
     final state = fabKey.currentState;
@@ -48,48 +87,6 @@ class SheetViewModel extends ChangeNotifier {
       state.toggle();
     }
   }
-
-  SheetService sheetService = SheetService();
-  final ActionDAO _actionDAO = ActionDAO.instance;
-
-  bool isEditing = false;
-  final TextEditingController nameController = TextEditingController();
-  Future<Sheet?> futureGetSheet = Future.delayed(Duration.zero);
-  List<ActionValue> listActionValue = [];
-  List<RollLog> listRollLog = [];
-  List<ActionLore> listActionLore = [];
-
-  int _notificationCount = 0;
-
-  int get notificationCount => _notificationCount;
-  set notificationCount(int value) {
-    _notificationCount = value;
-    notifyListeners();
-  }
-
-  int effortPoints = -1;
-  int stressLevel = 0;
-  int baseLevel = 0;
-  double money = 0;
-  double weight = 0;
-  String bio = "";
-  String notes = "";
-  List<String> listActiveConditions = [];
-  String? imageUrl;
-  List<ActionValue> listWorks = [];
-
-  int modGlobalTrain = 0;
-  bool isKeepingGlobalModifier = false;
-
-  List<ItemSheet> listSheetItems = [];
-
-  List<Sheet> listSheets = [];
-
-  Sheet? sheet;
-
-  bool _isLoading = true;
-
-  get isLoading => _isLoading;
 
   void startLoading() {
     _isLoading = true;
@@ -112,8 +109,9 @@ class SheetViewModel extends ChangeNotifier {
     Sheet? sheetModel = await futureGetSheet;
 
     if (sheetModel != null) {
-      sheet = sheetModel;
+      nameController.text = sheetModel.characterName;
 
+      characterName = sheetModel.characterName;
       listActionValue = sheetModel.listActionValue;
       listRollLog = sheetModel.listRollLog;
       effortPoints = sheetModel.effortPoints;
@@ -128,6 +126,8 @@ class SheetViewModel extends ChangeNotifier {
       listActiveConditions = sheetModel.listActiveConditions;
       imageUrl = sheetModel.imageUrl;
       listWorks = sheetModel.listWorks;
+
+      isFoundSheet = true;
     }
 
     listSheets = await SheetService().getSheetsByUser(
@@ -152,7 +152,8 @@ class SheetViewModel extends ChangeNotifier {
   Future<void> saveChanges() async {
     Sheet sheet = Sheet(
       id: id,
-      characterName: nameController.text,
+      characterName:
+          (nameController.text != "") ? nameController.text : characterName,
       listActionValue: listActionValue,
       listRollLog: listRollLog,
       effortPoints: effortPoints,
@@ -192,10 +193,10 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   onRoll(BuildContext context, {required RollLog roll}) async {
-    ActionTemplate? action = _actionDAO.getActionById(roll.idAction);
+    ActionTemplate? action = ActionDAO.instance.getActionById(roll.idAction);
 
-    if (!_actionDAO.isOnlyFreeOrPreparation(roll.idAction) ||
-        _actionDAO.isLuckAction(roll.idAction)) {
+    if (!ActionDAO.instance.isOnlyFreeOrPreparation(roll.idAction) ||
+        ActionDAO.instance.isLuckAction(roll.idAction)) {
       showRollDialog(context: context, rollLog: roll);
     } else {
       if (action != null) {
@@ -370,8 +371,10 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   int getPropositoMinusAversao() {
-    int totalProposito = listActionValue.where((e) => e.value == 4).length;
-    int totalAversao = listActionValue.where((e) => e.value == 0).length;
+    int totalProposito =
+        getActionsValuesWithWorks().where((e) => e.value == 4).length;
+    int totalAversao =
+        getActionsValuesWithWorks().where((e) => e.value == 0).length;
 
     return (totalProposito * 3) - totalAversao;
   }
@@ -602,5 +605,10 @@ class SheetViewModel extends ChangeNotifier {
 
     notifyListeners();
     saveChanges();
+  }
+
+  List<ActionValue> getActionsValuesWithWorks() {
+    return listActionValue.map((e) => e).toList() +
+        listWorks.map((e) => e).toList();
   }
 }

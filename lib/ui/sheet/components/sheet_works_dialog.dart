@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/components/wip_snackbar.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/open_popup.dart';
 import 'package:flutter_rpg_audiodrama/ui/settings/view/settings_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/list_actions_widget.dart';
 import 'package:provider/provider.dart';
+
+import '../../_core/widgets/loading_widget.dart';
+import '../widgets/sheet_not_found_widget.dart';
 
 Future<dynamic> showSheetWorksDialog(BuildContext context) {
   return showDialog(
@@ -28,32 +30,53 @@ class SheetWorksDialog extends StatefulWidget {
 
 class _SheetWorksDialogState extends State<SheetWorksDialog> {
   @override
+  void initState() {
+    super.initState();
+    if (widget.isPopup) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final viewModel = Provider.of<SheetViewModel>(context, listen: false);
+        viewModel.refresh();
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     SheetViewModel sheetViewModel = Provider.of<SheetViewModel>(context);
+    return (sheetViewModel.isLoading)
+        ? LoadingWidget()
+        : (sheetViewModel.isFoundSheet)
+            ? _buildBody(context)
+            : SheetNotFoundWidget();
+  }
+
+  Scaffold _buildBody(BuildContext context) {
+    SheetViewModel sheetViewModel = Provider.of<SheetViewModel>(context);
     SettingsProvider settingsProvider = Provider.of<SettingsProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Ofícios"),
+        title: Text((widget.isPopup) ? "Meus Ofícios" : "Ofícios"),
         actions: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 16,
-            children: [
-              Checkbox(
-                value: settingsProvider.showingOnlyMyWorks,
-                onChanged: (value) {
-                  if (value != null) {
-                    settingsProvider.showingOnlyMyWorks = value;
-                  }
-                },
-              ),
-              Text("Mostrar só meus ofícios")
-            ],
-          ),
           if (!widget.isPopup)
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 16,
+                  children: [
+                    Checkbox(
+                      value: settingsProvider.showingOnlyMyWorks,
+                      onChanged: (value) {
+                        if (value != null) {
+                          settingsProvider.showingOnlyMyWorks = value;
+                        }
+                      },
+                    ),
+                    Text("Mostrar só meus ofícios")
+                  ],
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text("•"),
@@ -79,10 +102,8 @@ class _SheetWorksDialogState extends State<SheetWorksDialog> {
                 ),
                 IconButton(
                   onPressed: () {
-                    // TODO: Popup ta bugado apagando tudo
-                    // Navigator.pop(context);
-                    // openPopup("sheet/${sheetViewModel.id}/works");
-                    showSnackBarWip(context);
+                    openPopup("sheet/${sheetViewModel.id}/works");
+                    Navigator.pop(context);
                   },
                   icon: Icon(Icons.outbond_outlined),
                 ),
@@ -97,7 +118,7 @@ class _SheetWorksDialogState extends State<SheetWorksDialog> {
           child: Wrap(
             spacing: 32,
             runSpacing: 32,
-            children: (!settingsProvider.showingOnlyMyWorks)
+            children: (!settingsProvider.showingOnlyMyWorks && !widget.isPopup)
                 ? List.generate(
                     ActionDAO.instance.mapWorks.keys.length,
                     (index) {

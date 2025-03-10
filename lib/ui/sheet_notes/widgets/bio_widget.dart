@@ -74,7 +74,7 @@ class BioWidget extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: sheetViewModel.listActionValue.map(
+                  children: sheetViewModel.getActionsValuesWithWorks().map(
                     (e) {
                       return _ActionLoreWidget(
                         action: ActionDAO.instance.getActionById(e.actionId)!,

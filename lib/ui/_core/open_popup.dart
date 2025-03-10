@@ -7,6 +7,6 @@ void openPopup(String subdomain, {String? name}) {
   html.window.open(
     '$host#/$subdomain',
     name ?? "",
-    'width=600,height=800,scrollbars=no,resizable=no',
+    'width=400,height=800,scrollbars=no,resizable=no',
   );
 }
