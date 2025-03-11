@@ -4,6 +4,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:provider/provider.dart';
 import '../../../domain/models/sheet_model.dart';
+import '../../_core/components/image_dialog.dart';
 import '../../_core/helpers.dart';
 import '../view/home_view_model.dart';
 
@@ -21,12 +22,20 @@ class HomeListItemWidget extends StatelessWidget {
     final viewModel = Provider.of<HomeViewModel>(context);
     return ListTile(
       leading: (sheet.imageUrl != null)
-          ? ClipOval(
-              child: Image.network(
-                sheet.imageUrl!,
-                width: 40,
-                height: 40,
-                fit: BoxFit.cover,
+          ? InkWell(
+              onTap: () {
+                showImageDialog(
+                  context: context,
+                  imageUrl: sheet.imageUrl!,
+                );
+              },
+              child: ClipOval(
+                child: Image.network(
+                  sheet.imageUrl!,
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                ),
               ),
             )
           : Icon(

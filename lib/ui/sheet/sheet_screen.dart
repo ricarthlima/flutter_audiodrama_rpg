@@ -11,6 +11,7 @@ import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/sheet_actions_columns_wi
 import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/sheet_not_found_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/sheet_subtitle_row_widget.dart';
 import 'package:provider/provider.dart';
+import '../_core/components/image_dialog.dart';
 import '../_core/helpers.dart';
 import '../_core/widgets/loading_widget.dart';
 import '../_core/widgets/named_widget.dart';
@@ -112,19 +113,9 @@ class _SheetScreenState extends State<SheetScreen> {
                                       children: [
                                         InkWell(
                                           onTap: () {
-                                            showDialog(
+                                            showImageDialog(
                                               context: context,
-                                              builder: (context) {
-                                                return Dialog(
-                                                  child: SizedBox(
-                                                    height: height(context),
-                                                    child: Image.network(
-                                                      viewModel.imageUrl!,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
+                                              imageUrl: viewModel.imageUrl!,
                                             );
                                           },
                                           child: Image.network(
