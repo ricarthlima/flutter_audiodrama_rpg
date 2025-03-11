@@ -4,12 +4,21 @@ import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../_core/fonts.dart';
 import '../../settings/settings_screen.dart';
+import '../view/home_view_model.dart';
 
 AppBar getHomeAppBar(BuildContext context) {
+  final viewModel = Provider.of<HomeViewModel>(context);
   return AppBar(
+    leading: IconButton(
+      onPressed: () {
+        viewModel.isDrawerClosed = !viewModel.isDrawerClosed;
+      },
+      icon: Icon(Icons.menu),
+    ),
     title: Row(
       mainAxisSize: MainAxisSize.min,
       children: [

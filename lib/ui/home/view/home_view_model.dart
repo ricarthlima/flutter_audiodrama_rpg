@@ -56,4 +56,26 @@ class HomeViewModel extends ChangeNotifier {
   }) async {
     await sheetService.duplicateSheet(sheet);
   }
+
+  bool _isDrawerClosed = true;
+  bool get isDrawerClosed => _isDrawerClosed;
+  set isDrawerClosed(bool value) {
+    if (value != _isDrawerClosed) {
+      _isDrawerClosed = value;
+      notifyListeners();
+    }
+  }
+
+  HomeSubPages _currentPage = HomeSubPages.sheets;
+  HomeSubPages get currentPage => _currentPage;
+  set currentPage(HomeSubPages value) {
+    _currentPage = value;
+    notifyListeners();
+  }
+}
+
+enum HomeSubPages {
+  sheets,
+  worlds,
+  profile,
 }

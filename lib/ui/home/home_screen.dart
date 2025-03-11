@@ -7,6 +7,7 @@ import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_app_bar.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_floating_action_button.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/widgets/home_drawer.dart';
 import 'package:provider/provider.dart';
 
 import '../_core/fonts.dart';
@@ -36,7 +37,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: getHomeAppBar(context),
       floatingActionButton: getHomeFAB(context),
-      body: _buildBody(context),
+      body: Row(
+        children: [
+          HomeDrawer(),
+          VerticalDivider(thickness: 0.1),
+          Flexible(child: _buildBody(context)),
+        ],
+      ),
     );
   }
 
@@ -45,37 +52,44 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isOwnerId =
         FirebaseAuth.instance.currentUser!.uid == SecretAuthIds.ricarthId;
 
-    return Stack(
+    return IndexedStack(
+      index: HomeSubPages.values.indexOf(viewModel.currentPage),
       children: [
-        SingleChildScrollView(
-          child: (isOwnerId && viewModel.mapGuestIds != null)
-              ? Column(
-                  children: <Widget>[
-                        SizedBox(height: 16),
-                        _buildListSheets(name: "Meus personagens"),
-                      ] +
-                      viewModel.mapGuestIds!.keys.map(
-                        (String name) {
-                          return _buildListSheets(
-                            name: name,
-                            userId: viewModel.mapGuestIds![name],
-                          );
-                        },
-                      ).toList())
-              : _buildListSheets(),
-        ),
-        Align(
-          alignment: Alignment.bottomLeft,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "dev - $versionDev | rules - $versionBook",
-              style: TextStyle(
-                fontSize: 11,
-              ),
+        Stack(
+          children: [
+            SingleChildScrollView(
+              child: (isOwnerId && viewModel.mapGuestIds != null)
+                  ? Column(
+                      children: <Widget>[
+                            SizedBox(height: 16),
+                            _buildListSheets(name: "Meus personagens"),
+                          ] +
+                          viewModel.mapGuestIds!.keys.map(
+                            (String name) {
+                              return _buildListSheets(
+                                name: name,
+                                userId: viewModel.mapGuestIds![name],
+                              );
+                            },
+                          ).toList())
+                  : _buildListSheets(),
             ),
-          ),
-        )
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "dev - $versionDev | rules - $versionBook",
+                  style: TextStyle(
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+        Center(child: Text("Ainda não implementado")),
+        Center(child: Text("Ainda não implementado")),
       ],
     );
   }
