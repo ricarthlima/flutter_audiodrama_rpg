@@ -1,9 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/private/auth_user.dart';
 import 'package:flutter_rpg_audiodrama/_core/version.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_app_bar.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_floating_action_button.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
@@ -12,7 +9,6 @@ import 'package:flutter_rpg_audiodrama/ui/home/widgets/home_drawer.dart';
 import 'package:provider/provider.dart';
 
 import '../_core/fonts.dart';
-import '../_core/widgets/loading_widget.dart';
 import 'widgets/home_list_item_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -52,8 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildBody(BuildContext context) {
     final viewModel = Provider.of<HomeViewModel>(context);
-    bool isOwnerId =
-        FirebaseAuth.instance.currentUser!.uid == SecretAuthIds.ricarthId;
 
     return IndexedStack(
       index: HomeSubPages.values.indexOf(viewModel.currentPage),
