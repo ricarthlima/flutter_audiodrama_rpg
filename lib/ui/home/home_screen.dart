@@ -6,6 +6,7 @@ import 'package:flutter_rpg_audiodrama/_core/version.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_app_bar.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_floating_action_button.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/widgets/home_drawer.dart';
 import 'package:provider/provider.dart';
@@ -27,8 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final viewModel = Provider.of<HomeViewModel>(context, listen: false);
-      viewModel.loadGuestIds();
+      final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+      homeViewModel.loadGuestIds();
+
+      Provider.of<HomeSheetViewModel>(context, listen: false).onInitialize();
     });
   }
 
@@ -57,23 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Stack(
           children: [
-            SingleChildScrollView(
-              child: (isOwnerId && viewModel.mapGuestIds != null)
-                  ? Column(
-                      children: <Widget>[
-                            SizedBox(height: 16),
-                            _buildListSheets(name: "Meus personagens"),
-                          ] +
-                          viewModel.mapGuestIds!.keys.map(
-                            (String name) {
-                              return _buildListSheets(
-                                name: name,
-                                userId: viewModel.mapGuestIds![name],
-                              );
-                            },
-                          ).toList())
-                  : _buildListSheets(),
-            ),
+            _buildListSheets(),
             Align(
               alignment: Alignment.bottomLeft,
               child: Padding(
@@ -94,84 +81,36 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildListSheets({
-    String? userId,
-    String? name,
-  }) {
-    final viewModel = Provider.of<HomeViewModel>(context);
-    // final viewModel = context.read<HomeViewModel>();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        (name != null)
-            ? Padding(
-                padding: const EdgeInsets.only(left: 32.0),
-                child: Text(
-                  name,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              )
-            : Container(),
-        StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-          stream: viewModel.sheetService.listenSheetsByUser(userId: userId),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-              case ConnectionState.waiting:
-                return LoadingWidget();
-              case ConnectionState.active:
-                if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-                  return Visibility(
-                    visible: userId == null,
-                    child: Center(
-                      child: Text(
-                        "Nada por aqui ainda, vamos criar?",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontFamily: FontFamily.sourceSerif4,
-                        ),
-                      ),
-                    ),
-                  );
-                }
+  Widget _buildListSheets() {
+    HomeSheetViewModel homeSheetViewModel =
+        Provider.of<HomeSheetViewModel>(context);
 
-                List<Sheet> listSheets = snapshot.data!.docs
-                    .map((e) => Sheet.fromMap(e.data()))
-                    .toList();
+    if (homeSheetViewModel.listSheets.isEmpty) {
+      return Center(
+        child: Text(
+          "Nada por aqui ainda, vamos criar?",
+          style: TextStyle(
+            fontSize: 24,
+            fontFamily: FontFamily.sourceSerif4,
+          ),
+        ),
+      );
+    }
 
-                listSheets.sort(
-                  (a, b) => a.characterName.compareTo(b.characterName),
-                );
-
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: List.generate(
-                      listSheets.length,
-                      (index) {
-                        return HomeListItemWidget(
-                          sheet: listSheets[index],
-                          userId:
-                              userId ?? FirebaseAuth.instance.currentUser!.uid,
-                        );
-                      },
-                    ),
-                  ),
-                );
-              case ConnectionState.done:
-                return Center(
-                  child: Text("Conexão perdida, reinicie a página"),
-                );
-            }
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List.generate(
+          homeSheetViewModel.listSheets.length,
+          (index) {
+            return HomeListItemWidget(
+              sheet: homeSheetViewModel.listSheets[index],
+              userId: FirebaseAuth.instance.currentUser!.uid,
+            );
           },
         ),
-        SizedBox(height: 32),
-      ],
+      ),
     );
   }
 }
