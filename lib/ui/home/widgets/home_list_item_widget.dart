@@ -52,7 +52,14 @@ class HomeListItemWidget extends StatelessWidget {
       trailing: (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid)
           ? Row(
               mainAxisSize: MainAxisSize.min,
+              spacing: 8,
               children: [
+                IconButton(
+                  onPressed: () {},
+                  iconSize: (isVertical(context)) ? 24 : 32,
+                  tooltip: "Mover para campanha",
+                  icon: Icon(Icons.move_down_rounded),
+                ),
                 IconButton(
                   onPressed: () {
                     viewModel.onDuplicateSheet(context: context, sheet: sheet);
