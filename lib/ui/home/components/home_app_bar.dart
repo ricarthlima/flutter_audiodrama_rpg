@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/fonts.dart';
@@ -56,7 +55,7 @@ AppBar getHomeAppBar(BuildContext context) {
             FirebaseAuth.instance.signOut().then(
               (value) {
                 if (!context.mounted) return;
-                GoRouter.of(context).go(AppRouter.auth);
+                AppRouter().goAuth(context: context);
               },
             );
           },

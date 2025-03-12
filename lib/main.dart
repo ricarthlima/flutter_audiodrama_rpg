@@ -46,7 +46,11 @@ void main() async {
         ChangeNotifierProvider(create: (_) => themeProvider),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => HomeSheetViewModel()),
-        ChangeNotifierProvider(create: (_) => SheetViewModel(id: "")),
+        ChangeNotifierProvider(
+            create: (_) => SheetViewModel(
+                  id: "",
+                  username: "",
+                )),
         ChangeNotifierProvider(create: (_) => ShoppingViewModel()),
         ChangeNotifierProvider(create: (_) => StatisticsViewModel()),
       ],

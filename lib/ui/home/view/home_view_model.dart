@@ -1,9 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../_core/private/auth_user.dart';
 import '../../../data/services/sheet_service.dart';
 import '../../../domain/models/sheet_model.dart';
 import '../../../router.dart';
@@ -13,22 +12,26 @@ class HomeViewModel extends ChangeNotifier {
   Map<String, String>? mapGuestIds;
   final SheetService sheetService = SheetService();
 
-  void loadGuestIds() async {
-    if (FirebaseAuth.instance.currentUser!.uid == SecretAuthIds.ricarthId) {
-      mapGuestIds = SecretAuthIds.listIds;
+  AppUser currentAppUser = AppUser(
+    email: "",
+    username: "",
+    id: "",
+  );
+
+  void onInitialize() async {
+    AppUser? appUser = await AuthService().getCurrentUserInfos();
+    if (appUser != null) {
+      currentAppUser = appUser;
       notifyListeners();
     }
   }
 
   void goToSheet(
     BuildContext context, {
-    required String userId,
+    required String username,
     required Sheet sheet,
   }) {
-    GoRouter.of(context).go(
-      "${AppRouter.sheet}/${sheet.id}",
-      extra: userId,
-    );
+    AppRouter().goSheet(context: context, username: username, sheet: sheet);
   }
 
   Future<void> onCreateSheetClicked(context) async {

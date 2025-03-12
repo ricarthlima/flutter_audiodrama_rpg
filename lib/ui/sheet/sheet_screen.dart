@@ -50,9 +50,11 @@ class _SheetScreenState extends State<SheetScreen> {
 
     return (viewModel.isLoading)
         ? LoadingWidget()
-        : (viewModel.isFoundSheet)
-            ? _generateScreen()
-            : SheetNotFoundWidget();
+        : (viewModel.isAuthorized != null && !viewModel.isAuthorized!)
+            ? SheetNotFoundWidget()
+            : (viewModel.isFoundSheet)
+                ? _generateScreen()
+                : SheetNotFoundWidget();
   }
 
   Widget _generateScreen() {

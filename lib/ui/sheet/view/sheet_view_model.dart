@@ -21,6 +21,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/daos/action_dao.dart';
+import '../../../domain/exceptions/sheet_service_exceptions.dart';
 import '../../../domain/models/action_template.dart';
 import '../../../domain/models/item_sheet.dart';
 import '../../../domain/models/sheet_model.dart';
@@ -30,9 +31,9 @@ import '../components/roll_dialog.dart';
 
 class SheetViewModel extends ChangeNotifier {
   String id;
-  String? userId;
+  String username;
 
-  SheetViewModel({required this.id, this.userId});
+  SheetViewModel({required this.id, required this.username});
   SheetService sheetService = SheetService();
 
   // Atributos de ficha
@@ -51,6 +52,10 @@ class SheetViewModel extends ChangeNotifier {
   List<String> listActiveConditions = [];
   String? imageUrl;
   List<ActionValue> listWorks = [];
+  String? worldId;
+  List<String> listSharedIds = [];
+  String _ownerId = "";
+  String get ownerId => _ownerId;
 
   // Atributos locais
   int modGlobalTrain = 0;
@@ -60,6 +65,8 @@ class SheetViewModel extends ChangeNotifier {
   List<Sheet> listSheets = [];
 
   // Controladores de estado
+  bool? _isAuthorized;
+  bool? get isAuthorized => _isAuthorized;
   bool _isLoading = true;
   get isLoading => _isLoading;
   bool isFoundSheet = false;
@@ -76,9 +83,9 @@ class SheetViewModel extends ChangeNotifier {
   Future<Sheet?> futureGetSheet = Future.delayed(Duration.zero);
   final TextEditingController nameController = TextEditingController();
 
-  updateCredentials({String? id, String? userId}) {
+  updateCredentials({String? id, String? username}) {
     this.id = id ?? this.id;
-    this.userId = userId;
+    this.username = username ?? this.username;
   }
 
   closeFab() {
@@ -101,39 +108,47 @@ class SheetViewModel extends ChangeNotifier {
   Future<void> refresh() async {
     startLoading();
 
-    futureGetSheet = sheetService.getSheetId(
-      id,
-      userId: userId,
-    );
+    futureGetSheet = sheetService.getSheetId(id: id, username: username);
+    try {
+      Sheet? sheetModel = await futureGetSheet;
 
-    Sheet? sheetModel = await futureGetSheet;
+      if (sheetModel != null) {
+        nameController.text = sheetModel.characterName;
+        characterName = sheetModel.characterName;
+        listActionValue = sheetModel.listActionValue;
+        listRollLog = sheetModel.listRollLog;
+        effortPoints = sheetModel.effortPoints;
+        stressLevel = sheetModel.stressLevel;
+        baseLevel = sheetModel.baseLevel;
+        listSheetItems = sheetModel.listItemSheet;
+        money = sheetModel.money;
+        weight = sheetModel.weight;
+        listActionLore = sheetModel.listActionLore;
+        bio = sheetModel.bio;
+        notes = sheetModel.notes;
+        listActiveConditions = sheetModel.listActiveConditions;
+        imageUrl = sheetModel.imageUrl;
+        listWorks = sheetModel.listWorks;
+        worldId = sheetModel.worldId;
+        listSharedIds = sheetModel.listSharedIds;
+        _ownerId = sheetModel.ownerId;
 
-    if (sheetModel != null) {
-      nameController.text = sheetModel.characterName;
+        isFoundSheet = true;
+      }
 
-      characterName = sheetModel.characterName;
-      listActionValue = sheetModel.listActionValue;
-      listRollLog = sheetModel.listRollLog;
-      effortPoints = sheetModel.effortPoints;
-      stressLevel = sheetModel.stressLevel;
-      baseLevel = sheetModel.baseLevel;
-      listSheetItems = sheetModel.listItemSheet;
-      money = sheetModel.money;
-      weight = sheetModel.weight;
-      listActionLore = sheetModel.listActionLore;
-      bio = sheetModel.bio;
-      notes = sheetModel.notes;
-      listActiveConditions = sheetModel.listActiveConditions;
-      imageUrl = sheetModel.imageUrl;
-      listWorks = sheetModel.listWorks;
-
-      isFoundSheet = true;
+      listSheets = await SheetService().getSheetsByUser();
+    } on UsernameNotFoundException {
+      _isAuthorized = false;
+      notifyListeners();
+      return;
+    } on UserNotAuthorizedOnSheetException {
+      _isAuthorized = false;
+      notifyListeners();
+      return;
     }
 
-    listSheets = await SheetService().getSheetsByUser(
-      userId: userId,
-    );
-
+    _isAuthorized = true;
+    notifyListeners();
     stopLoading();
   }
 
@@ -168,13 +183,13 @@ class SheetViewModel extends ChangeNotifier {
       listActiveConditions: listActiveConditions,
       imageUrl: imageUrl,
       listWorks: listWorks,
+      listSharedIds: listSharedIds,
+      worldId: worldId,
+      ownerId: _ownerId,
     );
     // Beleza, mas você colocou também no refresh?
 
-    await SheetService().saveSheet(
-      sheet,
-      userId: userId,
-    );
+    await SheetService().saveSheet(sheet);
   }
 
   onActionValueChanged({required ActionValue ac, required bool isWork}) {

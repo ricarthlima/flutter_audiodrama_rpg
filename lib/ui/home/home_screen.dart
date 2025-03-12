@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/version.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_app_bar.dart';
@@ -25,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
-      homeViewModel.loadGuestIds();
+      homeViewModel.onInitialize();
 
       Provider.of<HomeSheetViewModel>(context, listen: false).onInitialize();
     });
@@ -76,8 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildListSheets() {
-    HomeSheetViewModel homeSheetViewModel =
-        Provider.of<HomeSheetViewModel>(context);
+    final homeSheetViewModel = Provider.of<HomeSheetViewModel>(context);
+    final homeViewModel = Provider.of<HomeViewModel>(context);
 
     if (homeSheetViewModel.listSheets.isEmpty) {
       return Center(
@@ -100,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
           (index) {
             return HomeListItemWidget(
               sheet: homeSheetViewModel.listSheets[index],
-              userId: FirebaseAuth.instance.currentUser!.uid,
+              username: homeViewModel.currentAppUser.username!,
             );
           },
         ),

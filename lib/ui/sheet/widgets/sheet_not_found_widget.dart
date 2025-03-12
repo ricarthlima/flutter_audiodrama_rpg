@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
-import 'package:go_router/go_router.dart';
 
 class SheetNotFoundWidget extends StatelessWidget {
   const SheetNotFoundWidget({
@@ -18,7 +17,7 @@ class SheetNotFoundWidget extends StatelessWidget {
           Text("Ficha não encontrada"),
           ElevatedButton(
             onPressed: () {
-              GoRouter.of(context).go(AppRouter.home);
+              AppRouter().goHome(context: context);
             },
             child: Text("Voltar"),
           ),

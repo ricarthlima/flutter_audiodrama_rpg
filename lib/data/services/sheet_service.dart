@@ -4,35 +4,63 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_rpg_audiodrama/_core/utils/supabase_prefs.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
+import 'package:flutter_rpg_audiodrama/domain/exceptions/sheet_service_exceptions.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../_core/release_mode.dart';
-import '../../domain/models/item_sheet.dart';
 
 class SheetService {
   final _supabase = Supabase.instance.client;
 
   String uid = FirebaseAuth.instance.currentUser!.uid;
 
+  Future<List<String>> getListUsers() async {
+    QuerySnapshot<Map<String, dynamic>> listUsersSnapshot =
+        await FirebaseFirestore.instance.collection("users").get();
+
+    final listUsers = listUsersSnapshot.docs;
+    return listUsers.map((e) => e.id).toList();
+  }
+
+  Future<AppUser> getUserByUsername(String username) async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance
+            .collection("users")
+            .where(
+              "username",
+              isEqualTo: username,
+            )
+            .get();
+
+    if (querySnapshot.size >= 1) {
+      AppUser user = AppUser.fromMap(querySnapshot.docs.first.data());
+      user.id = querySnapshot.docs.first.id;
+      return user;
+    }
+
+    throw UsernameNotFoundException();
+  }
+
+  // Apenas o próprio usuário
   Stream<QuerySnapshot<Map<String, dynamic>>> listenSheetsByUser(
       {String? userId}) {
     return FirebaseFirestore.instance
         .collection("${releaseCollection}users")
-        .doc(userId ?? uid)
+        .doc(uid)
         .collection("sheets")
         .snapshots();
   }
 
-  Future<List<Sheet>> getSheetsByUser({String? userId}) async {
+  // Apenas o próprio usuário
+  Future<List<Sheet>> getSheetsByUser() async {
     List<Sheet> result = [];
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
         .collection("${releaseCollection}users")
-        .doc(userId ?? uid)
+        .doc(uid)
         .collection("sheets")
         .get();
 
@@ -45,6 +73,7 @@ class SheetService {
     return result;
   }
 
+  // Apenas o próprio usuário
   Future<void> createSheet(String characterName) async {
     String sheetId = Uuid().v1();
     return FirebaseFirestore.instance
@@ -70,10 +99,13 @@ class SheetService {
             listActiveConditions: [],
             imageUrl: null,
             listWorks: [],
+            listSharedIds: [],
+            ownerId: uid,
           ).toMap(),
         );
   }
 
+  // Apenas o próprio usuário
   Future<void> duplicateSheet(Sheet sheet) async {
     String sheetId = Uuid().v1();
     return FirebaseFirestore.instance
@@ -91,40 +123,53 @@ class SheetService {
         );
   }
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> listenSheetById(String id,
-      {String? userId}) {
+  Stream<DocumentSnapshot<Map<String, dynamic>>> listenSheetById({
+    required String id,
+    required String userId,
+  }) {
     return FirebaseFirestore.instance
         .collection("${releaseCollection}users")
-        .doc(userId ?? uid)
+        .doc(userId)
         .collection("sheets")
         .doc(id)
         .snapshots();
   }
 
-  Future<Sheet?> getSheetId(String id, {String? userId}) async {
+  Future<Sheet?> getSheetId({
+    required String id,
+    required String username,
+  }) async {
+    AppUser user = await getUserByUsername(username);
+
     DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
         .instance
         .collection("${releaseCollection}users")
-        .doc(userId ?? uid)
+        .doc(user.id)
         .collection("sheets")
         .doc(id)
         .get();
 
     if (doc.data() != null) {
-      return Sheet.fromMap(doc.data()!);
+      Sheet sheet = Sheet.fromMap(doc.data()!);
+      if (user.id != uid && !sheet.listSharedIds.contains(uid)) {
+        throw UserNotAuthorizedOnSheetException();
+      }
+      return sheet;
     }
     return null;
   }
 
-  Future<void> saveSheet(Sheet sheet, {String? userId}) async {
+  // TODO: Por enquanto, apenas o próprio usuário
+  Future<void> saveSheet(Sheet sheet) async {
     await FirebaseFirestore.instance
         .collection("${releaseCollection}users")
-        .doc(userId ?? uid)
+        .doc(uid)
         .collection("sheets")
         .doc(sheet.id)
         .set(sheet.toMap());
   }
 
+  // Apenas o próprio usuário
   Future<void> removeSheet(Sheet sheet) async {
     await FirebaseFirestore.instance
         .collection("${releaseCollection}users")
@@ -134,32 +179,7 @@ class SheetService {
         .delete();
   }
 
-  Future<void> updateSheet(
-    Sheet sheet, {
-    String? characterName,
-    int? stressLevel,
-    int? effortPoints,
-    List<ActionValue>? listActionValue,
-    List<RollLog>? listRollLog,
-    int? baseLevel,
-    List<ItemSheet>? listItemSheet,
-    double? money,
-    double? weight,
-  }) async {
-    Sheet newSheet = sheet.copyWith(
-      characterName: characterName,
-      stressLevel: stressLevel,
-      effortPoints: effortPoints,
-      listActionValue: listActionValue,
-      listRollLog: listRollLog,
-      baseLevel: baseLevel,
-      listItemSheet: listItemSheet,
-      money: money,
-      weight: weight,
-    );
-    await saveSheet(newSheet);
-  }
-
+  // Apenas o próprio usuário
   Future<String> uploadBioImage(File file, String fileName) async {
     String result = await _supabase.storage
         .from(SupabasePrefs.storageBucketSheet)
@@ -170,6 +190,7 @@ class SheetService {
     return result;
   }
 
+  // Apenas o próprio usuário
   Future<String> uploadBioImageBytes(Uint8List file, String fileName) async {
     String bucket = SupabasePrefs.storageBucketSheet;
     String filePath = "bios/$fileName";
@@ -185,6 +206,7 @@ class SheetService {
     return publicUrl;
   }
 
+  // Apenas o próprio usuário
   Future<void> deleteBioImage(String fileName) {
     return _supabase.storage
         .from(SupabasePrefs.storageBucketSheet)

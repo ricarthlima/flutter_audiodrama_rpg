@@ -32,6 +32,10 @@ class Sheet {
 
   List<ActionValue> listWorks;
 
+  String? worldId;
+  List<String> listSharedIds;
+  String ownerId;
+
   Sheet({
     required this.id,
     required this.characterName,
@@ -49,6 +53,9 @@ class Sheet {
     required this.listActiveConditions,
     this.imageUrl,
     required this.listWorks,
+    this.worldId,
+    required this.listSharedIds,
+    required this.ownerId,
   });
 
   Sheet copyWith({
@@ -68,6 +75,9 @@ class Sheet {
     List<String>? listActiveConditions,
     String? imageUrl,
     List<ActionValue>? listWorks,
+    String? worldId,
+    List<String>? listSharedIds,
+    String? ownerId,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -86,6 +96,9 @@ class Sheet {
       listActiveConditions: listActiveConditions ?? this.listActiveConditions,
       imageUrl: imageUrl ?? this.imageUrl,
       listWorks: listWorks ?? this.listWorks,
+      listSharedIds: listSharedIds ?? this.listSharedIds,
+      worldId: worldId ?? this.worldId,
+      ownerId: ownerId ?? this.ownerId,
     );
   }
 
@@ -107,6 +120,9 @@ class Sheet {
       "listActiveConditions": listActiveConditions,
       "imageUrl": imageUrl,
       "listWorks": listWorks.map((x) => x.toMap()).toList(),
+      "worldId": worldId,
+      "listSharedIds": listSharedIds,
+      "ownerId": ownerId,
     };
   }
 
@@ -158,6 +174,13 @@ class Sheet {
               ),
             )
           : [],
+      worldId: map["worldId"],
+      listSharedIds: (map["listSharedIds"] != null)
+          ? (map["listSharedIds"] as List<dynamic>)
+              .map((e) => e.toString())
+              .toList()
+          : [],
+      ownerId: (map["ownerId"] != null) ? map["ownerId"] : "",
     );
   }
 
@@ -188,7 +211,10 @@ class Sheet {
         other.notes == notes &&
         other.listActiveConditions == listActiveConditions &&
         other.imageUrl == imageUrl &&
-        other.listWorks == listWorks;
+        other.listWorks == listWorks &&
+        other.worldId == worldId &&
+        listEquals(other.listSharedIds, listSharedIds) &&
+        other.ownerId == ownerId;
   }
 
   @override
@@ -206,6 +232,9 @@ class Sheet {
         bio.hashCode ^
         listActiveConditions.hashCode ^
         imageUrl.hashCode ^
-        listWorks.hashCode;
+        listWorks.hashCode ^
+        worldId.hashCode ^
+        listSharedIds.hashCode ^
+        ownerId.hashCode;
   }
 }

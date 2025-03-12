@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../router.dart';
@@ -62,7 +61,7 @@ class SettingsScreen extends StatelessWidget {
                     FirebaseAuth.instance.signOut().then(
                       (value) {
                         if (!context.mounted) return;
-                        GoRouter.of(context).go(AppRouter.auth);
+                        AppRouter().goAuth(context: context);
                       },
                     );
                   },

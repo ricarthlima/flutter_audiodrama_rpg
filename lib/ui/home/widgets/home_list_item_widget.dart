@@ -9,12 +9,12 @@ import '../../_core/helpers.dart';
 import '../view/home_view_model.dart';
 
 class HomeListItemWidget extends StatelessWidget {
-  final String userId;
   final Sheet sheet;
+  final String username;
   const HomeListItemWidget({
     super.key,
     required this.sheet,
-    required this.userId,
+    required this.username,
   });
 
   @override
@@ -49,7 +49,7 @@ class HomeListItemWidget extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      trailing: (userId == FirebaseAuth.instance.currentUser!.uid)
+      trailing: (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid)
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -80,7 +80,7 @@ class HomeListItemWidget extends StatelessWidget {
         viewModel.goToSheet(
           context,
           sheet: sheet,
-          userId: userId,
+          username: username,
         );
       },
     );

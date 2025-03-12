@@ -8,70 +8,15 @@ import 'package:flutter_rpg_audiodrama/ui/home/home_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'domain/models/sheet_model.dart';
 import 'ui/sheet/view/sheet_view_model.dart';
 
 class AppRouter {
-  static const String root = "/";
   static const String home = "/";
   static const String auth = "/auth";
   static const String sheet = "/sheet";
 
   static final GoRouter router = GoRouter(
-    routes: [
-      GoRoute(
-        path: "/auth",
-        builder: (context, state) => LoginScreen(),
-        redirect: (context, state) {
-          bool loggedIn = FirebaseAuth.instance.currentUser != null;
-          if (loggedIn) {
-            return root;
-          }
-          return null;
-        },
-      ),
-      GoRoute(
-        path: "/sheet/:sheetId",
-        builder: (context, state) {
-          String id = state.pathParameters["sheetId"] ?? "";
-          String? userId = state.extra as String?;
-
-          if (FirebaseAuth.instance.currentUser == null) {
-            GoRouter.of(context).go(root);
-          }
-
-          final viewModel = Provider.of<SheetViewModel>(context, listen: false);
-          viewModel.id = id;
-          viewModel.userId = userId;
-          // viewModel.updateCredentials(id: id, userId: userId);
-
-          return SheetScreen(
-            key: UniqueKey(),
-          );
-        },
-      ),
-      GoRoute(
-        path: "/sheet/:sheetId/works",
-        builder: (context, state) {
-          String id = state.pathParameters["sheetId"] ?? "";
-          String? userId = state.extra as String?;
-
-          if (FirebaseAuth.instance.currentUser == null) {
-            GoRouter.of(context).go(root);
-          }
-
-          final viewModel = Provider.of<SheetViewModel>(context, listen: false);
-          viewModel.id = id;
-          viewModel.userId = userId;
-          // viewModel.updateCredentials(id: id, userId: userId);
-
-          return SheetWorksDialog(isPopup: true);
-        },
-      ),
-      GoRoute(
-        path: "/",
-        builder: (context, state) => HomeScreen(),
-      ),
-    ],
     redirect: (context, state) {
       bool loggedIn = FirebaseAuth.instance.currentUser != null;
       if (!loggedIn) {
@@ -79,5 +24,68 @@ class AppRouter {
       }
       return null;
     },
+    routes: [
+      GoRoute(
+        path: home,
+        builder: (context, state) => HomeScreen(),
+      ),
+      GoRoute(
+        path: "/auth",
+        builder: (context, state) => LoginScreen(),
+        redirect: (context, state) {
+          bool loggedIn = FirebaseAuth.instance.currentUser != null;
+          if (loggedIn) {
+            return home;
+          }
+          return null;
+        },
+      ),
+      GoRoute(
+        path: "/:username/sheet/:sheetId",
+        builder: (context, state) {
+          String id = state.pathParameters["sheetId"] ?? "";
+          String username = state.pathParameters["username"] ?? "";
+
+          Provider.of<SheetViewModel>(context, listen: false).updateCredentials(
+            id: id,
+            username: username,
+          );
+
+          return SheetScreen(
+            key: UniqueKey(),
+          );
+        },
+      ),
+      GoRoute(
+        path: "/:username/sheet/:sheetId/works",
+        builder: (context, state) {
+          String id = state.pathParameters["sheetId"] ?? "";
+          String username = state.pathParameters["username"] ?? "";
+
+          Provider.of<SheetViewModel>(context, listen: false).updateCredentials(
+            id: id,
+            username: username,
+          );
+
+          return SheetWorksDialog(isPopup: true);
+        },
+      ),
+    ],
   );
+
+  goHome({required BuildContext context}) {
+    GoRouter.of(context).go(AppRouter.home);
+  }
+
+  goAuth({required BuildContext context}) {
+    GoRouter.of(context).go(AppRouter.auth);
+  }
+
+  goSheet({
+    required BuildContext context,
+    required String username,
+    required Sheet sheet,
+  }) {
+    GoRouter.of(context).go("/$username${AppRouter.sheet}/${sheet.id}");
+  }
 }

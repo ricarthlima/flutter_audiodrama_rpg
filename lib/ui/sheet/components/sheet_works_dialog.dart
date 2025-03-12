@@ -102,7 +102,8 @@ class _SheetWorksDialogState extends State<SheetWorksDialog> {
                 ),
                 IconButton(
                   onPressed: () {
-                    openPopup("sheet/${sheetViewModel.id}/works");
+                    openPopup(
+                        "${sheetViewModel.username}/sheet/${sheetViewModel.id}/works");
                     Navigator.pop(context);
                   },
                   icon: Icon(Icons.outbond_outlined),

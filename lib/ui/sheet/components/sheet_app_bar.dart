@@ -1,6 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/settings/settings_screen.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sheet_model.dart';
@@ -13,11 +13,20 @@ import 'package:badges/badges.dart' as badges;
 AppBar getSheetAppBar(BuildContext context) {
   final viewModel = Provider.of<SheetViewModel>(context);
 
+  if (viewModel.isLoading ||
+      (viewModel.isAuthorized != null && !viewModel.isAuthorized!) ||
+      !viewModel.isFoundSheet) {
+    return AppBar(
+      toolbarHeight: 64,
+      actions: [Container()],
+    );
+  }
+
   return AppBar(
     toolbarHeight: 64,
     leading: IconButton(
       onPressed: () {
-        GoRouter.of(context).go(AppRouter.home);
+        AppRouter().goHome(context: context);
       },
       icon: Icon(Icons.arrow_back),
     ),
@@ -25,51 +34,56 @@ AppBar getSheetAppBar(BuildContext context) {
         ? Theme.of(context).scaffoldBackgroundColor.withAlpha(75)
         : null,
     actions: [
-      Visibility(
-        visible: !isVertical(context),
-        child: (viewModel.listSheets.isNotEmpty)
-            ? DropdownButton<Sheet>(
-                value: viewModel.listSheets
-                    .where((e) => e.id == viewModel.id)
-                    .first,
-                items: viewModel.listSheets
-                    .map(
-                      (e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e.characterName),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (Sheet? sheet) {
-                  if (sheet != null) {
-                    GoRouter.of(context).go("${AppRouter.sheet}/${sheet.id}");
-                  }
-                },
+      if (viewModel.ownerId == FirebaseAuth.instance.currentUser!.uid &&
+          !isVertical(context) &&
+          viewModel.listSheets.isNotEmpty)
+        DropdownButton<Sheet>(
+          value: viewModel.listSheets.where((e) => e.id == viewModel.id).first,
+          items: viewModel.listSheets
+              .map(
+                (e) => DropdownMenuItem(
+                  value: e,
+                  child: Text(e.characterName),
+                ),
               )
-            : Container(),
-      ),
-      Visibility(
-        visible: !isVertical(context),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text("•"),
+              .toList(),
+          onChanged: (Sheet? sheet) {
+            if (sheet != null) {
+              AppRouter().goSheet(
+                context: context,
+                username: viewModel.username,
+                sheet: sheet,
+              );
+            }
+          },
         ),
-      ),
-      Visibility(
-        visible: viewModel.isEditing,
-        child: Text("Saia da edição para salvar"),
-      ),
-      Visibility(
-        visible: viewModel.isEditing,
-        child: SizedBox(width: 8),
-      ),
-      Icon(Icons.edit),
-      Switch(
-        value: viewModel.isEditing,
-        onChanged: (value) {
-          viewModel.toggleEditMode();
-        },
-      ),
+      if (viewModel.ownerId == FirebaseAuth.instance.currentUser!.uid)
+        Row(
+          children: [
+            Visibility(
+              visible: !isVertical(context),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text("•"),
+              ),
+            ),
+            Visibility(
+              visible: viewModel.isEditing,
+              child: Text("Saia da edição para salvar"),
+            ),
+            Visibility(
+              visible: viewModel.isEditing,
+              child: SizedBox(width: 8),
+            ),
+            Icon(Icons.edit),
+            Switch(
+              value: viewModel.isEditing,
+              onChanged: (value) {
+                viewModel.toggleEditMode();
+              },
+            ),
+          ],
+        ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Text("•"),
