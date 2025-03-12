@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,14 +13,14 @@ class HomeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<HomeViewModel>(context);
+    final homeViewModel = Provider.of<HomeViewModel>(context);
     return MouseRegion(
-      onEnter: (_) => viewModel.isDrawerClosed = false,
-      onExit: (_) => viewModel.isDrawerClosed = true,
+      onEnter: (_) => homeViewModel.isDrawerClosed = false,
+      onExit: (_) => homeViewModel.isDrawerClosed = true,
       child: AnimatedContainer(
         duration: Duration(milliseconds: 350),
         curve: Curves.ease,
-        width: (viewModel.isDrawerClosed) ? 48 : 275,
+        width: (homeViewModel.isDrawerClosed) ? 48 : 275,
         height: height(context),
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: Column(
@@ -30,34 +32,45 @@ class HomeDrawer extends StatelessWidget {
               children: [
                 CompactableButton(
                   controller: CompactableButtonController(
-                    isCompressed: viewModel.isDrawerClosed,
-                    isSelected: viewModel.currentPage == HomeSubPages.sheets,
+                    isCompressed: homeViewModel.isDrawerClosed,
+                    isSelected:
+                        homeViewModel.currentPage == HomeSubPages.sheets,
                   ),
                   title: "Personagens",
                   leadingIcon: Icons.list_alt_sharp,
                   onPressed: () {
-                    viewModel.currentPage = HomeSubPages.sheets;
+                    homeViewModel.currentPage = HomeSubPages.sheets;
                   },
                 ),
                 CompactableButton(
                   controller: CompactableButtonController(
-                    isCompressed: viewModel.isDrawerClosed,
-                    isSelected: viewModel.currentPage == HomeSubPages.worlds,
+                    isCompressed: homeViewModel.isDrawerClosed,
+                    isSelected:
+                        homeViewModel.currentPage == HomeSubPages.worlds,
                   ),
                   title: "Campanhas",
                   leadingIcon: Icons.local_florist_outlined,
                   onPressed: () {
-                    viewModel.currentPage = HomeSubPages.worlds;
+                    homeViewModel.currentPage = HomeSubPages.worlds;
                   },
                 ),
               ],
             ),
             CompactableButton(
               controller: CompactableButtonController(
-                isCompressed: viewModel.isDrawerClosed,
-                isSelected: viewModel.currentPage == HomeSubPages.profile,
+                isCompressed: homeViewModel.isDrawerClosed,
+                isSelected: homeViewModel.currentPage == HomeSubPages.profile,
               ),
-              leadingIcon: Icons.person_outline,
+              leadingIcon: (homeViewModel.currentAppUser.imageB64 == null)
+                  ? Icons.person_outline
+                  : null,
+              leading: (homeViewModel.currentAppUser.imageB64 != null)
+                  ? Image.memory(
+                      base64Decode(homeViewModel.currentAppUser.imageB64!),
+                      width: 24,
+                      height: 24,
+                    )
+                  : null,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +89,7 @@ class HomeDrawer extends StatelessWidget {
                 ],
               ),
               onPressed: () {
-                viewModel.currentPage = HomeSubPages.profile;
+                homeViewModel.currentPage = HomeSubPages.profile;
               },
             )
           ],
