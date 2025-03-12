@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../../../domain/models/sheet_model.dart';
 import '../../_core/fonts.dart';
@@ -8,12 +11,14 @@ class HomeListSheetsWidget extends StatelessWidget {
   final List<Sheet> listSheets;
   final String username;
   final String? title;
+  final bool showAdding;
 
   const HomeListSheetsWidget({
     super.key,
     required this.listSheets,
     required this.username,
     this.title,
+    this.showAdding = false,
   });
 
   @override
@@ -37,14 +42,14 @@ class HomeListSheetsWidget extends StatelessWidget {
         spacing: 8,
         children: [
           if (title != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                title!,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontFamily: FontFamily.bungee,
-                ),
+            GenericHeader(
+              title: title!,
+              iconButton: IconButton(
+                onPressed: () {
+                  context.read<HomeViewModel>().onCreateSheetClicked(context);
+                },
+                tooltip: "Criar personagem",
+                icon: Icon(Icons.add),
               ),
             ),
           Column(

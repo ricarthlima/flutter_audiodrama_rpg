@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/version.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_app_bar.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/components/home_floating_action_button.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/widgets/home_drawer.dart';
@@ -32,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: getHomeAppBar(context),
-      floatingActionButton: getHomeFAB(context),
       body: Row(
         children: [
           HomeDrawer(),
