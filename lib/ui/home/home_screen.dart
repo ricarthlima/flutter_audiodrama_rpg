@@ -5,6 +5,8 @@ import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/widgets/home_drawer.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/widgets/home_list_sheets_widget.dart';
+import 'package:flutter_rpg_audiodrama/ui/home_campaign/home_campaign_screen.dart';
+import 'package:flutter_rpg_audiodrama/ui/home_campaign/view/home_campaign_view_model.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,10 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
-      homeViewModel.onInitialize();
-
+      Provider.of<HomeViewModel>(context, listen: false).onInitialize();
       Provider.of<HomeSheetViewModel>(context, listen: false).onInitialize();
+      Provider.of<HomeCampaignViewModel>(context, listen: false).onInitialize();
     });
   }
 
@@ -52,12 +53,14 @@ class _HomeScreenState extends State<HomeScreen> {
           child: IndexedStack(
             index: HomeSubPages.values.indexOf(homeViewModel.currentPage),
             children: [
+              // Personagens
               HomeListSheetsWidget(
                 title: "Meus Personagens",
                 listSheets: homeSheetViewModel.listSheets,
                 username: homeViewModel.currentAppUser.username!,
               ),
-              Center(child: Text("Ainda não implementado")),
+              // Campanhas
+              HomeCampaignScreen(),
               Center(child: Text("Ainda não implementado")),
             ],
           ),

@@ -46,12 +46,12 @@ class HomeDrawer extends StatelessWidget {
                   controller: CompactableButtonController(
                     isCompressed: homeViewModel.isDrawerClosed,
                     isSelected:
-                        homeViewModel.currentPage == HomeSubPages.worlds,
+                        homeViewModel.currentPage == HomeSubPages.campaign,
                   ),
                   title: "Campanhas",
                   leadingIcon: Icons.local_florist_outlined,
                   onPressed: () {
-                    homeViewModel.currentPage = HomeSubPages.worlds;
+                    homeViewModel.currentPage = HomeSubPages.campaign;
                   },
                 ),
               ],

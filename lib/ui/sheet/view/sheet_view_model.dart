@@ -52,7 +52,7 @@ class SheetViewModel extends ChangeNotifier {
   List<String> listActiveConditions = [];
   String? imageUrl;
   List<ActionValue> listWorks = [];
-  String? worldId;
+  String? campaignId;
   List<String> listSharedIds = [];
   String _ownerId = "";
   String get ownerId => _ownerId;
@@ -129,7 +129,7 @@ class SheetViewModel extends ChangeNotifier {
         listActiveConditions = sheetModel.listActiveConditions;
         imageUrl = sheetModel.imageUrl;
         listWorks = sheetModel.listWorks;
-        worldId = sheetModel.worldId;
+        campaignId = sheetModel.campaignId;
         listSharedIds = sheetModel.listSharedIds;
         _ownerId = sheetModel.ownerId;
 
@@ -184,7 +184,7 @@ class SheetViewModel extends ChangeNotifier {
       imageUrl: imageUrl,
       listWorks: listWorks,
       listSharedIds: listSharedIds,
-      worldId: worldId,
+      campaignId: campaignId,
       ownerId: _ownerId,
     );
     // Beleza, mas você colocou também no refresh?

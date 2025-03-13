@@ -32,7 +32,7 @@ class Sheet {
 
   List<ActionValue> listWorks;
 
-  String? worldId;
+  String? campaignId;
   List<String> listSharedIds;
   String ownerId;
 
@@ -53,7 +53,7 @@ class Sheet {
     required this.listActiveConditions,
     this.imageUrl,
     required this.listWorks,
-    this.worldId,
+    this.campaignId,
     required this.listSharedIds,
     required this.ownerId,
   });
@@ -75,7 +75,7 @@ class Sheet {
     List<String>? listActiveConditions,
     String? imageUrl,
     List<ActionValue>? listWorks,
-    String? worldId,
+    String? campaignId,
     List<String>? listSharedIds,
     String? ownerId,
   }) {
@@ -97,7 +97,7 @@ class Sheet {
       imageUrl: imageUrl ?? this.imageUrl,
       listWorks: listWorks ?? this.listWorks,
       listSharedIds: listSharedIds ?? this.listSharedIds,
-      worldId: worldId ?? this.worldId,
+      campaignId: campaignId ?? this.campaignId,
       ownerId: ownerId ?? this.ownerId,
     );
   }
@@ -120,7 +120,7 @@ class Sheet {
       "listActiveConditions": listActiveConditions,
       "imageUrl": imageUrl,
       "listWorks": listWorks.map((x) => x.toMap()).toList(),
-      "worldId": worldId,
+      "campaignId": campaignId,
       "listSharedIds": listSharedIds,
       "ownerId": ownerId,
     };
@@ -174,7 +174,7 @@ class Sheet {
               ),
             )
           : [],
-      worldId: map["worldId"],
+      campaignId: map["campaignId"],
       listSharedIds: (map["listSharedIds"] != null)
           ? (map["listSharedIds"] as List<dynamic>)
               .map((e) => e.toString())
@@ -212,7 +212,7 @@ class Sheet {
         other.listActiveConditions == listActiveConditions &&
         other.imageUrl == imageUrl &&
         other.listWorks == listWorks &&
-        other.worldId == worldId &&
+        other.campaignId == campaignId &&
         listEquals(other.listSharedIds, listSharedIds) &&
         other.ownerId == ownerId;
   }
@@ -233,7 +233,7 @@ class Sheet {
         listActiveConditions.hashCode ^
         imageUrl.hashCode ^
         listWorks.hashCode ^
-        worldId.hashCode ^
+        campaignId.hashCode ^
         listSharedIds.hashCode ^
         ownerId.hashCode;
   }
