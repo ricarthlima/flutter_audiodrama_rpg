@@ -30,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
       homeViewModel.onInitialize();
       if (widget.page != null) {
-        homeViewModel.isDrawerClosed = false;
         homeViewModel.currentPage = widget.page!;
       }
     });

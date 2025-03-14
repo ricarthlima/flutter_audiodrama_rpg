@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../_core/utils/supabase_prefs.dart';
+import '../../domain/exceptions/general_exceptions.dart';
 
 class CampaignService {
   CampaignService._();
@@ -78,5 +79,25 @@ class CampaignService {
     return _supabase.storage
         .from(SupabasePrefs.storageBucketSheet)
         .remove(["bios/$fileName"]);
+  }
+
+  Future<void> joinCampaign(String joinCode) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    QuerySnapshot<Map<String, dynamic>> query = await FirebaseFirestore.instance
+        .collection("campaigns")
+        .where("enterCode", isEqualTo: joinCode)
+        .get();
+
+    if (query.size > 0) {
+      Campaign campaign = Campaign.fromMap(query.docs[0].data());
+      campaign.listIdPlayers.add(uid);
+      return FirebaseFirestore.instance
+          .collection("campaigns")
+          .doc(campaign.id)
+          .set(campaign.toMap());
+    }
+
+    throw CampaignCodeNotFoundException();
   }
 }

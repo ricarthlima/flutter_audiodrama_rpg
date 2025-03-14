@@ -16,8 +16,10 @@ class HomeCampaignViewModel extends ChangeNotifier {
   CampaignService campaignService = CampaignService.instance;
 
   StreamSubscription? streamSubscription;
+  StreamSubscription? streamSubscriptionInvited;
 
   List<Campaign> listCampaigns = [];
+  List<Campaign> listCampaignsInvited = [];
 
   onInitialize() {
     streamSubscription = FirebaseFirestore.instance
@@ -27,6 +29,21 @@ class HomeCampaignViewModel extends ChangeNotifier {
         .listen(
       (QuerySnapshot<Map<String, dynamic>> snapshot) {
         listCampaigns = snapshot.docs
+            .map(
+              (e) => Campaign.fromMap(e.data()),
+            )
+            .toList();
+        notifyListeners();
+      },
+    );
+
+    streamSubscriptionInvited = FirebaseFirestore.instance
+        .collection("campaigns")
+        .where("listIdPlayers", arrayContains: uid)
+        .snapshots()
+        .listen(
+      (QuerySnapshot<Map<String, dynamic>> snapshot) {
+        listCampaignsInvited = snapshot.docs
             .map(
               (e) => Campaign.fromMap(e.data()),
             )
@@ -71,5 +88,9 @@ class HomeCampaignViewModel extends ChangeNotifier {
     }
 
     return null;
+  }
+
+  Future<void> joinCampaign({required String joinCode}) async {
+    return campaignService.joinCampaign(joinCode);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
+import 'package:flutter_rpg_audiodrama/ui/home_campaign/components/join_campaign_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/home_campaign/widgets/campaign_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -21,34 +22,80 @@ class HomeCampaignScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8,
         children: [
-          GenericHeader(
-            title: "Minhas Campanhas",
-            iconButton: IconButton(
-              onPressed: () {
-                showCreateCampaignDialog(context: context);
-              },
-              tooltip: "Criar campanha",
-              icon: Icon(Icons.add),
+          Flexible(
+            flex: 6,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GenericHeader(
+                  title: "Minhas Campanhas",
+                  iconButton: IconButton(
+                    onPressed: () {
+                      showCreateCampaignDialog(context: context);
+                    },
+                    tooltip: "Criar campanha",
+                    icon: Icon(Icons.add),
+                  ),
+                ),
+                if (homeCampaignVM.listCampaigns.isEmpty)
+                  Text(
+                    "Nada por aqui ainda, vamos criar?",
+                    style: TextStyle(fontSize: 24),
+                  ),
+                if (homeCampaignVM.listCampaigns.isNotEmpty)
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 16,
+                      children: List.generate(
+                        homeCampaignVM.listCampaigns.length,
+                        (index) {
+                          Campaign campaign =
+                              homeCampaignVM.listCampaigns[index];
+                          return CampaignWidget(campaign: campaign);
+                        },
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
-          if (homeCampaignVM.listCampaigns.isEmpty)
-            Center(
-              child: Text(
-                "Nada por aqui ainda, vamos criar?",
-                style: TextStyle(fontSize: 24),
-              ),
+          Flexible(
+            flex: 6,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GenericHeader(
+                  title: "Outras campanhas",
+                  iconButton: IconButton(
+                    onPressed: () => showJoinCampaignDialog(context: context),
+                    tooltip: "Juntar-se a campanha",
+                    icon: Icon(Icons.login),
+                  ),
+                ),
+                if (homeCampaignVM.listCampaignsInvited.isEmpty)
+                  Text(
+                    "Seria bom pessoas pra te chamar, né?",
+                    style: TextStyle(fontSize: 24),
+                  ),
+                if (homeCampaignVM.listCampaignsInvited.isNotEmpty)
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 16,
+                      children: List.generate(
+                        homeCampaignVM.listCampaignsInvited.length,
+                        (index) {
+                          Campaign campaign =
+                              homeCampaignVM.listCampaignsInvited[index];
+                          return CampaignWidget(campaign: campaign);
+                        },
+                      ),
+                    ),
+                  ),
+              ],
             ),
-          if (homeCampaignVM.listCampaigns.isNotEmpty)
-            Wrap(
-              spacing: 16,
-              children: List.generate(
-                homeCampaignVM.listCampaigns.length,
-                (index) {
-                  Campaign campaign = homeCampaignVM.listCampaigns[index];
-                  return CampaignWidget(campaign: campaign);
-                },
-              ),
-            ),
+          ),
         ],
       ),
     );

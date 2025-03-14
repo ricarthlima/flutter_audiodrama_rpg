@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 
 import '../../_core/components/show_snackbar.dart';
 
@@ -16,8 +17,9 @@ class CampaignWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(right: 16, bottom: 16),
-      width: 400,
-      height: 200,
+      width: getZoomFactorVertical(context, 300) *
+          ((!isVertical(context)) ? 1.5 : 1),
+      height: getZoomFactorVertical(context, 300),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
@@ -38,8 +40,9 @@ class CampaignWidget extends StatelessWidget {
                     child: Image.network(
                       campaign.imageBannerUrl!,
                       fit: BoxFit.cover,
-                      height: 200,
-                      width: 400,
+                      width: getZoomFactorVertical(context, 300) *
+                          ((!isVertical(context)) ? 1.5 : 1),
+                      height: getZoomFactorVertical(context, 300),
                     ),
                   )
                 : Container(),
