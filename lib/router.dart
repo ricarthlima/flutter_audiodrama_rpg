@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/auth/login_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/campaign_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_works_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/home_screen.dart';
@@ -30,6 +31,12 @@ class AppRouter {
       GoRoute(
         path: home,
         builder: (context, state) => HomeScreen(),
+      ),
+      GoRoute(
+        path: "/campaigns",
+        builder: (context, state) => HomeScreen(
+          page: HomeSubPages.campaign,
+        ),
       ),
       GoRoute(
         path: "/auth",

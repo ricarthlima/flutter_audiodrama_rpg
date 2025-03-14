@@ -10,7 +10,8 @@ import 'package:flutter_rpg_audiodrama/ui/home_campaign/view/home_campaign_view_
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final HomeSubPages page;
+  const HomeScreen({super.key, this.page = HomeSubPages.sheets});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -22,9 +23,13 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<HomeViewModel>(context, listen: false).onInitialize();
+      HomeViewModel homeViewModel =
+          Provider.of<HomeViewModel>(context, listen: false);
       Provider.of<HomeSheetViewModel>(context, listen: false).onInitialize();
       Provider.of<HomeCampaignViewModel>(context, listen: false).onInitialize();
+
+      homeViewModel.onInitialize();
+      homeViewModel.currentPage = widget.page;
     });
   }
 

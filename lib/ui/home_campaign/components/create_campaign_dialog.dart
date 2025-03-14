@@ -98,7 +98,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
                     controller: nameController,
                     maxLength: 40,
                     decoration: const InputDecoration(
-                      label: Text("Nome da campanha:"),
+                      label: Text("Nome da campanha"),
                     ),
                     validator: (value) {
                       if (value == null) {
@@ -115,7 +115,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
                     maxLength: 200,
                     maxLines: null,
                     decoration: const InputDecoration(
-                      label: Text("Breve descrição:"),
+                      label: Text("Breve descrição"),
                     ),
                   ),
                 ],

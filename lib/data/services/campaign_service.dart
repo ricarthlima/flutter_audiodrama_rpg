@@ -43,6 +43,7 @@ class CampaignService {
 
     if (fileImage != null) {
       imageBannerUrl = await uploadImage(fileImage, newCampaign.id);
+      newCampaign.imageBannerUrl = imageBannerUrl;
     }
 
     await FirebaseFirestore.instance
@@ -54,9 +55,12 @@ class CampaignService {
   }
 
   // Apenas o próprio usuário
-  Future<String> uploadImage(Uint8List file, String fileName) async {
-    String bucket = SupabasePrefs.storageBucketSheet;
-    String filePath = "campaigns/$fileName";
+  Future<String> uploadImage(
+    Uint8List file,
+    String campaignId,
+  ) async {
+    String bucket = SupabasePrefs.storageBucketCampaign;
+    String filePath = "public/$campaignId/$campaignId-bio";
 
     await _supabase.storage.from(bucket).uploadBinary(
           filePath,

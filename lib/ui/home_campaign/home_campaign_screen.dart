@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
-import 'package:flutter_rpg_audiodrama/ui/home_campaign/widgets/home_list_campaign_widget.dart';
+import 'package:flutter_rpg_audiodrama/ui/home_campaign/widgets/campaign_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../_core/widgets/generic_header.dart';
@@ -39,13 +39,13 @@ class HomeCampaignScreen extends StatelessWidget {
               ),
             ),
           if (homeCampaignVM.listCampaigns.isNotEmpty)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Wrap(
+              spacing: 16,
               children: List.generate(
                 homeCampaignVM.listCampaigns.length,
                 (index) {
                   Campaign campaign = homeCampaignVM.listCampaigns[index];
-                  return HomeListCampaignWidget(campaign: campaign);
+                  return CampaignWidget(campaign: campaign);
                 },
               ),
             ),
