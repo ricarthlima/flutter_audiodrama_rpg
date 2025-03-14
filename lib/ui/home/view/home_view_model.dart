@@ -79,6 +79,6 @@ class HomeViewModel extends ChangeNotifier {
 
 enum HomeSubPages {
   sheets,
-  campaign,
+  campaigns,
   profile,
 }

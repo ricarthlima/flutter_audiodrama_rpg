@@ -33,9 +33,21 @@ class AppRouter {
         builder: (context, state) => HomeScreen(),
       ),
       GoRoute(
+        path: "/sheets",
+        builder: (context, state) => HomeScreen(
+          page: HomeSubPages.sheets,
+        ),
+      ),
+      GoRoute(
         path: "/campaigns",
         builder: (context, state) => HomeScreen(
-          page: HomeSubPages.campaign,
+          page: HomeSubPages.campaigns,
+        ),
+      ),
+      GoRoute(
+        path: "/profile",
+        builder: (context, state) => HomeScreen(
+          page: HomeSubPages.profile,
         ),
       ),
       GoRoute(
@@ -90,8 +102,12 @@ class AppRouter {
     ],
   );
 
-  goHome({required BuildContext context}) {
-    GoRouter.of(context).go(AppRouter.home);
+  goHome({required BuildContext context, HomeSubPages? subPage}) {
+    if (subPage != null) {
+      GoRouter.of(context).go("/${subPage.name}");
+    } else {
+      GoRouter.of(context).go(AppRouter.home);
+    }
   }
 
   goAuth({required BuildContext context}) {
