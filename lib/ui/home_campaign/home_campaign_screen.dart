@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/home_campaign/components/join_campaign_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/home_campaign/widgets/campaign_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../_core/widgets/generic_header.dart';
 import 'components/create_campaign_dialog.dart';
-import 'view/home_campaign_view_model.dart';
 
 class HomeCampaignScreen extends StatelessWidget {
   const HomeCampaignScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    HomeCampaignViewModel homeCampaignVM =
-        Provider.of<HomeCampaignViewModel>(context);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -37,21 +36,20 @@ class HomeCampaignScreen extends StatelessWidget {
                     icon: Icon(Icons.add),
                   ),
                 ),
-                if (homeCampaignVM.listCampaigns.isEmpty)
+                if (userProvider.listCampaigns.isEmpty)
                   Text(
                     "Nada por aqui ainda, vamos criar?",
                     style: TextStyle(fontSize: 24),
                   ),
-                if (homeCampaignVM.listCampaigns.isNotEmpty)
+                if (userProvider.listCampaigns.isNotEmpty)
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       spacing: 16,
                       children: List.generate(
-                        homeCampaignVM.listCampaigns.length,
+                        userProvider.listCampaigns.length,
                         (index) {
-                          Campaign campaign =
-                              homeCampaignVM.listCampaigns[index];
+                          Campaign campaign = userProvider.listCampaigns[index];
                           return CampaignWidget(campaign: campaign);
                         },
                       ),
@@ -73,21 +71,21 @@ class HomeCampaignScreen extends StatelessWidget {
                     icon: Icon(Icons.login),
                   ),
                 ),
-                if (homeCampaignVM.listCampaignsInvited.isEmpty)
+                if (userProvider.listCampaignsInvited.isEmpty)
                   Text(
                     "Seria bom pessoas pra te chamar, né?",
                     style: TextStyle(fontSize: 24),
                   ),
-                if (homeCampaignVM.listCampaignsInvited.isNotEmpty)
+                if (userProvider.listCampaignsInvited.isNotEmpty)
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       spacing: 16,
                       children: List.generate(
-                        homeCampaignVM.listCampaignsInvited.length,
+                        userProvider.listCampaignsInvited.length,
                         (index) {
                           Campaign campaign =
-                              homeCampaignVM.listCampaignsInvited[index];
+                              userProvider.listCampaignsInvited[index];
                           return CampaignWidget(campaign: campaign);
                         },
                       ),

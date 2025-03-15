@@ -89,7 +89,12 @@ class HomeListItemWidget extends StatelessWidget {
               ],
             )
           : null,
-      subtitle: Text(homeSheetVM.getWorldName(sheet)),
+      subtitle: Text(
+        homeSheetVM.getWorldName(
+          context: context,
+          sheet: sheet,
+        ),
+      ),
       onTap: () {
         viewModel.goToSheet(
           context,

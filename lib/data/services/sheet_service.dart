@@ -15,8 +15,6 @@ import '../../_core/release_mode.dart';
 class SheetService {
   final _supabase = Supabase.instance.client;
 
-  String uid = FirebaseAuth.instance.currentUser!.uid;
-
   Future<List<String>> getListUsers() async {
     QuerySnapshot<Map<String, dynamic>> listUsersSnapshot =
         await FirebaseFirestore.instance.collection("users").get();
@@ -45,8 +43,8 @@ class SheetService {
   }
 
   // Apenas o próprio usuário
-  Stream<QuerySnapshot<Map<String, dynamic>>> listenSheetsByUser(
-      {String? userId}) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> listenSheetsByUser() {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     return FirebaseFirestore.instance
         .collection("${releaseCollection}users")
         .doc(uid)
@@ -56,6 +54,8 @@ class SheetService {
 
   // Apenas o próprio usuário
   Future<List<Sheet>> getSheetsByUser() async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
     List<Sheet> result = [];
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
@@ -75,6 +75,8 @@ class SheetService {
 
   // Apenas o próprio usuário
   Future<void> createSheet(String characterName) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
     String sheetId = Uuid().v1();
     return FirebaseFirestore.instance
         .collection("${releaseCollection}users")
@@ -107,6 +109,7 @@ class SheetService {
 
   // Apenas o próprio usuário
   Future<void> duplicateSheet(Sheet sheet) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     String sheetId = Uuid().v1();
     return FirebaseFirestore.instance
         .collection("${releaseCollection}users")
@@ -139,6 +142,7 @@ class SheetService {
     required String id,
     required String username,
   }) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     AppUser user = await getUserByUsername(username);
 
     DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
@@ -161,6 +165,7 @@ class SheetService {
 
   // TODO: Por enquanto, apenas o próprio usuário
   Future<void> saveSheet(Sheet sheet) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     await FirebaseFirestore.instance
         .collection("${releaseCollection}users")
         .doc(uid)
@@ -171,6 +176,7 @@ class SheetService {
 
   // Apenas o próprio usuário
   Future<void> removeSheet(Sheet sheet) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     await FirebaseFirestore.instance
         .collection("${releaseCollection}users")
         .doc(uid)

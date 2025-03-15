@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,44 +13,6 @@ import '../../../domain/models/campaign.dart';
 class HomeCampaignViewModel extends ChangeNotifier {
   String uid = FirebaseAuth.instance.currentUser!.uid;
   CampaignService campaignService = CampaignService.instance;
-
-  StreamSubscription? streamSubscription;
-  StreamSubscription? streamSubscriptionInvited;
-
-  List<Campaign> listCampaigns = [];
-  List<Campaign> listCampaignsInvited = [];
-
-  onInitialize() {
-    streamSubscription = FirebaseFirestore.instance
-        .collection("campaigns")
-        .where("listIdOwners", arrayContains: uid)
-        .snapshots()
-        .listen(
-      (QuerySnapshot<Map<String, dynamic>> snapshot) {
-        listCampaigns = snapshot.docs
-            .map(
-              (e) => Campaign.fromMap(e.data()),
-            )
-            .toList();
-        notifyListeners();
-      },
-    );
-
-    streamSubscriptionInvited = FirebaseFirestore.instance
-        .collection("campaigns")
-        .where("listIdPlayers", arrayContains: uid)
-        .snapshots()
-        .listen(
-      (QuerySnapshot<Map<String, dynamic>> snapshot) {
-        listCampaignsInvited = snapshot.docs
-            .map(
-              (e) => Campaign.fromMap(e.data()),
-            )
-            .toList();
-        notifyListeners();
-      },
-    );
-  }
 
   Future<void> createCampaign({
     required BuildContext context,

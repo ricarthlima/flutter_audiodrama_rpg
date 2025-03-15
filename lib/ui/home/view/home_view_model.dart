@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
 
@@ -12,22 +10,7 @@ import '../../../router.dart';
 import '../components/create_sheet_dialog.dart';
 
 class HomeViewModel extends ChangeNotifier {
-  Map<String, String>? mapGuestIds;
   final SheetService sheetService = SheetService();
-
-  AppUser currentAppUser = AppUser(
-    email: "",
-    username: "",
-    id: "",
-  );
-
-  void onInitialize() async {
-    AppUser? appUser = await AuthService().getCurrentUserInfos();
-    if (appUser != null) {
-      currentAppUser = appUser;
-      notifyListeners();
-    }
-  }
 
   void goToSheet(
     BuildContext context, {
@@ -92,6 +75,10 @@ class HomeViewModel extends ChangeNotifier {
         sheetId: sheetId,
       ),
     );
+  }
+
+  Future<void> removeSheetFromCampaign(String sheetId) {
+    return CampaignService.instance.removeCampaign(sheetId: sheetId);
   }
 }
 

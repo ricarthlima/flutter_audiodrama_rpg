@@ -148,6 +148,60 @@ class CampaignService {
     return result;
   }
 
+  getListMyCampaigns() async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    List<Campaign> result = [];
+
+    QuerySnapshot<Map<String, dynamic>> snapshotOwner = await FirebaseFirestore
+        .instance
+        .collection("campaigns")
+        .where("listIdOwners", arrayContains: uid)
+        .get();
+
+    for (var doc in snapshotOwner.docs) {
+      result.add(Campaign.fromMap(doc.data()));
+    }
+
+    return result;
+  }
+
+  getListInvitedCampaigns() async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    List<Campaign> result = [];
+
+    QuerySnapshot<Map<String, dynamic>> snapshotOwner = await FirebaseFirestore
+        .instance
+        .collection("campaigns")
+        .where("listIdPlayers", arrayContains: uid)
+        .get();
+
+    for (var doc in snapshotOwner.docs) {
+      result.add(Campaign.fromMap(doc.data()));
+    }
+
+    return result;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getMyCampaignsStream() {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    return FirebaseFirestore.instance
+        .collection("campaigns")
+        .where("listIdOwners", arrayContains: uid)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getInvitedCampaignsStream() {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    return FirebaseFirestore.instance
+        .collection("campaigns")
+        .where("listIdPlayers", arrayContains: uid)
+        .snapshots();
+  }
+
   Future<void> saveCampaignSheet({
     required CampaignSheet campaignSheet,
   }) async {
@@ -155,6 +209,13 @@ class CampaignService {
         .collection("campaign-sheet")
         .doc(campaignSheet.sheetId)
         .set(campaignSheet.toMap());
+  }
+
+  Future<void> removeCampaign({required String sheetId}) async {
+    await FirebaseFirestore.instance
+        .collection("campaign-sheet")
+        .doc(sheetId)
+        .delete();
   }
 
   Future<List<CampaignSheet>> getListCampaignSheet() async {

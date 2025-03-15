@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -35,10 +35,23 @@ class _MoveSheetToCampaignDialogState
   Campaign? campaign;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      UserProvider userProvider = Provider.of<UserProvider>(
+        context,
+        listen: false,
+      );
+      setState(() {
+        campaign = userProvider.getCampaignBySheet(widget.sheet.id);
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     HomeViewModel homeViewModel = Provider.of<HomeViewModel>(context);
-    HomeSheetViewModel homeSheetViewModel =
-        Provider.of<HomeSheetViewModel>(context);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -63,7 +76,7 @@ class _MoveSheetToCampaignDialogState
           DropdownButton<Campaign>(
             value: campaign,
             isExpanded: true,
-            items: homeSheetViewModel.listCampaigns.map(
+            items: userProvider.listAllCampaigns.map(
               (Campaign campaign) {
                 return DropdownMenuItem<Campaign>(
                   value: campaign,
@@ -85,7 +98,7 @@ class _MoveSheetToCampaignDialogState
                 child: Text("Salvar"),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () => onRemoveCampaignPressed(homeViewModel),
                 child: Text(
                   "Remover do mundo",
                   style: TextStyle(color: AppColors.red),
@@ -107,5 +120,11 @@ class _MoveSheetToCampaignDialogState
       if (!mounted) return;
       Navigator.pop(context);
     }
+  }
+
+  Future<void> onRemoveCampaignPressed(HomeViewModel homeViewModel) async {
+    await homeViewModel.removeSheetFromCampaign(widget.sheet.id);
+    if (!mounted) return;
+    Navigator.pop(context);
   }
 }

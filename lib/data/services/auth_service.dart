@@ -6,7 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import '../local/local_data_manager.dart';
 
@@ -52,10 +54,14 @@ class AuthService {
     await registerUser(appUser);
 
     if (!context.mounted) return;
+    await Provider.of<UserProvider>(context, listen: false).onInitialize();
+
+    if (!context.mounted) return;
     AppRouter().goHome(context: context);
   }
 
   Future<void> signOut(BuildContext context) async {
+    await Provider.of<UserProvider>(context, listen: false).onDispose();
     await FirebaseAuth.instance.signOut();
     if (!context.mounted) return;
     AppRouter().goAuth(context: context);

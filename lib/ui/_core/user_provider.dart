@@ -1,0 +1,128 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
+
+import '../../data/services/auth_service.dart';
+import '../../data/services/campaign_service.dart';
+import '../../domain/models/app_user.dart';
+import '../../domain/models/campaign.dart';
+import '../../domain/models/campaign_sheet.dart';
+import '../../domain/models/sheet_model.dart';
+
+class UserProvider extends ChangeNotifier {
+  List<Sheet> listSheets = [];
+  List<Campaign> listCampaigns = [];
+  List<Campaign> listCampaignsInvited = [];
+  List<CampaignSheet> listCampaignsSheet = [];
+
+  StreamSubscription? _streamSheets;
+  StreamSubscription? _streamMyCampaigns;
+  StreamSubscription? _streamInvitedCampaigns;
+  StreamSubscription? _streamSheetsCampaigns;
+
+  List<Campaign> get listAllCampaigns {
+    return listCampaigns + listCampaignsInvited;
+  }
+
+  AppUser currentAppUser = AppUser(
+    email: "",
+    username: "",
+    id: "",
+  );
+
+  onInitialize() async {
+    await onInitializeUser();
+
+    await onInitializeSheets();
+
+    await onInitializeCampaigns();
+
+    await onInitializeOtherCampaigns();
+
+    await onInitializeCampaignSheets();
+
+    notifyListeners();
+  }
+
+  Future<void> onInitializeUser() async {
+    AppUser? appUser = await AuthService().getCurrentUserInfos();
+    if (appUser != null) {
+      currentAppUser = appUser;
+      notifyListeners();
+    }
+  }
+
+  Future<void> onInitializeCampaignSheets() async {
+    listCampaignsSheet = await CampaignService.instance.getListCampaignSheet();
+    _streamSheetsCampaigns =
+        CampaignService.instance.getCampaignSheetStream().listen(
+      (snapshot) {
+        listCampaignsSheet =
+            snapshot.docs.map((e) => CampaignSheet.fromMap(e.data())).toList();
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> onInitializeOtherCampaigns() async {
+    listCampaignsInvited =
+        await CampaignService.instance.getListInvitedCampaigns();
+    _streamInvitedCampaigns =
+        CampaignService.instance.getInvitedCampaignsStream().listen(
+      (snapshot) {
+        listCampaignsInvited =
+            snapshot.docs.map((e) => Campaign.fromMap(e.data())).toList();
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> onInitializeCampaigns() async {
+    listCampaigns = await CampaignService.instance.getListMyCampaigns();
+    _streamMyCampaigns = CampaignService.instance.getMyCampaignsStream().listen(
+      (snapshot) {
+        listCampaigns =
+            snapshot.docs.map((e) => Campaign.fromMap(e.data())).toList();
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> onInitializeSheets() async {
+    listSheets = await SheetService().getSheetsByUser();
+    _streamSheets = SheetService().listenSheetsByUser().listen(
+      (QuerySnapshot<Map<String, dynamic>> snapshot) {
+        listSheets = snapshot.docs.map((e) => Sheet.fromMap(e.data())).toList();
+        notifyListeners();
+      },
+    );
+  }
+
+  onDispose() async {
+    if (_streamSheets != null) {
+      await _streamSheets!.cancel();
+    }
+    if (_streamMyCampaigns != null) {
+      await _streamMyCampaigns!.cancel();
+    }
+    if (_streamInvitedCampaigns != null) {
+      await _streamInvitedCampaigns!.cancel();
+    }
+    if (_streamSheetsCampaigns != null) {
+      await _streamSheetsCampaigns!.cancel();
+    }
+  }
+
+  Campaign? getCampaignBySheet(String sheetId) {
+    var listCS = listCampaignsSheet.where((e) => e.sheetId == sheetId).toList();
+    if (listCS.isNotEmpty) {
+      var listC = listAllCampaigns.where((e) => e.id == listCS[0].campaignId);
+      if (listC.isNotEmpty) {
+        return listC.first;
+      }
+    }
+    return null;
+  }
+}

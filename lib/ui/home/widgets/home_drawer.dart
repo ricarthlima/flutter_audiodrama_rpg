@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/utils/change_url.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +16,8 @@ class HomeDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeViewModel = Provider.of<HomeViewModel>(context);
+    final userProvider = Provider.of<UserProvider>(context);
+
     return MouseRegion(
       onEnter: (_) => homeViewModel.isDrawerClosed = false,
       onExit: (_) => homeViewModel.isDrawerClosed = true,
@@ -64,12 +67,12 @@ class HomeDrawer extends StatelessWidget {
                 isCompressed: homeViewModel.isDrawerClosed,
                 isSelected: homeViewModel.currentPage == HomeSubPages.profile,
               ),
-              leadingIcon: (homeViewModel.currentAppUser.imageB64 == null)
+              leadingIcon: (userProvider.currentAppUser.imageB64 == null)
                   ? Icons.person_outline
                   : null,
-              leading: (homeViewModel.currentAppUser.imageB64 != null)
+              leading: (userProvider.currentAppUser.imageB64 != null)
                   ? Image.memory(
-                      base64Decode(homeViewModel.currentAppUser.imageB64!),
+                      base64Decode(userProvider.currentAppUser.imageB64!),
                       width: 24,
                       height: 24,
                     )
