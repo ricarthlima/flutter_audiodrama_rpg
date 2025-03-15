@@ -183,6 +183,11 @@ class SheetService {
         .collection("sheets")
         .doc(sheet.id)
         .delete();
+
+    await FirebaseFirestore.instance
+        .collection("${releaseCollection}campaign-sheet")
+        .doc(sheet.id)
+        .delete();
   }
 
   // Apenas o próprio usuário
