@@ -67,8 +67,7 @@ AppBar? getCampaignAppBar({
           Builder(
             builder: (context) => IconButton(
               onPressed: () {
-                Scaffold.of(context).openEndDrawer();
-                campaignVM.notificationCount = 0;
+                campaignVM.isDrawerClosed = !campaignVM.isDrawerClosed;
               },
               icon: badges.Badge(
                 showBadge: campaignVM.notificationCount >

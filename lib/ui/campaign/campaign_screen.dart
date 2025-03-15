@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
@@ -11,6 +13,7 @@ import 'package:provider/provider.dart';
 import '../_core/app_colors.dart';
 import '../_core/dimensions.dart';
 import '../_core/widgets/named_widget.dart';
+import '../home_campaign/view/home_campaign_view_model.dart';
 
 class CampaignScreen extends StatefulWidget {
   final CampaignSubPages subPage;
@@ -116,7 +119,34 @@ class _CampaignScreenState extends State<CampaignScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _getNameWidget(campaignVM),
+              Row(
+                spacing: 16,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _getNameWidget(campaignVM),
+                  if (campaignVM.isEditing)
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => _onUploadImagePressed(campaignVM),
+                          tooltip: "Alterar imagem",
+                          iconSize: 32,
+                          icon: Icon(Icons.image_outlined),
+                        ),
+                        if (campaignVM.campaign!.imageBannerUrl != null)
+                          IconButton(
+                            onPressed: () => campaignVM.onRemoveImage(),
+                            tooltip: "Remover imagem",
+                            iconSize: 32,
+                            icon: Icon(
+                              Icons.remove,
+                              color: AppColors.red,
+                            ),
+                          ),
+                      ],
+                    )
+                ],
+              ),
               Text(campaignVM.campaign!.description ?? ""),
               SizedBox(
                 height: 64,
@@ -176,5 +206,18 @@ class _CampaignScreenState extends State<CampaignScreen> {
               ),
       ),
     );
+  }
+
+  void _onUploadImagePressed(CampaignViewModel campaignVM) async {
+    HomeCampaignViewModel homeCampaignVM = Provider.of<HomeCampaignViewModel>(
+      context,
+      listen: false,
+    );
+
+    Uint8List? imageBytes = await homeCampaignVM.onLoadImageClicked(context);
+
+    if (imageBytes != null) {
+      campaignVM.onUpdateImage(imageBytes);
+    }
   }
 }

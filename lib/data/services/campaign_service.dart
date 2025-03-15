@@ -57,13 +57,28 @@ class CampaignService {
     return newCampaign;
   }
 
+  Future<void> updateImage({
+    required Uint8List fileImage,
+    required Campaign campaign,
+  }) async {
+    await removeImage(campaign: campaign, needToFirestore: false);
+
+    String imageBannerUrl = await uploadImage(fileImage, campaign.id);
+    campaign.imageBannerUrl = imageBannerUrl;
+
+    await FirebaseFirestore.instance
+        .collection("${releaseCollection}campaigns")
+        .doc(campaign.id)
+        .set(campaign.toMap());
+  }
+
   // Apenas o próprio usuário
   Future<String> uploadImage(
     Uint8List file,
     String campaignId,
   ) async {
     String bucket = SupabasePrefs.storageBucketCampaign;
-    String filePath = "public/$campaignId/$campaignId-bio";
+    String filePath = "public/$campaignId/bio-image-${DateTime.now()}";
 
     await _supabase.storage.from(bucket).uploadBinary(
           filePath,
@@ -77,10 +92,24 @@ class CampaignService {
   }
 
   // Apenas o próprio usuário
-  Future<void> removeImage(String fileName) {
-    return _supabase.storage
-        .from(SupabasePrefs.storageBucketSheet)
-        .remove(["bios/$fileName"]);
+  Future<void> removeImage(
+      {required Campaign campaign, bool needToFirestore = true}) async {
+    if (campaign.imageBannerUrl != null) {
+      String oldImage = campaign.imageBannerUrl!;
+      String fileName = oldImage.split("/").last;
+
+      if (needToFirestore) {
+        campaign.imageBannerUrl = null;
+        await FirebaseFirestore.instance
+            .collection("${releaseCollection}campaigns")
+            .doc(campaign.id)
+            .set(campaign.toMap());
+      }
+
+      _supabase.storage
+          .from(SupabasePrefs.storageBucketSheet)
+          .remove(["bios/$fileName"]);
+    }
   }
 
   Future<void> joinCampaign(String joinCode) async {

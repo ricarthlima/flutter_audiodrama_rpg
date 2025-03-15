@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
@@ -114,6 +116,24 @@ class CampaignViewModel extends ChangeNotifier {
           notifyListeners();
         },
       );
+    }
+  }
+
+  onUpdateImage(Uint8List imageBytes) async {
+    if (campaign != null) {
+      await CampaignService.instance.updateImage(
+        fileImage: imageBytes,
+        campaign: campaign!,
+      );
+      notifyListeners();
+    }
+  }
+
+  onRemoveImage() async {
+    if (campaign != null) {
+      await CampaignService.instance.removeImage(campaign: campaign!);
+      campaign!.imageBannerUrl = null;
+      notifyListeners();
     }
   }
 }
