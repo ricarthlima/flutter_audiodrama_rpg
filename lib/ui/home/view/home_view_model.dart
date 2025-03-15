@@ -27,10 +27,10 @@ class HomeViewModel extends ChangeNotifier {
     );
   }
 
-  Future<void> onCreateSheetClicked(context) async {
+  Future<void> onCreateSheetClicked(context, {String? campaignId}) async {
     String? resultName = await showCreateSheetDialog(context);
     if (resultName != null) {
-      await sheetService.createSheet(resultName);
+      await sheetService.createSheet(resultName, campaignId: campaignId);
     }
   }
 

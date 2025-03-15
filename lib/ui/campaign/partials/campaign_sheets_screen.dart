@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/widgets/home_list_item_widget.dart';
 import 'package:provider/provider.dart';
+
+import '../../home/view/home_view_model.dart';
 
 class CampaignSheetsScreen extends StatelessWidget {
   const CampaignSheetsScreen({super.key});
@@ -45,11 +48,17 @@ class CampaignSheetsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 16,
         children: [
-          Text(
-            "Meus personagens",
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+          GenericHeader(
+            title: "Meus personagens",
+            iconButton: IconButton(
+              onPressed: () {
+                context.read<HomeViewModel>().onCreateSheetClicked(
+                      context,
+                      campaignId: campaignVM.campaignId,
+                    );
+              },
+              tooltip: "Criar personagem",
+              icon: Icon(Icons.add),
             ),
           ),
           Column(
@@ -78,11 +87,13 @@ class CampaignSheetsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: 16,
           children: [
-            Text(
-              "Outros personagens",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            GenericHeader(
+              title: "Outros personagens",
+              iconButton: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.remove_red_eye_outlined,
+                ),
               ),
             ),
             Column(

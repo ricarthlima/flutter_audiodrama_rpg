@@ -92,37 +92,47 @@ class SheetService {
   }
 
   // Apenas o próprio usuário
-  Future<void> createSheet(String characterName) async {
+  Future<void> createSheet(String characterName, {String? campaignId}) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
     String sheetId = Uuid().v1();
+    Sheet sheet = Sheet(
+      id: sheetId,
+      characterName: characterName,
+      listActionValue: [],
+      listRollLog: [],
+      effortPoints: -1,
+      stressLevel: 0,
+      baseLevel: 0,
+      listItemSheet: [],
+      money: 500,
+      weight: 0,
+      listActionLore: [],
+      bio: "",
+      notes: "",
+      listActiveConditions: [],
+      imageUrl: null,
+      listWorks: [],
+      listSharedIds: [],
+      ownerId: uid,
+    );
+
+    if (campaignId != null) {
+      await CampaignService.instance.saveCampaignSheet(
+        campaignSheet: CampaignSheet(
+          userId: uid,
+          campaignId: campaignId,
+          sheetId: sheetId,
+        ),
+      );
+    }
+
     return FirebaseFirestore.instance
         .collection("${releaseCollection}users")
         .doc(uid)
         .collection("sheets")
         .doc(sheetId)
-        .set(
-          Sheet(
-            id: sheetId,
-            characterName: characterName,
-            listActionValue: [],
-            listRollLog: [],
-            effortPoints: -1,
-            stressLevel: 0,
-            baseLevel: 0,
-            listItemSheet: [],
-            money: 500,
-            weight: 0,
-            listActionLore: [],
-            bio: "",
-            notes: "",
-            listActiveConditions: [],
-            imageUrl: null,
-            listWorks: [],
-            listSharedIds: [],
-            ownerId: uid,
-          ).toMap(),
-        );
+        .set(sheet.toMap());
   }
 
   // Apenas o próprio usuário

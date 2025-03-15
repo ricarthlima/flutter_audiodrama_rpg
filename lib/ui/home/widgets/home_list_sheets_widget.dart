@@ -25,44 +25,46 @@ class HomeListSheetsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 8,
-        children: [
-          GenericHeader(
-            title: title!,
-            iconButton: IconButton(
-              onPressed: () {
-                context.read<HomeViewModel>().onCreateSheetClicked(context);
-              },
-              tooltip: "Criar personagem",
-              icon: Icon(Icons.add),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 8,
+          children: [
+            GenericHeader(
+              title: title!,
+              iconButton: IconButton(
+                onPressed: () {
+                  context.read<HomeViewModel>().onCreateSheetClicked(context);
+                },
+                tooltip: "Criar personagem",
+                icon: Icon(Icons.add),
+              ),
             ),
-          ),
-          if (listSheets.isEmpty)
-            Center(
-              child: Text(
-                "Nada por aqui ainda, vamos criar?",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontFamily: FontFamily.sourceSerif4,
+            if (listSheets.isEmpty)
+              Center(
+                child: Text(
+                  "Nada por aqui ainda, vamos criar?",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontFamily: FontFamily.sourceSerif4,
+                  ),
                 ),
               ),
-            ),
-          if (listSheets.isNotEmpty)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: List.generate(
-                listSheets.length,
-                (index) {
-                  return HomeListItemWidget(
-                    sheet: listSheets[index],
-                    username: username,
-                  );
-                },
+            if (listSheets.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(
+                  listSheets.length,
+                  (index) {
+                    return HomeListItemWidget(
+                      sheet: listSheets[index],
+                      username: username,
+                    );
+                  },
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
