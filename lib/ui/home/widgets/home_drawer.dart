@@ -27,6 +27,7 @@ class HomeDrawer extends StatelessWidget {
         width: (homeViewModel.isDrawerClosed) ? 48 : 275,
         height: height(context),
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(245),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,

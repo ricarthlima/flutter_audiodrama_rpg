@@ -40,15 +40,15 @@ class HomeListItemWidget extends StatelessWidget {
               child: ClipOval(
                 child: Image.network(
                   sheet.imageUrl!,
-                  width: 40,
-                  height: 40,
+                  width: isVertical(context) ? 26 : 40,
+                  height: isVertical(context) ? 26 : 40,
                   fit: BoxFit.cover,
                 ),
               ),
             )
           : Icon(
               Icons.feed,
-              size: 40,
+              size: isVertical(context) ? 26 : 40,
             ),
       title: Text(
         sheet.characterName,
@@ -57,7 +57,8 @@ class HomeListItemWidget extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      trailing: (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid)
+      trailing: (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid &&
+              !isVertical(context))
           ? Row(
               mainAxisSize: MainAxisSize.min,
               spacing: 8,
@@ -69,7 +70,7 @@ class HomeListItemWidget extends StatelessWidget {
                       sheet: sheet,
                     );
                   },
-                  iconSize: (isVertical(context)) ? 24 : 32,
+                  iconSize: (isVertical(context)) ? 20 : 32,
                   tooltip: "Mover para campanha",
                   icon: Icon(Icons.move_down_rounded),
                 ),
@@ -77,7 +78,7 @@ class HomeListItemWidget extends StatelessWidget {
                   onPressed: () {
                     viewModel.onDuplicateSheet(context: context, sheet: sheet);
                   },
-                  iconSize: (isVertical(context)) ? 24 : 32,
+                  iconSize: (isVertical(context)) ? 20 : 32,
                   tooltip: "Duplicar",
                   icon: Icon(Icons.copy),
                 ),
@@ -85,7 +86,7 @@ class HomeListItemWidget extends StatelessWidget {
                   onPressed: () {
                     viewModel.onRemoveSheet(context: context, sheet: sheet);
                   },
-                  iconSize: (isVertical(context)) ? 24 : 32,
+                  iconSize: (isVertical(context)) ? 20 : 32,
                   tooltip: "Remover",
                   icon: Icon(
                     Icons.delete,
@@ -98,7 +99,7 @@ class HomeListItemWidget extends StatelessWidget {
               onPressed: () {
                 viewModel.onDuplicateSheetToMe(context: context, sheet: sheet);
               },
-              iconSize: (isVertical(context)) ? 24 : 32,
+              iconSize: (isVertical(context)) ? 20 : 32,
               tooltip: "Duplicar",
               icon: Icon(Icons.copy),
             ),

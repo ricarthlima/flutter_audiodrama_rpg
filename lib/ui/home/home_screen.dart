@@ -37,13 +37,31 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: getHomeAppBar(context),
-      body: Row(
+      body: Stack(
         children: [
-          HomeDrawer(),
-          VerticalDivider(thickness: 0.1),
-          Flexible(child: _buildBody(context)),
+          Padding(
+              padding: EdgeInsets.only(left: 64), child: _buildBody(context)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              HomeDrawer(),
+              VerticalDivider(
+                thickness: 0.1,
+                indent: 0,
+                endIndent: 0,
+              ),
+            ],
+          ),
         ],
       ),
+
+      // Row(
+      //   children: [
+      //     HomeDrawer(),
+      //     VerticalDivider(thickness: 0.1),
+      //     Flexible(child: _buildBody(context)),
+      //   ],
+      // ),
     );
   }
 
