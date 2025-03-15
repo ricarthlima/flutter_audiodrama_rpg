@@ -18,12 +18,13 @@ class HomeViewModel extends ChangeNotifier {
     BuildContext context, {
     required String username,
     required Sheet sheet,
+    bool isPushing = false,
   }) {
     AppRouter().goSheet(
       context: context,
       username: username,
       sheet: sheet,
-      isPushing: true,
+      isPushing: isPushing,
     );
   }
 

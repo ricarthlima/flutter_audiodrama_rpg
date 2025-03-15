@@ -117,6 +117,7 @@ class HomeListItemWidget extends StatelessWidget {
           context,
           sheet: sheet,
           username: username,
+          isPushing: isShowingByCampaign,
         );
       },
     );

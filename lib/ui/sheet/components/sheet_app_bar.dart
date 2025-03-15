@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/settings/settings_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sheet_model.dart';
@@ -24,12 +25,17 @@ AppBar getSheetAppBar(BuildContext context) {
 
   return AppBar(
     toolbarHeight: 64,
-    // leading: IconButton(
-    //   onPressed: () {
-    //     AppRouter().goHome(context: context);
-    //   },
-    //   icon: Icon(Icons.arrow_back),
-    // ),
+    leading: IconButton(
+      tooltip: "Voltar",
+      onPressed: () {
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          AppRouter().goHome(context: context);
+        }
+      },
+      icon: Icon(Icons.arrow_back),
+    ),
     backgroundColor: viewModel.imageUrl != null
         ? Theme.of(context).scaffoldBackgroundColor.withAlpha(75)
         : null,

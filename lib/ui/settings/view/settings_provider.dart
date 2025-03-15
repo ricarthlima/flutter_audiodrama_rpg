@@ -40,4 +40,6 @@ class SettingsProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(key, value);
   }
+
+  String? lastScreen;
 }
