@@ -7,6 +7,7 @@ import 'package:flutter_rpg_audiodrama/_core/utils/supabase_prefs.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/exceptions/sheet_service_exceptions.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -125,22 +126,39 @@ class SheetService {
   }
 
   // Apenas o próprio usuário
-  Future<void> duplicateSheet(Sheet sheet) async {
+  Future<Sheet> duplicateSheet(Sheet sheet) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     String sheetId = Uuid().v1();
-    return FirebaseFirestore.instance
+
+    Sheet newSheet = sheet.copyWith(
+      id: sheetId,
+      characterName: "${sheet.characterName} cópia",
+      ownerId: uid,
+    );
+
+    FirebaseFirestore.instance
         .collection("${releaseCollection}users")
         .doc(uid)
         .collection("sheets")
         .doc(sheetId)
-        .set(
-          sheet
-              .copyWith(
-                id: sheetId,
-                characterName: "${sheet.characterName} cópia",
-              )
-              .toMap(),
-        );
+        .set(newSheet.toMap());
+
+    return newSheet;
+  }
+
+  Future<void> duplicateSheetToMe(Sheet sheet, String? campaignId) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    Sheet newSheet = await duplicateSheet(sheet);
+
+    if (campaignId != null) {
+      await CampaignService.instance.saveCampaignSheet(
+        campaignSheet: CampaignSheet(
+          userId: uid,
+          campaignId: campaignId,
+          sheetId: newSheet.id,
+        ),
+      );
+    }
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> listenSheetById({

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/move_sheet_to_campaign_dialog.dart';
@@ -12,10 +13,15 @@ import '../view/home_view_model.dart';
 class HomeListItemWidget extends StatelessWidget {
   final Sheet sheet;
   final String username;
+  final bool isShowingByCampaign;
+  final AppUser? appUser;
+
   const HomeListItemWidget({
     super.key,
     required this.sheet,
     required this.username,
+    this.isShowingByCampaign = false,
+    this.appUser,
   });
 
   @override
@@ -88,13 +94,24 @@ class HomeListItemWidget extends StatelessWidget {
                 ),
               ],
             )
-          : null,
-      subtitle: Text(
-        homeSheetVM.getWorldName(
-          context: context,
-          sheet: sheet,
-        ),
-      ),
+          : IconButton(
+              onPressed: () {
+                viewModel.onDuplicateSheetToMe(context: context, sheet: sheet);
+              },
+              iconSize: (isVertical(context)) ? 24 : 32,
+              tooltip: "Duplicar",
+              icon: Icon(Icons.copy),
+            ),
+      subtitle: isShowingByCampaign
+          ? (appUser == null)
+              ? null
+              : Text(appUser!.username!)
+          : Text(
+              homeSheetVM.getWorldName(
+                context: context,
+                sheet: sheet,
+              ),
+            ),
       onTap: () {
         viewModel.goToSheet(
           context,

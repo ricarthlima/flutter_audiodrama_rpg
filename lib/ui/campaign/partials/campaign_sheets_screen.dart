@@ -58,6 +58,7 @@ class CampaignSheetsScreen extends StatelessWidget {
                 .map((sheet) => HomeListItemWidget(
                       sheet: sheet,
                       username: userProvider.currentAppUser.username!,
+                      isShowingByCampaign: true,
                     ))
                 .toList(),
           ),
@@ -89,6 +90,8 @@ class CampaignSheetsScreen extends StatelessWidget {
                   .map((e) => HomeListItemWidget(
                         sheet: e,
                         username: campaignVM.mapSheetOthers[e]!.username!,
+                        isShowingByCampaign: true,
+                        appUser: campaignVM.mapSheetOthers[e],
                       ))
                   .toList(),
             ),

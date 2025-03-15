@@ -4,7 +4,6 @@ import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/campaign.dart';
-import '../../../domain/models/campaign_sheet.dart';
 import '../../../domain/models/sheet_model.dart';
 
 class HomeSheetViewModel extends ChangeNotifier {
@@ -26,22 +25,12 @@ class HomeSheetViewModel extends ChangeNotifier {
       listen: false,
     );
 
-    List<CampaignSheet> listCS = userProvider.listCampaignsSheet
-        .where((e) => e.sheetId == sheet.id)
-        .toList();
+    Campaign? campaign = userProvider.getCampaignBySheet(sheet.id);
 
-    if (listCS.isEmpty) {
-      return "Sem mundo";
-    } else {
-      List<Campaign> listC = userProvider.listCampaigns
-          .where((e) => e.id == listCS.first.campaignId)
-          .toList();
-
-      if (listC.isEmpty) {
-        return "Sem mundo";
-      } else {
-        return listC.first.name ?? "Sem mundo";
-      }
+    if (campaign != null) {
+      return campaign.name!;
     }
+
+    return "Sem mundo";
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../../../data/services/sheet_service.dart';
 import '../../../domain/models/sheet_model.dart';
@@ -49,6 +51,14 @@ class HomeViewModel extends ChangeNotifier {
     required Sheet sheet,
   }) async {
     await sheetService.duplicateSheet(sheet);
+  }
+
+  Future<void> onDuplicateSheetToMe({
+    required BuildContext context,
+    required Sheet sheet,
+  }) async {
+    String? campaignId = context.read<CampaignViewModel>().campaignId;
+    await sheetService.duplicateSheetToMe(sheet, campaignId);
   }
 
   bool _isDrawerClosed = true;
