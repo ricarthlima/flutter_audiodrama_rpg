@@ -37,9 +37,19 @@ class HomeCampaignScreen extends StatelessWidget {
                   ),
                 ),
                 if (userProvider.listCampaigns.isEmpty)
-                  Text(
-                    "Nada por aqui ainda, vamos criar?",
-                    style: TextStyle(fontSize: 24),
+                  Expanded(
+                    child: Center(
+                      child: Opacity(
+                        opacity: 0.5,
+                        child: Text(
+                          "Nada por aqui ainda, vamos criar?",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 if (userProvider.listCampaigns.isNotEmpty)
                   SingleChildScrollView(
@@ -72,9 +82,19 @@ class HomeCampaignScreen extends StatelessWidget {
                   ),
                 ),
                 if (userProvider.listCampaignsInvited.isEmpty)
-                  Text(
-                    "Seria bom pessoas pra te chamar, né?",
-                    style: TextStyle(fontSize: 24),
+                  Expanded(
+                    child: Center(
+                      child: Opacity(
+                        opacity: 0.5,
+                        child: Text(
+                          "Seria bom pessoas pra te chamar, né?",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 if (userProvider.listCampaignsInvited.isNotEmpty)
                   SingleChildScrollView(

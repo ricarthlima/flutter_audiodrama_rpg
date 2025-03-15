@@ -17,9 +17,8 @@ class CampaignWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(right: 16, bottom: 16),
-      width: getZoomFactorVertical(context, 300) *
-          ((!isVertical(context)) ? 1.5 : 1),
-      height: getZoomFactorVertical(context, 300),
+      width: getZoomFactorVertical(context, 350),
+      height: getZoomFactorVertical(context, 350),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
@@ -40,9 +39,8 @@ class CampaignWidget extends StatelessWidget {
                     child: Image.network(
                       campaign.imageBannerUrl!,
                       fit: BoxFit.cover,
-                      width: getZoomFactorVertical(context, 300) *
-                          ((!isVertical(context)) ? 1.5 : 1),
-                      height: getZoomFactorVertical(context, 300),
+                      width: getZoomFactorVertical(context, 350),
+                      height: getZoomFactorVertical(context, 350),
                     ),
                   )
                 : Container(),
@@ -57,20 +55,14 @@ class CampaignWidget extends StatelessWidget {
               child: SizedBox(
                 height: 70,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
                       campaign.name ?? "",
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      "Jogado em: ${campaign.updatedAt.toString().substring(0, 10)}",
-                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     ),
@@ -85,50 +77,6 @@ class CampaignWidget extends StatelessWidget {
               ),
             ),
           ),
-          // Container(
-          //   alignment: Alignment.topLeft,
-          //   child: Container(
-          //     width: 150,
-          //     height: 30,
-          //     decoration: BoxDecoration(
-          //       color: Colors.black.withAlpha(100),
-          //       borderRadius: const BorderRadius.only(
-          //         bottomRight: Radius.circular(16),
-          //       ),
-          //     ),
-          //     child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.start,
-          //       crossAxisAlignment: CrossAxisAlignment.center,
-          //       children: [
-          //         const SizedBox(width: 4),
-          //         (urlOwnerImage != null)
-          //             ? ClipRRect(
-          //                 borderRadius: BorderRadius.circular(8),
-          //                 child: Image.network(
-          //                   urlOwnerImage!,
-          //                   height: 16,
-          //                   width: 16,
-          //                 ),
-          //               )
-          //             : const Icon(
-          //                 Icons.people,
-          //                 size: 16,
-          //                 color: Colors.white,
-          //               ),
-          //         const SizedBox(width: 8),
-          //         Text(
-          //           widget.campaign.ownerName,
-          //           overflow: TextOverflow.ellipsis,
-          //           textAlign: TextAlign.left,
-          //           style: const TextStyle(
-          //             color: Colors.white,
-          //             fontSize: 16,
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
           Container(
             alignment: Alignment.topRight,
             child: Container(
@@ -149,7 +97,7 @@ class CampaignWidget extends StatelessWidget {
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       color: Theme.of(context).cardColor,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                   const SizedBox(width: 8),
