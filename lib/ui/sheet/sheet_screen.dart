@@ -171,26 +171,29 @@ class _SheetScreenState extends State<SheetScreen> {
                                           MainAxisAlignment.center,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            viewModel.onUploadBioImageClicked(
-                                                context);
-                                          },
-                                          icon: Icon(
-                                            Icons.file_upload_outlined,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                        Text(
-                                          "Proporção ideal 4:5\nAté 2MB.",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ],
+                                      children: viewModel.isOwner
+                                          ? [
+                                              IconButton(
+                                                onPressed: () {
+                                                  viewModel
+                                                      .onUploadBioImageClicked(
+                                                          context);
+                                                },
+                                                icon: Icon(
+                                                  Icons.file_upload_outlined,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              Text(
+                                                "Proporção ideal 4:5\nAté 2MB.",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ]
+                                          : [],
                                     ),
                                   ),
                           ),

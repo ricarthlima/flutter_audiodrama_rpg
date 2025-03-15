@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_appbar.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_drawer.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_sheets_screen.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +13,11 @@ import '../_core/dimensions.dart';
 import '../_core/widgets/named_widget.dart';
 
 class CampaignScreen extends StatefulWidget {
-  const CampaignScreen({super.key});
+  final CampaignSubPages subPage;
+  const CampaignScreen({
+    super.key,
+    this.subPage = CampaignSubPages.sheets,
+  });
 
   @override
   State<CampaignScreen> createState() => _CampaignScreenState();
@@ -20,7 +28,14 @@ class _CampaignScreenState extends State<CampaignScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<CampaignViewModel>(context, listen: false).onInitialize();
+      CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(
+        context,
+        listen: false,
+      );
+      campaignVM.onInitialize();
+      campaignVM.currentPage = widget.subPage;
+
+      Provider.of<UserProvider>(context, listen: false).onInitialize();
     });
   }
 
@@ -30,17 +45,45 @@ class _CampaignScreenState extends State<CampaignScreen> {
 
     // TODO modularizar esse campanha nao encontrada
     return Scaffold(
-      appBar: getCampaignAppBar(context),
+      appBar: getCampaignAppBar(
+        context: context,
+        campaignVM: campaignVM,
+      ),
       extendBodyBehindAppBar: true,
       body: (campaignVM.isLoading)
           ? Center(child: CircularProgressIndicator())
           : (campaignVM.campaign != null && campaignVM.isOwnerOrInvited)
-              ? _buildBody()
+              ? _buildBodyWithDrawer()
               : Center(
                   child: Text(
                     "Campanha não encontrada.",
                   ),
                 ),
+    );
+  }
+
+  Widget _buildBodyWithDrawer() {
+    return Stack(
+      children: [
+        _buildBody(),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: SizedBox(
+            height: height(context) - 64,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                VerticalDivider(
+                  thickness: 0.1,
+                  indent: 0,
+                  endIndent: 0,
+                ),
+                CampaignDrawer(),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -69,15 +112,33 @@ class _CampaignScreenState extends State<CampaignScreen> {
             ),
           ),
         Padding(
-          padding: const EdgeInsets.only(top: 96, left: 32, right: 32),
+          padding: const EdgeInsets.only(top: 72, left: 32, right: 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _getNameWidget(campaignVM),
               Text(campaignVM.campaign!.description ?? ""),
+              SizedBox(
+                height: 64,
+                width: width(context) * 0.75,
+                child: Divider(
+                  thickness: 0.5,
+                ),
+              ),
+              SizedBox(
+                width: width(context) - 100,
+                child: IndexedStack(
+                  index:
+                      CampaignSubPages.values.indexOf(campaignVM.currentPage),
+                  children: [
+                    // Sheets
+                    CampaignSheetsScreen(),
+                  ],
+                ),
+              )
             ],
           ),
-        )
+        ),
       ],
     );
   }

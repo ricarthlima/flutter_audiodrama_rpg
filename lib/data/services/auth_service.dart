@@ -96,4 +96,15 @@ class AuthService {
 
     return null;
   }
+
+  Future<AppUser?> getUserInfosById({required String userId}) async {
+    DocumentSnapshot<Map<String, dynamic>> docs =
+        await FirebaseFirestore.instance.collection("users").doc(userId).get();
+
+    if (docs.data() != null) {
+      return AppUser.fromMap(docs.data()!);
+    }
+
+    return null;
+  }
 }

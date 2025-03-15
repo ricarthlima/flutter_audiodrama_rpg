@@ -153,26 +153,29 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-              width: 32,
-              child: (viewModel.modGlobalTrain > -4)
-                  ? IconButton(
-                      onPressed: () {
-                        viewModel.changeModGlobal(isAdding: false);
-                      },
-                      padding: EdgeInsets.zero,
-                      icon: Icon(Icons.remove),
-                    )
-                  : Container(),
-            ),
+            if (viewModel.isOwner)
+              SizedBox(
+                width: 32,
+                child: (viewModel.modGlobalTrain > -4)
+                    ? IconButton(
+                        onPressed: () {
+                          viewModel.changeModGlobal(isAdding: false);
+                        },
+                        padding: EdgeInsets.zero,
+                        icon: Icon(Icons.remove),
+                      )
+                    : Container(),
+              ),
             Tooltip(
               message: "Clique para manter o modificador",
               child: SizedBox(
                 width: 42,
                 child: InkWell(
-                  onTap: () {
-                    viewModel.toggleKeepingGlobalModifier();
-                  },
+                  onTap: viewModel.isOwner
+                      ? () {
+                          viewModel.toggleKeepingGlobalModifier();
+                        }
+                      : null,
                   child: Text(
                     viewModel.modGlobalTrain.toString(),
                     textAlign: TextAlign.center,
@@ -186,18 +189,19 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
-              width: 32,
-              child: (viewModel.modGlobalTrain < 4)
-                  ? IconButton(
-                      onPressed: () {
-                        viewModel.changeModGlobal();
-                      },
-                      padding: EdgeInsets.zero,
-                      icon: Icon(Icons.add),
-                    )
-                  : Container(),
-            ),
+            if (viewModel.isOwner)
+              SizedBox(
+                width: 32,
+                child: (viewModel.modGlobalTrain < 4)
+                    ? IconButton(
+                        onPressed: () {
+                          viewModel.changeModGlobal();
+                        },
+                        padding: EdgeInsets.zero,
+                        icon: Icon(Icons.add),
+                      )
+                    : Container(),
+              ),
           ],
         ),
       ),
@@ -213,9 +217,11 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               Tooltip(
                 message: "Descanso curto",
                 child: InkWell(
-                  onTap: () {
-                    viewModel.changeEffortPoints(isAdding: false);
-                  },
+                  onTap: viewModel.isOwner
+                      ? () {
+                          viewModel.changeEffortPoints(isAdding: false);
+                        }
+                      : null,
                   child: Icon(
                     Icons.fastfood_outlined,
                     size: 18,
@@ -225,9 +231,11 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               Tooltip(
                 message: "Descanso longo",
                 child: InkWell(
-                  onTap: () {
-                    viewModel.changeStressLevel(isAdding: false);
-                  },
+                  onTap: viewModel.isOwner
+                      ? () {
+                          viewModel.changeStressLevel(isAdding: false);
+                        }
+                      : null,
                   child: Icon(
                     Icons.bed,
                     size: 18,
@@ -246,7 +254,9 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(top: 5.0),
           child: InkWell(
-              onTap: () => viewModel.onConditionButtonClicked(context),
+              onTap: viewModel.isOwner
+                  ? () => viewModel.onConditionButtonClicked(context)
+                  : null,
               child: Text(
                 viewModel.getMajorCondition(),
                 style: TextStyle(

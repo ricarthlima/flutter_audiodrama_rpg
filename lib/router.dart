@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/auth/login_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/campaign_screen.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_works_dialog.dart';
@@ -99,6 +99,16 @@ class AppRouter {
           return CampaignScreen();
         },
       ),
+      GoRoute(
+        path: "/campaign/:campaignId/sheets",
+        builder: (context, state) {
+          String id = state.pathParameters["campaignId"] ?? "";
+          Provider.of<CampaignViewModel>(context).campaignId = id;
+          return CampaignScreen(
+            subPage: CampaignSubPages.sheets,
+          );
+        },
+      ),
     ],
   );
 
@@ -118,11 +128,24 @@ class AppRouter {
     required BuildContext context,
     required String username,
     required Sheet sheet,
-  }) {
-    GoRouter.of(context).go("/$username${AppRouter.sheet}/${sheet.id}");
+    bool isPushing = false,
+  }) async {
+    if (isPushing) {
+      GoRouter.of(context).push("/$username${AppRouter.sheet}/${sheet.id}");
+    } else {
+      GoRouter.of(context).go("/$username${AppRouter.sheet}/${sheet.id}");
+    }
   }
 
-  goCampaign({required BuildContext context, required String campaignId}) {
-    GoRouter.of(context).go("/campaign/$campaignId");
+  goCampaign({
+    required BuildContext context,
+    required String campaignId,
+    CampaignSubPages? subPage,
+  }) {
+    if (subPage != null) {
+      GoRouter.of(context).go("/campaign/$campaignId/${subPage.name}");
+    } else {
+      GoRouter.of(context).go("/campaign/$campaignId");
+    }
   }
 }

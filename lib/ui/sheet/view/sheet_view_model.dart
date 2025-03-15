@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
@@ -625,5 +626,9 @@ class SheetViewModel extends ChangeNotifier {
   List<ActionValue> getActionsValuesWithWorks() {
     return listActionValue.map((e) => e).toList() +
         listWorks.map((e) => e).toList();
+  }
+
+  bool get isOwner {
+    return ownerId == FirebaseAuth.instance.currentUser!.uid;
   }
 }

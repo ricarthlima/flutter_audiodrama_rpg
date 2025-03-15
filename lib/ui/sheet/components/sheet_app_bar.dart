@@ -24,12 +24,12 @@ AppBar getSheetAppBar(BuildContext context) {
 
   return AppBar(
     toolbarHeight: 64,
-    leading: IconButton(
-      onPressed: () {
-        AppRouter().goHome(context: context);
-      },
-      icon: Icon(Icons.arrow_back),
-    ),
+    // leading: IconButton(
+    //   onPressed: () {
+    //     AppRouter().goHome(context: context);
+    //   },
+    //   icon: Icon(Icons.arrow_back),
+    // ),
     backgroundColor: viewModel.imageUrl != null
         ? Theme.of(context).scaffoldBackgroundColor.withAlpha(75)
         : null,

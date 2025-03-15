@@ -26,30 +26,32 @@ class NotesWidget extends StatelessWidget {
               controller: sheetViewModel.notesTextController(),
               maxLines: null,
               expands: true,
+              enabled: sheetViewModel.isOwner,
             ),
           ),
-          AnimatedSwitcher(
-            duration: Duration(milliseconds: 750),
-            child: (sheetViewModel.isSavingNotes == null)
-                ? ElevatedButton(
-                    onPressed: () {
-                      sheetViewModel.saveNotes();
-                    },
-                    child: Text("Salvar"),
-                  )
-                : (sheetViewModel.isSavingNotes!)
-                    ? Center(
-                        child: SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: CircularProgressIndicator(),
+          if (sheetViewModel.isOwner)
+            AnimatedSwitcher(
+              duration: Duration(milliseconds: 750),
+              child: (sheetViewModel.isSavingNotes == null)
+                  ? ElevatedButton(
+                      onPressed: () {
+                        sheetViewModel.saveNotes();
+                      },
+                      child: Text("Salvar"),
+                    )
+                  : (sheetViewModel.isSavingNotes!)
+                      ? Center(
+                          child: SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : Icon(
+                          Icons.check,
+                          size: 32,
                         ),
-                      )
-                    : Icon(
-                        Icons.check,
-                        size: 32,
-                      ),
-          ),
+            ),
         ],
       ),
     );

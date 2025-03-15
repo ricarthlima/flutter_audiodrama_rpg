@@ -247,4 +247,29 @@ class CampaignService {
         .where("userId", isEqualTo: uid)
         .snapshots();
   }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getStreamCSByCampaign(
+      String campaignId) {
+    return FirebaseFirestore.instance
+        .collection("${releaseCollection}campaign-sheet")
+        .where("campaignId", isEqualTo: campaignId)
+        .snapshots();
+  }
+
+  Future<List<String>?> getListPlayersIdsInWorldBySheet(String sheetId) async {
+    DocumentSnapshot<Map<String, dynamic>> query = await FirebaseFirestore
+        .instance
+        .collection("${releaseCollection}campaign-sheet")
+        .doc(sheetId)
+        .get();
+
+    if (query.exists) {
+      CampaignSheet campaignSheet = CampaignSheet.fromMap(query.data()!);
+      Campaign? campaign = await getCampaignById(campaignSheet.campaignId);
+      if (campaign != null) {
+        return campaign.listIdOwners;
+      }
+    }
+    return null;
+  }
 }

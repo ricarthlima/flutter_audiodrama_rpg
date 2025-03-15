@@ -38,30 +38,32 @@ class BioWidget extends StatelessWidget {
                     controller: sheetViewModel.bioEditingController(),
                     maxLines: null,
                     expands: true,
+                    enabled: sheetViewModel.isOwner,
                   ),
                 ),
-                AnimatedSwitcher(
-                  duration: Duration(milliseconds: 750),
-                  child: (sheetViewModel.isSavingBio == null)
-                      ? ElevatedButton(
-                          onPressed: () {
-                            sheetViewModel.saveBio();
-                          },
-                          child: Text("Salvar"),
-                        )
-                      : (sheetViewModel.isSavingBio!)
-                          ? Center(
-                              child: SizedBox(
-                                width: 32,
-                                height: 32,
-                                child: CircularProgressIndicator(),
+                if (sheetViewModel.isOwner)
+                  AnimatedSwitcher(
+                    duration: Duration(milliseconds: 750),
+                    child: (sheetViewModel.isSavingBio == null)
+                        ? ElevatedButton(
+                            onPressed: () {
+                              sheetViewModel.saveBio();
+                            },
+                            child: Text("Salvar"),
+                          )
+                        : (sheetViewModel.isSavingBio!)
+                            ? Center(
+                                child: SizedBox(
+                                  width: 32,
+                                  height: 32,
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                            : Icon(
+                                Icons.check,
+                                size: 32,
                               ),
-                            )
-                          : Icon(
-                              Icons.check,
-                              size: 32,
-                            ),
-                ),
+                  ),
               ],
             ),
           ),

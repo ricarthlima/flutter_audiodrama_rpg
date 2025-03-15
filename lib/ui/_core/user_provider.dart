@@ -125,4 +125,21 @@ class UserProvider extends ChangeNotifier {
     }
     return null;
   }
+
+  List<Sheet> getMySheetsByCampaign(String campaignId) {
+    List<Sheet> listS = [];
+
+    List<CampaignSheet> listCS = listCampaignsSheet
+        .where(
+          (e) => e.campaignId == campaignId,
+        )
+        .toList();
+
+    for (CampaignSheet cs in listCS) {
+      if (listSheets.where((e) => e.id == cs.sheetId).isNotEmpty) {
+        listS.add(listSheets.where((e) => e.id == cs.sheetId).first);
+      }
+    }
+    return listS;
+  }
 }

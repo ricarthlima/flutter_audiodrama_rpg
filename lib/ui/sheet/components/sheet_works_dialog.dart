@@ -77,25 +77,30 @@ class _SheetWorksDialogState extends State<SheetWorksDialog> {
                     Text("Mostrar só meus ofícios")
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text("•"),
-                ),
-                Visibility(
-                  visible: sheetViewModel.isEditing,
-                  child: Text("Saia da edição para salvar"),
-                ),
-                Visibility(
-                  visible: sheetViewModel.isEditing,
-                  child: SizedBox(width: 8),
-                ),
-                Icon(Icons.edit),
-                Switch(
-                  value: sheetViewModel.isEditing,
-                  onChanged: (value) {
-                    sheetViewModel.toggleEditMode();
-                  },
-                ),
+                if (sheetViewModel.isOwner)
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text("•"),
+                      ),
+                      Visibility(
+                        visible: sheetViewModel.isEditing,
+                        child: Text("Saia da edição para salvar"),
+                      ),
+                      Visibility(
+                        visible: sheetViewModel.isEditing,
+                        child: SizedBox(width: 8),
+                      ),
+                      Icon(Icons.edit),
+                      Switch(
+                        value: sheetViewModel.isEditing,
+                        onChanged: (value) {
+                          sheetViewModel.toggleEditMode();
+                        },
+                      ),
+                    ],
+                  ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text("•"),

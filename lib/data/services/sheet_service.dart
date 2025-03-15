@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_rpg_audiodrama/_core/utils/supabase_prefs.dart';
+import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/exceptions/sheet_service_exceptions.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
@@ -24,14 +25,11 @@ class SheetService {
   }
 
   Future<AppUser> getUserByUsername(String username) async {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance
-            .collection("users")
-            .where(
-              "username",
-              isEqualTo: username,
-            )
-            .get();
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection("users")
+        .where("username", isEqualTo: username)
+        .get();
 
     if (querySnapshot.size >= 1) {
       AppUser user = AppUser.fromMap(querySnapshot.docs.first.data());
@@ -71,6 +69,25 @@ class SheetService {
     ).toList();
 
     return result;
+  }
+
+  Future<Sheet?> getSheetByUser({
+    required String sheetId,
+    required String userId,
+  }) async {
+    DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
+        .instance
+        .collection("${releaseCollection}users")
+        .doc(userId)
+        .collection("sheets")
+        .doc(sheetId)
+        .get();
+
+    if (doc.exists) {
+      return Sheet.fromMap(doc.data()!);
+    }
+
+    return null;
   }
 
   // Apenas o próprio usuário
@@ -153,9 +170,14 @@ class SheetService {
         .doc(id)
         .get();
 
+    List<String>? listViewers =
+        await CampaignService.instance.getListPlayersIdsInWorldBySheet(id);
+
     if (doc.data() != null) {
       Sheet sheet = Sheet.fromMap(doc.data()!);
-      if (user.id != uid && !sheet.listSharedIds.contains(uid)) {
+      if (user.id != uid &&
+          !sheet.listSharedIds.contains(uid) &&
+          (listViewers == null || !listViewers.contains(uid))) {
         throw UserNotAuthorizedOnSheetException();
       }
       return sheet;
@@ -195,8 +217,6 @@ class SheetService {
     String result = await _supabase.storage
         .from(SupabasePrefs.storageBucketSheet)
         .upload("bios/$fileName", file);
-
-    print(result);
 
     return result;
   }

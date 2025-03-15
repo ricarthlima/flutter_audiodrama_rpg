@@ -91,7 +91,7 @@ class _ShoppingDialogScreenState extends State<ShoppingDialogScreen> {
               ),
             ),
           if (!isVertical(context)) SizedBox(width: 16),
-          if (!isVertical(context))
+          if (!isVertical(context) && viewModel.isOwner)
             SizedBox(
               width: 150,
               child: SwitchListTile(

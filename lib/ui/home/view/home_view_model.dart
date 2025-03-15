@@ -17,7 +17,12 @@ class HomeViewModel extends ChangeNotifier {
     required String username,
     required Sheet sheet,
   }) {
-    AppRouter().goSheet(context: context, username: username, sheet: sheet);
+    AppRouter().goSheet(
+      context: context,
+      username: username,
+      sheet: sheet,
+      isPushing: true,
+    );
   }
 
   Future<void> onCreateSheetClicked(context) async {
