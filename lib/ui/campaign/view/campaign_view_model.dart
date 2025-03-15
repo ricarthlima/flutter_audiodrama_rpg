@@ -27,11 +27,15 @@ class CampaignViewModel extends ChangeNotifier {
   bool get isEditing => _isEditing;
   set isEditing(bool value) {
     _isEditing = value;
+    if (value == false) {
+      onSave();
+    }
     notifyListeners();
   }
 
   int notificationCount = 0;
   TextEditingController nameController = TextEditingController();
+  TextEditingController descController = TextEditingController();
 
   onInitialize() async {
     if (campaignId != null) {
@@ -39,6 +43,7 @@ class CampaignViewModel extends ChangeNotifier {
       campaign = await CampaignService.instance.getCampaignById(campaignId!);
       if (campaign != null) {
         nameController.text = campaign!.name ?? "";
+        descController.text = campaign!.description ?? "";
       }
       getSheetsByCampaign();
       isLoading = false;
@@ -48,7 +53,9 @@ class CampaignViewModel extends ChangeNotifier {
   onSave() async {
     if (campaign != null) {
       campaign!.name = nameController.text;
+      campaign!.description = descController.text;
       CampaignService.instance.saveCampaign(campaign!);
+      notifyListeners();
     }
   }
 

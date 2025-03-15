@@ -146,7 +146,7 @@ class CampaignService {
     throw CampaignIdNotFoundException();
   }
 
-  saveCampaign(Campaign campaign) async {
+  Future<void> saveCampaign(Campaign campaign) async {
     await FirebaseFirestore.instance
         .collection("${releaseCollection}campaigns")
         .doc(campaign.id)

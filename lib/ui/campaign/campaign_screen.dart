@@ -147,7 +147,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
                     )
                 ],
               ),
-              Text(campaignVM.campaign!.description ?? ""),
+              _getDescriptionWidget(campaignVM),
               SizedBox(
                 height: 64,
                 width: width(context) * 0.75,
@@ -192,6 +192,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
                       fontSize: isVertical(context) ? 18 : 48,
                       fontFamily: FontFamily.sourceSerif4,
                     ),
+                    maxLength: 40,
                   ),
                 ),
               )
@@ -205,6 +206,29 @@ class _CampaignScreenState extends State<CampaignScreen> {
                 ),
               ),
       ),
+    );
+  }
+
+  Widget _getDescriptionWidget(CampaignViewModel campaignVM) {
+    return AnimatedSwitcher(
+      duration: Duration(seconds: 1),
+      child: (campaignVM.isEditing)
+          ? ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: width(context) * 0.8,
+                minWidth: width(context) * 0.5,
+              ),
+              child: IntrinsicWidth(
+                child: TextField(
+                  controller: campaignVM.descController,
+                  maxLength: 200,
+                ),
+              ),
+            )
+          : Text(
+              campaignVM.campaign!.description ?? "...",
+              overflow: TextOverflow.ellipsis,
+            ),
     );
   }
 
