@@ -2,10 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/components/move_sheet_to_campaign_dialog.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
 import 'package:provider/provider.dart';
 import '../../../domain/models/sheet_model.dart';
 import '../../_core/components/image_dialog.dart';
-import '../../_core/helpers.dart';
 import '../view/home_view_model.dart';
 
 class HomeListItemWidget extends StatelessWidget {
@@ -20,6 +21,7 @@ class HomeListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<HomeViewModel>(context);
+    final homeSheetVM = Provider.of<HomeSheetViewModel>(context);
     return ListTile(
       leading: (sheet.imageUrl != null)
           ? InkWell(
@@ -55,7 +57,12 @@ class HomeListItemWidget extends StatelessWidget {
               spacing: 8,
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    showMoveSheetToCampaignDialog(
+                      context: context,
+                      sheet: sheet,
+                    );
+                  },
                   iconSize: (isVertical(context)) ? 24 : 32,
                   tooltip: "Mover para campanha",
                   icon: Icon(Icons.move_down_rounded),
@@ -82,7 +89,7 @@ class HomeListItemWidget extends StatelessWidget {
               ],
             )
           : null,
-      subtitle: Text(getBaseLevel(sheet.baseLevel)),
+      subtitle: Text(homeSheetVM.getWorldName(sheet)),
       onTap: () {
         viewModel.goToSheet(
           context,

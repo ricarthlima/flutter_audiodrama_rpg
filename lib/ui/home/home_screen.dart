@@ -61,11 +61,15 @@ class _HomeScreenState extends State<HomeScreen> {
             index: HomeSubPages.values.indexOf(homeViewModel.currentPage),
             children: [
               // Personagens
-              HomeListSheetsWidget(
-                title: "Meus Personagens",
-                listSheets: homeSheetViewModel.listSheets,
-                username: homeViewModel.currentAppUser.username!,
-              ),
+              (homeSheetViewModel.isLoading)
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : HomeListSheetsWidget(
+                      title: "Meus Personagens",
+                      listSheets: homeSheetViewModel.listSheets,
+                      username: homeViewModel.currentAppUser.username!,
+                    ),
               // Campanhas
               HomeCampaignScreen(),
               Center(child: Text("Ainda não implementado")),

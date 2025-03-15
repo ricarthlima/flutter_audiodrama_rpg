@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
+import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
 
 import '../../../data/services/sheet_service.dart';
@@ -74,6 +77,21 @@ class HomeViewModel extends ChangeNotifier {
   set currentPage(HomeSubPages value) {
     _currentPage = value;
     notifyListeners();
+  }
+
+  Future<void> saveCampaignSheet({
+    required String campaignId,
+    required String sheetId,
+  }) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    await CampaignService.instance.saveCampaignSheet(
+      campaignSheet: CampaignSheet(
+        userId: uid,
+        campaignId: campaignId,
+        sheetId: sheetId,
+      ),
+    );
   }
 }
 
