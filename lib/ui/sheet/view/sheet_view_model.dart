@@ -87,6 +87,8 @@ class SheetViewModel extends ChangeNotifier {
   updateCredentials({String? id, String? username}) {
     this.id = id ?? this.id;
     this.username = username ?? this.username;
+    isEditing = false;
+    notifyListeners();
   }
 
   closeFab() {
