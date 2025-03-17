@@ -33,14 +33,23 @@ class BioWidget extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Expanded(
-                  child: TextFormField(
-                    controller: sheetViewModel.bioEditingController(),
-                    maxLines: null,
-                    expands: true,
-                    enabled: sheetViewModel.isOwner,
+                if (sheetViewModel.isOwner)
+                  Expanded(
+                    child: TextFormField(
+                      controller: sheetViewModel.bioEditingController(),
+                      maxLines: null,
+                      expands: true,
+                      enabled: sheetViewModel.isOwner,
+                    ),
                   ),
-                ),
+                if (!sheetViewModel.isOwner)
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: SelectableText(
+                        sheetViewModel.bioEditingController().text,
+                      ),
+                    ),
+                  ),
                 if (sheetViewModel.isOwner)
                   AnimatedSwitcher(
                     duration: Duration(milliseconds: 750),

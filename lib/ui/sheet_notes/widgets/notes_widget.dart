@@ -21,14 +21,21 @@ class NotesWidget extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Expanded(
-            child: TextFormField(
-              controller: sheetViewModel.notesTextController(),
-              maxLines: null,
-              expands: true,
-              enabled: sheetViewModel.isOwner,
+          if (sheetViewModel.isOwner)
+            Expanded(
+              child: TextFormField(
+                controller: sheetViewModel.notesTextController(),
+                maxLines: null,
+                expands: true,
+              ),
             ),
-          ),
+          if (!sheetViewModel.isOwner)
+            Expanded(
+              child: SingleChildScrollView(
+                child:
+                    SelectableText(sheetViewModel.notesTextController().text),
+              ),
+            ),
           if (sheetViewModel.isOwner)
             AnimatedSwitcher(
               duration: Duration(milliseconds: 750),
