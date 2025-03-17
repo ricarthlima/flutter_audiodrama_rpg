@@ -129,9 +129,9 @@ class HomeListItemWidget extends StatelessWidget {
           children: [
             if (isShowingByCampaign && appUser != null)
               Text(appUser!.username!),
-            Divider(thickness: 0.2),
+            // if (appUser != null) Divider(thickness: 0.2),
             Row(
-              spacing: 8,
+              spacing: 4,
               children: [
                 Text(
                   "Experiência:",
@@ -140,16 +140,18 @@ class HomeListItemWidget extends StatelessWidget {
                 Text(getBaseLevel(sheet.baseLevel)),
               ],
             ),
-            Row(
-              spacing: 8,
-              children: [
-                Text(
-                  "Na campanha:",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(homeSheetVM.getWorldName(context: context, sheet: sheet)),
-              ],
-            ),
+            if (!isShowingByCampaign)
+              Row(
+                spacing: 4,
+                children: [
+                  Text(
+                    "Na campanha:",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                      homeSheetVM.getWorldName(context: context, sheet: sheet)),
+                ],
+              ),
           ],
         ),
       ),
