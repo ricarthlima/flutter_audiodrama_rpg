@@ -6,6 +6,7 @@ import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/list_actions_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/models/list_action.dart';
 import '../../_core/widgets/loading_widget.dart';
 import '../widgets/sheet_not_found_widget.dart';
 
@@ -126,13 +127,13 @@ class _SheetWorksDialogState extends State<SheetWorksDialog> {
             runSpacing: 32,
             children: (!settingsProvider.showingOnlyMyWorks && !widget.isPopup)
                 ? List.generate(
-                    ActionDAO.instance.mapWorks.keys.length,
+                    ActionDAO.instance.getListWorks().length,
                     (index) {
-                      String key =
-                          ActionDAO.instance.mapWorks.keys.toList()[index];
+                      ListAction currentListWork =
+                          ActionDAO.instance.getListWorks()[index];
                       return ListActionsWidget(
-                        name: key,
-                        listActions: ActionDAO.instance.getListWorksByKey(key),
+                        name: currentListWork.name,
+                        listActions: currentListWork.listActions,
                         isEditing: sheetViewModel.isEditing,
                         isWork: true,
                       );
@@ -144,7 +145,8 @@ class _SheetWorksDialogState extends State<SheetWorksDialog> {
                       String key = sheetViewModel.getWorkIds()[index];
                       return ListActionsWidget(
                         name: key,
-                        listActions: ActionDAO.instance.getListWorksByKey(key),
+                        listActions:
+                            ActionDAO.instance.getActionsByGroupName(key),
                         isEditing: sheetViewModel.isEditing,
                         isWork: true,
                       );

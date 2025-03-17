@@ -10,8 +10,9 @@ class ActionTemplate {
   bool isPreparation;
   bool isReaction;
   bool isCollective;
+  bool isWork;
 
-  String? work;
+  bool enabled;
 
   ActionTemplate({
     required this.id,
@@ -22,7 +23,8 @@ class ActionTemplate {
     required this.isPreparation,
     required this.isReaction,
     required this.isCollective,
-    this.work,
+    required this.isWork,
+    required this.enabled,
   });
 
   ActionTemplate copyWith({
@@ -34,7 +36,8 @@ class ActionTemplate {
     bool? isPreparation,
     bool? isReaction,
     bool? isCollective,
-    String? work,
+    bool? isWork,
+    bool? enabled,
   }) {
     return ActionTemplate(
       id: id ?? this.id,
@@ -45,7 +48,8 @@ class ActionTemplate {
       isPreparation: isPreparation ?? this.isPreparation,
       isReaction: isReaction ?? this.isReaction,
       isCollective: isCollective ?? this.isCollective,
-      work: work ?? this.work,
+      isWork: isWork ?? this.isWork,
+      enabled: enabled ?? this.enabled,
     );
   }
 
@@ -59,7 +63,8 @@ class ActionTemplate {
       'isPreparation': isPreparation,
       'isReaction': isReaction,
       'isCollective': isCollective,
-      'work': work,
+      'isWork': isWork,
+      'enabled': enabled,
     };
   }
 
@@ -74,7 +79,8 @@ class ActionTemplate {
       isReaction: map['isReaction'] as bool,
       isCollective:
           (map['isCollective'] != null) ? (map['isCollective'] as bool) : false,
-      work: map['work'],
+      isWork: map['isWork'],
+      enabled: map['enabled'],
     );
   }
 
@@ -85,7 +91,7 @@ class ActionTemplate {
 
   @override
   String toString() {
-    return 'ActionTemplate(id: $id, name: $name, description: $description, isFree: $isFree, isResisted: $isResisted, isPreparation: $isPreparation, isReaction: $isReaction)';
+    return 'Action([$enabled)] - $name';
   }
 
   @override
@@ -100,7 +106,8 @@ class ActionTemplate {
         other.isPreparation == isPreparation &&
         other.isReaction == isReaction &&
         other.isCollective == isCollective &&
-        other.work == work;
+        other.enabled == enabled &&
+        other.isWork == isWork;
   }
 
   @override
@@ -113,6 +120,7 @@ class ActionTemplate {
         isPreparation.hashCode ^
         isReaction.hashCode ^
         isCollective.hashCode ^
-        work.hashCode;
+        enabled.hashCode ^
+        isWork.hashCode;
   }
 }

@@ -9,6 +9,7 @@ import 'package:flutter_rpg_audiodrama/data/daos/condition_dao.dart';
 import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/action_lore.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/list_action.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/conditions_dialog.dart';
@@ -431,9 +432,14 @@ class SheetViewModel extends ChangeNotifier {
   List<String> getWorkIds() {
     List<String> result = [];
     for (ActionValue ac in listWorks) {
-      ActionTemplate action = ActionDAO.instance.getActionById(ac.actionId)!;
-      if (!result.contains(action.work)) {
-        result.add(action.work ?? "");
+      List<ListAction> listAllWorks = ActionDAO.instance.getListWorks();
+
+      for (ListAction la in listAllWorks) {
+        if (la.listActions.where((e) => e.id == ac.actionId).isNotEmpty) {
+          if (!result.contains(la.name)) {
+            result.add(la.name);
+          }
+        }
       }
     }
     return result;
@@ -626,8 +632,20 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   List<ActionValue> getActionsValuesWithWorks() {
-    return listActionValue.map((e) => e).toList() +
+    // TODO: A enebalcencia da action devia ser por campanha
+    List<ActionValue> listAC = listActionValue.map((e) => e).toList() +
         listWorks.map((e) => e).toList();
+
+    List<String> listAllEnabled = ActionDAO.instance
+        .getAll()
+        .where((e) => e.enabled)
+        .toList()
+        .map((e) => e.id)
+        .toList();
+
+    listAC.removeWhere((e) => !listAllEnabled.contains(e.actionId));
+
+    return listAC;
   }
 
   bool get isOwner {

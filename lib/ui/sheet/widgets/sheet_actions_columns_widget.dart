@@ -24,27 +24,27 @@ class SheetActionsColumnsWidget extends StatelessWidget {
             ListActionsWidget(
               name: "Ações Básicas",
               isEditing: viewModel.isEditing,
-              listActions: ActionDAO.instance.listBasicActions,
+              listActions: ActionDAO.instance.getBasics(),
             ),
             ListActionsWidget(
               name: "Ações de Força",
               isEditing: viewModel.isEditing,
-              listActions: ActionDAO.instance.listStrengthActions,
+              listActions: ActionDAO.instance.getStrength(),
             ),
             ListActionsWidget(
               name: "Ações de Agilidade",
               isEditing: viewModel.isEditing,
-              listActions: ActionDAO.instance.listAgilityActions,
+              listActions: ActionDAO.instance.getAgility(),
             ),
             ListActionsWidget(
               name: "Ações de Intelecto",
               isEditing: viewModel.isEditing,
-              listActions: ActionDAO.instance.listIntellectActions,
+              listActions: ActionDAO.instance.getIntellect(),
             ),
             ListActionsWidget(
               name: "Ações Sociais",
               isEditing: viewModel.isEditing,
-              listActions: ActionDAO.instance.listSocialActions,
+              listActions: ActionDAO.instance.getSocial(),
             ),
           ],
         ),

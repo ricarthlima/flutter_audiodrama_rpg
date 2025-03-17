@@ -49,9 +49,11 @@ class ListActionsWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: List.generate(
-                listActions.length,
+                // TODO: Ações ativadas por padrão config de campanha
+                listActions.where((e) => e.enabled).length,
                 (index) {
-                  ActionTemplate action = listActions[index];
+                  ActionTemplate action =
+                      listActions.where((e) => e.enabled).toList()[index];
                   return ActionWidget(
                     action: action,
                     isWork: isWork,
