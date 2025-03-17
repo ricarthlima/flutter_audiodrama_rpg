@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/helpers.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/move_sheet_to_campaign_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
 import 'package:provider/provider.dart';
@@ -29,27 +30,43 @@ class HomeListItemWidget extends StatelessWidget {
     final viewModel = Provider.of<HomeViewModel>(context);
     final homeSheetVM = Provider.of<HomeSheetViewModel>(context);
     return ListTile(
-      leading: (sheet.imageUrl != null)
-          ? InkWell(
-              onTap: () {
-                showImageDialog(
-                  context: context,
-                  imageUrl: sheet.imageUrl!,
-                );
-              },
-              child: ClipOval(
-                child: Image.network(
-                  sheet.imageUrl!,
-                  width: isVertical(context) ? 26 : 40,
-                  height: isVertical(context) ? 26 : 40,
-                  fit: BoxFit.cover,
+      leading: SizedBox(
+        height: isVertical(context) ? 32 : 64,
+        width: isVertical(context) ? 32 : 64,
+        child: (sheet.imageUrl != null)
+            ? InkWell(
+                onTap: () {
+                  showImageDialog(
+                    context: context,
+                    imageUrl: sheet.imageUrl!,
+                  );
+                },
+                child: Container(
+                  decoration: isVertical(context)
+                      ? null
+                      : BoxDecoration(
+                          border: Border.all(width: 3, color: Colors.white),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                  height: isVertical(context) ? 32 : 64,
+                  width: isVertical(context) ? 32 : 64,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Image.network(
+                      sheet.imageUrl!,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                      height: isVertical(context) ? 32 : 64,
+                      width: isVertical(context) ? 32 : 64,
+                    ),
+                  ),
                 ),
+              )
+            : Icon(
+                Icons.feed,
+                size: isVertical(context) ? 26 : 40,
               ),
-            )
-          : Icon(
-              Icons.feed,
-              size: isVertical(context) ? 26 : 40,
-            ),
+      ),
       title: Text(
         sheet.characterName,
         style: TextStyle(
@@ -103,16 +120,39 @@ class HomeListItemWidget extends StatelessWidget {
               tooltip: "Duplicar",
               icon: Icon(Icons.copy),
             ),
-      subtitle: isShowingByCampaign
-          ? (appUser == null)
-              ? null
-              : Text(appUser!.username!)
-          : Text(
-              homeSheetVM.getWorldName(
-                context: context,
-                sheet: sheet,
-              ),
+      subtitle: Opacity(
+        opacity: 0.90,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (isShowingByCampaign && appUser != null)
+              Text(appUser!.username!),
+            Divider(thickness: 0.2),
+            Row(
+              spacing: 8,
+              children: [
+                Text(
+                  "Experiência:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(getBaseLevel(sheet.baseLevel)),
+              ],
             ),
+            Row(
+              spacing: 8,
+              children: [
+                Text(
+                  "Na campanha:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(homeSheetVM.getWorldName(context: context, sheet: sheet)),
+              ],
+            ),
+          ],
+        ),
+      ),
       onTap: () {
         viewModel.goToSheet(
           context,

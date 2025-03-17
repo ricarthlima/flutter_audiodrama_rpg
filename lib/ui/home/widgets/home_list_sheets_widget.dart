@@ -103,6 +103,18 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
                           .compareTo(b.sheet.characterName),
                     ),
                     GenericFilterOrderer<_SheetCampaign>(
+                      label: "Por experiência",
+                      iconAscending: Icons.military_tech_outlined,
+                      iconDescending: Icons.military_tech_outlined,
+                      orderFunction: (a, b) {
+                        int c = a.sheet.baseLevel.compareTo(b.sheet.baseLevel);
+                        return (c != 0)
+                            ? c
+                            : a.sheet.characterName
+                                .compareTo(b.sheet.characterName);
+                      },
+                    ),
+                    GenericFilterOrderer<_SheetCampaign>(
                       label: "Por campanha",
                       iconAscending: Icons.local_florist_outlined,
                       iconDescending: Icons.local_florist_outlined,
@@ -113,7 +125,7 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
                             : a.sheet.characterName
                                 .compareTo(b.sheet.characterName);
                       },
-                    )
+                    ),
                   ],
                   textExtractor: (p0) => p0.sheet.characterName,
                   enableSearch: true,
@@ -128,6 +140,7 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
             if (widget.listSheets.isNotEmpty)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 6,
                 children: List.generate(
                   listSheetsVisualization.length,
                   (index) {

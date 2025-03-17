@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 
 class CompactableButton extends StatefulWidget {
   final CompactableButtonController controller;
@@ -57,7 +58,8 @@ class _CompactableButtonState extends State<CompactableButton> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: SizedBox(
-                  width: 32 + (value * 243),
+                  width: ((isVertical(context)) ? 0 : 32) +
+                      (value * ((isVertical(context)) ? 275 : 243)),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,

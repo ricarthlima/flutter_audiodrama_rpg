@@ -3,11 +3,11 @@ String getBaseLevel(int baseLevel) {
     case 0:
       return "Inexperiente";
     case 1:
-      return "Mediocre";
+      return "Capaz";
     case 2:
-      return "Vivência";
-    case 3:
       return "Experiente";
+    case 3:
+      return "Mestre";
   }
   return "";
 }

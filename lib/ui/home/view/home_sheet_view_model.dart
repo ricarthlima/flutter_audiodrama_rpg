@@ -31,6 +31,6 @@ class HomeSheetViewModel extends ChangeNotifier {
       return campaign.name!;
     }
 
-    return "Sem mundo";
+    return "Sem campanha";
   }
 }

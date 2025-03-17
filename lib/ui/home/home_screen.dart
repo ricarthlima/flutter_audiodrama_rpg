@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/version.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_app_bar.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
@@ -45,11 +46,12 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               HomeDrawer(),
-              VerticalDivider(
-                thickness: 0.1,
-                indent: 0,
-                endIndent: 0,
-              ),
+              if (!isVertical(context))
+                VerticalDivider(
+                  thickness: 0.1,
+                  indent: 0,
+                  endIndent: 0,
+                ),
             ],
           ),
         ],

@@ -227,19 +227,19 @@ class _SheetScreenState extends State<SheetScreen> {
                                     items: [
                                       DropdownMenuItem(
                                         value: 0,
-                                        child: Text("Inexperiente"),
+                                        child: Text(getBaseLevel(0)),
                                       ),
                                       DropdownMenuItem(
                                         value: 1,
-                                        child: Text("Mediocre"),
+                                        child: Text(getBaseLevel(1)),
                                       ),
                                       DropdownMenuItem(
                                         value: 2,
-                                        child: Text("Vivência"),
+                                        child: Text(getBaseLevel(2)),
                                       ),
                                       DropdownMenuItem(
                                         value: 3,
-                                        child: Text("Experiente"),
+                                        child: Text(getBaseLevel(3)),
                                       ),
                                     ],
                                     onChanged: (value) {

@@ -24,7 +24,11 @@ class HomeDrawer extends StatelessWidget {
       child: AnimatedContainer(
         duration: Duration(milliseconds: 350),
         curve: Curves.ease,
-        width: (homeViewModel.isDrawerClosed) ? 48 : 275,
+        width: (homeViewModel.isDrawerClosed)
+            ? (isVertical(context))
+                ? 0
+                : 48
+            : 275,
         height: height(context),
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         color: Theme.of(context).scaffoldBackgroundColor.withAlpha(245),
