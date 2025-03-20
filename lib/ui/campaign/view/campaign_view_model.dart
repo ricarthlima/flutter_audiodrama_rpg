@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/data/local/local_data_manager.dart';
 import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
 import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
@@ -22,6 +23,7 @@ class CampaignViewModel extends ChangeNotifier {
     campaignId = campaign.id;
     nameController.text = campaign.name ?? "";
     descController.text = campaign.description ?? "";
+    _verifyNewAchievement();
     notifyListeners();
   }
 
@@ -194,5 +196,35 @@ class CampaignViewModel extends ChangeNotifier {
     );
     campaign!.listAchievements[index] = achievement;
     await onSave();
+  }
+
+  List<CampaignAchievement> listNewAchievements = [];
+
+  void _verifyNewAchievement() async {
+    if (!isOwner) {
+      List<String> listMyAch =
+          await LocalDataManager.instance.getAchievementsListIds();
+
+      List<CampaignAchievement> listNewAch = List.from(
+        campaign!.listAchievements.where(
+          (e) => e.listUsers.contains(
+            FirebaseAuth.instance.currentUser!.uid,
+          ),
+        ),
+      );
+
+      listNewAch.removeWhere((e) => listMyAch.contains(e.id));
+
+      if (listNewAch.isNotEmpty) {
+        listNewAchievements = listNewAch;
+        notifyListeners();
+      }
+    }
+  }
+
+  void hasAchievementShowed(CampaignAchievement achievement) async {
+    await LocalDataManager.instance.addAchievement(achievement.id);
+    listNewAchievements.removeWhere((e) => e.id == achievement.id);
+    notifyListeners();
   }
 }

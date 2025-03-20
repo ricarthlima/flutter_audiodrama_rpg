@@ -73,8 +73,8 @@ class CampaignAchievementsScreen extends StatelessWidget {
     }));
     listReturn.add(
       Container(
-        width: 232,
-        height: 232,
+        width: 250,
+        height: 250,
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),

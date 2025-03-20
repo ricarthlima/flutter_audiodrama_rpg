@@ -7,6 +7,7 @@ import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_achievement
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_sheets_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/group_notifications.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -56,7 +57,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
       body: (campaignVM.isLoading)
           ? Center(child: CircularProgressIndicator())
           : (campaignVM.campaign != null && campaignVM.isOwnerOrInvited)
-              ? _buildBodyWithDrawer()
+              ? _buildBodyWithDrawer(campaignVM)
               : Center(
                   child: Text(
                     "Campanha não encontrada.",
@@ -65,7 +66,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
     );
   }
 
-  Widget _buildBodyWithDrawer() {
+  Widget _buildBodyWithDrawer(CampaignViewModel campaignVM) {
     return Stack(
       children: [
         _buildBody(),
@@ -86,6 +87,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
             ),
           ),
         ),
+        GroupNotifications(),
       ],
     );
   }

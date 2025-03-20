@@ -72,8 +72,6 @@ class AppRouter {
       GoRoute(
         path: "/:username/sheet/:sheetId",
         builder: (context, state) {
-          disposeListeners(context);
-
           String id = state.pathParameters["sheetId"] ?? "";
           String username = state.pathParameters["username"] ?? "";
 
@@ -90,8 +88,6 @@ class AppRouter {
       GoRoute(
         path: "/:username/sheet/:sheetId/works",
         builder: (context, state) {
-          disposeListeners(context);
-
           String id = state.pathParameters["sheetId"] ?? "";
           String username = state.pathParameters["username"] ?? "";
 
@@ -106,8 +102,6 @@ class AppRouter {
       GoRoute(
         path: "/campaign/:campaignId",
         builder: (context, state) {
-          disposeListeners(context);
-
           String id = state.pathParameters["campaignId"] ?? "";
 
           // Provider.of<CampaignViewModel>(context).campaignId = id;
@@ -122,8 +116,6 @@ class AppRouter {
       GoRoute(
         path: "/campaign/:campaignId/:subpage",
         builder: (context, state) {
-          disposeListeners(context);
-
           String id = state.pathParameters["campaignId"] ?? "";
           String subPage = state.pathParameters["subpage"] ?? "";
 

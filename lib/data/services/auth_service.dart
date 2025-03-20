@@ -37,7 +37,7 @@ class AuthService {
       base64Image = base64Encode(response.bodyBytes);
 
       // Salvar no SharedPreferences
-      await LocalDataManager().saveImageB64(base64Image);
+      await LocalDataManager.instance.saveImageB64(base64Image);
     } else {
       print('Erro ao baixar a imagem: ${response.statusCode}');
     }

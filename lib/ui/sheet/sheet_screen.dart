@@ -15,6 +15,7 @@ import '../_core/components/image_dialog.dart';
 import '../_core/helpers.dart';
 import '../_core/widgets/loading_widget.dart';
 import '../_core/widgets/named_widget.dart';
+import '../campaign/widgets/group_notifications.dart';
 
 class SheetScreen extends StatefulWidget {
   const SheetScreen({super.key});
@@ -352,7 +353,11 @@ class _SheetScreenState extends State<SheetScreen> {
               },
               icon: Icon(Icons.image),
             ),
-          )
+          ),
+        Padding(
+          padding: const EdgeInsets.only(right: 80.0),
+          child: GroupNotifications(),
+        ),
       ],
     );
   }

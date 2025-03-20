@@ -13,16 +13,18 @@ class AchievementWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
     return Visibility(
-      visible: !achievement.isHided || campaignVM.isOwner,
+      visible: !achievement.isHided ||
+          campaignVM.isOwner ||
+          isPlayerUnlockedAchievement(),
       child: Container(
-        width: 232,
+        width: 250,
+        constraints: BoxConstraints(minHeight: 250),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: Theme.of(context).textTheme.bodyMedium!.color?.withAlpha(75),
           border: Border.all(
             width: 4,
-            color: (achievement.listUsers
-                    .contains(FirebaseAuth.instance.currentUser!.uid))
+            color: (isPlayerUnlockedAchievement())
                 ? Colors.green
                 : Colors.transparent,
           ),
@@ -33,7 +35,8 @@ class AchievementWidget extends StatelessWidget {
           spacing: 8,
           children: [
             if (achievement.imageUrl == null ||
-                achievement.isImageHided && !campaignVM.isEditing)
+                (achievement.isImageHided && !isPlayerUnlockedAchievement()) &&
+                    !campaignVM.isEditing)
               Center(
                 child: Icon(
                   Icons.star_border,
@@ -41,7 +44,9 @@ class AchievementWidget extends StatelessWidget {
                 ),
               ),
             if (achievement.imageUrl != null &&
-                (!achievement.isImageHided || campaignVM.isEditing))
+                (!achievement.isImageHided ||
+                    campaignVM.isEditing ||
+                    isPlayerUnlockedAchievement()))
               Center(
                 child: InkWell(
                   onTap: () => showImageDialog(
@@ -55,17 +60,21 @@ class AchievementWidget extends StatelessWidget {
                   ),
                 ),
               ),
-            Text(
-              achievement.title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+            Center(
+              child: Text(
+                achievement.title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
             ),
             if (!achievement.isDescriptionHided ||
-                (campaignVM.isOwner && campaignVM.isEditing))
+                (campaignVM.isOwner && campaignVM.isEditing) ||
+                isPlayerUnlockedAchievement())
               Text(achievement.description),
-            if (!campaignVM.isEditing)
+            if (!campaignVM.isEditing && !isPlayerUnlockedAchievement())
               Opacity(
                 opacity: 0.5,
                 child: Row(
@@ -139,5 +148,10 @@ class AchievementWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool isPlayerUnlockedAchievement() {
+    return achievement.listUsers
+        .contains(FirebaseAuth.instance.currentUser!.uid);
   }
 }
