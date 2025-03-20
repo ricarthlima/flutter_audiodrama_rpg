@@ -85,7 +85,7 @@ class CampaignAchievementsScreen extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            "E mais $totalHided conquista${(totalHided > 1) ? 's' : ''} oculta${(totalHided > 1) ? 's' : ''}.",
+            "E mais $totalHided conquista${(totalHided != 1) ? 's' : ''} oculta${(totalHided != 1) ? 's' : ''}.",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 18),
           ),

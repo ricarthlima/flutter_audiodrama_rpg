@@ -107,4 +107,14 @@ class AuthService {
 
     return null;
   }
+
+  Future<List<AppUser>> getUserInfoByListIds({
+    required List<String> listIds,
+  }) async {
+    List<AppUser?> users = await Future.wait(
+      listIds.map((id) => getUserInfosById(userId: id)),
+    );
+
+    return users.whereType<AppUser>().toList();
+  }
 }
