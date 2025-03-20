@@ -7,8 +7,10 @@ import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
 import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../domain/models/sheet_model.dart';
 
@@ -150,5 +152,18 @@ class CampaignViewModel extends ChangeNotifier {
     required bool isHide,
     required bool isHideDescription,
     Uint8List? image,
-  }) async {}
+  }) async {
+    CampaignAchievement achievement = CampaignAchievement(
+      id: Uuid().v7(),
+      title: name,
+      description: description,
+      isHided: isHide,
+      isDescriptionHided: isHideDescription,
+      listUsers: [],
+    );
+
+    campaign!.listAchievements.add(achievement);
+
+    await onSave();
+  }
 }
