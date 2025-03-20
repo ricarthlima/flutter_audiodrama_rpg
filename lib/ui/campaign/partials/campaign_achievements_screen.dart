@@ -49,7 +49,7 @@ class CampaignAchievementsScreen extends StatelessWidget {
   List<Widget> _generateListAchievementsWidget(
       BuildContext context, CampaignViewModel campaignVM) {
     // Dono editando, vê tudo.
-    if (campaignVM.isOwner && campaignVM.isEditing) {
+    if (campaignVM.isOwner) {
       return campaignVM.campaign!.listAchievements.map((achievement) {
         return AchievementWidget(achievement: achievement);
       }).toList();

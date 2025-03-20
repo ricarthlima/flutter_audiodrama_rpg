@@ -32,12 +32,13 @@ class AchievementWidget extends StatelessWidget {
         ),
         padding: EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: 8,
           children: [
             if (achievement.imageUrl == null ||
                 (achievement.isImageHided && !isPlayerUnlockedAchievement()) &&
-                    !campaignVM.isEditing)
+                    !campaignVM.isEditing &&
+                    !isUnlockedToAll(campaignVM))
               Center(
                 child: Icon(
                   Icons.star_border,
@@ -47,7 +48,8 @@ class AchievementWidget extends StatelessWidget {
             if (achievement.imageUrl != null &&
                 (!achievement.isImageHided ||
                     campaignVM.isEditing ||
-                    isPlayerUnlockedAchievement()))
+                    isPlayerUnlockedAchievement() ||
+                    isUnlockedToAll(campaignVM)))
               Center(
                 child: InkWell(
                   onTap: () => showImageDialog(
@@ -73,7 +75,8 @@ class AchievementWidget extends StatelessWidget {
             ),
             if (!achievement.isDescriptionHided ||
                 (campaignVM.isOwner && campaignVM.isEditing) ||
-                isPlayerUnlockedAchievement())
+                isPlayerUnlockedAchievement() ||
+                isUnlockedToAll(campaignVM))
               Text(achievement.description),
             if (!campaignVM.isEditing && !isPlayerUnlockedAchievement())
               Opacity(
@@ -82,17 +85,27 @@ class AchievementWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   spacing: 16,
                   children: [
-                    if (achievement.isHided)
+                    if (isUnlockedToAll(campaignVM))
+                      Tooltip(
+                        message: "Desbloqueado para todas as pessoas",
+                        child: Icon(
+                          Icons.emoji_events,
+                          color: Colors.green,
+                        ),
+                      ),
+                    if (achievement.isHided && !isUnlockedToAll(campaignVM))
                       Tooltip(
                         message: "Conquista oculta",
                         child: Icon(Icons.visibility_off),
                       ),
-                    if (achievement.isImageHided)
+                    if (achievement.isImageHided &&
+                        !isUnlockedToAll(campaignVM))
                       Tooltip(
                         message: "Imagem oculta",
                         child: Icon(Icons.image_not_supported_outlined),
                       ),
-                    if (achievement.isDescriptionHided)
+                    if (achievement.isDescriptionHided &&
+                        !isUnlockedToAll(campaignVM))
                       Tooltip(
                         message: "Descrição oculta",
                         child: Icon(Icons.texture_rounded),
@@ -150,14 +163,59 @@ class AchievementWidget extends StatelessWidget {
                   ),
                 ],
               ),
+            if (campaignVM.isOwner && !isUnlockedToAll(campaignVM))
+              ElevatedButton(
+                onPressed: () {
+                  unlockToAllUsers(context, campaignVM);
+                },
+                child: Text("Liberar geral"),
+              ),
           ],
         ),
       ),
     );
   }
 
+  void unlockToAllUsers(
+      BuildContext context, CampaignViewModel campaignVM) async {
+    bool? result = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Liberar para todo mundo?"),
+          content: Text(
+              'Essa ação notificará todas as pessoas com a conquista "${achievement.title}."'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Cancelar"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: Text("Liberar"),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != null && result) {
+      campaignVM.unlockToAllUsers(achievement);
+    }
+  }
+
   bool isPlayerUnlockedAchievement() {
     return achievement.listUsers
         .contains(FirebaseAuth.instance.currentUser!.uid);
+  }
+
+  isUnlockedToAll(CampaignViewModel campaignVM) {
+    List<String> a = achievement.listUsers;
+    List<String> b = campaignVM.campaign!.listIdPlayers;
+    return Set.from(a).containsAll(b) && Set.from(b).containsAll(a);
   }
 }

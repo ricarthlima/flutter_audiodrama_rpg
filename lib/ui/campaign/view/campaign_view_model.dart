@@ -227,4 +227,12 @@ class CampaignViewModel extends ChangeNotifier {
     listNewAchievements.removeWhere((e) => e.id == achievement.id);
     notifyListeners();
   }
+
+  void unlockToAllUsers(CampaignAchievement achievement) async {
+    await updateAchievement(
+      achievement.copyWith(
+        listUsers: campaign!.listIdPlayers,
+      ),
+    );
+  }
 }
