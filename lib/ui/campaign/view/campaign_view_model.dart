@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
@@ -10,6 +8,7 @@ import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../domain/models/sheet_model.dart';
@@ -128,7 +127,7 @@ class CampaignViewModel extends ChangeNotifier {
     }
   }
 
-  onUpdateImage(Uint8List imageBytes) async {
+  onUpdateImage(XFile imageBytes) async {
     if (campaign != null) {
       await CampaignService.instance.updateImage(
         fileImage: imageBytes,
@@ -151,19 +150,41 @@ class CampaignViewModel extends ChangeNotifier {
     required String description,
     required bool isHide,
     required bool isHideDescription,
-    Uint8List? image,
+    required bool isImageHided,
+    XFile? image,
   }) async {
+    String id = Uuid().v7();
+    String? urlImage;
+
+    if (image != null) {
+      urlImage = await CampaignService.instance.uploadImage(
+        file: image,
+        suffix: "achievement-$id",
+        campaignId: campaign!.id,
+      );
+    }
+
     CampaignAchievement achievement = CampaignAchievement(
-      id: Uuid().v7(),
+      id: id,
+      imageUrl: urlImage,
       title: name,
       description: description,
       isHided: isHide,
       isDescriptionHided: isHideDescription,
+      isImageHided: isImageHided,
       listUsers: [],
     );
 
     campaign!.listAchievements.add(achievement);
 
+    await onSave();
+  }
+
+  Future<void> updateAchievement(CampaignAchievement achievement) async {
+    int index = campaign!.listAchievements.indexWhere(
+      (e) => e.id == achievement.id,
+    );
+    campaign!.listAchievements[index] = achievement;
     await onSave();
   }
 }

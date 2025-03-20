@@ -10,3 +10,7 @@ void openPopup(String subdomain, {String? name}) {
     'width=400,height=800,scrollbars=no,resizable=no',
   );
 }
+
+openUrl(String url) {
+  html.window.open(url, "");
+}

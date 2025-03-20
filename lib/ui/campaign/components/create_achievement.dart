@@ -1,7 +1,6 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/app_colors.dart';
@@ -29,11 +28,12 @@ class _CreateAchievementDialog extends StatefulWidget {
 class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
   final formKey = GlobalKey<FormState>();
 
-  Uint8List? image;
+  XFile? image;
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
   bool isHide = false;
   bool isHideDescription = true;
+  bool isImageHided = false;
 
   bool isLoading = false;
 
@@ -78,7 +78,24 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   (image != null)
-                      ? Image.memory(image!)
+                      ? SizedBox(
+                          height: 300,
+                          child: FutureBuilder(
+                            future: image!.readAsBytes(),
+                            builder: (context, snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.none:
+                                case ConnectionState.waiting:
+                                case ConnectionState.active:
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                case ConnectionState.done:
+                                  return Image.memory(snapshot.data!);
+                              }
+                            },
+                          ),
+                        )
                       : SizedBox(
                           height: 128,
                           width: 128,
@@ -126,6 +143,17 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
                     ),
                   ),
                   CheckboxListTile(
+                    title: Text("Esconder imagem"),
+                    value: isImageHided,
+                    enabled: !isHide,
+                    contentPadding: EdgeInsets.zero,
+                    onChanged: (value) {
+                      setState(() {
+                        isImageHided = !isImageHided;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
                     title: Text("Esconder descrição"),
                     value: isHideDescription,
                     enabled: !isHide,
@@ -144,6 +172,7 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
                       setState(() {
                         isHide = !isHide;
                         if (isHide) {
+                          isImageHided = true;
                           isHideDescription = true;
                         }
                       });
@@ -185,6 +214,8 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
             description: description,
             isHide: isHide,
             isHideDescription: isHideDescription,
+            image: image,
+            isImageHided: isImageHided,
           );
 
       if (!mounted) return;

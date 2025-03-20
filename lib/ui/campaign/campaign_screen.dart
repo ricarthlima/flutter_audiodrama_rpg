@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
@@ -9,6 +7,7 @@ import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_achievement
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_sheets_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../_core/app_colors.dart';
@@ -117,58 +116,61 @@ class _CampaignScreenState extends State<CampaignScreen> {
           ),
         Padding(
           padding: const EdgeInsets.only(top: 72, left: 32, right: 32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                spacing: 16,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _getNameWidget(campaignVM),
-                  if (campaignVM.isEditing)
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => _onUploadImagePressed(campaignVM),
-                          tooltip: "Alterar imagem",
-                          iconSize: 32,
-                          icon: Icon(Icons.image_outlined),
-                        ),
-                        if (campaignVM.campaign!.imageBannerUrl != null)
-                          IconButton(
-                            onPressed: () => campaignVM.onRemoveImage(),
-                            tooltip: "Remover imagem",
-                            iconSize: 32,
-                            icon: Icon(
-                              Icons.remove,
-                              color: AppColors.red,
-                            ),
-                          ),
-                      ],
-                    )
-                ],
-              ),
-              _getDescriptionWidget(campaignVM),
-              SizedBox(
-                height: 64,
-                width: width(context) * 0.75,
-                child: Divider(
-                  thickness: 0.5,
-                ),
-              ),
-              SizedBox(
-                width: width(context) - 100,
-                child: IndexedStack(
-                  index:
-                      CampaignSubPages.values.indexOf(campaignVM.currentPage),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  spacing: 16,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Sheets
-                    CampaignSheetsScreen(),
-                    CampaignAchievementsScreen(),
+                    _getNameWidget(campaignVM),
+                    if (campaignVM.isEditing)
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => _onUploadImagePressed(campaignVM),
+                            tooltip: "Alterar imagem",
+                            iconSize: 32,
+                            icon: Icon(Icons.image_outlined),
+                          ),
+                          if (campaignVM.campaign!.imageBannerUrl != null)
+                            IconButton(
+                              onPressed: () => campaignVM.onRemoveImage(),
+                              tooltip: "Remover imagem",
+                              iconSize: 32,
+                              icon: Icon(
+                                Icons.remove,
+                                color: AppColors.red,
+                              ),
+                            ),
+                        ],
+                      )
                   ],
                 ),
-              )
-            ],
+                _getDescriptionWidget(campaignVM),
+                SizedBox(
+                  height: 64,
+                  width: width(context) * 0.75,
+                  child: Divider(
+                    thickness: 0.5,
+                  ),
+                ),
+                SizedBox(
+                  width: width(context) - 100,
+                  child: IndexedStack(
+                    index:
+                        CampaignSubPages.values.indexOf(campaignVM.currentPage),
+                    children: [
+                      // Sheets
+                      CampaignSheetsScreen(),
+                      CampaignAchievementsScreen(),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 64),
+              ],
+            ),
           ),
         ),
       ],
@@ -235,10 +237,10 @@ class _CampaignScreenState extends State<CampaignScreen> {
   }
 
   void _onUploadImagePressed(CampaignViewModel campaignVM) async {
-    Uint8List? imageBytes = await onLoadImageClicked(context: context);
+    XFile? image = await onLoadImageClicked(context: context);
 
-    if (imageBytes != null) {
-      campaignVM.onUpdateImage(imageBytes);
+    if (image != null) {
+      campaignVM.onUpdateImage(image);
     }
   }
 }

@@ -10,6 +10,7 @@ class CampaignAchievement {
   String? imageUrl;
   bool isHided;
   bool isDescriptionHided;
+  bool isImageHided;
   List<String> listUsers;
 
   CampaignAchievement({
@@ -19,6 +20,7 @@ class CampaignAchievement {
     this.imageUrl,
     required this.isHided,
     required this.isDescriptionHided,
+    required this.isImageHided,
     required this.listUsers,
   });
 
@@ -29,6 +31,7 @@ class CampaignAchievement {
     String? imageUrl,
     bool? isHided,
     bool? isDescriptionHided,
+    bool? isImageHided,
     List<String>? listUsers,
   }) {
     return CampaignAchievement(
@@ -38,6 +41,7 @@ class CampaignAchievement {
       imageUrl: imageUrl ?? this.imageUrl,
       isHided: isHided ?? this.isHided,
       isDescriptionHided: isDescriptionHided ?? this.isDescriptionHided,
+      isImageHided: isImageHided ?? this.isDescriptionHided,
       listUsers: listUsers ?? this.listUsers,
     );
   }
@@ -50,6 +54,7 @@ class CampaignAchievement {
       'imageUrl': imageUrl,
       'isHided': isHided,
       'isDescriptionHided': isDescriptionHided,
+      'isImageHided': isImageHided,
       'listUsers': listUsers,
     };
   }
@@ -62,6 +67,7 @@ class CampaignAchievement {
       imageUrl: map['imageUrl'] != null ? map['imageUrl'] as String : null,
       isHided: map['isHided'] as bool,
       isDescriptionHided: map['isDescriptionHided'] as bool,
+      isImageHided: (map["isImageHided"] != null) ? map["isImageHided"] : false,
       listUsers: List<String>.from((map['listUsers'] as List<dynamic>)),
     );
   }
@@ -86,6 +92,7 @@ class CampaignAchievement {
         other.imageUrl == imageUrl &&
         other.isHided == isHided &&
         other.isDescriptionHided == isDescriptionHided &&
+        other.isImageHided == isImageHided &&
         listEquals(other.listUsers, listUsers);
   }
 
@@ -97,6 +104,7 @@ class CampaignAchievement {
         imageUrl.hashCode ^
         isHided.hashCode ^
         isDescriptionHided.hashCode ^
+        isImageHided.hashCode ^
         listUsers.hashCode;
   }
 }

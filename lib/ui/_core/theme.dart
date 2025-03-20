@@ -23,6 +23,15 @@ class AppTheme {
     dividerTheme: DividerThemeData(
       color: Colors.black,
     ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+        ),
+      ),
+    ),
   );
 
   static ThemeData darkTheme = ThemeData.dark().copyWith(
@@ -37,6 +46,15 @@ class AppTheme {
     appBarTheme: AppBarTheme(elevation: 1, toolbarHeight: 64),
     dividerTheme: DividerThemeData(
       color: Colors.white,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+        ),
+      ),
     ),
   );
 }

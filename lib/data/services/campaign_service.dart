@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_rpg_audiodrama/_core/helpers/generate_access_key.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,7 +24,7 @@ class CampaignService {
     required String name,
     required String description,
     DateTime? nextSession,
-    Uint8List? fileImage,
+    XFile? fileImage,
   }) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     String? imageBannerUrl;
@@ -46,7 +47,11 @@ class CampaignService {
     );
 
     if (fileImage != null) {
-      imageBannerUrl = await uploadImage(fileImage, newCampaign.id);
+      imageBannerUrl = await uploadImage(
+        file: fileImage,
+        suffix: "bio",
+        campaignId: newCampaign.id,
+      );
       newCampaign.imageBannerUrl = imageBannerUrl;
     }
 
@@ -59,12 +64,16 @@ class CampaignService {
   }
 
   Future<void> updateImage({
-    required Uint8List fileImage,
+    required XFile fileImage,
     required Campaign campaign,
   }) async {
     await removeImage(campaign: campaign, needToFirestore: false);
 
-    String imageBannerUrl = await uploadImage(fileImage, campaign.id);
+    String imageBannerUrl = await uploadImage(
+      file: fileImage,
+      suffix: "bio",
+      campaignId: campaign.id,
+    );
     campaign.imageBannerUrl = imageBannerUrl;
 
     await FirebaseFirestore.instance
@@ -74,16 +83,21 @@ class CampaignService {
   }
 
   // Apenas o próprio usuário
-  Future<String> uploadImage(
-    Uint8List file,
-    String campaignId,
-  ) async {
+  Future<String> uploadImage({
+    required XFile file,
+    required String suffix,
+    required String campaignId,
+  }) async {
     String bucket = SupabasePrefs.storageBucketCampaign;
-    String filePath = "public/$campaignId/bio-image-${DateTime.now()}";
+
+    String extension = file.name.split(".").last;
+    String filePath = "public/$campaignId/$suffix-${DateTime.now()}.$extension";
+
+    Uint8List fileBytes = await file.readAsBytes();
 
     await _supabase.storage.from(bucket).uploadBinary(
           filePath,
-          file,
+          fileBytes,
           fileOptions: FileOptions(upsert: true),
         );
 

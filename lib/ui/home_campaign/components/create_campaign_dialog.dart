@@ -1,6 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/app_colors.dart';
@@ -28,7 +27,7 @@ class _CreateCampaignDialog extends StatefulWidget {
 class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
   final formKey = GlobalKey<FormState>();
 
-  Uint8List? image;
+  XFile? image;
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
 
@@ -75,7 +74,24 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   (image != null)
-                      ? Image.memory(image!)
+                      ? SizedBox(
+                          height: 300,
+                          child: FutureBuilder(
+                            future: image!.readAsBytes(),
+                            builder: (context, snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.none:
+                                case ConnectionState.waiting:
+                                case ConnectionState.active:
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                case ConnectionState.done:
+                                  return Image.memory(snapshot.data!);
+                              }
+                            },
+                          ),
+                        )
                       : SizedBox(
                           height: 100,
                           child: Column(
@@ -137,11 +153,11 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
   }
 
   void _onUploadImagePressed() async {
-    onLoadImageClicked(context: context).then((imageBytes) {
-      setState(() {
-        image = imageBytes;
-      });
-    });
+    XFile? imageFile = await onLoadImageClicked(context: context);
+    if (imageFile != null) {
+      image = imageFile;
+    }
+    setState(() {});
   }
 
   void _onCreatePressed() async {

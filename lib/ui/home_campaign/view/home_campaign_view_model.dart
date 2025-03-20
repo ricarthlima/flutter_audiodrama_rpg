@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../domain/models/campaign.dart';
 
@@ -16,7 +17,7 @@ class HomeCampaignViewModel extends ChangeNotifier {
     required BuildContext context,
     required String name,
     required String description,
-    Uint8List? fileImage,
+    XFile? fileImage,
   }) async {
     Campaign campaign = await campaignService.createCampaign(
       name: name,
