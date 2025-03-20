@@ -17,6 +17,14 @@ class CampaignViewModel extends ChangeNotifier {
   Campaign? campaign;
   String? campaignId;
 
+  forceUpdateCampaign(Campaign campaign) {
+    this.campaign = campaign;
+    campaignId = campaign.id;
+    nameController.text = campaign.name ?? "";
+    descController.text = campaign.description ?? "";
+    notifyListeners();
+  }
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   set isLoading(bool value) {

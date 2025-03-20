@@ -41,7 +41,7 @@ class CampaignAchievement {
       imageUrl: imageUrl ?? this.imageUrl,
       isHided: isHided ?? this.isHided,
       isDescriptionHided: isDescriptionHided ?? this.isDescriptionHided,
-      isImageHided: isImageHided ?? this.isDescriptionHided,
+      isImageHided: isImageHided ?? this.isImageHided,
       listUsers: listUsers ?? this.listUsers,
     );
   }

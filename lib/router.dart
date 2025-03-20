@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/auth/login_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/campaign_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_works_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
@@ -30,30 +30,38 @@ class AppRouter {
     routes: [
       GoRoute(
         path: home,
-        builder: (context, state) => HomeScreen(),
+        builder: (context, state) {
+          disposeListeners(context);
+          return HomeScreen();
+        },
       ),
       GoRoute(
         path: "/sheets",
-        builder: (context, state) => HomeScreen(
-          page: HomeSubPages.sheets,
-        ),
+        builder: (context, state) {
+          disposeListeners(context);
+          return HomeScreen(page: HomeSubPages.sheets);
+        },
       ),
       GoRoute(
         path: "/campaigns",
-        builder: (context, state) => HomeScreen(
-          page: HomeSubPages.campaigns,
-        ),
+        builder: (context, state) {
+          disposeListeners(context);
+          return HomeScreen(page: HomeSubPages.campaigns);
+        },
       ),
       GoRoute(
         path: "/profile",
-        builder: (context, state) => HomeScreen(
-          page: HomeSubPages.profile,
-        ),
+        builder: (context, state) {
+          disposeListeners(context);
+          return HomeScreen(page: HomeSubPages.profile);
+        },
       ),
       GoRoute(
         path: "/auth",
         builder: (context, state) => LoginScreen(),
         redirect: (context, state) {
+          disposeListeners(context);
+
           bool loggedIn = FirebaseAuth.instance.currentUser != null;
           if (loggedIn) {
             return home;
@@ -64,6 +72,8 @@ class AppRouter {
       GoRoute(
         path: "/:username/sheet/:sheetId",
         builder: (context, state) {
+          disposeListeners(context);
+
           String id = state.pathParameters["sheetId"] ?? "";
           String username = state.pathParameters["username"] ?? "";
 
@@ -80,6 +90,8 @@ class AppRouter {
       GoRoute(
         path: "/:username/sheet/:sheetId/works",
         builder: (context, state) {
+          disposeListeners(context);
+
           String id = state.pathParameters["sheetId"] ?? "";
           String username = state.pathParameters["username"] ?? "";
 
@@ -94,17 +106,32 @@ class AppRouter {
       GoRoute(
         path: "/campaign/:campaignId",
         builder: (context, state) {
+          disposeListeners(context);
+
           String id = state.pathParameters["campaignId"] ?? "";
-          Provider.of<CampaignViewModel>(context).campaignId = id;
+
+          // Provider.of<CampaignViewModel>(context).campaignId = id;
+          context.read<UserProvider>().initializeCampaign(
+                context: context,
+                campaignId: id,
+              );
+
           return CampaignScreen();
         },
       ),
       GoRoute(
         path: "/campaign/:campaignId/:subpage",
         builder: (context, state) {
+          disposeListeners(context);
+
           String id = state.pathParameters["campaignId"] ?? "";
           String subPage = state.pathParameters["subpage"] ?? "";
-          Provider.of<CampaignViewModel>(context).campaignId = id;
+
+          context.read<UserProvider>().initializeCampaign(
+                context: context,
+                campaignId: id,
+              );
+
           return CampaignScreen(
             subPage: CampaignSubPages.values.firstWhere(
               (e) => e.name == subPage,
@@ -115,6 +142,15 @@ class AppRouter {
       ),
     ],
   );
+
+  static disposeListeners(context) {
+    UserProvider userProvider = Provider.of<UserProvider>(
+      context,
+      listen: false,
+    );
+
+    userProvider.disposeCampaign();
+  }
 
   goHome({required BuildContext context, HomeSubPages? subPage}) {
     if (subPage != null) {

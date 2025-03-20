@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../../data/services/auth_service.dart';
 import '../../data/services/campaign_service.dart';
@@ -21,6 +24,8 @@ class UserProvider extends ChangeNotifier {
   StreamSubscription? _streamMyCampaigns;
   StreamSubscription? _streamInvitedCampaigns;
   StreamSubscription? _streamSheetsCampaigns;
+
+  StreamSubscription? _streamCurrentCampaign;
 
   List<Campaign> get listAllCampaigns {
     return listCampaigns + listCampaignsInvited;
@@ -141,5 +146,32 @@ class UserProvider extends ChangeNotifier {
       }
     }
     return listS;
+  }
+
+  Future<void> initializeCampaign({
+    required BuildContext context,
+    required String campaignId,
+  }) async {
+    _streamCurrentCampaign =
+        CampaignService.instance.getCampaignStreamById(campaignId).listen(
+      (DocumentSnapshot<Map<String, dynamic>> snapshot) {
+        if (snapshot.exists) {
+          if (snapshot.data() != null) {
+            Campaign campaign = Campaign.fromMap(snapshot.data()!);
+            if (context.mounted) {
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                context.read<CampaignViewModel>().forceUpdateCampaign(campaign);
+              });
+            }
+          }
+        }
+      },
+    );
+  }
+
+  Future<void> disposeCampaign() async {
+    if (_streamCurrentCampaign != null) {
+      await _streamCurrentCampaign!.cancel();
+    }
   }
 }

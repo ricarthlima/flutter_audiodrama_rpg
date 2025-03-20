@@ -161,6 +161,14 @@ class CampaignService {
     throw CampaignIdNotFoundException();
   }
 
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getCampaignStreamById(
+      String id) {
+    return FirebaseFirestore.instance
+        .collection("${releaseCollection}campaigns")
+        .doc(id)
+        .snapshots();
+  }
+
   Future<void> saveCampaign(Campaign campaign) async {
     await FirebaseFirestore.instance
         .collection("${releaseCollection}campaigns")
