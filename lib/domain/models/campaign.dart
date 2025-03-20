@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
 
 class Campaign {
   String id;
@@ -16,6 +17,8 @@ class Campaign {
   String? description;
   DateTime? nextSession;
 
+  List<CampaignAchievement> listAchievements;
+
   Campaign({
     required this.id,
     required this.listIdOwners,
@@ -27,6 +30,7 @@ class Campaign {
     this.imageBannerUrl,
     this.description,
     this.nextSession,
+    required this.listAchievements,
   });
 
   Campaign copyWith({
@@ -40,6 +44,7 @@ class Campaign {
     String? imageBannerUrl,
     String? description,
     DateTime? nextSession,
+    List<CampaignAchievement>? listAchievements,
   }) {
     return Campaign(
       id: id ?? this.id,
@@ -52,6 +57,7 @@ class Campaign {
       imageBannerUrl: imageBannerUrl ?? this.imageBannerUrl,
       description: description ?? this.description,
       nextSession: nextSession ?? this.nextSession,
+      listAchievements: listAchievements ?? this.listAchievements,
     );
   }
 
@@ -67,6 +73,7 @@ class Campaign {
       'imageBannerUrl': imageBannerUrl,
       'description': description,
       'nextSession': nextSession?.toString(),
+      'listAchievements': listAchievements.map((e) => e.toMap()).toList(),
     };
   }
 
@@ -87,6 +94,14 @@ class Campaign {
       nextSession: map['nextSession'] != null
           ? DateTime.parse(map['nextSession'])
           : null,
+      listAchievements: (map["listAchievements"] != null)
+          ? List<CampaignAchievement>.from(
+              (map['listAchievements'] as List<dynamic>)
+                  .map<CampaignAchievement>(
+                (x) => CampaignAchievement.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : [],
     );
   }
 
@@ -113,7 +128,8 @@ class Campaign {
         other.name == name &&
         other.imageBannerUrl == imageBannerUrl &&
         other.description == description &&
-        other.nextSession == nextSession;
+        other.nextSession == nextSession &&
+        other.listAchievements == listAchievements;
   }
 
   @override
@@ -127,6 +143,7 @@ class Campaign {
         name.hashCode ^
         imageBannerUrl.hashCode ^
         description.hashCode ^
-        nextSession.hashCode;
+        nextSession.hashCode ^
+        listAchievements.hashCode;
   }
 }

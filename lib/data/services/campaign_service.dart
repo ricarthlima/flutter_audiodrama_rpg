@@ -42,6 +42,7 @@ class CampaignService {
       description: description,
       imageBannerUrl: imageBannerUrl,
       nextSession: nextSession,
+      listAchievements: [],
     );
 
     if (fileImage != null) {

@@ -1,3 +1,4 @@
 enum CampaignSubPages {
   sheets,
+  achievements,
 }

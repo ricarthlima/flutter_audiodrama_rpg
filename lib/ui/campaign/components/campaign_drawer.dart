@@ -48,6 +48,21 @@ class CampaignDrawer extends StatelessWidget {
                     );
                   },
                 ),
+                CompactableButton(
+                  controller: CompactableButtonController(
+                    isCompressed: campaignVM.isDrawerClosed,
+                    isSelected:
+                        campaignVM.currentPage == CampaignSubPages.achievements,
+                  ),
+                  title: "Conquistas",
+                  leadingIcon: Icons.star,
+                  onPressed: () {
+                    campaignVM.currentPage = CampaignSubPages.achievements;
+                    changeURL(
+                      "campaign/${campaignVM.campaign?.id}/${CampaignSubPages.achievements.name}",
+                    );
+                  },
+                ),
               ],
             ),
             //TODO: RollLog

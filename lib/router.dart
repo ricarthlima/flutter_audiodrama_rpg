@@ -100,12 +100,16 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: "/campaign/:campaignId/sheets",
+        path: "/campaign/:campaignId/:subpage",
         builder: (context, state) {
           String id = state.pathParameters["campaignId"] ?? "";
+          String subPage = state.pathParameters["subpage"] ?? "";
           Provider.of<CampaignViewModel>(context).campaignId = id;
           return CampaignScreen(
-            subPage: CampaignSubPages.sheets,
+            subPage: CampaignSubPages.values.firstWhere(
+              (e) => e.name == subPage,
+              orElse: () => CampaignSubPages.sheets,
+            ),
           );
         },
       ),

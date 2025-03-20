@@ -4,9 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
-import 'package:flutter_rpg_audiodrama/domain/exceptions/general_exceptions.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../domain/models/campaign.dart';
 
@@ -28,27 +26,6 @@ class HomeCampaignViewModel extends ChangeNotifier {
 
     if (!context.mounted) return;
     AppRouter().goCampaign(context: context, campaignId: campaign.id);
-  }
-
-  Future<Uint8List?> onLoadImageClicked(BuildContext context) async {
-    ImagePicker picker = ImagePicker();
-
-    XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
-      requestFullMetadata: false,
-    );
-
-    if (image != null) {
-      int sizeInBytes = await image.length();
-
-      if (sizeInBytes >= 2000000) {
-        throw ImageTooLargeException();
-      } else {
-        return await image.readAsBytes();
-      }
-    }
-
-    return null;
   }
 
   Future<void> joinCampaign({required String joinCode}) async {

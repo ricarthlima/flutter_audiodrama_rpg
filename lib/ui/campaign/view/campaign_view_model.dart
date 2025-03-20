@@ -143,4 +143,12 @@ class CampaignViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> onCreateAchievement({
+    required String name,
+    required String description,
+    required bool isHide,
+    required bool isHideDescription,
+    Uint8List? image,
+  }) async {}
 }

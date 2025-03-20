@@ -1,36 +1,39 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/app_colors.dart';
 import '../../_core/utils/load_image.dart';
 import '../../_core/widgets/circular_progress_indicator.dart';
-import '../view/home_campaign_view_model.dart';
 
-showCreateCampaignDialog({required BuildContext context}) {
+showCreateAchievementDialog({required BuildContext context}) {
   return showDialog(
     barrierDismissible: false,
     context: context,
     builder: (context) {
-      return Dialog(child: _CreateCampaignDialog());
+      return Dialog(child: _CreateAchievementDialog());
     },
   );
 }
 
-class _CreateCampaignDialog extends StatefulWidget {
-  const _CreateCampaignDialog();
+class _CreateAchievementDialog extends StatefulWidget {
+  const _CreateAchievementDialog();
 
   @override
-  State<_CreateCampaignDialog> createState() => __CreateCampaignDialogState();
+  State<_CreateAchievementDialog> createState() =>
+      __CreateAchievementDialogState();
 }
 
-class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
+class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
   final formKey = GlobalKey<FormState>();
 
   Uint8List? image;
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
+  bool isHide = false;
+  bool isHideDescription = true;
 
   bool isLoading = false;
 
@@ -45,7 +48,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
       padding: EdgeInsets.all(16),
-      width: 400,
+      width: 300,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,7 +58,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                "Criar nova campanha",
+                "Criar conquista",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -68,7 +71,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
             ],
           ),
           SizedBox(
-            width: 350,
+            width: 300,
             child: Form(
               key: formKey,
               child: Column(
@@ -77,7 +80,8 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
                   (image != null)
                       ? Image.memory(image!)
                       : SizedBox(
-                          height: 100,
+                          height: 128,
+                          width: 128,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -89,7 +93,9 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
                                 icon: const Icon(Icons.upload),
                               ),
                               const Text(
-                                "Insira um banner. (1920x540)",
+                                "Opcionalmente,\ninsira um símbolo.\n(Quadrado, até 1 MB)",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 12),
                               ),
                             ],
                           ),
@@ -99,7 +105,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
                     controller: nameController,
                     maxLength: 40,
                     decoration: const InputDecoration(
-                      label: Text("Nome da campanha"),
+                      label: Text("Nome da conquista"),
                     ),
                     validator: (value) {
                       if (value == null) {
@@ -119,6 +125,30 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
                       label: Text("Breve descrição"),
                     ),
                   ),
+                  CheckboxListTile(
+                    title: Text("Esconder descrição"),
+                    value: isHideDescription,
+                    enabled: !isHide,
+                    contentPadding: EdgeInsets.zero,
+                    onChanged: (value) {
+                      setState(() {
+                        isHideDescription = !isHideDescription;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: Text("Conquista oculta"),
+                    value: isHide,
+                    contentPadding: EdgeInsets.zero,
+                    onChanged: (value) {
+                      setState(() {
+                        isHide = !isHide;
+                        if (isHide) {
+                          isHideDescription = true;
+                        }
+                      });
+                    },
+                  ),
                 ],
               ),
             ),
@@ -129,7 +159,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
             },
             child: (isLoading)
                 ? const CircularProgressIndicatorElevatedButton()
-                : const Text("Crie um novo mundo!"),
+                : const Text("Salvar!"),
           )
         ],
       ),
@@ -137,7 +167,8 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
   }
 
   void _onUploadImagePressed() async {
-    onLoadImageClicked(context: context).then((imageBytes) {
+    onLoadImageClicked(context: context, maxSizeInBytes: 1000000)
+        .then((imageBytes) {
       setState(() {
         image = imageBytes;
       });
@@ -145,29 +176,16 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
   }
 
   void _onCreatePressed() async {
-    HomeCampaignViewModel homeCampaignVM = Provider.of<HomeCampaignViewModel>(
-      context,
-      listen: false,
-    );
-
-    String name = nameController.text;
-    String desc = descController.text;
-
     if (formKey.currentState!.validate()) {
-      setState(() {
-        isLoading = true;
-      });
+      String name = nameController.text;
+      String description = descController.text;
 
-      await homeCampaignVM.createCampaign(
-        context: context,
-        name: name,
-        description: desc,
-        fileImage: image,
-      );
-
-      setState(() {
-        isLoading = false;
-      });
+      await context.read<CampaignViewModel>().onCreateAchievement(
+            name: name,
+            description: description,
+            isHide: isHide,
+            isHideDescription: isHideDescription,
+          );
 
       if (!mounted) return;
       Navigator.pop(context);

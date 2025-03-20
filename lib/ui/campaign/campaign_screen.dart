@@ -5,6 +5,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_appbar.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_drawer.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_achievements_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_sheets_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
@@ -12,8 +13,8 @@ import 'package:provider/provider.dart';
 
 import '../_core/app_colors.dart';
 import '../_core/dimensions.dart';
+import '../_core/utils/load_image.dart';
 import '../_core/widgets/named_widget.dart';
-import '../home_campaign/view/home_campaign_view_model.dart';
 
 class CampaignScreen extends StatefulWidget {
   final CampaignSubPages subPage;
@@ -163,6 +164,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
                   children: [
                     // Sheets
                     CampaignSheetsScreen(),
+                    CampaignAchievementsScreen(),
                   ],
                 ),
               )
@@ -233,12 +235,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
   }
 
   void _onUploadImagePressed(CampaignViewModel campaignVM) async {
-    HomeCampaignViewModel homeCampaignVM = Provider.of<HomeCampaignViewModel>(
-      context,
-      listen: false,
-    );
-
-    Uint8List? imageBytes = await homeCampaignVM.onLoadImageClicked(context);
+    Uint8List? imageBytes = await onLoadImageClicked(context: context);
 
     if (imageBytes != null) {
       campaignVM.onUpdateImage(imageBytes);

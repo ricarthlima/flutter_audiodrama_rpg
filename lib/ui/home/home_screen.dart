@@ -41,7 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Stack(
         children: [
           Padding(
-              padding: EdgeInsets.only(left: 64), child: _buildBody(context)),
+            padding: EdgeInsets.only(left: isVertical(context) ? 0 : 64),
+            child: _buildBody(context),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
