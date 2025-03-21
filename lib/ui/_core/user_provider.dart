@@ -152,6 +152,10 @@ class UserProvider extends ChangeNotifier {
     required BuildContext context,
     required String campaignId,
   }) async {
+    await _streamCurrentCampaign?.cancel();
+
+    final completer = Completer<void>();
+
     _streamCurrentCampaign =
         CampaignService.instance.getCampaignStreamById(campaignId).listen(
       (DocumentSnapshot<Map<String, dynamic>> snapshot) {
@@ -161,12 +165,15 @@ class UserProvider extends ChangeNotifier {
             if (context.mounted) {
               SchedulerBinding.instance.addPostFrameCallback((_) {
                 context.read<CampaignViewModel>().forceUpdateCampaign(campaign);
+                completer.complete();
               });
             }
           }
         }
       },
     );
+
+    return completer.future;
   }
 
   Future<void> disposeCampaign() async {

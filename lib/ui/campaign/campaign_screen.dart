@@ -36,7 +36,6 @@ class _CampaignScreenState extends State<CampaignScreen> {
         context,
         listen: false,
       );
-      campaignVM.onInitialize();
       campaignVM.currentPage = widget.subPage;
 
       Provider.of<UserProvider>(context, listen: false).onInitialize();
@@ -58,11 +57,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
           ? Center(child: CircularProgressIndicator())
           : (campaignVM.campaign != null && campaignVM.isOwnerOrInvited)
               ? _buildBodyWithDrawer(campaignVM)
-              : Center(
-                  child: Text(
-                    "Campanha não encontrada.",
-                  ),
-                ),
+              : Center(child: Text("Campanha não encontrada.")),
     );
   }
 

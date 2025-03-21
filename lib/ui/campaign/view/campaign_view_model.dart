@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/local/local_data_manager.dart';
@@ -16,18 +18,30 @@ import '../../../domain/models/sheet_model.dart';
 
 class CampaignViewModel extends ChangeNotifier {
   Campaign? campaign;
-  String? campaignId;
+  // String? campaignId;
 
-  forceUpdateCampaign(Campaign campaign) {
+  StreamSubscription? sheetsSub;
+
+  forceUpdateCampaign(Campaign campaign) async {
+    isLoading = true;
+
+    if (sheetsSub != null) {
+      await sheetsSub!.cancel();
+    }
+
     this.campaign = campaign;
-    campaignId = campaign.id;
+    // campaignId = campaign.id;
     nameController.text = campaign.name ?? "";
     descController.text = campaign.description ?? "";
-    _verifyNewAchievement();
-    notifyListeners();
+    notificationCount = 0;
+
+    await _verifyNewAchievement();
+    await getSheetsByCampaign();
+
+    isLoading = false;
   }
 
-  bool _isLoading = false;
+  bool _isLoading = true;
   bool get isLoading => _isLoading;
   set isLoading(bool value) {
     _isLoading = value;
@@ -47,19 +61,6 @@ class CampaignViewModel extends ChangeNotifier {
   int notificationCount = 0;
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
-
-  onInitialize() async {
-    if (campaignId != null) {
-      isLoading = true;
-      campaign = await CampaignService.instance.getCampaignById(campaignId!);
-      if (campaign != null) {
-        nameController.text = campaign!.name ?? "";
-        descController.text = campaign!.description ?? "";
-      }
-      getSheetsByCampaign();
-      isLoading = false;
-    }
-  }
 
   onSave() async {
     if (campaign != null) {
@@ -105,13 +106,14 @@ class CampaignViewModel extends ChangeNotifier {
 
   Map<Sheet, AppUser> mapSheetOthers = {};
 
-  getSheetsByCampaign({bool isJustOthers = true}) async {
+  Future<void> getSheetsByCampaign({bool isJustOthers = true}) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     SheetService sheetService = SheetService();
     AuthService authService = AuthService();
 
-    if (campaignId != null) {
-      CampaignService.instance.getStreamCSByCampaign(campaignId!).listen(
+    if (campaign != null) {
+      sheetsSub =
+          CampaignService.instance.getStreamCSByCampaign(campaign!.id).listen(
         (snapshot) async {
           mapSheetOthers = {};
           for (var doc in snapshot.docs) {
@@ -200,7 +202,7 @@ class CampaignViewModel extends ChangeNotifier {
 
   List<CampaignAchievement> listNewAchievements = [];
 
-  void _verifyNewAchievement() async {
+  Future<void> _verifyNewAchievement() async {
     if (!isOwner) {
       List<String> listMyAch =
           await LocalDataManager.instance.getAchievementsListIds();

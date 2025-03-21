@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/circular_progress_indicator.dart';
 import 'package:flutter_rpg_audiodrama/ui/auth/login_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/campaign_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
@@ -104,13 +105,21 @@ class AppRouter {
         builder: (context, state) {
           String id = state.pathParameters["campaignId"] ?? "";
 
-          // Provider.of<CampaignViewModel>(context).campaignId = id;
-          context.read<UserProvider>().initializeCampaign(
-                context: context,
-                campaignId: id,
+          return FutureBuilder(
+            future: context.read<UserProvider>().initializeCampaign(
+                  context: context,
+                  campaignId: id,
+                ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return ScaffoldCenterCPI();
+              }
+              return CampaignScreen(
+                key: ValueKey(id),
+                subPage: CampaignSubPages.sheets,
               );
-
-          return CampaignScreen();
+            },
+          );
         },
       ),
       GoRoute(
@@ -119,16 +128,23 @@ class AppRouter {
           String id = state.pathParameters["campaignId"] ?? "";
           String subPage = state.pathParameters["subpage"] ?? "";
 
-          context.read<UserProvider>().initializeCampaign(
-                context: context,
-                campaignId: id,
+          return FutureBuilder(
+            future: context.read<UserProvider>().initializeCampaign(
+                  context: context,
+                  campaignId: id,
+                ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return ScaffoldCenterCPI();
+              }
+              return CampaignScreen(
+                key: ValueKey(id),
+                subPage: CampaignSubPages.values.firstWhere(
+                  (e) => e.name == subPage,
+                  orElse: () => CampaignSubPages.sheets,
+                ),
               );
-
-          return CampaignScreen(
-            subPage: CampaignSubPages.values.firstWhere(
-              (e) => e.name == subPage,
-              orElse: () => CampaignSubPages.sheets,
-            ),
+            },
           );
         },
       ),

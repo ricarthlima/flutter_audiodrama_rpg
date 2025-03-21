@@ -58,7 +58,7 @@ class HomeViewModel extends ChangeNotifier {
     required BuildContext context,
     required Sheet sheet,
   }) async {
-    String? campaignId = context.read<CampaignViewModel>().campaignId;
+    String? campaignId = context.read<CampaignViewModel>().campaign?.id;
     await sheetService.duplicateSheetToMe(sheet, campaignId);
   }
 

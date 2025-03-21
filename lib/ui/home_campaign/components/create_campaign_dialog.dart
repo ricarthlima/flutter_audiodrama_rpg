@@ -144,7 +144,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
               _onCreatePressed();
             },
             child: (isLoading)
-                ? const CircularProgressIndicatorElevatedButton()
+                ? const CPIElevatedButton()
                 : const Text("Crie um novo mundo!"),
           )
         ],

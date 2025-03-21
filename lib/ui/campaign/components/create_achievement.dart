@@ -186,9 +186,8 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
             onPressed: () {
               _onCreatePressed();
             },
-            child: (isLoading)
-                ? const CircularProgressIndicatorElevatedButton()
-                : const Text("Salvar!"),
+            child:
+                (isLoading) ? const CPIElevatedButton() : const Text("Salvar!"),
           )
         ],
       ),

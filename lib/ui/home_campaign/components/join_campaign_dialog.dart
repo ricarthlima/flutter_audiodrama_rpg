@@ -92,7 +92,7 @@ class __JoinCampaignDialogState extends State<_JoinCampaignDialog> {
               _onJoinPressed();
             },
             child: (isLoading)
-                ? const CircularProgressIndicatorElevatedButton()
+                ? const CPIElevatedButton()
                 : const Text("Ingressar!"),
           ),
         ],

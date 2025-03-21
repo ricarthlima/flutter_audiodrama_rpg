@@ -54,7 +54,7 @@ class CampaignSheetsScreen extends StatelessWidget {
               onPressed: () {
                 context.read<HomeViewModel>().onCreateSheetClicked(
                       context,
-                      campaignId: campaignVM.campaignId,
+                      campaignId: campaignVM.campaign?.id,
                     );
               },
               tooltip: "Criar personagem",
@@ -63,7 +63,7 @@ class CampaignSheetsScreen extends StatelessWidget {
           ),
           Column(
             children: userProvider
-                .getMySheetsByCampaign(campaignVM.campaignId!)
+                .getMySheetsByCampaign(campaignVM.campaign!.id)
                 .map((sheet) => HomeListItemWidget(
                       sheet: sheet,
                       username: userProvider.currentAppUser.username!,
