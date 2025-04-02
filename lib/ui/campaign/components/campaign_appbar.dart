@@ -24,7 +24,8 @@ AppBar? getCampaignAppBar({
         },
         icon: Icon(Icons.arrow_back),
       ),
-      backgroundColor: campaignVM.campaign?.imageBannerUrl != null
+      backgroundColor: campaignVM.campaign?.imageBannerUrl != null &&
+              !campaignVM.isFullscreen
           ? Theme.of(context).scaffoldBackgroundColor.withAlpha(75)
           : null,
       actions: [

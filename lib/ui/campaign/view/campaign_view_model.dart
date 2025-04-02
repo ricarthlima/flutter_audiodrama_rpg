@@ -237,4 +237,8 @@ class CampaignViewModel extends ChangeNotifier {
       ),
     );
   }
+
+  bool get isFullscreen {
+    return currentPage == CampaignSubPages.home && !isEditing;
+  }
 }

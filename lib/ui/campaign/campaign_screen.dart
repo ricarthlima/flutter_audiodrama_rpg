@@ -4,6 +4,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_appbar.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_drawer.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_achievements_screen.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_home_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_sheets_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
@@ -112,54 +113,66 @@ class _CampaignScreenState extends State<CampaignScreen> {
             ),
           ),
         Padding(
-          padding: const EdgeInsets.only(top: 72, left: 32, right: 32),
+          padding: (!campaignVM.isFullscreen)
+              ? EdgeInsets.only(top: 72, left: 32, right: 32)
+              : EdgeInsets.zero,
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  spacing: 16,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _getNameWidget(campaignVM),
-                    if (campaignVM.isEditing)
+                if (!campaignVM.isFullscreen)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Row(
+                        spacing: 16,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          IconButton(
-                            onPressed: () => _onUploadImagePressed(campaignVM),
-                            tooltip: "Alterar imagem",
-                            iconSize: 32,
-                            icon: Icon(Icons.image_outlined),
-                          ),
-                          if (campaignVM.campaign!.imageBannerUrl != null)
-                            IconButton(
-                              onPressed: () => campaignVM.onRemoveImage(),
-                              tooltip: "Remover imagem",
-                              iconSize: 32,
-                              icon: Icon(
-                                Icons.remove,
-                                color: AppColors.red,
-                              ),
-                            ),
+                          _getNameWidget(campaignVM),
+                          if (campaignVM.isEditing)
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () =>
+                                      _onUploadImagePressed(campaignVM),
+                                  tooltip: "Alterar imagem",
+                                  iconSize: 32,
+                                  icon: Icon(Icons.image_outlined),
+                                ),
+                                if (campaignVM.campaign!.imageBannerUrl != null)
+                                  IconButton(
+                                    onPressed: () => campaignVM.onRemoveImage(),
+                                    tooltip: "Remover imagem",
+                                    iconSize: 32,
+                                    icon: Icon(
+                                      Icons.remove,
+                                      color: AppColors.red,
+                                    ),
+                                  ),
+                              ],
+                            )
                         ],
-                      )
-                  ],
-                ),
-                _getDescriptionWidget(campaignVM),
-                SizedBox(
-                  height: 64,
-                  width: width(context) * 0.75,
-                  child: Divider(
-                    thickness: 0.5,
+                      ),
+                      _getDescriptionWidget(campaignVM),
+                      SizedBox(
+                        height: 64,
+                        width: width(context) * 0.75,
+                        child: Divider(
+                          thickness: 0.5,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
                 SizedBox(
-                  width: width(context) - 100,
+                  width: !campaignVM.isFullscreen
+                      ? width(context) - 100
+                      : width(context),
                   child: IndexedStack(
                     index:
                         CampaignSubPages.values.indexOf(campaignVM.currentPage),
                     children: [
                       // Sheets
+                      CampaignHomeScreen(),
                       CampaignSheetsScreen(),
                       CampaignAchievementsScreen(),
                     ],

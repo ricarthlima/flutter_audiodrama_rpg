@@ -36,6 +36,20 @@ class CampaignDrawer extends StatelessWidget {
                 CompactableButton(
                   controller: CompactableButtonController(
                     isCompressed: campaignVM.isDrawerClosed,
+                    isSelected: campaignVM.currentPage == CampaignSubPages.home,
+                  ),
+                  title: "Início",
+                  leadingIcon: Icons.home,
+                  onPressed: () {
+                    campaignVM.currentPage = CampaignSubPages.home;
+                    changeURL(
+                      "campaign/${campaignVM.campaign?.id}/${CampaignSubPages.home.name}",
+                    );
+                  },
+                ),
+                CompactableButton(
+                  controller: CompactableButtonController(
+                    isCompressed: campaignVM.isDrawerClosed,
                     isSelected:
                         campaignVM.currentPage == CampaignSubPages.sheets,
                   ),
