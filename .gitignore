@@ -51,3 +51,5 @@ app.*.map.json
 *.env
 *dotenv.env
 *dotenv
+
+/lib/estrutura.json
