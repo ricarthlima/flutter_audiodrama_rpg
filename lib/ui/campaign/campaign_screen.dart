@@ -120,7 +120,8 @@ class _CampaignScreenState extends State<CampaignScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (!campaignVM.isFullscreen)
+                if (!campaignVM.isFullscreen &&
+                    campaignVM.currentPage != CampaignSubPages.home)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

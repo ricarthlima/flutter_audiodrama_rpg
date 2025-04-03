@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/settings/settings_screen.dart';
 
@@ -29,7 +30,8 @@ AppBar? getCampaignAppBar({
           ? Theme.of(context).scaffoldBackgroundColor.withAlpha(75)
           : null,
       actions: [
-        if (campaignVM.isOwner)
+        if (campaignVM.isOwner &&
+            campaignVM.currentPage != CampaignSubPages.home)
           Row(
             children: [
               Visibility(
@@ -47,12 +49,12 @@ AppBar? getCampaignAppBar({
                   campaignVM.isEditing = !campaignVM.isEditing;
                 },
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text("•"),
+              ),
             ],
           ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text("•"),
-        ),
         IconButton(
           onPressed: () {
             showSettingsDialog(context);
