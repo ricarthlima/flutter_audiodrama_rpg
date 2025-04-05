@@ -32,6 +32,9 @@ class AppTheme {
         ),
       ),
     ),
+    dialogTheme: DialogThemeData(
+      shape: OutlineInputBorder(borderRadius: BorderRadius.zero),
+    ),
   );
 
   static ThemeData darkTheme = ThemeData.dark().copyWith(
@@ -55,6 +58,14 @@ class AppTheme {
           ),
         ),
       ),
+    ),
+    dialogTheme: DialogThemeData(
+      titleTextStyle: TextStyle(
+        fontSize: 16,
+        color: Colors.white,
+        fontFamily: FontFamily.sourceSerif4,
+      ),
+      shape: OutlineInputBorder(borderRadius: BorderRadius.zero),
     ),
   );
 }

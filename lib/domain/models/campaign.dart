@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_vm_model.dart';
 
 class Campaign {
   String id;
@@ -18,6 +19,7 @@ class Campaign {
   DateTime? nextSession;
 
   List<CampaignAchievement> listAchievements;
+  CampaignVisualDataModel visualData;
 
   Campaign({
     required this.id,
@@ -31,6 +33,7 @@ class Campaign {
     this.description,
     this.nextSession,
     required this.listAchievements,
+    required this.visualData,
   });
 
   Campaign copyWith({
@@ -45,6 +48,7 @@ class Campaign {
     String? description,
     DateTime? nextSession,
     List<CampaignAchievement>? listAchievements,
+    CampaignVisualDataModel? visualData,
   }) {
     return Campaign(
       id: id ?? this.id,
@@ -58,6 +62,7 @@ class Campaign {
       description: description ?? this.description,
       nextSession: nextSession ?? this.nextSession,
       listAchievements: listAchievements ?? this.listAchievements,
+      visualData: visualData ?? this.visualData,
     );
   }
 
@@ -74,6 +79,7 @@ class Campaign {
       'description': description,
       'nextSession': nextSession?.toString(),
       'listAchievements': listAchievements.map((e) => e.toMap()).toList(),
+      'visualData': visualData.toMap(),
     };
   }
 
@@ -102,6 +108,9 @@ class Campaign {
               ),
             )
           : [],
+      visualData: (map['visualData'] != null)
+          ? CampaignVisualDataModel.fromMap(map['visualData'])
+          : CampaignVisualDataModel.empty(),
     );
   }
 
@@ -129,7 +138,8 @@ class Campaign {
         other.imageBannerUrl == imageBannerUrl &&
         other.description == description &&
         other.nextSession == nextSession &&
-        other.listAchievements == listAchievements;
+        other.listAchievements == listAchievements &&
+        other.visualData == visualData;
   }
 
   @override
@@ -144,6 +154,7 @@ class Campaign {
         imageBannerUrl.hashCode ^
         description.hashCode ^
         nextSession.hashCode ^
-        listAchievements.hashCode;
+        listAchievements.hashCode ^
+        visualData.hashCode;
   }
 }

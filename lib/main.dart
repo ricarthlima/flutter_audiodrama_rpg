@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/daos/condition_dao.dart';
@@ -57,7 +59,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => StatisticsViewModel()),
         ChangeNotifierProvider(create: (_) => HomeCampaignViewModel()),
         ChangeNotifierProvider(create: (_) => CampaignViewModel()),
-        ChangeNotifierProvider(create: (_) => CampaignVisualNovelViewModel()),
+        ChangeNotifierProvider(
+            create: (_) => CampaignVisualNovelViewModel(campaignId: "")),
       ],
       child: const MainApp(),
     ),
@@ -73,6 +76,7 @@ class MainApp extends StatelessWidget {
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
+      scrollBehavior: const _WebScrollBehavior(),
       routerConfig: AppRouter.router,
       themeMode: themeProvider.themeMode,
       theme: AppTheme.lightTheme,
@@ -87,4 +91,17 @@ class MainApp extends StatelessWidget {
       ],
     );
   }
+}
+
+class _WebScrollBehavior extends MaterialScrollBehavior {
+  const _WebScrollBehavior();
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.touch,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.stylus,
+        PointerDeviceKind.unknown,
+      };
 }

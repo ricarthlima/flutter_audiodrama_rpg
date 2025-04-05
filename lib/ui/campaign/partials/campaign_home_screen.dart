@@ -1,10 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_visual.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/components/image_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_visual_novel_view_model.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
 class CampaignHomeScreen extends StatelessWidget {
@@ -30,12 +34,33 @@ class _CampaignHomeGuest extends StatelessWidget {
   Widget build(BuildContext context) {
     CampaignVisualNovelViewModel visualVM =
         Provider.of<CampaignVisualNovelViewModel>(context);
-    return Center(
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Stack(
-          children: _generateListStack(context, visualVM),
-        ),
+    return SizedBox(
+      width: width(context),
+      height: height(context),
+      child: Stack(
+        children: <Widget>[
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: AnimatedSwitcher(
+                  duration: Duration(
+                      milliseconds: visualVM
+                          .data.transitionBackgroundDurationInMilliseconds),
+                  child: (visualVM.data.backgroundActive == null)
+                      ? Container(
+                          key: ValueKey('empty'),
+                          color: Colors.black,
+                        )
+                      : Image.network(
+                          visualVM.data.backgroundActive!.url,
+                          key: ValueKey(visualVM.data.backgroundActive!.url),
+                          fit: BoxFit.cover,
+                          width: width(context),
+                          height: height(context),
+                        ),
+                ),
+              ),
+            ] +
+            _generateListStack(context, visualVM),
       ),
     );
   }
@@ -46,34 +71,22 @@ class _CampaignHomeGuest extends StatelessWidget {
   ) {
     List<Widget> result = [];
 
-    if (visualVM.backgroundActive != null) {
-      result.add(
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Image.network(
-            visualVM.backgroundActive!.imageUrl,
-            fit: BoxFit.cover,
-          ),
-        ),
-      );
-    }
-
     List<Widget> leftList = [];
-    for (int i = 0; i < visualVM.listLeftActive.length; i++) {
-      CampaignVisual cm = visualVM.listLeftActive[i];
+    for (int i = 0; i < visualVM.data.listLeftActive.length; i++) {
+      CampaignVisual cm = visualVM.data.listLeftActive[i];
       leftList.add(
         Align(
           alignment: Alignment.bottomLeft,
           child: Padding(
             padding: EdgeInsets.only(
-              left: visualVM.visualScale *
+              left: visualVM.data.visualScale *
                   i *
-                  visualVM.distanceFactor *
+                  visualVM.data.distanceFactor *
                   sizeFactor,
             ),
             child: Image.network(
-              cm.imageUrl,
-              width: visualVM.visualScale * sizeFactor,
+              cm.url,
+              width: visualVM.data.visualScale * sizeFactor,
             ),
           ),
         ),
@@ -81,23 +94,23 @@ class _CampaignHomeGuest extends StatelessWidget {
     }
 
     List<Widget> rightList = [];
-    for (int i = 0; i < visualVM.listRightActive.length; i++) {
-      CampaignVisual cm = visualVM.listRightActive[i];
+    for (int i = 0; i < visualVM.data.listRightActive.length; i++) {
+      CampaignVisual cm = visualVM.data.listRightActive[i];
       rightList.add(
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(
             padding: EdgeInsets.only(
-              right: visualVM.visualScale *
+              right: visualVM.data.visualScale *
                   i *
-                  visualVM.distanceFactor *
+                  visualVM.data.distanceFactor *
                   sizeFactor,
             ),
             child: Transform.flip(
               flipX: true,
               child: Image.network(
-                cm.imageUrl,
-                width: visualVM.visualScale * sizeFactor,
+                cm.url,
+                width: visualVM.data.visualScale * sizeFactor,
               ),
             ),
           ),
@@ -119,41 +132,56 @@ class _CampaignHomeOwner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 100.0, left: 32, right: 96),
+      padding: const EdgeInsets.only(top: 32, left: 32, right: 96),
       child: SizedBox(
         width: width(context),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 8,
           children: [
+            _ListSettings(),
+            Divider(thickness: 0.05),
+            SizedBox(),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(
                   flex: 3,
+                  fit: FlexFit.tight,
                   child: _ListCharactersVisual(),
                 ),
                 VerticalDivider(),
-                Flexible(
-                  flex: 6,
-                  child: SizedBox(
-                    width: width(context) * 0.5,
+                Container(
+                  height: 300,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 2,
+                      color: Theme.of(context).textTheme.bodyMedium!.color!,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
                     child: _CampaignHomeGuest(
-                      sizeFactor: 0.5,
+                      sizeFactor: 300 / height(context),
                     ),
                   ),
                 ),
                 VerticalDivider(),
                 Flexible(
                   flex: 3,
+                  fit: FlexFit.tight,
                   child: _ListCharactersVisual(
                     isRight: true,
                   ),
                 ),
               ],
             ),
+            Divider(thickness: 0.05),
             _ListBackgrounds(),
-            Divider(thickness: 0.1),
+            Divider(thickness: 0.05),
             _ListSounds(),
           ],
         ),
@@ -162,63 +190,127 @@ class _CampaignHomeOwner extends StatelessWidget {
   }
 }
 
-class _ListCharactersVisual extends StatelessWidget {
-  final bool isRight;
-  const _ListCharactersVisual({this.isRight = false});
+class _ListSettings extends StatelessWidget {
+  const _ListSettings();
 
   @override
   Widget build(BuildContext context) {
     CampaignVisualNovelViewModel visualVM =
         Provider.of<CampaignVisualNovelViewModel>(context);
-    return SizedBox(
-      height: 400,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (!isRight)
-              Text(
-                "Personagens da Esquerda",
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: FontFamily.bungee,
-                ),
-              ),
-            if (isRight)
-              Text(
-                "Personagens da Direita",
-                style: TextStyle(
-                  fontFamily: FontFamily.bungee,
-                ),
-              ),
-            CheckboxListTile(
-              value: (isRight) ? visualVM.isClearRight : visualVM.isClearLeft,
-              contentPadding: EdgeInsets.zero,
-              onChanged: (value) {
-                if (isRight) {
-                  visualVM.isClearRight = !visualVM.isClearRight;
-                } else {
-                  visualVM.isClearLeft = !visualVM.isClearLeft;
-                }
-              },
-              title: Text("Limpar ao mudar fundo"),
-            ),
-            Wrap(
-              children: List.generate(
-                visualVM.listVisuals.length,
-                (index) {
-                  CampaignVisual cv = visualVM.listVisuals[index];
-                  return _ImageVisualItem(
-                    visual: cv,
-                    isRight: isRight,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 16,
+      children: [
+        Text(
+          "Mesa de Ambientação",
+          style: TextStyle(
+            fontFamily: FontFamily.bungee,
+          ),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            spacing: 16,
+            children: [
+              OutlinedButton.icon(
+                onPressed: () {
+                  //TODO: Modularizar isso
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      TextEditingController controller =
+                          TextEditingController();
+                      return AlertDialog(
+                        title: Text("Repositório do GitHub"),
+                        content: TextFormField(
+                          controller: controller,
+                          decoration: InputDecoration(label: Text("Url")),
+                        ),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              visualVM.onPopulate(controller.text);
+                            },
+                            child: Text("Popular"),
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
+                icon: Icon(Icons.podcasts),
+                label: Text("Popular com GitHub"),
               ),
-            )
-          ],
+            ],
+          ),
         ),
-      ),
+      ],
+    );
+  }
+}
+
+class _ListCharactersVisual extends StatelessWidget {
+  final bool isRight;
+  _ListCharactersVisual({this.isRight = false});
+
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  Widget build(BuildContext context) {
+    CampaignVisualNovelViewModel visualVM =
+        Provider.of<CampaignVisualNovelViewModel>(context);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (!isRight)
+          Text(
+            "Personagens da Esquerda",
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontFamily: FontFamily.bungee,
+            ),
+          ),
+        if (isRight)
+          Text(
+            "Personagens da Direita",
+            style: TextStyle(
+              fontFamily: FontFamily.bungee,
+            ),
+          ),
+        CheckboxListTile(
+          value: (isRight) ? visualVM.isClearRight : visualVM.isClearLeft,
+          contentPadding: EdgeInsets.zero,
+          onChanged: (value) {
+            if (isRight) {
+              visualVM.isClearRight = !visualVM.isClearRight;
+            } else {
+              visualVM.isClearLeft = !visualVM.isClearLeft;
+            }
+          },
+          title: Text("Limpar ao mudar fundo"),
+        ),
+        SizedBox(
+          height: 250,
+          child: MasonryGridView.builder(
+            controller: scrollController,
+            padding: EdgeInsets.zero,
+            gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 120, // largura máxima por item
+            ),
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            itemCount: visualVM.data.listPortraits.length,
+            itemBuilder: (context, index) {
+              CampaignVisual cv = visualVM.data.listPortraits[index];
+              return _ImageVisualItem(
+                visual: cv,
+                isRight: isRight,
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
@@ -250,15 +342,41 @@ class _ImageVisualItem extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            Image.network(
-              visual.imageUrl,
+            CachedNetworkImage(
+              imageUrl: visual.url,
               width: 100,
+            ),
+            IconViewImageButton(imageUrl: visual.url),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ShaderMask(
+                shaderCallback: (bounds) {
+                  return LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black.withAlpha(175),
+                      Colors.transparent,
+                    ],
+                  ).createShader(bounds);
+                },
+                blendMode: BlendMode.dstIn,
+                child: Container(
+                  height: 25,
+                  width: 100,
+                  color: Colors.black,
+                  child: Text(" "),
+                ),
+              ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Text(
                 visual.name,
-                style: TextStyle(fontSize: 10),
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.white,
+                ),
               ),
             ),
           ],
@@ -269,7 +387,8 @@ class _ImageVisualItem extends StatelessWidget {
 }
 
 class _ListBackgrounds extends StatelessWidget {
-  const _ListBackgrounds();
+  _ListBackgrounds();
+  final ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -279,29 +398,32 @@ class _ListBackgrounds extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 8,
       children: [
-        Text(
-          "Planos de fundo",
-          style: TextStyle(
-            fontFamily: FontFamily.bungee,
-          ),
+        GenericHeader(
+          title: "Planos de fundo",
+          isSmallTitle: true,
         ),
-        SizedBox(
-          width: width(context),
-          height: (64 * 2) + 16,
-          child: SingleChildScrollView(
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: List.generate(
-                visualVM.listBackgrounds.length,
-                (index) {
-                  CampaignVisual visualBG = visualVM.listBackgrounds[index];
-                  return _BackgroundItem(visualBG: visualBG);
-                },
-              ),
+        Scrollbar(
+          controller: scrollController,
+          thumbVisibility: true,
+          trackVisibility: true,
+          thickness: 4,
+          child: Container(
+            height: 90,
+            padding: EdgeInsets.only(bottom: 16),
+            child: ListView.builder(
+              controller: scrollController,
+              scrollDirection: Axis.horizontal,
+              itemCount: visualVM.data.listBackgrounds.length,
+              itemBuilder: (context, index) {
+                final visualBG = visualVM.data.listBackgrounds[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: _BackgroundItem(visualBG: visualBG),
+                );
+              },
             ),
           ),
-        ),
+        )
       ],
     );
   }
@@ -320,29 +442,56 @@ class _BackgroundItem extends StatelessWidget {
         visualVM.toggleBackground(visualBG);
       },
       child: Container(
-        height: 64,
+        height: 90,
+        width: 160,
         decoration: BoxDecoration(
-          border: visualVM.backgroundActive == visualBG
+          border: visualVM.data.backgroundActive == visualBG
               ? Border.all(width: 4, color: AppColors.red)
               : Border.all(width: 4, color: Colors.transparent),
         ),
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Stack(
-            children: [
-              Image.network(
-                visualBG.imageUrl,
-                height: 64,
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Text(
-                  visualBG.name,
-                  style: TextStyle(fontSize: 10),
+        child: Stack(
+          children: [
+            CachedNetworkImage(
+              imageUrl: visualBG.url,
+              placeholder: (context, url) => Icon(Icons.landscape),
+              fit: BoxFit.cover,
+              height: 90,
+              width: 160,
+            ),
+            IconViewImageButton(imageUrl: visualBG.url),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ShaderMask(
+                shaderCallback: (bounds) {
+                  return LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black.withAlpha(175),
+                      Colors.transparent,
+                    ],
+                  ).createShader(bounds);
+                },
+                blendMode: BlendMode.dstIn,
+                child: Container(
+                  height: 32,
+                  width: double.infinity,
+                  color: Colors.black,
+                  child: Text(" "),
                 ),
               ),
-            ],
-          ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                visualBG.name,
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -361,74 +510,134 @@ class _ListSounds extends StatelessWidget {
       spacing: 16,
       children: [
         Flexible(
-          flex: 4,
+          flex: 3,
+          fit: FlexFit.tight,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             spacing: 8,
             children: [
-              Text(
-                "Músicas",
-                style: TextStyle(
-                  fontFamily: FontFamily.bungee,
-                ),
+              GenericHeader(
+                title: "Músicas",
+                isSmallTitle: true,
               ),
-              Wrap(
-                children: List.generate(
-                  50,
-                  (index) => IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.music_note_rounded),
+              SizedBox(
+                height: 120,
+                child: MasonryGridView.builder(
+                  padding: EdgeInsets.zero,
+                  gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent:
+                        64, // cada botão terá no máximo essa largura
                   ),
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  itemCount: visualVM.data.listMusics.length,
+                  itemBuilder: (context, index) {
+                    final music = visualVM.data.listMusics[index];
+                    return IconButton(
+                      onPressed: () {},
+                      tooltip: music.name,
+                      icon: const Icon(Icons.music_note_rounded),
+                    );
+                  },
                 ),
               ),
             ],
           ),
         ),
         Flexible(
-          flex: 4,
+          flex: 3,
+          fit: FlexFit.tight,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 8,
             children: [
-              Text(
-                "Ambientações",
-                style: TextStyle(
-                  fontFamily: FontFamily.bungee,
-                ),
+              GenericHeader(
+                title: "Ambientações",
+                isSmallTitle: true,
               ),
-              Wrap(
-                children: List.generate(
-                  50,
-                  (index) => IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.speaker),
-                  ),
+              MasonryGridView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap:
+                    true, // necessário quando dentro de outro scroll (como Column)
+                gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 64,
                 ),
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                itemCount: visualVM.data.listAmbiences.length,
+                itemBuilder: (context, index) {
+                  final ambience = visualVM.data.listAmbiences[index];
+                  return IconButton(
+                    onPressed: () {},
+                    tooltip: ambience.name,
+                    icon: const Icon(Icons.music_note_rounded),
+                  );
+                },
               ),
             ],
           ),
         ),
         Flexible(
-          flex: 4,
+          flex: 3,
+          fit: FlexFit.tight,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 8,
             children: [
-              Text(
-                "SFXs",
-                style: TextStyle(
-                  fontFamily: FontFamily.bungee,
-                ),
+              GenericHeader(
+                title: "Efeitos",
+                isSmallTitle: true,
               ),
-              Wrap(
-                children: List.generate(
-                  50,
-                  (index) => IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.speaker),
-                  ),
+              MasonryGridView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 64,
                 ),
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                itemCount: visualVM.data.listSfxs.length,
+                itemBuilder: (context, index) {
+                  final sfx = visualVM.data.listSfxs[index];
+                  return IconButton(
+                    onPressed: () {},
+                    tooltip: sfx.name,
+                    icon: const Icon(Icons.music_note_rounded),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        Flexible(
+          flex: 3,
+          fit: FlexFit.tight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: [
+              GenericHeader(
+                title: "Objetos, Notas e Itens",
+                isSmallTitle: true,
+              ),
+              MasonryGridView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 64,
+                ),
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                itemCount: visualVM.data.listSfxs.length,
+                itemBuilder: (context, index) {
+                  final sfx = visualVM.data.listSfxs[index];
+                  return IconButton(
+                    onPressed: () {},
+                    tooltip: sfx.name,
+                    icon: const Icon(Icons.music_note_rounded),
+                  );
+                },
               ),
             ],
           ),

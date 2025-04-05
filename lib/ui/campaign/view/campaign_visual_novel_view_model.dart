@@ -1,44 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
+import 'package:flutter_rpg_audiodrama/data/services/campaign_visual_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_visual.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_vm_model.dart';
 
 class CampaignVisualNovelViewModel extends ChangeNotifier {
-  List<CampaignVisual> listLeftActive = [];
-  List<CampaignVisual> listRightActive = [];
-  CampaignVisual? backgroundActive;
+  CampaignVisualDataModel data = CampaignVisualDataModel.empty();
 
-  List<CampaignVisual> listVisuals = _getTestListAll();
-  List<CampaignVisual> listBackgrounds = [
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground(),
-    _getTestBackground()
-  ];
-
-  double visualScale = 512;
-  double distanceFactor = 0.60;
+  String campaignId;
+  CampaignVisualNovelViewModel({required this.campaignId});
 
   bool _isClearLeft = false;
   bool get isClearLeft => _isClearLeft;
@@ -61,55 +30,119 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
     // TODO: Subststituir
   }
 
+  Future<void> onSave() async {
+    await CampaignVisualService.instance.onSave(
+      campaignId: campaignId,
+      data: data,
+    );
+  }
+
+  Future<void> onPopulate(String url) async {
+    Map<String, List<String>> mapLists =
+        await CampaignVisualService.instance.populateFromGitHub(
+      campaignId: campaignId,
+      repoUrl: url,
+    );
+
+    data.listBackgrounds = mapLists["backgrounds"]!
+        .map(
+          (e) => CampaignVisual.fromUrl(
+            url: e,
+            type: CampaignVisualType.background,
+          ),
+        )
+        .toList();
+
+    data.listPortraits = mapLists["portraits"]!
+        .map(
+          (e) => CampaignVisual.fromUrl(
+            url: e,
+            type: CampaignVisualType.background,
+          ),
+        )
+        .toList();
+
+    data.listAmbiences = mapLists["ambiences"]!
+        .map(
+          (e) => CampaignVisual.fromUrl(
+            url: e,
+            type: CampaignVisualType.ambience,
+          ),
+        )
+        .toList();
+
+    data.listMusics = mapLists["musics"]!
+        .map(
+          (e) => CampaignVisual.fromUrl(
+            url: e,
+            type: CampaignVisualType.music,
+          ),
+        )
+        .toList();
+
+    data.listSfxs = mapLists["sfxs"]!
+        .map(
+          (e) => CampaignVisual.fromUrl(
+            url: e,
+            type: CampaignVisualType.sfx,
+          ),
+        )
+        .toList();
+
+    await onSave();
+
+    notifyListeners();
+  }
+
   addToLeft(CampaignVisual campaignVisual) {
-    listLeftActive.add(campaignVisual);
+    data.listLeftActive.add(campaignVisual);
     notifyListeners();
   }
 
   addToRight(CampaignVisual campaignVisual) {
-    listRightActive.insert(0, campaignVisual);
+    data.listRightActive.insert(0, campaignVisual);
     notifyListeners();
   }
 
   clearFromLeft() {
-    listLeftActive.clear();
+    data.listLeftActive.clear();
     notifyListeners();
   }
 
   clearFromRight() {
-    listRightActive.clear();
+    data.listRightActive.clear();
     notifyListeners();
   }
 
   clearAll() {
-    listLeftActive.clear();
-    listRightActive.clear();
-    backgroundActive = null;
+    data.listLeftActive.clear();
+    data.listRightActive.clear();
+    data.backgroundActive = null;
   }
 
   replaceBackground(CampaignVisual campaignVisual) {
-    backgroundActive = campaignVisual;
+    data.backgroundActive = campaignVisual;
     notifyListeners();
   }
 
   bool isVisualInList({required bool isRight, required CampaignVisual visual}) {
     if (isRight) {
-      return listRightActive.contains(visual);
+      return data.listRightActive.contains(visual);
     }
 
-    return listLeftActive.contains(visual);
+    return data.listLeftActive.contains(visual);
   }
 
   void toggleVisual({required bool isRight, required CampaignVisual visual}) {
     if (isRight) {
-      if (listRightActive.contains(visual)) {
-        listRightActive.remove(visual);
+      if (data.listRightActive.contains(visual)) {
+        data.listRightActive.remove(visual);
       } else {
         addToRight(visual);
       }
     } else {
-      if (listLeftActive.contains(visual)) {
-        listLeftActive.remove(visual);
+      if (data.listLeftActive.contains(visual)) {
+        data.listLeftActive.remove(visual);
       } else {
         addToLeft(visual);
       }
@@ -120,58 +153,62 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
   }
 
   toggleBackground(CampaignVisual visualBG) {
-    if (backgroundActive == visualBG) {
-      backgroundActive = null;
+    if (data.backgroundActive == visualBG) {
+      data.backgroundActive = null;
     } else {
-      backgroundActive = visualBG;
+      data.backgroundActive = visualBG;
     }
+
+    if (_isClearLeft) {
+      data.listLeftActive.clear();
+    }
+
+    if (_isClearRight) {
+      data.listRightActive.clear();
+    }
+
+    onSave();
     notifyListeners();
   }
-
-  void onSave() async {
-    //TODO: Coisar
-  }
 }
 
-CampaignVisual _getTestBackground() {
-  return CampaignVisual(
-    name: "Floresta-${Random().nextInt(9999)}",
-    imageUrl:
-        "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/floresta.jpg",
-    isBackground: true,
-  );
-}
+// CampaignVisual _getTestBackground() {
+//   return CampaignVisual(
+//       name: "Floresta-${Random().nextInt(9999)}",
+//       url:
+//           "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/floresta.jpg",
+//       type: CampaignVisualType.background);
+// }
 
-List<CampaignVisual> _getTestListLeft() {
-  return [
-    "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/Erin.png",
-    "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/Gaspar_Portrait.png",
-  ]
-      .map(
-        (e) => CampaignVisual(
-          name: e.split("/").last.split(".").first,
-          imageUrl: e,
-          isBackground: false,
-        ),
-      )
-      .toList();
-}
+// List<CampaignVisual> _getTestListLeft() {
+//   return [
+//     "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/Erin.png",
+//     "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/Gaspar_Portrait.png",
+//   ]
+//       .map(
+//         (e) => CampaignVisual(
+//           name: e.split("/").last.split(".").first,
+//           url: e,
+//           type: CampaignVisualType.portrait,
+//         ),
+//       )
+//       .toList();
+// }
 
-List<CampaignVisual> _getTestListRight() {
-  return [
-    "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/sombra-portrait.png",
-    "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/viper-portrait.png",
-  ]
-      .map(
-        (e) => CampaignVisual(
-          name: e.split("/").last.split(".").first,
-          imageUrl: e,
-          isBackground: false,
-        ),
-      )
-      .toList();
-}
+// List<CampaignVisual> _getTestListRight() {
+//   return [
+//     "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/sombra-portrait.png",
+//     "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/viper-portrait.png",
+//   ]
+//       .map(
+//         (e) => CampaignVisual(
+//             name: e.split("/").last.split(".").first,
+//             url: e,
+//             type: CampaignVisualType.portrait),
+//       )
+//       .toList();
+// }
 
-List<CampaignVisual> _getTestListAll() {
-  return _getTestListLeft() + _getTestListRight();
-}
+// List<CampaignVisual> _getTestListAll() {
+//   return _getTestListLeft() + _getTestListRight();
+// }

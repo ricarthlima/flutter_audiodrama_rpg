@@ -52,6 +52,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
       appBar: getCampaignAppBar(
         context: context,
         campaignVM: campaignVM,
+        isClean: campaignVM.currentPage == CampaignSubPages.home,
       ),
       extendBodyBehindAppBar: true,
       body: (campaignVM.isLoading)
@@ -117,6 +118,8 @@ class _CampaignScreenState extends State<CampaignScreen> {
               ? EdgeInsets.only(top: 72, left: 32, right: 32)
               : EdgeInsets.zero,
           child: SingleChildScrollView(
+            physics:
+                campaignVM.isFullscreen ? NeverScrollableScrollPhysics() : null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

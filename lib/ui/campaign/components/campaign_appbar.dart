@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/settings/settings_screen.dart';
 
@@ -13,25 +12,31 @@ import '../view/campaign_view_model.dart';
 AppBar? getCampaignAppBar({
   required BuildContext context,
   required CampaignViewModel campaignVM,
+  bool isClean = false,
 }) {
   if (!campaignVM.isLoading &&
       campaignVM.campaign != null &&
       campaignVM.isOwnerOrInvited) {
     return AppBar(
       toolbarHeight: 64,
-      leading: IconButton(
-        onPressed: () {
-          AppRouter().goHome(context: context, subPage: HomeSubPages.campaigns);
-        },
-        icon: Icon(Icons.arrow_back),
-      ),
-      backgroundColor: campaignVM.campaign?.imageBannerUrl != null &&
-              !campaignVM.isFullscreen
-          ? Theme.of(context).scaffoldBackgroundColor.withAlpha(75)
+      leading: !isClean
+          ? IconButton(
+              onPressed: () {
+                AppRouter()
+                    .goHome(context: context, subPage: HomeSubPages.campaigns);
+              },
+              icon: Icon(Icons.arrow_back),
+            )
           : null,
+      backgroundColor: isClean
+          ? Colors.transparent
+          : campaignVM.campaign?.imageBannerUrl != null &&
+                  !campaignVM.isFullscreen
+              ? Theme.of(context).scaffoldBackgroundColor.withAlpha(75)
+              : null,
+      elevation: 0,
       actions: [
-        if (campaignVM.isOwner &&
-            campaignVM.currentPage != CampaignSubPages.home)
+        if (!isClean)
           Row(
             children: [
               Visibility(
@@ -53,18 +58,18 @@ AppBar? getCampaignAppBar({
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text("•"),
               ),
+              IconButton(
+                onPressed: () {
+                  showSettingsDialog(context);
+                },
+                icon: Icon(Icons.settings),
+              ),
+              if (!isVertical(context))
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text("•"),
+                ),
             ],
-          ),
-        IconButton(
-          onPressed: () {
-            showSettingsDialog(context);
-          },
-          icon: Icon(Icons.settings),
-        ),
-        if (!isVertical(context))
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text("•"),
           ),
         if (!isVertical(context))
           Builder(

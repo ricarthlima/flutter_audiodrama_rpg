@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_rpg_audiodrama/_core/helpers/generate_access_key.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_vm_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -44,6 +45,7 @@ class CampaignService {
       imageBannerUrl: imageBannerUrl,
       nextSession: nextSession,
       listAchievements: [],
+      visualData: CampaignVisualDataModel.empty(),
     );
 
     if (fileImage != null) {
