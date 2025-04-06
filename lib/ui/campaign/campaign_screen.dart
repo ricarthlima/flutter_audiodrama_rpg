@@ -49,11 +49,13 @@ class _CampaignScreenState extends State<CampaignScreen> {
 
     // TODO modularizar esse campanha nao encontrada
     return Scaffold(
-      appBar: getCampaignAppBar(
-        context: context,
-        campaignVM: campaignVM,
-        isClean: campaignVM.currentPage == CampaignSubPages.home,
-      ),
+      appBar: campaignVM.currentPage == CampaignSubPages.home
+          ? null
+          : getCampaignAppBar(
+              context: context,
+              campaignVM: campaignVM,
+              isClean: campaignVM.currentPage == CampaignSubPages.home,
+            ),
       extendBodyBehindAppBar: true,
       body: (campaignVM.isLoading)
           ? Center(child: CircularProgressIndicator())

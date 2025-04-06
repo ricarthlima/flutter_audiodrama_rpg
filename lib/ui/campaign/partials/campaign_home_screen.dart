@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_visual.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/image_dialog.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_panel.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
@@ -28,7 +29,8 @@ class CampaignHomeScreen extends StatelessWidget {
 
 class _CampaignHomeGuest extends StatelessWidget {
   final double sizeFactor;
-  const _CampaignHomeGuest({this.sizeFactor = 1.0});
+  final bool isPreview;
+  const _CampaignHomeGuest({this.sizeFactor = 1.0, this.isPreview = false});
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +61,22 @@ class _CampaignHomeGuest extends StatelessWidget {
                         ),
                 ),
               ),
+              if (!isPreview)
+                Align(
+                  alignment: Alignment.center,
+                  child: Stack(
+                    children: visualVM.data.listObjects
+                        .where((e) => e.isEnable)
+                        .map(
+                          (e) => MovableExpandablePanel(
+                            key: ValueKey(e.url),
+                            headerTitle: e.name,
+                            child: Image.network(e.url),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
             ] +
             _generateListStack(context, visualVM),
       ),
@@ -166,6 +184,7 @@ class _CampaignHomeOwner extends StatelessWidget {
                     aspectRatio: 16 / 9,
                     child: _CampaignHomeGuest(
                       sizeFactor: 300 / height(context),
+                      isPreview: true,
                     ),
                   ),
                 ),
@@ -241,6 +260,13 @@ class _ListSettings extends StatelessWidget {
                 icon: Icon(Icons.podcasts),
                 label: Text("Popular com GitHub"),
               ),
+              OutlinedButton.icon(
+                onPressed: () {
+                  visualVM.onRemove();
+                },
+                icon: Icon(Icons.delete_forever),
+                label: Text("Limpar tudo"),
+              )
             ],
           ),
         ),
@@ -522,7 +548,7 @@ class _ListSounds extends StatelessWidget {
                 isSmallTitle: true,
               ),
               SizedBox(
-                height: 120,
+                height: 300,
                 child: MasonryGridView.builder(
                   padding: EdgeInsets.zero,
                   gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
@@ -556,24 +582,27 @@ class _ListSounds extends StatelessWidget {
                 title: "Ambientações",
                 isSmallTitle: true,
               ),
-              MasonryGridView.builder(
-                padding: EdgeInsets.zero,
-                shrinkWrap:
-                    true, // necessário quando dentro de outro scroll (como Column)
-                gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 64,
+              SizedBox(
+                height: 300,
+                child: MasonryGridView.builder(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap:
+                      true, // necessário quando dentro de outro scroll (como Column)
+                  gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 64,
+                  ),
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  itemCount: visualVM.data.listAmbiences.length,
+                  itemBuilder: (context, index) {
+                    final ambience = visualVM.data.listAmbiences[index];
+                    return IconButton(
+                      onPressed: () {},
+                      tooltip: ambience.name,
+                      icon: const Icon(Icons.music_note_rounded),
+                    );
+                  },
                 ),
-                mainAxisSpacing: 4,
-                crossAxisSpacing: 4,
-                itemCount: visualVM.data.listAmbiences.length,
-                itemBuilder: (context, index) {
-                  final ambience = visualVM.data.listAmbiences[index];
-                  return IconButton(
-                    onPressed: () {},
-                    tooltip: ambience.name,
-                    icon: const Icon(Icons.music_note_rounded),
-                  );
-                },
               ),
             ],
           ),
@@ -589,23 +618,26 @@ class _ListSounds extends StatelessWidget {
                 title: "Efeitos",
                 isSmallTitle: true,
               ),
-              MasonryGridView.builder(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 64,
+              SizedBox(
+                height: 300,
+                child: MasonryGridView.builder(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 64,
+                  ),
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  itemCount: visualVM.data.listSfxs.length,
+                  itemBuilder: (context, index) {
+                    final sfx = visualVM.data.listObjects[index];
+                    return IconButton(
+                      onPressed: () {},
+                      tooltip: sfx.name,
+                      icon: const Icon(Icons.music_note_rounded),
+                    );
+                  },
                 ),
-                mainAxisSpacing: 4,
-                crossAxisSpacing: 4,
-                itemCount: visualVM.data.listSfxs.length,
-                itemBuilder: (context, index) {
-                  final sfx = visualVM.data.listSfxs[index];
-                  return IconButton(
-                    onPressed: () {},
-                    tooltip: sfx.name,
-                    icon: const Icon(Icons.music_note_rounded),
-                  );
-                },
               ),
             ],
           ),
@@ -621,23 +653,44 @@ class _ListSounds extends StatelessWidget {
                 title: "Objetos, Notas e Itens",
                 isSmallTitle: true,
               ),
-              MasonryGridView.builder(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 64,
+              SizedBox(
+                height: 300,
+                child: MasonryGridView.builder(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 64,
+                  ),
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  itemCount: visualVM.data.listObjects.length,
+                  itemBuilder: (context, index) {
+                    final visualObject = visualVM.data.listObjects[index];
+                    return Stack(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            visualVM.toggleObject(visualObject);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 2,
+                                color: visualObject.isEnable
+                                    ? AppColors.red
+                                    : Colors.transparent,
+                              ),
+                            ),
+                            child: CachedNetworkImage(
+                              imageUrl: visualObject.url,
+                            ),
+                          ),
+                        ),
+                        IconViewImageButton(imageUrl: visualObject.url),
+                      ],
+                    );
+                  },
                 ),
-                mainAxisSpacing: 4,
-                crossAxisSpacing: 4,
-                itemCount: visualVM.data.listSfxs.length,
-                itemBuilder: (context, index) {
-                  final sfx = visualVM.data.listSfxs[index];
-                  return IconButton(
-                    onPressed: () {},
-                    tooltip: sfx.name,
-                    icon: const Icon(Icons.music_note_rounded),
-                  );
-                },
               ),
             ],
           ),

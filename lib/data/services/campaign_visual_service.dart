@@ -28,7 +28,8 @@ class CampaignVisualService {
       'musics',
       'backgrounds',
       'portraits',
-      'sfxs'
+      'sfxs',
+      'objects',
     ];
     final result = <String, List<String>>{};
 
@@ -65,6 +66,19 @@ class CampaignVisualService {
         .update(
       {
         "visualData": data.toMap(),
+      },
+    );
+  }
+
+  Future<void> onRemoveAll({
+    required String campaignId,
+  }) async {
+    await FirebaseFirestore.instance
+        .collection("${releaseCollection}campaigns")
+        .doc(campaignId)
+        .update(
+      {
+        "visualData": null,
       },
     );
   }

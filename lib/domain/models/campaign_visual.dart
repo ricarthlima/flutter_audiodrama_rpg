@@ -7,33 +7,39 @@ enum CampaignVisualType {
   music,
   ambience,
   sfx,
+  objects,
 }
 
 class CampaignVisual {
   String name;
   String url;
+  bool isEnable;
   CampaignVisualType type;
 
   CampaignVisual.fromUrl({
     required this.url,
     required this.type,
+    this.isEnable = false,
   }) : name = url.substring(0).split("/").last.split(".").first;
 
   CampaignVisual({
     required this.name,
     required this.url,
     required this.type,
+    required this.isEnable,
   });
 
   CampaignVisual copyWith({
     String? name,
     String? url,
+    bool? isEnable,
     CampaignVisualType? type,
   }) {
     return CampaignVisual(
       name: name ?? this.name,
       url: url ?? this.url,
       type: type ?? this.type,
+      isEnable: isEnable ?? this.isEnable,
     );
   }
 
@@ -42,6 +48,7 @@ class CampaignVisual {
       'name': name,
       'url': url,
       'type': type.name,
+      'isEnable': isEnable,
     };
   }
 
@@ -49,6 +56,7 @@ class CampaignVisual {
     return CampaignVisual(
         name: map['name'] as String,
         url: map['url'] as String,
+        isEnable: map['isEnable'] ?? false,
         type: CampaignVisualType.values
             .where((e) => e.name == map['type'] as String)
             .first);

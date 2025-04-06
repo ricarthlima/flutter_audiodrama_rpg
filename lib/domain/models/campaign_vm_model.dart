@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_visual.dart';
 
 class CampaignVisualDataModel {
+  CampaignVisualDataModel.empty();
+
   List<CampaignVisual> listPortraits = [];
   List<CampaignVisual> listBackgrounds = [];
   List<CampaignVisual> listAmbiences = [];
@@ -30,11 +32,11 @@ class CampaignVisualDataModel {
     required this.listLeftActive,
     required this.listRightActive,
     this.backgroundActive,
+    required this.transitionBackgroundDurationInMilliseconds,
     required this.visualScale,
     required this.distanceFactor,
+    required this.listObjects,
   });
-
-  CampaignVisualDataModel.empty();
 
   CampaignVisualDataModel copyWith({
     List<CampaignVisual>? listPortraits,
@@ -47,6 +49,8 @@ class CampaignVisualDataModel {
     CampaignVisual? backgroundActive,
     double? visualScale,
     double? distanceFactor,
+    int? transitionBackgroundDurationInMilliseconds,
+    List<CampaignVisual>? listObjects,
   }) {
     return CampaignVisualDataModel(
       listPortraits: listPortraits ?? this.listPortraits,
@@ -59,6 +63,10 @@ class CampaignVisualDataModel {
       backgroundActive: backgroundActive ?? this.backgroundActive,
       visualScale: visualScale ?? this.visualScale,
       distanceFactor: distanceFactor ?? this.distanceFactor,
+      transitionBackgroundDurationInMilliseconds:
+          transitionBackgroundDurationInMilliseconds ??
+              this.transitionBackgroundDurationInMilliseconds,
+      listObjects: listObjects ?? this.listObjects,
     );
   }
 
@@ -74,6 +82,7 @@ class CampaignVisualDataModel {
       'backgroundActive': backgroundActive?.toMap(),
       'visualScale': visualScale,
       'distanceFactor': distanceFactor,
+      'listObjects': listObjects.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -120,6 +129,17 @@ class CampaignVisualDataModel {
           : null,
       visualScale: map['visualScale'] as double,
       distanceFactor: map['distanceFactor'] as double,
+      transitionBackgroundDurationInMilliseconds:
+          map['transitionBackgroundDurationInMilliseconds'] != null
+              ? map['transitionBackgroundDurationInMilliseconds'] as int
+              : 1000,
+      listObjects: map['listObjects'] != null
+          ? List<CampaignVisual>.from(
+              (map['listObjects'] as List<dynamic>).map(
+                (x) => CampaignVisual.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : [],
     );
   }
 

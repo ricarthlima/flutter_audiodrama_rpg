@@ -37,6 +37,10 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
     );
   }
 
+  Future<void> onRemove() async {
+    await CampaignVisualService.instance.onRemoveAll(campaignId: campaignId);
+  }
+
   Future<void> onPopulate(String url) async {
     Map<String, List<String>> mapLists =
         await CampaignVisualService.instance.populateFromGitHub(
@@ -85,6 +89,15 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
           (e) => CampaignVisual.fromUrl(
             url: e,
             type: CampaignVisualType.sfx,
+          ),
+        )
+        .toList();
+
+    data.listObjects = mapLists["objects"]!
+        .map(
+          (e) => CampaignVisual.fromUrl(
+            url: e,
+            type: CampaignVisualType.objects,
           ),
         )
         .toList();
@@ -166,6 +179,15 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
     if (_isClearRight) {
       data.listRightActive.clear();
     }
+
+    onSave();
+    notifyListeners();
+  }
+
+  toggleObject(CampaignVisual visualObject) {
+    int index = data.listObjects.indexOf(visualObject);
+    visualObject.isEnable = !visualObject.isEnable;
+    data.listObjects[index] = visualObject;
 
     onSave();
     notifyListeners();
