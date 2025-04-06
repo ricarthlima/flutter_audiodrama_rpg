@@ -36,10 +36,12 @@ class _SheetScreenState extends State<SheetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final sheetVM = Provider.of<SheetViewModel>(context, listen: false);
     return Scaffold(
       floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: getSheetFloatingActionButton(context),
-      appBar: getSheetAppBar(context),
+      floatingActionButton:
+          (sheetVM.isWindowed) ? null : getSheetFloatingActionButton(context),
+      appBar: (sheetVM.isWindowed) ? null : getSheetAppBar(context),
       extendBodyBehindAppBar: true,
       endDrawer: getSheetDrawer(context),
       body: _buildBody(),
@@ -86,7 +88,7 @@ class _SheetScreenState extends State<SheetScreen> {
             ),
           ),
         Container(
-          padding: EdgeInsets.only(top: 64),
+          padding: (viewModel.isWindowed) ? null : EdgeInsets.only(top: 64),
           margin: EdgeInsets.all(16),
           height: double.infinity,
           child: Column(

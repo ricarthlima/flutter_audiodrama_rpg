@@ -16,6 +16,7 @@ class HomeListItemWidget extends StatelessWidget {
   final String username;
   final bool isShowingByCampaign;
   final AppUser? appUser;
+  final Function? onDetach;
 
   const HomeListItemWidget({
     super.key,
@@ -23,6 +24,7 @@ class HomeListItemWidget extends StatelessWidget {
     required this.username,
     this.isShowingByCampaign = false,
     this.appUser,
+    this.onDetach,
   });
 
   @override
@@ -74,52 +76,73 @@ class HomeListItemWidget extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      trailing: (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid &&
-              !isVertical(context))
-          ? Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 8,
-              children: [
-                IconButton(
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isShowingByCampaign)
+            IconButton(
+              onPressed: () {
+                viewModel.goToSheet(
+                  context,
+                  sheet: sheet,
+                  username: username,
+                  isPushing: isShowingByCampaign,
+                );
+              },
+              iconSize: (isVertical(context)) ? 20 : 32,
+              tooltip: "Abrir nessa tela",
+              icon: Icon(Icons.arrow_forward),
+            ),
+          (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid &&
+                  !isVertical(context))
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 8,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        showMoveSheetToCampaignDialog(
+                          context: context,
+                          sheet: sheet,
+                        );
+                      },
+                      iconSize: (isVertical(context)) ? 20 : 32,
+                      tooltip: "Mover para campanha",
+                      icon: Icon(Icons.move_down_rounded),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        viewModel.onDuplicateSheet(
+                            context: context, sheet: sheet);
+                      },
+                      iconSize: (isVertical(context)) ? 20 : 32,
+                      tooltip: "Duplicar",
+                      icon: Icon(Icons.copy),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        viewModel.onRemoveSheet(context: context, sheet: sheet);
+                      },
+                      iconSize: (isVertical(context)) ? 20 : 32,
+                      tooltip: "Remover",
+                      icon: Icon(
+                        Icons.delete,
+                        color: AppColors.red,
+                      ),
+                    ),
+                  ],
+                )
+              : IconButton(
                   onPressed: () {
-                    showMoveSheetToCampaignDialog(
-                      context: context,
-                      sheet: sheet,
-                    );
-                  },
-                  iconSize: (isVertical(context)) ? 20 : 32,
-                  tooltip: "Mover para campanha",
-                  icon: Icon(Icons.move_down_rounded),
-                ),
-                IconButton(
-                  onPressed: () {
-                    viewModel.onDuplicateSheet(context: context, sheet: sheet);
+                    viewModel.onDuplicateSheetToMe(
+                        context: context, sheet: sheet);
                   },
                   iconSize: (isVertical(context)) ? 20 : 32,
                   tooltip: "Duplicar",
                   icon: Icon(Icons.copy),
                 ),
-                IconButton(
-                  onPressed: () {
-                    viewModel.onRemoveSheet(context: context, sheet: sheet);
-                  },
-                  iconSize: (isVertical(context)) ? 20 : 32,
-                  tooltip: "Remover",
-                  icon: Icon(
-                    Icons.delete,
-                    color: AppColors.red,
-                  ),
-                ),
-              ],
-            )
-          : IconButton(
-              onPressed: () {
-                viewModel.onDuplicateSheetToMe(context: context, sheet: sheet);
-              },
-              iconSize: (isVertical(context)) ? 20 : 32,
-              tooltip: "Duplicar",
-              icon: Icon(Icons.copy),
-            ),
+        ],
+      ),
       subtitle: Opacity(
         opacity: 0.90,
         child: Column(
@@ -156,12 +179,18 @@ class HomeListItemWidget extends StatelessWidget {
         ),
       ),
       onTap: () {
-        viewModel.goToSheet(
-          context,
-          sheet: sheet,
-          username: username,
-          isPushing: isShowingByCampaign,
-        );
+        if (isShowingByCampaign) {
+          if (onDetach != null) {
+            onDetach!();
+          }
+        } else {
+          viewModel.goToSheet(
+            context,
+            sheet: sheet,
+            username: username,
+            isPushing: isShowingByCampaign,
+          );
+        }
       },
     );
   }

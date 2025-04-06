@@ -1,7 +1,11 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
+
 import 'package:flutter_rpg_audiodrama/data/local/local_data_manager.dart';
 import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
@@ -11,8 +15,6 @@ import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../domain/models/sheet_model.dart';
 
@@ -241,4 +243,36 @@ class CampaignViewModel extends ChangeNotifier {
   bool get isFullscreen {
     return currentPage == CampaignSubPages.home;
   }
+
+  List<SheetWithUserId> listOpenSheet = [];
+
+  openSheetInCampaign(Sheet sheet, String userId, String username) {
+    if (listOpenSheet.where((e) => e.sheet.id == sheet.id).isEmpty) {
+      listOpenSheet.add(
+        SheetWithUserId(
+          sheet: sheet,
+          userId: userId,
+          username: username,
+        ),
+      );
+      notifyListeners();
+    }
+  }
+
+  closeSheetInCampaign(Sheet sheet) {
+    listOpenSheet.removeWhere((element) => element.sheet.id == sheet.id);
+    notifyListeners();
+  }
+}
+
+class SheetWithUserId {
+  Sheet sheet;
+  String userId;
+  String username;
+
+  SheetWithUserId({
+    required this.sheet,
+    required this.userId,
+    required this.username,
+  });
 }

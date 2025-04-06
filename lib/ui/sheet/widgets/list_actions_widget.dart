@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import '../../../domain/models/action_template.dart';
+import '../view/sheet_view_model.dart';
 import 'action_widget.dart';
 
 class ListActionsWidget extends StatelessWidget {
@@ -21,6 +23,7 @@ class ListActionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sheetVM = Provider.of<SheetViewModel>(context);
     return Stack(
       children: [
         Container(
@@ -28,7 +31,7 @@ class ListActionsWidget extends StatelessWidget {
               ? width(context)
               : getZoomFactor(
                   context,
-                  350,
+                  sheetVM.isWindowed ? 290 : 350,
                 ),
           height: 550,
           decoration: BoxDecoration(

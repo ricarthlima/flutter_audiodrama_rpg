@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
@@ -64,11 +65,20 @@ class CampaignSheetsScreen extends StatelessWidget {
           Column(
             children: userProvider
                 .getMySheetsByCampaign(campaignVM.campaign!.id)
-                .map((sheet) => HomeListItemWidget(
-                      sheet: sheet,
-                      username: userProvider.currentAppUser.username!,
-                      isShowingByCampaign: true,
-                    ))
+                .map(
+                  (sheet) => HomeListItemWidget(
+                    sheet: sheet,
+                    username: userProvider.currentAppUser.username!,
+                    isShowingByCampaign: true,
+                    onDetach: () {
+                      campaignVM.openSheetInCampaign(
+                        sheet,
+                        FirebaseAuth.instance.currentUser!.uid,
+                        userProvider.currentAppUser.username!,
+                      );
+                    },
+                  ),
+                )
                 .toList(),
           ),
           if (isVertical(context))
@@ -98,12 +108,21 @@ class CampaignSheetsScreen extends StatelessWidget {
             ),
             Column(
               children: campaignVM.mapSheetOthers.keys
-                  .map((e) => HomeListItemWidget(
-                        sheet: e,
-                        username: campaignVM.mapSheetOthers[e]!.username!,
-                        isShowingByCampaign: true,
-                        appUser: campaignVM.mapSheetOthers[e],
-                      ))
+                  .map(
+                    (e) => HomeListItemWidget(
+                      sheet: e,
+                      username: campaignVM.mapSheetOthers[e]!.username!,
+                      isShowingByCampaign: true,
+                      appUser: campaignVM.mapSheetOthers[e],
+                      onDetach: () {
+                        campaignVM.openSheetInCampaign(
+                          e,
+                          campaignVM.mapSheetOthers[e]!.id!,
+                          campaignVM.mapSheetOthers[e]!.username!,
+                        );
+                      },
+                    ),
+                  )
                   .toList(),
             ),
           ],

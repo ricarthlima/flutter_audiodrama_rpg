@@ -34,8 +34,13 @@ import '../components/roll_dialog.dart';
 class SheetViewModel extends ChangeNotifier {
   String id;
   String username;
+  bool isWindowed;
 
-  SheetViewModel({required this.id, required this.username});
+  SheetViewModel({
+    required this.id,
+    required this.username,
+    this.isWindowed = false,
+  });
   SheetService sheetService = SheetService();
 
   // Atributos de ficha

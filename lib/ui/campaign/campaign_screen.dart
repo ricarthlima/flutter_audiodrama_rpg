@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/open_popup.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_appbar.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_drawer.dart';
@@ -9,6 +11,8 @@ import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_sheets_scre
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/group_notifications.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -87,6 +91,31 @@ class _CampaignScreenState extends State<CampaignScreen> {
           ),
         ),
         GroupNotifications(),
+        Stack(
+          children: campaignVM.listOpenSheet.map(
+            (e) {
+              return MovableExpandableScreen(
+                title: e.sheet.characterName,
+                onPopup: () {
+                  openUrl("#/${e.username}/sheet/${e.sheet.id}");
+                },
+                onExit: () => campaignVM.closeSheetInCampaign(e.sheet),
+                child: MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider(
+                      create: (context) => SheetViewModel(
+                        id: e.sheet.id,
+                        username: e.username,
+                        isWindowed: true,
+                      ),
+                    ),
+                  ],
+                  child: SheetScreen(),
+                ),
+              );
+            },
+          ).toList(),
+        )
       ],
     );
   }
