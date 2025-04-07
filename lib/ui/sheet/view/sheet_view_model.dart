@@ -278,29 +278,29 @@ class SheetViewModel extends ChangeNotifier {
   int getAptidaoMaxByLevel() {
     switch (baseLevel) {
       case 0:
-        return 9;
+        return 8;
       case 1:
-        return 17;
+        return 15;
       case 2:
-        return 25;
+        return 20;
       case 3:
-        return 33;
+        return 25;
     }
-    return 9;
+    return -1;
   }
 
   int getTreinamentoMaxByLevel() {
     switch (baseLevel) {
       case 0:
-        return 1;
+        return 2;
       case 1:
-        return 3;
-      case 2:
         return 5;
+      case 2:
+        return 10;
       case 3:
-        return 7;
+        return 15;
     }
-    return 9;
+    return -1;
   }
 
   void changeModGlobal({bool isAdding = true}) {
@@ -404,7 +404,7 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   String getTrainLevelByActionName(String actionId) {
-    return getTrainingLevel(listActionValue
+    return getTrainingLevel(getActionsValuesWithWorks()
         .firstWhere((e) => e.actionId == actionId,
             orElse: () => ActionValue(actionId: actionId, value: 1))
         .value);
@@ -651,6 +651,24 @@ class SheetViewModel extends ChangeNotifier {
     listAC.removeWhere((e) => !listAllEnabled.contains(e.actionId));
 
     return listAC;
+  }
+
+  void addTextToEndActionValues() {
+    String result = "\n";
+    List<ActionTemplate> listActions = getActionsValuesWithWorks()
+        .map((e) => ActionDAO.instance.getActionById(e.actionId)!)
+        .toList();
+    for (ActionTemplate action in listActions) {
+      result +=
+          "## ${getTrainLevelByActionName(action.id)} em ${action.name}\n";
+      if (listActionLore.where((e) => e.actionId == action.id).isNotEmpty) {
+        result +=
+            listActionLore.firstWhere((e) => e.actionId == action.id).loreText;
+      }
+      result += "\n\n";
+    }
+    bio += result;
+    notifyListeners();
   }
 
   bool get isOwner {

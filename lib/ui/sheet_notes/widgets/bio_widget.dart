@@ -85,13 +85,24 @@ class BioWidget extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: sheetViewModel.getActionsValuesWithWorks().map(
-                    (e) {
-                      return _ActionLoreWidget(
-                        action: ActionDAO.instance.getActionById(e.actionId)!,
-                      );
-                    },
-                  ).toList(),
+                  children: <Widget>[
+                        ListTile(
+                          leading: Icon(Icons.arrow_back_ios_new_outlined),
+                          title: Text("Transferir para o texto"),
+                          onTap: () {
+                            sheetViewModel.addTextToEndActionValues();
+                          },
+                        ),
+                        Divider(),
+                      ] +
+                      sheetViewModel.getActionsValuesWithWorks().map(
+                        (e) {
+                          return _ActionLoreWidget(
+                            action:
+                                ActionDAO.instance.getActionById(e.actionId)!,
+                          );
+                        },
+                      ).toList(),
                 ),
               ),
             ),
