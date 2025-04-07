@@ -192,6 +192,15 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
     onSave();
     notifyListeners();
   }
+
+  bool get isEmpty {
+    return data.listBackgrounds.isEmpty &&
+        data.listPortraits.isEmpty &&
+        data.listMusics.isEmpty &&
+        data.listObjects.isEmpty &&
+        data.listAmbiences.isEmpty &&
+        data.listSfxs.isEmpty;
+  }
 }
 
 // CampaignVisual _getTestBackground() {

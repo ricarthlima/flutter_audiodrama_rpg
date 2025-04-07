@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_visual.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_pa
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/components/tutorial_populate_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_visual_novel_view_model.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -144,11 +146,60 @@ class _CampaignHomeGuest extends StatelessWidget {
   }
 }
 
+class _CampaignOwnerEmpty extends StatelessWidget {
+  const _CampaignOwnerEmpty();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: height(context),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 16,
+        children: [
+          Text(
+            "Mesa de Ambientação",
+            style: TextStyle(
+              fontSize: 22,
+              fontFamily: FontFamily.bungee,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              OutlinedButton.icon(
+                onPressed: () {
+                  showTutorialGitHub(context);
+                },
+                icon: Icon(Icons.podcasts),
+                label: Text("Popular com GitHub"),
+              ),
+            ],
+          ),
+          Opacity(
+            opacity: 0.7,
+            child: Text(
+                "Utilize uma das opções acima para popular sua mesa de ambientação."),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _CampaignHomeOwner extends StatelessWidget {
   const _CampaignHomeOwner();
 
   @override
   Widget build(BuildContext context) {
+    CampaignVisualNovelViewModel visualVM =
+        Provider.of<CampaignVisualNovelViewModel>(context);
+
+    if (visualVM.isEmpty) {
+      return _CampaignOwnerEmpty();
+    }
+
     return Padding(
       padding: const EdgeInsets.only(top: 32, left: 32, right: 96),
       child: SizedBox(
@@ -233,29 +284,7 @@ class _ListSettings extends StatelessWidget {
             children: [
               OutlinedButton.icon(
                 onPressed: () {
-                  //TODO: Modularizar isso
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      TextEditingController controller =
-                          TextEditingController();
-                      return AlertDialog(
-                        title: Text("Repositório do GitHub"),
-                        content: TextFormField(
-                          controller: controller,
-                          decoration: InputDecoration(label: Text("Url")),
-                        ),
-                        actions: [
-                          ElevatedButton(
-                            onPressed: () {
-                              visualVM.onPopulate(controller.text);
-                            },
-                            child: Text("Popular"),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  showTutorialGitHub(context);
                 },
                 icon: Icon(Icons.podcasts),
                 label: Text("Popular com GitHub"),
