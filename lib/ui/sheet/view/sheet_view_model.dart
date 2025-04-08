@@ -118,6 +118,7 @@ class SheetViewModel extends ChangeNotifier {
     startLoading();
 
     futureGetSheet = sheetService.getSheetId(id: id, username: username);
+
     try {
       Sheet? sheetModel = await futureGetSheet;
 

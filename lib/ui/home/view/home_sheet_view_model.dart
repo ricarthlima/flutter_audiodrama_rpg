@@ -16,7 +16,7 @@ class HomeSheetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String getWorldName({
+  String? getWorldName({
     required BuildContext context,
     required Sheet sheet,
   }) {
@@ -30,7 +30,6 @@ class HomeSheetViewModel extends ChangeNotifier {
     if (campaign != null) {
       return campaign.name!;
     }
-
-    return "Sem campanha";
+    return null;
   }
 }

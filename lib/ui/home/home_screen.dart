@@ -3,6 +3,7 @@ import 'package:flutter_rpg_audiodrama/_core/version.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_app_bar.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/widgets/home_drawer.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/widgets/home_list_sheets_widget.dart';
@@ -83,7 +84,14 @@ class _HomeScreenState extends State<HomeScreen> {
               // Personagens
               HomeListSheetsWidget(
                 title: "Meus Personagens",
-                listSheets: userProvider.listSheets,
+                subtitle: "(Não inclusos em campanhas)",
+                listSheets: userProvider.listSheets
+                    .where((e) =>
+                        context
+                            .read<HomeSheetViewModel>()
+                            .getWorldName(context: context, sheet: e) ==
+                        null)
+                    .toList(),
                 username: userProvider.currentAppUser.username!,
               ),
               // Campanhas

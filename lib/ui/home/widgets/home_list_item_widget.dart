@@ -5,7 +5,6 @@ import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/helpers.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/move_sheet_to_campaign_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
 import 'package:provider/provider.dart';
 import '../../../domain/models/sheet_model.dart';
 import '../../_core/components/image_dialog.dart';
@@ -30,7 +29,6 @@ class HomeListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<HomeViewModel>(context);
-    final homeSheetVM = Provider.of<HomeSheetViewModel>(context);
     return ListTile(
       leading: SizedBox(
         height: isVertical(context) ? 32 : 64,
@@ -163,18 +161,18 @@ class HomeListItemWidget extends StatelessWidget {
                 Text(getBaseLevel(sheet.baseLevel)),
               ],
             ),
-            if (!isShowingByCampaign)
-              Row(
-                spacing: 4,
-                children: [
-                  Text(
-                    "Na campanha:",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                      homeSheetVM.getWorldName(context: context, sheet: sheet)),
-                ],
-              ),
+            // if (!isShowingByCampaign)
+            //   Row(
+            //     spacing: 4,
+            //     children: [
+            //       Text(
+            //         "Na campanha:",
+            //         style: TextStyle(fontWeight: FontWeight.bold),
+            //       ),
+            //       Text(
+            //           homeSheetVM.getWorldName(context: context, sheet: sheet)),
+            //     ],
+            //   ),
           ],
         ),
       ),

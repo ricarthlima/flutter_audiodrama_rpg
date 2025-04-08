@@ -8,13 +8,13 @@ import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 
 import '../../../domain/models/sheet_model.dart';
 import '../../_core/fonts.dart';
-import '../view/home_sheet_view_model.dart';
 import 'home_list_item_widget.dart';
 
 class HomeListSheetsWidget extends StatefulWidget {
   final List<Sheet> listSheets;
   final String username;
   final String? title;
+  final String? subtitle;
   final bool showAdding;
 
   const HomeListSheetsWidget({
@@ -22,6 +22,7 @@ class HomeListSheetsWidget extends StatefulWidget {
     required this.listSheets,
     required this.username,
     this.title,
+    this.subtitle,
     this.showAdding = false,
   });
 
@@ -50,97 +51,83 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final homeSheetVM = Provider.of<HomeSheetViewModel>(context);
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 8,
-          children: [
-            GenericHeader(
-              title: widget.title!,
-              iconButton: IconButton(
-                onPressed: () {
-                  context.read<HomeViewModel>().onCreateSheetClicked(context);
-                },
-                tooltip: "Criar personagem",
-                icon: Icon(Icons.add),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
+        children: [
+          GenericHeader(
+            title: widget.title!,
+            subtitle: widget.subtitle,
+            iconButton: IconButton(
+              onPressed: () {
+                context.read<HomeViewModel>().onCreateSheetClicked(context);
+              },
+              tooltip: "Criar personagem",
+              icon: Icon(Icons.add),
+            ),
+          ),
+          if (widget.listSheets.isEmpty)
+            Center(
+              child: Text(
+                "Nada por aqui ainda, vamos criar?",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: FontFamily.sourceSerif4,
+                ),
               ),
             ),
-            if (widget.listSheets.isEmpty)
-              Center(
-                child: Text(
-                  "Nada por aqui ainda, vamos criar?",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontFamily: FontFamily.sourceSerif4,
+          if (widget.listSheets.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: GenericFilterWidget<Sheet>(
+                listValues: widget.listSheets,
+                listOrderers: [
+                  GenericFilterOrderer<Sheet>(
+                    label: "Por nome",
+                    iconAscending: Icons.sort_by_alpha,
+                    iconDescending: Icons.sort_by_alpha,
+                    orderFunction: (a, b) =>
+                        a.characterName.compareTo(b.characterName),
                   ),
-                ),
+                  GenericFilterOrderer<Sheet>(
+                    label: "Por experiência",
+                    iconAscending: Icons.military_tech_outlined,
+                    iconDescending: Icons.military_tech_outlined,
+                    orderFunction: (a, b) {
+                      int c = a.baseLevel.compareTo(b.baseLevel);
+                      return (c != 0)
+                          ? c
+                          : a.characterName.compareTo(b.characterName);
+                    },
+                  ),
+                  // GenericFilterOrderer<_SheetCampaign>(
+                  //   label: "Por campanha",
+                  //   iconAscending: Icons.local_florist_outlined,
+                  //   iconDescending: Icons.local_florist_outlined,
+                  //   orderFunction: (a, b) {
+                  //     int c = a.campaignName.compareTo(b.campaignName);
+                  //     return (c != 0)
+                  //         ? c
+                  //         : a.sheet.characterName
+                  //             .compareTo(b.sheet.characterName);
+                  //   },
+                  // ),
+                ],
+                textExtractor: (p0) => p0.characterName,
+                enableSearch: true,
+                onFiltered: (listFiltered) {
+                  setState(() {
+                    listSheetsVisualization =
+                        listFiltered.map((e) => e).toList();
+                  });
+                },
               ),
-            if (widget.listSheets.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: GenericFilterWidget<_SheetCampaign>(
-                  listValues: widget.listSheets
-                      .map(
-                        (e) => _SheetCampaign(
-                          sheet: e,
-                          campaignName: homeSheetVM.getWorldName(
-                            context: context,
-                            sheet: e,
-                          ),
-                        ),
-                      )
-                      .toList(),
-                  listOrderers: [
-                    GenericFilterOrderer<_SheetCampaign>(
-                      label: "Por nome",
-                      iconAscending: Icons.sort_by_alpha,
-                      iconDescending: Icons.sort_by_alpha,
-                      orderFunction: (a, b) => a.sheet.characterName
-                          .compareTo(b.sheet.characterName),
-                    ),
-                    GenericFilterOrderer<_SheetCampaign>(
-                      label: "Por experiência",
-                      iconAscending: Icons.military_tech_outlined,
-                      iconDescending: Icons.military_tech_outlined,
-                      orderFunction: (a, b) {
-                        int c = a.sheet.baseLevel.compareTo(b.sheet.baseLevel);
-                        return (c != 0)
-                            ? c
-                            : a.sheet.characterName
-                                .compareTo(b.sheet.characterName);
-                      },
-                    ),
-                    GenericFilterOrderer<_SheetCampaign>(
-                      label: "Por campanha",
-                      iconAscending: Icons.local_florist_outlined,
-                      iconDescending: Icons.local_florist_outlined,
-                      orderFunction: (a, b) {
-                        int c = a.campaignName.compareTo(b.campaignName);
-                        return (c != 0)
-                            ? c
-                            : a.sheet.characterName
-                                .compareTo(b.sheet.characterName);
-                      },
-                    ),
-                  ],
-                  textExtractor: (p0) => p0.sheet.characterName,
-                  enableSearch: true,
-                  onFiltered: (listFiltered) {
-                    setState(() {
-                      listSheetsVisualization =
-                          listFiltered.map((e) => e.sheet).toList();
-                    });
-                  },
-                ),
-              ),
-            if (widget.listSheets.isNotEmpty)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 6,
+            ),
+          if (widget.listSheets.isNotEmpty)
+            Expanded(
+              child: ListView(
                 children: List.generate(
                   listSheetsVisualization.length,
                   (index) {
@@ -151,19 +138,9 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
                   },
                 ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
-}
-
-class _SheetCampaign {
-  Sheet sheet;
-  String campaignName;
-
-  _SheetCampaign({
-    required this.sheet,
-    required this.campaignName,
-  });
 }

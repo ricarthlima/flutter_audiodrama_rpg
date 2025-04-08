@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 String get releaseCollection {
-  // return "release-";
+  return "release-";
   if (kReleaseMode) {
     return "release-";
   }
