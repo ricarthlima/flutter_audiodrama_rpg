@@ -79,7 +79,19 @@ class _RollRowWidgetState extends State<RollRowWidget> {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        spacing: 16,
         children: [
+          Text(
+            ActionDAO.instance
+                .getAll()
+                .where((e) => e.id == widget.rollLog.idAction)
+                .first
+                .name,
+            style: TextStyle(
+              fontSize: 32,
+              fontFamily: FontFamily.bungee,
+            ),
+          ),
           Wrap(
             spacing: isVertical(context) ? 32 : 64,
             runSpacing: isVertical(context) ? 32 : 64,
@@ -152,47 +164,49 @@ class _RollRowWidgetState extends State<RollRowWidget> {
               },
             ),
           ),
-          AnimatedOpacity(
-            duration: Duration(milliseconds: 750),
-            opacity: (ActionDAO.instance
-                        .getActionById(widget.rollLog.idAction)!
-                        .isResisted &&
-                    isShowingHighlighted)
-                ? 1
-                : 0,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Você obteve ",
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  Text(
-                    _calculateAmountSuccess().toString(),
-                    style: TextStyle(fontSize: 48),
-                  ),
-                  Text(
-                    " sucesso",
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  if (_calculateAmountSuccess() != 1)
+          if (ActionDAO.instance
+              .getActionById(widget.rollLog.idAction)!
+              .isResisted)
+            AnimatedOpacity(
+              duration: Duration(milliseconds: 750),
+              opacity: (ActionDAO.instance
+                          .getActionById(widget.rollLog.idAction)!
+                          .isResisted &&
+                      isShowingHighlighted)
+                  ? 1
+                  : 0,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
                     Text(
-                      "s",
+                      "Você obteve ",
                       style: TextStyle(fontSize: 24),
                     ),
-                  Text(
-                    ".",
-                    style: TextStyle(fontSize: 24),
-                  ),
-                ],
+                    Text(
+                      _calculateAmountSuccess().toString(),
+                      style: TextStyle(fontSize: 48),
+                    ),
+                    Text(
+                      " sucesso",
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    if (_calculateAmountSuccess() != 1)
+                      Text(
+                        "s",
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    Text(
+                      ".",
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 8),
           Text(
             viewModel.getHelperText(
                 ActionDAO.instance.getActionById(widget.rollLog.idAction)!),

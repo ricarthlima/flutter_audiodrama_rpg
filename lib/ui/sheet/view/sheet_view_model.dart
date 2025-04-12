@@ -219,7 +219,7 @@ class SheetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  onRoll(BuildContext context, {required RollLog roll}) async {
+  Future<void> onRoll(BuildContext context, {required RollLog roll}) async {
     ActionTemplate? action = ActionDAO.instance.getActionById(roll.idAction);
 
     if (!ActionDAO.instance.isOnlyFreeOrPreparation(roll.idAction) ||
@@ -676,5 +676,47 @@ class SheetViewModel extends ChangeNotifier {
 
   bool get isOwner {
     return ownerId == FirebaseAuth.instance.currentUser!.uid;
+  }
+
+  Future<void> rollAction({
+    required BuildContext context,
+    required ActionTemplate action,
+  }) async {
+    List<int> rolls = [];
+
+    int newActionValue = getTrainLevelByAction(action.id) + (modGlobalTrain);
+
+    if (newActionValue < 0) {
+      newActionValue = 0;
+    }
+
+    if (newActionValue > 4) {
+      newActionValue = 4;
+    }
+
+    if (ActionDAO.instance.isOnlyFreeOrPreparation(action.id)) {
+      rolls.add(Random().nextInt(20) + 1);
+    } else {
+      if (newActionValue == 0 || newActionValue == 4) {
+        rolls.add(Random().nextInt(20) + 1);
+        rolls.add(Random().nextInt(20) + 1);
+        rolls.add(Random().nextInt(20) + 1);
+      } else if (newActionValue == 1 || newActionValue == 3) {
+        rolls.add(Random().nextInt(20) + 1);
+        rolls.add(Random().nextInt(20) + 1);
+      } else if (newActionValue == 2) {
+        rolls.add(Random().nextInt(20) + 1);
+      }
+    }
+
+    await onRoll(
+      context,
+      roll: RollLog(
+        rolls: rolls,
+        idAction: action.id,
+        dateTime: DateTime.now(),
+        isGettingLower: newActionValue <= 1,
+      ),
+    );
   }
 }

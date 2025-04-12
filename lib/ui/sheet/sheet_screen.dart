@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/text_field_dropdown.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_app_bar.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_drawer.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_floating_action_button.dart';
@@ -25,6 +29,8 @@ class SheetScreen extends StatefulWidget {
 }
 
 class _SheetScreenState extends State<SheetScreen> {
+  late final bool Function(KeyEvent) _keyListener;
+
   @override
   void initState() {
     super.initState();
@@ -32,6 +38,83 @@ class _SheetScreenState extends State<SheetScreen> {
       final viewModel = Provider.of<SheetViewModel>(context, listen: false);
       viewModel.refresh();
     });
+    _keyListener = _handleKey;
+    HardwareKeyboard.instance.addHandler(_keyListener);
+  }
+
+  bool _handleKey(KeyEvent event) {
+    if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.keyQ) {
+      showSearchDialog().then(
+        (value) {
+          HardwareKeyboard.instance.addHandler(_keyListener);
+          if (value != null) {
+            if (!mounted) return;
+            context.read<SheetViewModel>().rollAction(
+                  context: context,
+                  action: ActionDAO.instance.getAll().firstWhere(
+                      (e) => e.name.toLowerCase() == value.toLowerCase()),
+                );
+          }
+        },
+      );
+      HardwareKeyboard.instance.removeHandler(_keyListener);
+    }
+    return false;
+  }
+
+  @override
+  void dispose() {
+    HardwareKeyboard.instance.removeHandler(_keyListener);
+    super.dispose();
+  }
+
+  Future<dynamic> showSearchDialog() async {
+    if (!context.mounted) return;
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Container(
+            width: 600,
+            height: 250,
+            padding: EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              border: Border.all(
+                width: 2,
+                color: Theme.of(context).textTheme.titleMedium!.color!,
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                GenericHeader(title: "Rolagem rápida"),
+                TextFieldDropdown(
+                  listOptions:
+                      ActionDAO.instance.getAll().map((e) => e.name).toList(),
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    label: Text("Busque uma ação"),
+                  ),
+                  onSubmit: (value) {
+                    Navigator.pop(context, value);
+                  },
+                ),
+                Opacity(
+                  opacity: 0.5,
+                  child: Text(
+                    "Pressione 'Enter' para rolar",
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
