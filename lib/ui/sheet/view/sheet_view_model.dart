@@ -174,7 +174,7 @@ class SheetViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> saveChanges() async {
+  Future<Sheet> saveChanges() async {
     Sheet sheet = Sheet(
       id: id,
       characterName:
@@ -200,6 +200,8 @@ class SheetViewModel extends ChangeNotifier {
     // Beleza, mas você colocou também no refresh?
 
     await SheetService().saveSheet(sheet);
+
+    return sheet;
   }
 
   onActionValueChanged({required ActionValue ac, required bool isWork}) {

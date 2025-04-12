@@ -126,23 +126,35 @@ class Sheet {
     };
   }
 
+  Map<String, dynamic> toMapWithoutId() {
+    Map<String, dynamic> map = toMap();
+    map.remove("id");
+    return map;
+  }
+
   factory Sheet.fromMap(Map<String, dynamic> map) {
     return Sheet(
-      id: map['id'] as String,
-      characterName: map['characterName'] as String,
-      stressLevel: map['stressLevel'] as int,
-      effortPoints: map['effortPoints'] as int,
-      listActionValue: List<ActionValue>.from(
-        (map['listActionValue'] as List<dynamic>).map<ActionValue>(
-          (x) => ActionValue.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
-      listRollLog: List<RollLog>.from(
-        (map['listRollLog'] as List<dynamic>).map<RollLog>(
-          (x) => RollLog.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
-      baseLevel: map['baseLevel'] as int,
+      id: map['id'] != null ? map['id'] as String : "",
+      characterName:
+          map['characterName'] != null ? map['characterName'] as String : "",
+      stressLevel: map['stressLevel'] != null ? map['stressLevel'] as int : 0,
+      effortPoints:
+          map['effortPoints'] != null ? map['effortPoints'] as int : 0,
+      listActionValue: map['listActionValue'] != null
+          ? List<ActionValue>.from(
+              (map['listActionValue'] as List<dynamic>).map<ActionValue>(
+                (x) => ActionValue.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : [],
+      listRollLog: map['listRollLog'] != null
+          ? List<RollLog>.from(
+              (map['listRollLog'] as List<dynamic>).map<RollLog>(
+                (x) => RollLog.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : [],
+      baseLevel: map['baseLevel'] != null ? map['baseLevel'] as int : 0,
       listItemSheet: map['listItemSheet'] != null
           ? List<ItemSheet>.from(
               (map['listItemSheet'] as List<dynamic>).map<ItemSheet>(

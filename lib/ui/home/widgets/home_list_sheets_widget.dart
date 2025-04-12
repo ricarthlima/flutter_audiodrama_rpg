@@ -8,6 +8,7 @@ import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 
 import '../../../domain/models/sheet_model.dart';
 import '../../_core/fonts.dart';
+import '../../_core/utils/download_json_file.dart';
 import 'home_list_item_widget.dart';
 
 class HomeListSheetsWidget extends StatefulWidget {
@@ -60,6 +61,15 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
           GenericHeader(
             title: widget.title!,
             subtitle: widget.subtitle,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  _importFromJson(context);
+                },
+                tooltip: "Importar personagem",
+                icon: Icon(Icons.file_download_outlined),
+              ),
+            ],
             iconButton: IconButton(
               onPressed: () {
                 context.read<HomeViewModel>().onCreateSheetClicked(context);
@@ -142,5 +152,12 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
         ],
       ),
     );
+  }
+
+  Future<void> _importFromJson(BuildContext context) async {
+    Map<String, dynamic>? map = await pickAndReadJsonFile();
+    if (map != null && context.mounted) {
+      context.read<HomeViewModel>().createSheetByMap(map);
+    }
   }
 }

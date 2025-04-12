@@ -5,6 +5,7 @@ import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../data/services/sheet_service.dart';
 import '../../../domain/models/sheet_model.dart';
@@ -95,6 +96,13 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> removeSheetFromCampaign(String sheetId) {
     return CampaignService.instance.removeCampaign(sheetId: sheetId);
+  }
+
+  Future<void> createSheetByMap(Map<String, dynamic> map) async {
+    Sheet sheet = Sheet.fromMap(map);
+    sheet.id = Uuid().v1();
+
+    await sheetService.saveSheet(sheet);
   }
 }
 

@@ -4,6 +4,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 class GenericHeader extends StatelessWidget {
   final String title;
   final String? subtitle;
+  final List<Widget>? actions;
   final IconButton? iconButton;
   final bool isSmallTitle;
 
@@ -13,6 +14,7 @@ class GenericHeader extends StatelessWidget {
     this.subtitle,
     this.iconButton,
     this.isSmallTitle = false,
+    this.actions,
   });
 
   @override
@@ -30,7 +32,16 @@ class GenericHeader extends StatelessWidget {
                 fontFamily: FontFamily.bungee,
               ),
             ),
-            if (iconButton != null) iconButton!
+            Row(
+              children: [
+                if (actions != null)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: actions!,
+                  ),
+                if (iconButton != null) iconButton!
+              ],
+            )
           ],
         ),
         if (subtitle != null)

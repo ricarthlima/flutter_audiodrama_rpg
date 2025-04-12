@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/utils/download_json_file.dart';
 import 'package:flutter_rpg_audiodrama/ui/settings/settings_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -12,11 +13,11 @@ import '../view/sheet_view_model.dart';
 import 'package:badges/badges.dart' as badges;
 
 AppBar getSheetAppBar(BuildContext context) {
-  final viewModel = Provider.of<SheetViewModel>(context);
+  final sheetVM = Provider.of<SheetViewModel>(context);
 
-  if (viewModel.isLoading ||
-      (viewModel.isAuthorized != null && !viewModel.isAuthorized!) ||
-      !viewModel.isFoundSheet) {
+  if (sheetVM.isLoading ||
+      (sheetVM.isAuthorized != null && !sheetVM.isAuthorized!) ||
+      !sheetVM.isFoundSheet) {
     return AppBar(
       toolbarHeight: 64,
       actions: [Container()],
@@ -36,16 +37,27 @@ AppBar getSheetAppBar(BuildContext context) {
       },
       icon: Icon(Icons.arrow_back),
     ),
-    backgroundColor: viewModel.imageUrl != null
+    backgroundColor: sheetVM.imageUrl != null
         ? Theme.of(context).scaffoldBackgroundColor.withAlpha(75)
         : null,
     actions: [
-      if (viewModel.ownerId == FirebaseAuth.instance.currentUser!.uid &&
+      IconButton(
+        onPressed: () {
+          _downloadSheetJSON(sheetVM);
+        },
+        tooltip: "Exportar JSON",
+        icon: Icon(Icons.file_upload_outlined),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Text("•"),
+      ),
+      if (sheetVM.ownerId == FirebaseAuth.instance.currentUser!.uid &&
           !isVertical(context) &&
-          viewModel.listSheets.isNotEmpty)
+          sheetVM.listSheets.isNotEmpty)
         DropdownButton<Sheet>(
-          value: viewModel.listSheets.where((e) => e.id == viewModel.id).first,
-          items: viewModel.listSheets
+          value: sheetVM.listSheets.where((e) => e.id == sheetVM.id).first,
+          items: sheetVM.listSheets
               .map(
                 (e) => DropdownMenuItem(
                   value: e,
@@ -57,13 +69,13 @@ AppBar getSheetAppBar(BuildContext context) {
             if (sheet != null) {
               AppRouter().goSheet(
                 context: context,
-                username: viewModel.username,
+                username: sheetVM.username,
                 sheet: sheet,
               );
             }
           },
         ),
-      if (viewModel.ownerId == FirebaseAuth.instance.currentUser!.uid)
+      if (sheetVM.ownerId == FirebaseAuth.instance.currentUser!.uid)
         Row(
           children: [
             Visibility(
@@ -74,18 +86,18 @@ AppBar getSheetAppBar(BuildContext context) {
               ),
             ),
             Visibility(
-              visible: viewModel.isEditing,
+              visible: sheetVM.isEditing,
               child: Text("Saia da edição para salvar"),
             ),
             Visibility(
-              visible: viewModel.isEditing,
+              visible: sheetVM.isEditing,
               child: SizedBox(width: 8),
             ),
             Icon(Icons.edit),
             Switch(
-              value: viewModel.isEditing,
+              value: sheetVM.isEditing,
               onChanged: (value) {
-                viewModel.toggleEditMode();
+                sheetVM.toggleEditMode();
               },
             ),
           ],
@@ -110,13 +122,13 @@ AppBar getSheetAppBar(BuildContext context) {
           builder: (context) => IconButton(
             onPressed: () {
               Scaffold.of(context).openEndDrawer();
-              viewModel.notificationCount = 0;
+              sheetVM.notificationCount = 0;
             },
             icon: badges.Badge(
-              showBadge: viewModel.notificationCount >
+              showBadge: sheetVM.notificationCount >
                   0, // Esconde se não houver notificações
               badgeContent: Text(
-                viewModel.notificationCount.toString(),
+                sheetVM.notificationCount.toString(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -132,5 +144,13 @@ AppBar getSheetAppBar(BuildContext context) {
         ),
       SizedBox(width: 16),
     ],
+  );
+}
+
+_downloadSheetJSON(SheetViewModel sheetVM) async {
+  Sheet sheet = await sheetVM.saveChanges();
+  downloadJsonFile(
+    sheet.toMapWithoutId(),
+    "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json",
   );
 }
