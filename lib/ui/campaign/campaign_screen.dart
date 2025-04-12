@@ -97,7 +97,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
               return MovableExpandableScreen(
                 title: e.sheet.characterName,
                 onPopup: () {
-                  openUrl("#/${e.username}/sheet/${e.sheet.id}");
+                  openUrl("#/${e.appUser.username!}/sheet/${e.sheet.id}");
                 },
                 onExit: () => campaignVM.closeSheetInCampaign(e.sheet),
                 child: MultiProvider(
@@ -105,7 +105,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
                     ChangeNotifierProvider(
                       create: (context) => SheetViewModel(
                         id: e.sheet.id,
-                        username: e.username,
+                        username: e.appUser.username!,
                         isWindowed: true,
                       ),
                     ),
@@ -190,11 +190,9 @@ class _CampaignScreenState extends State<CampaignScreen> {
                       ),
                       _getDescriptionWidget(campaignVM),
                       SizedBox(
-                        height: 64,
+                        height: 32,
                         width: width(context) * 0.75,
-                        child: Divider(
-                          thickness: 0.5,
-                        ),
+                        child: Divider(thickness: 0.25),
                       ),
                     ],
                   ),
@@ -213,7 +211,6 @@ class _CampaignScreenState extends State<CampaignScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 64),
               ],
             ),
           ),

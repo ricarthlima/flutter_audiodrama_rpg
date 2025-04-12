@@ -5,15 +5,15 @@ class GenericHeader extends StatelessWidget {
   final String title;
   final String? subtitle;
   final List<Widget>? actions;
-  final IconButton? iconButton;
-  final bool isSmallTitle;
+  final Widget? iconButton;
+  final bool dense;
 
   const GenericHeader({
     super.key,
     required this.title,
     this.subtitle,
     this.iconButton,
-    this.isSmallTitle = false,
+    this.dense = false,
     this.actions,
   });
 
@@ -28,7 +28,7 @@ class GenericHeader extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                fontSize: (!isSmallTitle) ? 18 : null,
+                fontSize: (!dense) ? 18 : null,
                 fontFamily: FontFamily.bungee,
               ),
             ),
@@ -39,7 +39,17 @@ class GenericHeader extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: actions!,
                   ),
-                if (iconButton != null) iconButton!
+                if (iconButton != null) iconButton!,
+                if (iconButton == null && actions == null)
+                  Opacity(
+                    opacity: 0,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.remove_red_eye_outlined,
+                      ),
+                    ),
+                  ),
               ],
             )
           ],
@@ -56,7 +66,7 @@ class GenericHeader extends StatelessWidget {
               ),
             ),
           ),
-        if (!isSmallTitle)
+        if (!dense)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Divider(thickness: 0.1),

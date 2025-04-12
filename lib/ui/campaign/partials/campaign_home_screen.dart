@@ -455,7 +455,7 @@ class _ListBackgrounds extends StatelessWidget {
       children: [
         GenericHeader(
           title: "Planos de fundo",
-          isSmallTitle: true,
+          dense: true,
         ),
         Scrollbar(
           controller: scrollController,
@@ -574,7 +574,7 @@ class _ListSounds extends StatelessWidget {
             children: [
               GenericHeader(
                 title: "Músicas",
-                isSmallTitle: true,
+                dense: true,
               ),
               SizedBox(
                 height: 300,
@@ -609,7 +609,7 @@ class _ListSounds extends StatelessWidget {
             children: [
               GenericHeader(
                 title: "Ambientações",
-                isSmallTitle: true,
+                dense: true,
               ),
               SizedBox(
                 height: 300,
@@ -645,7 +645,7 @@ class _ListSounds extends StatelessWidget {
             children: [
               GenericHeader(
                 title: "Efeitos",
-                isSmallTitle: true,
+                dense: true,
               ),
               SizedBox(
                 height: 300,
@@ -680,7 +680,7 @@ class _ListSounds extends StatelessWidget {
             children: [
               GenericHeader(
                 title: "Objetos, Notas e Itens",
-                isSmallTitle: true,
+                dense: true,
               ),
               SizedBox(
                 height: 300,

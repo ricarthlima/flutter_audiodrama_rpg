@@ -106,7 +106,7 @@ class CampaignViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map<Sheet, AppUser> mapSheetOthers = {};
+  List<SheetAppUser> listSheetAppUser = [];
 
   Future<void> getSheetsByCampaign({bool isJustOthers = true}) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -117,7 +117,8 @@ class CampaignViewModel extends ChangeNotifier {
       sheetsSub =
           CampaignService.instance.getStreamCSByCampaign(campaign!.id).listen(
         (snapshot) async {
-          mapSheetOthers = {};
+          listSheetAppUser = [];
+
           for (var doc in snapshot.docs) {
             CampaignSheet campaignSheet = CampaignSheet.fromMap(doc.data());
             if (isJustOthers && campaignSheet.userId == uid) continue;
@@ -132,7 +133,9 @@ class CampaignViewModel extends ChangeNotifier {
             );
 
             if (sheet != null && appUser != null) {
-              mapSheetOthers[sheet] = appUser;
+              listSheetAppUser.add(
+                SheetAppUser(sheet: sheet, appUser: appUser),
+              );
             }
           }
           notifyListeners();
@@ -244,17 +247,13 @@ class CampaignViewModel extends ChangeNotifier {
     return currentPage == CampaignSubPages.home;
   }
 
-  List<SheetWithUserId> listOpenSheet = [];
+  List<SheetAppUser> listOpenSheet = [];
 
-  openSheetInCampaign(Sheet sheet, String userId, String username) {
-    if (listOpenSheet.where((e) => e.sheet.id == sheet.id).isEmpty) {
-      listOpenSheet.add(
-        SheetWithUserId(
-          sheet: sheet,
-          userId: userId,
-          username: username,
-        ),
-      );
+  openSheetInCampaign(SheetAppUser sheetAppUser) {
+    if (listOpenSheet
+        .where((e) => e.sheet.id == sheetAppUser.sheet.id)
+        .isEmpty) {
+      listOpenSheet.add(sheetAppUser);
       notifyListeners();
     }
   }
@@ -265,14 +264,12 @@ class CampaignViewModel extends ChangeNotifier {
   }
 }
 
-class SheetWithUserId {
+class SheetAppUser {
   Sheet sheet;
-  String userId;
-  String username;
+  AppUser appUser;
 
-  SheetWithUserId({
+  SheetAppUser({
     required this.sheet,
-    required this.userId,
-    required this.username,
+    required this.appUser,
   });
 }
