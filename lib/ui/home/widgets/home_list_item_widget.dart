@@ -4,6 +4,7 @@ import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/helpers.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/utils/download_json_file.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/move_sheet_to_campaign_dialog.dart';
 import 'package:provider/provider.dart';
 import '../../../domain/models/sheet_model.dart';
@@ -77,6 +78,14 @@ class HomeListItemWidget extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          IconButton(
+            onPressed: () {
+              downloadJsonFile(sheet.toMapWithoutId(),
+                  "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json");
+            },
+            tooltip: "Exportar",
+            icon: Icon(Icons.file_download_outlined),
+          ),
           if (isShowingByCampaign)
             IconButton(
               onPressed: () {
@@ -87,7 +96,6 @@ class HomeListItemWidget extends StatelessWidget {
                   isPushing: isShowingByCampaign,
                 );
               },
-              iconSize: (isVertical(context)) ? 20 : 32,
               tooltip: "Abrir nessa tela",
               icon: Icon(Icons.arrow_forward),
             ),
@@ -104,7 +112,6 @@ class HomeListItemWidget extends StatelessWidget {
                           sheet: sheet,
                         );
                       },
-                      iconSize: (isVertical(context)) ? 20 : 32,
                       tooltip: "Mover para campanha",
                       icon: Icon(Icons.move_down_rounded),
                     ),
@@ -113,7 +120,6 @@ class HomeListItemWidget extends StatelessWidget {
                         viewModel.onDuplicateSheet(
                             context: context, sheet: sheet);
                       },
-                      iconSize: (isVertical(context)) ? 20 : 32,
                       tooltip: "Duplicar",
                       icon: Icon(Icons.copy),
                     ),
@@ -121,7 +127,6 @@ class HomeListItemWidget extends StatelessWidget {
                       onPressed: () {
                         viewModel.onRemoveSheet(context: context, sheet: sheet);
                       },
-                      iconSize: (isVertical(context)) ? 20 : 32,
                       tooltip: "Remover",
                       icon: Icon(
                         Icons.delete,
@@ -135,7 +140,6 @@ class HomeListItemWidget extends StatelessWidget {
                     viewModel.onDuplicateSheetToMe(
                         context: context, sheet: sheet);
                   },
-                  iconSize: (isVertical(context)) ? 20 : 32,
                   tooltip: "Duplicar",
                   icon: Icon(Icons.copy),
                 ),
