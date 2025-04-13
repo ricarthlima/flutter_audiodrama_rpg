@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/home_campaign/components/join_campaign_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/home_campaign/widgets/campaign_widget.dart';
 import 'package:provider/provider.dart';

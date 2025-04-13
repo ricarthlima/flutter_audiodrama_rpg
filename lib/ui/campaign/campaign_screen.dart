@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/open_popup.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_appbar.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_drawer.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_achievements_screen.dart';

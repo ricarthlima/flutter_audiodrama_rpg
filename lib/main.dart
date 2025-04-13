@@ -8,7 +8,7 @@ import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
 
 import 'package:flutter_rpg_audiodrama/firebase_options.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/user_provider.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_visual_novel_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
@@ -22,6 +22,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '_core/providers/audio_provider.dart';
 import 'ui/settings/view/settings_provider.dart';
 import 'data/daos/item_dao.dart';
 
@@ -46,6 +47,9 @@ void main() async {
   SettingsProvider themeProvider = SettingsProvider();
   await themeProvider.loadSettings();
 
+  AudioProvider audioProvider = AudioProvider();
+  await audioProvider.onInitialize();
+
   runApp(
     MultiProvider(
       providers: [
@@ -61,6 +65,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CampaignViewModel()),
         ChangeNotifierProvider(
             create: (_) => CampaignVisualNovelViewModel(campaignId: "")),
+        ChangeNotifierProvider(create: (_) => audioProvider),
       ],
       child: const MainApp(),
     ),

@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../router.dart';
@@ -23,6 +25,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context);
+    final audioProvider = Provider.of<AudioProvider>(context);
 
     return SizedBox(
       width: min(400, width(context)),
@@ -36,7 +39,13 @@ class SettingsScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 4,
               children: [
+                Text(
+                  "Geral",
+                  style: TextStyle(fontFamily: FontFamily.bungee),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -55,7 +64,72 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                Divider(height: 32),
+                Divider(
+                  height: 32,
+                  thickness: 0.5,
+                ),
+                Text(
+                  "Audio",
+                  style: TextStyle(fontFamily: FontFamily.bungee),
+                ),
+                Column(
+                  spacing: 8,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text("Global"),
+                    Slider(
+                      value: audioProvider.globalLocalVolume,
+                      min: 0,
+                      max: 1,
+                      divisions: 9,
+                      padding: EdgeInsets.zero,
+                      label: audioProvider.globalLocalVolume.toStringAsFixed(1),
+                      onChanged: (value) {
+                        audioProvider.changeGlobalVolume(value);
+                      },
+                    ),
+                    Text("Músicas"),
+                    Slider(
+                      value: audioProvider.mscLocalVolume,
+                      min: 0,
+                      max: 1,
+                      divisions: 9,
+                      padding: EdgeInsets.zero,
+                      label: audioProvider.mscLocalVolume.toStringAsFixed(1),
+                      onChanged: (value) {
+                        audioProvider.changeLocalMusicVolume(value);
+                      },
+                    ),
+                    Text("Ambientação"),
+                    Slider(
+                      value: audioProvider.ambLocalVolume,
+                      min: 0,
+                      max: 1,
+                      divisions: 9,
+                      padding: EdgeInsets.zero,
+                      label: audioProvider.ambLocalVolume.toStringAsFixed(1),
+                      onChanged: (value) {
+                        audioProvider.changeLocalAmbientVolume(value);
+                      },
+                    ),
+                    Text("Efeitos"),
+                    Slider(
+                      value: audioProvider.sfxLocalVolume,
+                      min: 0,
+                      max: 1,
+                      divisions: 9,
+                      padding: EdgeInsets.zero,
+                      label: audioProvider.sfxLocalVolume.toStringAsFixed(1),
+                      onChanged: (value) {
+                        audioProvider.changeLocalSfxVolume(value);
+                      },
+                    ),
+                  ],
+                ),
+                Divider(
+                  height: 32,
+                  thickness: 0.5,
+                ),
                 ListTile(
                   onTap: () {
                     FirebaseAuth.instance.signOut().then(
