@@ -4,6 +4,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 class GenericHeader extends StatelessWidget {
   final String title;
   final String? subtitle;
+  final Widget? subtitleWidget;
   final List<Widget>? actions;
   final Widget? iconButton;
   final bool dense;
@@ -12,6 +13,7 @@ class GenericHeader extends StatelessWidget {
     super.key,
     required this.title,
     this.subtitle,
+    this.subtitleWidget,
     this.iconButton,
     this.dense = false,
     this.actions,
@@ -66,6 +68,7 @@ class GenericHeader extends StatelessWidget {
               ),
             ),
           ),
+        if (subtitleWidget != null) subtitleWidget!,
         if (!dense)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),

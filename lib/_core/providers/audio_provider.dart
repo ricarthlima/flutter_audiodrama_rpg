@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_rpg_audiodrama/_core/release_mode.dart';
 
+import '../../domain/models/campaign.dart';
+
 enum AudioProviderType {
   music,
   ambience,
@@ -31,6 +33,32 @@ class AudioProvider extends ChangeNotifier {
   double ambLocalVolume = 1;
   double sfxLocalVolume = 1;
 
+  String? _currentMscUrl;
+  String? get currentMscUrl => _currentMscUrl;
+  set currentMscUrl(String? value) {
+    _currentMscUrl = value;
+    notifyListeners();
+  }
+
+  String? _currentAmbUrl;
+  String? get currentAmbUrl => _currentAmbUrl;
+  set currentAmbUrl(String? value) {
+    _currentAmbUrl = value;
+    notifyListeners();
+  }
+
+  String? _currentSfxUrl;
+  String? get currentSfxUrl => _currentSfxUrl;
+  set currentSfxUrl(String? value) {
+    _currentSfxUrl = value;
+    notifyListeners();
+  }
+
+  String lastTimeStaredSfx = "";
+  double _lastMscVolume = 0;
+  double _lastAmbVolume = 0;
+  double _lastSfxVolume = 0;
+
   Future<void> onInitialize() async {
     await _mscPlayer.stop();
     await _ambPlayer.stop();
@@ -52,16 +80,15 @@ class AudioProvider extends ChangeNotifier {
     await _sfxPlayer.setLoopMode(LoopMode.off);
   }
 
-  @override
-  void dispose() {
-    _mscPlayer.dispose();
-    _ambPlayer.dispose();
-    _sfxPlayer.dispose();
-    super.dispose();
+  void onDispose() {
+    _mscPlayer.stop();
+    _ambPlayer.stop();
+    _sfxPlayer.stop();
   }
 
   Future<void> changeMusicVolume(double campaignVolume) async {
-    final target = campaignVolume * globalLocalVolume * mscLocalVolume;
+    final target =
+        safeVolume(campaignVolume * globalLocalVolume * mscLocalVolume);
     if (_mscPlayer.volume != target) {
       await _mscPlayer
           .setVolume(campaignVolume * globalLocalVolume * mscLocalVolume);
@@ -69,7 +96,8 @@ class AudioProvider extends ChangeNotifier {
   }
 
   Future<void> changeAmbienceVolume(double campaignVolume) async {
-    final target = campaignVolume * globalLocalVolume * ambLocalVolume;
+    final target =
+        safeVolume(campaignVolume * globalLocalVolume * ambLocalVolume);
     if (_ambPlayer.volume != target) {
       await _ambPlayer
           .setVolume(campaignVolume * globalLocalVolume * ambLocalVolume);
@@ -77,7 +105,8 @@ class AudioProvider extends ChangeNotifier {
   }
 
   Future<void> changeSfxVolume(double campaignVolume) async {
-    final target = campaignVolume * globalLocalVolume * sfxLocalVolume;
+    final target =
+        safeVolume(campaignVolume * globalLocalVolume * sfxLocalVolume);
     if (_sfxPlayer.volume != target) {
       await _sfxPlayer
           .setVolume(campaignVolume * globalLocalVolume * sfxLocalVolume);
@@ -90,43 +119,90 @@ class AudioProvider extends ChangeNotifier {
     required double volume,
     DateTime? timeStarted,
   }) async {
+    await _checkUpdateVolume(type: type, volume: volume);
+
+    if (_needToUpdateUrl(type: type, url: url)) {
+      switch (type) {
+        case AudioProviderType.music:
+          await _playWithSync(
+            player: _mscPlayer,
+            url: url,
+            timeStarted: timeStarted,
+          );
+        case AudioProviderType.ambience:
+          await _playWithSync(
+            player: _ambPlayer,
+            url: url,
+            timeStarted: timeStarted,
+          );
+        case AudioProviderType.sfx:
+          await _playSFX(
+            url: url,
+            timeStarted: timeStarted!,
+          );
+      }
+    }
+
+    notifyListeners();
+  }
+
+  bool _needToUpdateUrl({
+    required AudioProviderType type,
+    required String url,
+  }) {
     switch (type) {
       case AudioProviderType.music:
-        return _playWithSync(
-          player: _mscPlayer,
-          url: url,
-          volume: volume,
-          timeStarted: timeStarted,
-          changeVolume: changeMusicVolume,
-        );
+        if (url != currentMscUrl) {
+          currentMscUrl = url;
+          notifyListeners();
+          return true;
+        }
       case AudioProviderType.ambience:
-        return _playWithSync(
-          player: _ambPlayer,
-          url: url,
-          volume: volume,
-          timeStarted: timeStarted,
-          changeVolume: changeAmbienceVolume,
-        );
+        if (url != currentAmbUrl) {
+          currentAmbUrl = url;
+          notifyListeners();
+          return true;
+        }
       case AudioProviderType.sfx:
-        return _playWithSync(
-          player: _sfxPlayer,
-          url: url,
-          volume: volume,
-          timeStarted: timeStarted,
-          changeVolume: changeSfxVolume,
-        );
+        currentSfxUrl = url;
+        notifyListeners();
+        return true;
+    }
+    return false;
+  }
+
+  Future<void> _checkUpdateVolume({
+    required AudioProviderType type,
+    required double volume,
+  }) async {
+    switch (type) {
+      case AudioProviderType.music:
+        if (_lastMscVolume != volume) {
+          _lastMscVolume = volume;
+          await changeMusicVolume(volume);
+          break;
+        }
+      case AudioProviderType.ambience:
+        if (_lastAmbVolume != volume) {
+          _lastAmbVolume = volume;
+          await changeAmbienceVolume(volume);
+          break;
+        }
+      case AudioProviderType.sfx:
+        if (_lastSfxVolume != volume) {
+          _lastSfxVolume = volume;
+          await changeSfxVolume(volume);
+          break;
+        }
     }
   }
 
   Future<void> _playWithSync({
     required AudioPlayer player,
     required String url,
-    required double volume,
-    DateTime? timeStarted,
-    required Future<void> Function(double volume) changeVolume,
+    required DateTime? timeStarted,
   }) async {
     await player.stop();
-    await changeVolume(volume);
     final duration = await player.setUrl(url);
 
     if (duration != null && timeStarted != null) {
@@ -137,9 +213,25 @@ class AudioProvider extends ChangeNotifier {
     }
 
     await player.play();
+
+    notifyListeners();
+  }
+
+  Future<void> _playSFX({
+    required String url,
+    required DateTime timeStarted,
+  }) async {
+    if (lastTimeStaredSfx != timeStarted.toUtc().toString()) {
+      lastTimeStaredSfx = timeStarted.toUtc().toString();
+      await _sfxPlayer.stop();
+      await _sfxPlayer.setUrl(url);
+      await _sfxPlayer.play();
+    }
   }
 
   Future<void> changeGlobalVolume(double volume) async {
+    volume = safeVolume(volume);
+
     await _changeGlobalVolume(
       oldGlobal: globalLocalVolume,
       newGlobal: volume,
@@ -148,6 +240,8 @@ class AudioProvider extends ChangeNotifier {
   }
 
   Future<void> changeLocalMusicVolume(double volume) async {
+    volume = safeVolume(volume);
+
     if (volume != mscLocalVolume) {
       await _changeRelativeVolume(
         oldVolume: mscLocalVolume,
@@ -160,6 +254,8 @@ class AudioProvider extends ChangeNotifier {
   }
 
   Future<void> changeLocalAmbientVolume(double volume) async {
+    volume = safeVolume(volume);
+
     if (volume != ambLocalVolume) {
       _changeRelativeVolume(
         oldVolume: ambLocalVolume,
@@ -172,6 +268,8 @@ class AudioProvider extends ChangeNotifier {
   }
 
   Future<void> changeLocalSfxVolume(double volume) async {
+    volume = safeVolume(volume);
+
     if (volume != sfxLocalVolume) {
       _changeRelativeVolume(
         oldVolume: sfxLocalVolume,
@@ -229,19 +327,36 @@ class AudioProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> stop(AudioProviderType type) async {
+    switch (type) {
+      case AudioProviderType.music:
+        _currentMscUrl = null;
+        await _mscPlayer.stop();
+        break;
+      case AudioProviderType.ambience:
+        _currentAmbUrl = null;
+        await _ambPlayer.stop();
+        break;
+      case AudioProviderType.sfx:
+        _currentSfxUrl = null;
+        await _sfxPlayer.stop();
+        break;
+    }
+  }
 }
 
+// TODO: Esse cara pode rodar para poder ir para CampaignVisualModel
 class AudioProviderFirestore {
   Future<void> setAudioCampaign({
-    required String campaignId,
-    required AudioCampaign audioCampaign,
+    required Campaign campaign,
   }) async {
     await FirebaseFirestore.instance
         .collection("${releaseCollection}campaigns")
-        .doc(campaignId)
+        .doc(campaign.id)
         .update(
       {
-        "audioCampaign": audioCampaign.toMap(),
+        "audioCampaign": campaign.audioCampaign.toMap(),
       },
     );
   }
@@ -371,4 +486,10 @@ class AudioCampaign {
         sfxVolume.hashCode ^
         sfxStarted.hashCode;
   }
+}
+
+double safeVolume(double v) {
+  if (v <= 0.0) return 0.000001;
+  if (v.isNaN || v.isInfinite) return 0.1;
+  return v.clamp(0.0, 1.0);
 }

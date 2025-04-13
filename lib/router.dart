@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/circular_progress_indicator.dart';
 import 'package:flutter_rpg_audiodrama/ui/auth/login_screen.dart';
@@ -157,7 +158,11 @@ class AppRouter {
       listen: false,
     );
 
+    AudioProvider audioProvider =
+        Provider.of<AudioProvider>(context, listen: false);
+
     userProvider.disposeCampaign();
+    audioProvider.onDispose();
   }
 
   goHome({required BuildContext context, HomeSubPages? subPage}) {

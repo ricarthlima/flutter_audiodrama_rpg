@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_visual.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/image_dialog.dart';
@@ -560,6 +561,7 @@ class _ListSounds extends StatelessWidget {
   Widget build(BuildContext context) {
     CampaignVisualNovelViewModel visualVM =
         Provider.of<CampaignVisualNovelViewModel>(context);
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
@@ -567,108 +569,28 @@ class _ListSounds extends StatelessWidget {
         Flexible(
           flex: 3,
           fit: FlexFit.tight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            spacing: 8,
-            children: [
-              GenericHeader(
-                title: "Músicas",
-                dense: true,
-              ),
-              SizedBox(
-                height: 300,
-                child: MasonryGridView.builder(
-                  padding: EdgeInsets.zero,
-                  gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent:
-                        64, // cada botão terá no máximo essa largura
-                  ),
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                  itemCount: visualVM.data.listMusics.length,
-                  itemBuilder: (context, index) {
-                    final music = visualVM.data.listMusics[index];
-                    return IconButton(
-                      onPressed: () {},
-                      tooltip: music.name,
-                      icon: const Icon(Icons.music_note_rounded),
-                    );
-                  },
-                ),
-              ),
-            ],
+          child: _AudioAreaWidget(
+            title: "Músicas",
+            type: AudioProviderType.music,
+            listAudios: visualVM.data.listMusics,
           ),
         ),
         Flexible(
           flex: 3,
           fit: FlexFit.tight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
-            children: [
-              GenericHeader(
-                title: "Ambientações",
-                dense: true,
-              ),
-              SizedBox(
-                height: 300,
-                child: MasonryGridView.builder(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap:
-                      true, // necessário quando dentro de outro scroll (como Column)
-                  gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 64,
-                  ),
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                  itemCount: visualVM.data.listAmbiences.length,
-                  itemBuilder: (context, index) {
-                    final ambience = visualVM.data.listAmbiences[index];
-                    return IconButton(
-                      onPressed: () {},
-                      tooltip: ambience.name,
-                      icon: const Icon(Icons.music_note_rounded),
-                    );
-                  },
-                ),
-              ),
-            ],
+          child: _AudioAreaWidget(
+            title: "Ambientações",
+            type: AudioProviderType.ambience,
+            listAudios: visualVM.data.listAmbiences,
           ),
         ),
         Flexible(
           flex: 3,
           fit: FlexFit.tight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
-            children: [
-              GenericHeader(
-                title: "Efeitos",
-                dense: true,
-              ),
-              SizedBox(
-                height: 300,
-                child: MasonryGridView.builder(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 64,
-                  ),
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                  itemCount: visualVM.data.listSfxs.length,
-                  itemBuilder: (context, index) {
-                    final sfx = visualVM.data.listObjects[index];
-                    return IconButton(
-                      onPressed: () {},
-                      tooltip: sfx.name,
-                      icon: const Icon(Icons.music_note_rounded),
-                    );
-                  },
-                ),
-              ),
-            ],
+          child: _AudioAreaWidget(
+            title: "Efeitos",
+            type: AudioProviderType.sfx,
+            listAudios: visualVM.data.listSfxs,
           ),
         ),
         Flexible(
@@ -726,5 +648,263 @@ class _ListSounds extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class _AudioAreaWidget extends StatefulWidget {
+  final String title;
+  final AudioProviderType type;
+  final List<CampaignVisual> listAudios;
+  const _AudioAreaWidget({
+    required this.title,
+    required this.type,
+    required this.listAudios,
+  });
+
+  @override
+  State<_AudioAreaWidget> createState() => __AudioAreaWidgetState();
+}
+
+class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
+  List<CampaignVisual> listAudiosVisualization = [];
+  double tempVolume = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    listAudiosVisualization = widget.listAudios.toList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(
+        context,
+        listen: false,
+      );
+
+      tempVolume = (widget.type == AudioProviderType.music)
+          ? campaignVM.campaign!.audioCampaign.musicVolume ?? 1
+          : (widget.type == AudioProviderType.ambience)
+              ? campaignVM.campaign!.audioCampaign.ambienceVolume ?? 1
+              : campaignVM.campaign!.audioCampaign.sfxVolume ?? 1;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    AudioProvider audioProvider = Provider.of<AudioProvider>(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      spacing: 8,
+      children: [
+        GenericHeader(
+          dense: true,
+          title: widget.title,
+          actions: [
+            IconButton(
+              onPressed: () {
+                audioProvider.stop(widget.type);
+                switch (widget.type) {
+                  case AudioProviderType.music:
+                    campaignVM.campaign!.audioCampaign.musicUrl = null;
+                    campaignVM.campaign!.audioCampaign.musicStarted = null;
+                    break;
+                  case AudioProviderType.ambience:
+                    campaignVM.campaign!.audioCampaign.ambienceUrl = null;
+                    campaignVM.campaign!.audioCampaign.ambienceStarted = null;
+                    break;
+                  case AudioProviderType.sfx:
+                    campaignVM.campaign!.audioCampaign.sfxUrl = null;
+                    campaignVM.campaign!.audioCampaign.sfxStarted = null;
+                    break;
+                }
+
+                AudioProviderFirestore()
+                    .setAudioCampaign(campaign: campaignVM.campaign!);
+              },
+              tooltip: "Parar",
+              icon: Icon(
+                Icons.stop,
+                color: AppColors.red,
+              ),
+            )
+          ],
+          subtitleWidget: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Flexible(
+                    flex: 8,
+                    child: Slider(
+                      value: tempVolume,
+                      min: 0,
+                      max: 1,
+                      padding: EdgeInsets.only(right: 32),
+                      onChanged: (value) {
+                        setState(() {
+                          tempVolume = value;
+                        });
+                      },
+                      onChangeEnd: (value) {
+                        double volume = safeVolume(value);
+                        switch (widget.type) {
+                          case AudioProviderType.music:
+                            campaignVM.campaign!.audioCampaign.musicVolume =
+                                volume;
+                            break;
+                          case AudioProviderType.ambience:
+                            campaignVM.campaign!.audioCampaign.ambienceVolume =
+                                volume;
+                            break;
+                          case AudioProviderType.sfx:
+                            campaignVM.campaign!.audioCampaign.sfxVolume =
+                                volume;
+                            break;
+                        }
+                        AudioProviderFirestore().setAudioCampaign(
+                          campaign: campaignVM.campaign!,
+                        );
+                      },
+                    ),
+                  ),
+                  Text((tempVolume * 100).toStringAsFixed(0)),
+                ],
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 300,
+          child: (widget.type == AudioProviderType.sfx)
+              ? MasonryGridView.builder(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 64,
+                  ),
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  itemCount: listAudiosVisualization.length,
+                  itemBuilder: (context, index) {
+                    final sfx = listAudiosVisualization[index];
+                    return InkWell(
+                      onTap: () {
+                        setAudio(campaignVM: campaignVM, audio: sfx);
+                      },
+                      child: Tooltip(
+                        message: sfx.name,
+                        child: SizedBox(
+                          height: 72,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1,
+                                  color:
+                                      getNeedToHighlight(audioProvider, sfx.url)
+                                          ? AppColors.red
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .color!
+                                              .withAlpha(75)),
+                            ),
+                            padding: EdgeInsets.all(4),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              spacing: 8,
+                              children: [
+                                Icon(Icons.speaker, size: 18),
+                                Expanded(
+                                  child: Text(
+                                    sfx.name,
+                                    overflow: TextOverflow.clip,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 10),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                )
+              : ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: listAudiosVisualization.length,
+                  itemBuilder: (context, index) {
+                    final music = listAudiosVisualization[index];
+                    return ListTile(
+                      title: Text(
+                        music.name,
+                        style: getNeedToHighlight(audioProvider, music.url)
+                            ? TextStyle(
+                                color: AppColors.red,
+                                fontWeight: FontWeight.bold,
+                              )
+                            : null,
+                      ),
+                      leading: widget.type == AudioProviderType.music
+                          ? const Icon(Icons.music_note_rounded)
+                          : Icon(Icons.landscape),
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      onTap: () {
+                        setAudio(campaignVM: campaignVM, audio: music);
+                      },
+                    );
+                  },
+                ),
+        ),
+      ],
+    );
+  }
+
+  bool getNeedToHighlight(
+    AudioProvider audioProvider,
+    String url,
+  ) {
+    if (widget.type == AudioProviderType.music &&
+        audioProvider.currentMscUrl != null &&
+        (audioProvider.currentMscUrl == url)) {
+      return true;
+    }
+
+    if (widget.type == AudioProviderType.ambience &&
+        audioProvider.currentAmbUrl != null &&
+        (audioProvider.currentAmbUrl == url)) {
+      return true;
+    }
+
+    if (widget.type == AudioProviderType.sfx &&
+        audioProvider.currentSfxUrl != null &&
+        (audioProvider.currentSfxUrl == url)) {
+      return true;
+    }
+    return false;
+  }
+
+  setAudio({
+    required CampaignViewModel campaignVM,
+    required CampaignVisual audio,
+  }) {
+    switch (widget.type) {
+      case AudioProviderType.music:
+        campaignVM.campaign!.audioCampaign.musicUrl = audio.url;
+        campaignVM.campaign!.audioCampaign.musicStarted = DateTime.now();
+        break;
+      case AudioProviderType.ambience:
+        campaignVM.campaign!.audioCampaign.ambienceUrl = audio.url;
+        campaignVM.campaign!.audioCampaign.ambienceStarted = DateTime.now();
+        break;
+      case AudioProviderType.sfx:
+        campaignVM.campaign!.audioCampaign.sfxUrl = audio.url;
+        campaignVM.campaign!.audioCampaign.sfxStarted = DateTime.now();
+    }
+
+    AudioProviderFirestore().setAudioCampaign(campaign: campaignVM.campaign!);
   }
 }

@@ -78,7 +78,7 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     Text("Global"),
                     Slider(
-                      value: audioProvider.globalLocalVolume,
+                      value: safeVolume(audioProvider.globalLocalVolume),
                       min: 0,
                       max: 1,
                       divisions: 9,
@@ -90,7 +90,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     Text("Músicas"),
                     Slider(
-                      value: audioProvider.mscLocalVolume,
+                      value: safeVolume(audioProvider.mscLocalVolume),
                       min: 0,
                       max: 1,
                       divisions: 9,
@@ -102,7 +102,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     Text("Ambientação"),
                     Slider(
-                      value: audioProvider.ambLocalVolume,
+                      value: safeVolume(audioProvider.ambLocalVolume),
                       min: 0,
                       max: 1,
                       divisions: 9,
@@ -114,7 +114,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     Text("Efeitos"),
                     Slider(
-                      value: audioProvider.sfxLocalVolume,
+                      value: safeVolume(audioProvider.sfxLocalVolume),
                       min: 0,
                       max: 1,
                       divisions: 9,

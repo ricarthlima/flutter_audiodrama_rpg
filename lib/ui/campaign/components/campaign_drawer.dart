@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../_core/dimensions.dart';
 import '../../_core/widgets/compactable_button.dart';
+import '../../settings/settings_screen.dart';
 
 class CampaignDrawer extends StatelessWidget {
   const CampaignDrawer({super.key});
@@ -24,7 +25,7 @@ class CampaignDrawer extends StatelessWidget {
         duration: Duration(milliseconds: 350),
         curve: Curves.ease,
         width: (campaignVM.isDrawerClosed) ? 48 : 275,
-        height: height(context) - 72,
+        height: height(context),
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,6 +81,17 @@ class CampaignDrawer extends StatelessWidget {
               ],
             ),
             //TODO: RollLog
+            CompactableButton(
+              controller: CompactableButtonController(
+                isCompressed: campaignVM.isDrawerClosed,
+                isSelected: false,
+              ),
+              title: "Configurações",
+              leadingIcon: Icons.settings,
+              onPressed: () {
+                showSettingsDialog(context);
+              },
+            ),
           ],
         ),
       ),

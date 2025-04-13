@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_vm_model.dart';
 
@@ -21,6 +22,8 @@ class Campaign {
   List<CampaignAchievement> listAchievements;
   CampaignVisualDataModel visualData;
 
+  AudioCampaign audioCampaign;
+
   Campaign({
     required this.id,
     required this.listIdOwners,
@@ -34,6 +37,7 @@ class Campaign {
     this.nextSession,
     required this.listAchievements,
     required this.visualData,
+    required this.audioCampaign,
   });
 
   Campaign copyWith({
@@ -49,6 +53,7 @@ class Campaign {
     DateTime? nextSession,
     List<CampaignAchievement>? listAchievements,
     CampaignVisualDataModel? visualData,
+    AudioCampaign? audioCampaign,
   }) {
     return Campaign(
       id: id ?? this.id,
@@ -63,6 +68,7 @@ class Campaign {
       nextSession: nextSession ?? this.nextSession,
       listAchievements: listAchievements ?? this.listAchievements,
       visualData: visualData ?? this.visualData,
+      audioCampaign: audioCampaign ?? this.audioCampaign,
     );
   }
 
@@ -80,6 +86,7 @@ class Campaign {
       'nextSession': nextSession?.toString(),
       'listAchievements': listAchievements.map((e) => e.toMap()).toList(),
       'visualData': visualData.toMap(),
+      'audioCampaign': audioCampaign.toMap(),
     };
   }
 
@@ -111,6 +118,9 @@ class Campaign {
       visualData: (map['visualData'] != null)
           ? CampaignVisualDataModel.fromMap(map['visualData'])
           : CampaignVisualDataModel.empty(),
+      audioCampaign: (map['audioCampaign'] != null)
+          ? AudioCampaign.fromMap(map["audioCampaign"])
+          : AudioCampaign(),
     );
   }
 

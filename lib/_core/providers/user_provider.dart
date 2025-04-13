@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_visual_novel_view_model.dart';
@@ -170,6 +171,40 @@ class UserProvider extends ChangeNotifier {
                     campaignId;
                 context.read<CampaignVisualNovelViewModel>().data =
                     campaign.visualData;
+
+                if (campaign.audioCampaign.ambienceUrl != null) {
+                  context.read<AudioProvider>().setAndPlay(
+                        type: AudioProviderType.ambience,
+                        url: campaign.audioCampaign.ambienceUrl!,
+                        volume: campaign.audioCampaign.ambienceVolume ?? 1,
+                        timeStarted: campaign.audioCampaign.ambienceStarted ??
+                            DateTime.now(),
+                      );
+                }
+
+                if (campaign.audioCampaign.musicUrl != null) {
+                  context.read<AudioProvider>().setAndPlay(
+                        type: AudioProviderType.music,
+                        url: campaign.audioCampaign.musicUrl!,
+                        volume: campaign.audioCampaign.musicVolume ?? 1,
+                        timeStarted: campaign.audioCampaign.musicStarted ??
+                            DateTime.now(),
+                      );
+                }
+
+                if (campaign.audioCampaign.sfxUrl != null &&
+                    campaign.audioCampaign.sfxStarted != null &&
+                    campaign.audioCampaign.sfxStarted!
+                            .difference(DateTime.now()) <=
+                        Duration(seconds: 5)) {
+                  context.read<AudioProvider>().setAndPlay(
+                        type: AudioProviderType.sfx,
+                        url: campaign.audioCampaign.sfxUrl!,
+                        volume: campaign.audioCampaign.sfxVolume ?? 1,
+                        timeStarted: campaign.audioCampaign.sfxStarted,
+                      );
+                }
+
                 completer.complete();
               });
             }

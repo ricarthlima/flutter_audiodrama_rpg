@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_rpg_audiodrama/_core/helpers/generate_access_key.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_vm_model.dart';
@@ -46,6 +47,7 @@ class CampaignService {
       nextSession: nextSession,
       listAchievements: [],
       visualData: CampaignVisualDataModel.empty(),
+      audioCampaign: AudioCampaign(),
     );
 
     if (fileImage != null) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/open_popup.dart';
@@ -45,6 +46,12 @@ class _CampaignScreenState extends State<CampaignScreen> {
 
       Provider.of<UserProvider>(context, listen: false).onInitialize();
     });
+  }
+
+  @override
+  void dispose() {
+    context.read<AudioProvider>().onDispose();
+    super.dispose();
   }
 
   @override
