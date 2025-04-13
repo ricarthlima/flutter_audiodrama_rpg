@@ -8,6 +8,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/components/image_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_panel.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_filter_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/tutorial_populate_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
@@ -206,53 +207,65 @@ class _CampaignHomeOwner extends StatelessWidget {
       child: SizedBox(
         width: width(context),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 8,
           children: [
-            _ListSettings(),
-            Divider(thickness: 0.05),
-            SizedBox(),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Column(
               children: [
-                Flexible(
-                  flex: 3,
-                  fit: FlexFit.tight,
-                  child: _ListCharactersVisual(),
-                ),
-                VerticalDivider(),
-                Container(
-                  height: 300,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 2,
-                      color: Theme.of(context).textTheme.bodyMedium!.color!,
-                    ),
-                    borderRadius: BorderRadius.circular(4),
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                  ),
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: _CampaignHomeGuest(
-                      sizeFactor: 300 / height(context),
-                      isPreview: true,
-                    ),
-                  ),
-                ),
-                VerticalDivider(),
-                Flexible(
-                  flex: 3,
-                  fit: FlexFit.tight,
-                  child: _ListCharactersVisual(
-                    isRight: true,
-                  ),
-                ),
+                _ListSettings(),
+                Divider(thickness: 0.1),
               ],
             ),
-            Divider(thickness: 0.05),
-            _ListBackgrounds(),
-            Divider(thickness: 0.05),
+            Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      flex: 3,
+                      fit: FlexFit.tight,
+                      child: _ListCharactersVisual(),
+                    ),
+                    VerticalDivider(),
+                    Container(
+                      height: 300,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 2,
+                          color: Theme.of(context).textTheme.bodyMedium!.color!,
+                        ),
+                        borderRadius: BorderRadius.circular(4),
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      child: AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: _CampaignHomeGuest(
+                          sizeFactor: 300 / height(context),
+                          isPreview: true,
+                        ),
+                      ),
+                    ),
+                    VerticalDivider(),
+                    Flexible(
+                      flex: 3,
+                      fit: FlexFit.tight,
+                      child: _ListCharactersVisual(
+                        isRight: true,
+                      ),
+                    ),
+                  ],
+                ),
+                Divider(thickness: 0.1),
+              ],
+            ),
+            Column(
+              children: [
+                _ListBackgrounds(),
+                Divider(thickness: 0.1),
+              ],
+            ),
             _ListSounds(),
           ],
         ),
@@ -268,14 +281,16 @@ class _ListSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     CampaignVisualNovelViewModel visualVM =
         Provider.of<CampaignVisualNovelViewModel>(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       spacing: 16,
       children: [
         Text(
           "Mesa de Ambientação",
           style: TextStyle(
             fontFamily: FontFamily.bungee,
+            fontSize: 22,
           ),
         ),
         SingleChildScrollView(
@@ -452,7 +467,6 @@ class _ListBackgrounds extends StatelessWidget {
         Provider.of<CampaignVisualNovelViewModel>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 8,
       children: [
         GenericHeader(
           title: "Planos de fundo",
@@ -605,7 +619,7 @@ class _ListSounds extends StatelessWidget {
                 dense: true,
               ),
               SizedBox(
-                height: 300,
+                height: 400,
                 child: MasonryGridView.builder(
                   padding: EdgeInsets.zero,
                   shrinkWrap: true,
@@ -623,17 +637,20 @@ class _ListSounds extends StatelessWidget {
                           onTap: () {
                             visualVM.toggleObject(visualObject);
                           },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2,
-                                color: visualObject.isEnable
-                                    ? AppColors.red
-                                    : Colors.transparent,
+                          child: Tooltip(
+                            message: visualObject.name,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 2,
+                                  color: visualObject.isEnable
+                                      ? AppColors.red
+                                      : Colors.transparent,
+                                ),
                               ),
-                            ),
-                            child: CachedNetworkImage(
-                              imageUrl: visualObject.url,
+                              child: CachedNetworkImage(
+                                imageUrl: visualObject.url,
+                              ),
                             ),
                           ),
                         ),
@@ -688,99 +705,123 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
   }
 
   @override
+  void didUpdateWidget(covariant _AudioAreaWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.listAudios != widget.listAudios) {
+      setState(() {
+        listAudiosVisualization = List.from(widget.listAudios.toList());
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
     AudioProvider audioProvider = Provider.of<AudioProvider>(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
-      spacing: 8,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GenericHeader(
           dense: true,
           title: widget.title,
           actions: [
-            IconButton(
-              onPressed: () {
-                audioProvider.stop(widget.type);
-                switch (widget.type) {
-                  case AudioProviderType.music:
-                    campaignVM.campaign!.audioCampaign.musicUrl = null;
-                    campaignVM.campaign!.audioCampaign.musicStarted = null;
-                    break;
-                  case AudioProviderType.ambience:
-                    campaignVM.campaign!.audioCampaign.ambienceUrl = null;
-                    campaignVM.campaign!.audioCampaign.ambienceStarted = null;
-                    break;
-                  case AudioProviderType.sfx:
-                    campaignVM.campaign!.audioCampaign.sfxUrl = null;
-                    campaignVM.campaign!.audioCampaign.sfxStarted = null;
-                    break;
-                }
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Slider(
+                    value: tempVolume,
+                    min: 0,
+                    max: 1,
+                    onChanged: (value) {
+                      setState(() {
+                        tempVolume = value;
+                      });
+                    },
+                    onChangeEnd: (value) {
+                      double volume = safeVolume(value);
+                      switch (widget.type) {
+                        case AudioProviderType.music:
+                          campaignVM.campaign!.audioCampaign.musicVolume =
+                              volume;
+                          break;
+                        case AudioProviderType.ambience:
+                          campaignVM.campaign!.audioCampaign.ambienceVolume =
+                              volume;
+                          break;
+                        case AudioProviderType.sfx:
+                          campaignVM.campaign!.audioCampaign.sfxVolume = volume;
+                          break;
+                      }
+                      AudioProviderFirestore().setAudioCampaign(
+                        campaign: campaignVM.campaign!,
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 25,
+                  child: Text((tempVolume * 100).toStringAsFixed(0)),
+                ),
+                IconButton(
+                  onPressed: () {
+                    audioProvider.stop(widget.type);
+                    switch (widget.type) {
+                      case AudioProviderType.music:
+                        campaignVM.campaign!.audioCampaign.musicUrl = null;
+                        campaignVM.campaign!.audioCampaign.musicStarted = null;
+                        break;
+                      case AudioProviderType.ambience:
+                        campaignVM.campaign!.audioCampaign.ambienceUrl = null;
+                        campaignVM.campaign!.audioCampaign.ambienceStarted =
+                            null;
+                        break;
+                      case AudioProviderType.sfx:
+                        campaignVM.campaign!.audioCampaign.sfxUrl = null;
+                        campaignVM.campaign!.audioCampaign.sfxStarted = null;
+                        break;
+                    }
 
-                AudioProviderFirestore()
-                    .setAudioCampaign(campaign: campaignVM.campaign!);
-              },
-              tooltip: "Parar",
-              icon: Icon(
-                Icons.stop,
-                color: AppColors.red,
-              ),
+                    AudioProviderFirestore()
+                        .setAudioCampaign(campaign: campaignVM.campaign!);
+                  },
+                  tooltip: "Parar",
+                  icon: Icon(
+                    Icons.stop,
+                    color: AppColors.red,
+                  ),
+                )
+              ],
             )
           ],
-          subtitleWidget: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Flexible(
-                    flex: 8,
-                    child: Slider(
-                      value: tempVolume,
-                      min: 0,
-                      max: 1,
-                      padding: EdgeInsets.only(right: 32),
-                      onChanged: (value) {
-                        setState(() {
-                          tempVolume = value;
-                        });
-                      },
-                      onChangeEnd: (value) {
-                        double volume = safeVolume(value);
-                        switch (widget.type) {
-                          case AudioProviderType.music:
-                            campaignVM.campaign!.audioCampaign.musicVolume =
-                                volume;
-                            break;
-                          case AudioProviderType.ambience:
-                            campaignVM.campaign!.audioCampaign.ambienceVolume =
-                                volume;
-                            break;
-                          case AudioProviderType.sfx:
-                            campaignVM.campaign!.audioCampaign.sfxVolume =
-                                volume;
-                            break;
-                        }
-                        AudioProviderFirestore().setAudioCampaign(
-                          campaign: campaignVM.campaign!,
-                        );
-                      },
-                    ),
-                  ),
-                  Text((tempVolume * 100).toStringAsFixed(0)),
-                ],
-              )
-            ],
-          ),
         ),
+        GenericFilterWidget<CampaignVisual>(
+          listValues: widget.listAudios,
+          listOrderers: [
+            GenericFilterOrderer<CampaignVisual>(
+              label: "Por nome",
+              iconAscending: Icons.sort_by_alpha,
+              iconDescending: Icons.sort_by_alpha,
+              orderFunction: (a, b) => a.name.compareTo(b.name),
+            ),
+          ],
+          textExtractor: (p0) => p0.name,
+          enableSearch: true,
+          onFiltered: (listFiltered) {
+            setState(() {
+              listAudiosVisualization = listFiltered.map((e) => e).toList();
+            });
+          },
+        ),
+        SizedBox(height: 16),
         SizedBox(
-          height: 300,
+          height: (height(context) / 1080) * 375,
           child: (widget.type == AudioProviderType.sfx)
               ? MasonryGridView.builder(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
+                  padding: EdgeInsets.only(bottom: 128),
                   gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 64,
                   ),
@@ -799,6 +840,7 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
                           height: 72,
                           child: Container(
                             decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
                               border: Border.all(
                                   width: 1,
                                   color:
@@ -833,7 +875,7 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
                   },
                 )
               : ListView.builder(
-                  padding: EdgeInsets.zero,
+                  padding: EdgeInsets.only(bottom: 128),
                   itemCount: listAudiosVisualization.length,
                   itemBuilder: (context, index) {
                     final music = listAudiosVisualization[index];
