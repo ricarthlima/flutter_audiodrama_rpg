@@ -180,6 +180,10 @@ class UserProvider extends ChangeNotifier {
                         timeStarted: campaign.audioCampaign.ambienceStarted ??
                             DateTime.now(),
                       );
+                } else {
+                  context
+                      .read<AudioProvider>()
+                      .stop(AudioProviderType.ambience);
                 }
 
                 if (campaign.audioCampaign.musicUrl != null) {
@@ -190,6 +194,8 @@ class UserProvider extends ChangeNotifier {
                         timeStarted: campaign.audioCampaign.musicStarted ??
                             DateTime.now(),
                       );
+                } else {
+                  context.read<AudioProvider>().stop(AudioProviderType.music);
                 }
 
                 if (campaign.audioCampaign.sfxUrl != null &&
@@ -203,6 +209,8 @@ class UserProvider extends ChangeNotifier {
                         volume: campaign.audioCampaign.sfxVolume ?? 1,
                         timeStarted: campaign.audioCampaign.sfxStarted,
                       );
+                } else {
+                  context.read<AudioProvider>().stop(AudioProviderType.sfx);
                 }
 
                 completer.complete();
