@@ -16,8 +16,31 @@ import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_visual_novel_vi
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
-class CampaignHomeScreen extends StatelessWidget {
+import '../../../_core/providers/user_provider.dart';
+
+class CampaignHomeScreen extends StatefulWidget {
   const CampaignHomeScreen({super.key});
+
+  @override
+  State<CampaignHomeScreen> createState() => _CampaignHomeScreenState();
+}
+
+class _CampaignHomeScreenState extends State<CampaignHomeScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(
+        context,
+        listen: false,
+      );
+      Provider.of<UserProvider>(context, listen: false).playCampaignAudios(
+        campaignVM.campaign!,
+        context,
+      );
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

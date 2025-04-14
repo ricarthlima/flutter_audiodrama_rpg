@@ -172,47 +172,9 @@ class UserProvider extends ChangeNotifier {
                 context.read<CampaignVisualNovelViewModel>().data =
                     campaign.visualData;
 
-                if (campaign.audioCampaign.ambienceUrl != null) {
-                  context.read<AudioProvider>().setAndPlay(
-                        type: AudioProviderType.ambience,
-                        url: campaign.audioCampaign.ambienceUrl!,
-                        volume: campaign.audioCampaign.ambienceVolume ?? 1,
-                        timeStarted: campaign.audioCampaign.ambienceStarted ??
-                            DateTime.now(),
-                      );
-                } else {
-                  context
-                      .read<AudioProvider>()
-                      .stop(AudioProviderType.ambience);
+                if (context.read<CampaignViewModel>().hasInteracted) {
+                  playCampaignAudios(campaign, context);
                 }
-
-                if (campaign.audioCampaign.musicUrl != null) {
-                  context.read<AudioProvider>().setAndPlay(
-                        type: AudioProviderType.music,
-                        url: campaign.audioCampaign.musicUrl!,
-                        volume: campaign.audioCampaign.musicVolume ?? 1,
-                        timeStarted: campaign.audioCampaign.musicStarted ??
-                            DateTime.now(),
-                      );
-                } else {
-                  context.read<AudioProvider>().stop(AudioProviderType.music);
-                }
-
-                if (campaign.audioCampaign.sfxUrl != null &&
-                    campaign.audioCampaign.sfxStarted != null &&
-                    campaign.audioCampaign.sfxStarted!
-                            .difference(DateTime.now()) <=
-                        Duration(seconds: 5)) {
-                  context.read<AudioProvider>().setAndPlay(
-                        type: AudioProviderType.sfx,
-                        url: campaign.audioCampaign.sfxUrl!,
-                        volume: campaign.audioCampaign.sfxVolume ?? 1,
-                        timeStarted: campaign.audioCampaign.sfxStarted,
-                      );
-                } else {
-                  context.read<AudioProvider>().stop(AudioProviderType.sfx);
-                }
-
                 completer.complete();
               });
             }
@@ -224,9 +186,49 @@ class UserProvider extends ChangeNotifier {
     return completer.future;
   }
 
+  void playCampaignAudios(Campaign campaign, BuildContext context) {
+    if (campaign.audioCampaign.ambienceUrl != null) {
+      context.read<AudioProvider>().setAndPlay(
+            type: AudioProviderType.ambience,
+            url: campaign.audioCampaign.ambienceUrl!,
+            volume: campaign.audioCampaign.ambienceVolume ?? 1,
+            timeStarted:
+                campaign.audioCampaign.ambienceStarted ?? DateTime.now(),
+          );
+    } else {
+      context.read<AudioProvider>().stop(AudioProviderType.ambience);
+    }
+
+    if (campaign.audioCampaign.musicUrl != null) {
+      context.read<AudioProvider>().setAndPlay(
+            type: AudioProviderType.music,
+            url: campaign.audioCampaign.musicUrl!,
+            volume: campaign.audioCampaign.musicVolume ?? 1,
+            timeStarted: campaign.audioCampaign.musicStarted ?? DateTime.now(),
+          );
+    } else {
+      context.read<AudioProvider>().stop(AudioProviderType.music);
+    }
+
+    if (campaign.audioCampaign.sfxUrl != null &&
+        campaign.audioCampaign.sfxStarted != null &&
+        campaign.audioCampaign.sfxStarted!.difference(DateTime.now()) <=
+            Duration(seconds: 5)) {
+      context.read<AudioProvider>().setAndPlay(
+            type: AudioProviderType.sfx,
+            url: campaign.audioCampaign.sfxUrl!,
+            volume: campaign.audioCampaign.sfxVolume ?? 1,
+            timeStarted: campaign.audioCampaign.sfxStarted,
+          );
+    } else {
+      context.read<AudioProvider>().stop(AudioProviderType.sfx);
+    }
+  }
+
   Future<void> disposeCampaign() async {
     if (_streamCurrentCampaign != null) {
       await _streamCurrentCampaign!.cancel();
+      _streamCurrentCampaign = null;
     }
   }
 }

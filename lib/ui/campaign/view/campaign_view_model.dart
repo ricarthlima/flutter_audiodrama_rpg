@@ -19,6 +19,17 @@ import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart'
 import '../../../domain/models/sheet_model.dart';
 
 class CampaignViewModel extends ChangeNotifier {
+  bool _hasInteracted = false;
+  bool get hasInteracted => _hasInteracted;
+  set hasInteracted(bool value) {
+    _hasInteracted = value;
+    notifyListeners();
+  }
+
+  hasInteractedDisable() {
+    _hasInteracted = false;
+  }
+
   Campaign? campaign;
   // String? campaignId;
 

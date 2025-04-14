@@ -6,6 +6,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/widgets/circular_progress_indica
 import 'package:flutter_rpg_audiodrama/ui/auth/login_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/campaign_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_works_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
@@ -157,12 +158,19 @@ class AppRouter {
       context,
       listen: false,
     );
-
-    AudioProvider audioProvider =
-        Provider.of<AudioProvider>(context, listen: false);
-
     userProvider.disposeCampaign();
+
+    AudioProvider audioProvider = Provider.of<AudioProvider>(
+      context,
+      listen: false,
+    );
     audioProvider.onDispose();
+
+    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(
+      context,
+      listen: false,
+    );
+    campaignVM.hasInteractedDisable();
   }
 
   goHome({required BuildContext context, HomeSubPages? subPage}) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/open_popup.dart';
@@ -7,6 +6,7 @@ import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_appbar.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_drawer.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_achievements_screen.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_first_interact_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_home_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_sheets_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
@@ -49,12 +49,6 @@ class _CampaignScreenState extends State<CampaignScreen> {
   }
 
   @override
-  void dispose() {
-    context.read<AudioProvider>().onDispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
 
@@ -68,11 +62,13 @@ class _CampaignScreenState extends State<CampaignScreen> {
               isClean: campaignVM.currentPage == CampaignSubPages.home,
             ),
       extendBodyBehindAppBar: true,
-      body: (campaignVM.isLoading)
-          ? Center(child: CircularProgressIndicator())
-          : (campaignVM.campaign != null && campaignVM.isOwnerOrInvited)
-              ? _buildBodyWithDrawer(campaignVM)
-              : Center(child: Text("Campanha não encontrada.")),
+      body: (!campaignVM.hasInteracted)
+          ? CampaignFirstInteractScreen()
+          : (campaignVM.isLoading)
+              ? Center(child: CircularProgressIndicator())
+              : (campaignVM.campaign != null && campaignVM.isOwnerOrInvited)
+                  ? _buildBodyWithDrawer(campaignVM)
+                  : Center(child: Text("Campanha não encontrada.")),
     );
   }
 

@@ -81,6 +81,9 @@ class AudioProvider extends ChangeNotifier {
   }
 
   void onDispose() {
+    _currentMscUrl = null;
+    _currentAmbUrl = null;
+    _currentSfxUrl = null;
     _mscPlayer.stop();
     _ambPlayer.stop();
     _sfxPlayer.stop();
