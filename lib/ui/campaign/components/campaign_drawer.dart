@@ -4,8 +4,10 @@ import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart'
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../../router.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/widgets/compactable_button.dart';
+import '../../home/view/home_view_model.dart';
 import '../../settings/settings_screen.dart';
 
 class CampaignDrawer extends StatelessWidget {
@@ -26,7 +28,7 @@ class CampaignDrawer extends StatelessWidget {
         curve: Curves.ease,
         width: (campaignVM.isDrawerClosed) ? 48 : 275,
         height: height(context),
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,20 +36,6 @@ class CampaignDrawer extends StatelessWidget {
             Column(
               spacing: 8,
               children: [
-                CompactableButton(
-                  controller: CompactableButtonController(
-                    isCompressed: campaignVM.isDrawerClosed,
-                    isSelected: campaignVM.currentPage == CampaignSubPages.home,
-                  ),
-                  title: "Início",
-                  leadingIcon: Icons.home,
-                  onPressed: () {
-                    campaignVM.currentPage = CampaignSubPages.home;
-                    changeURL(
-                      "campaign/${campaignVM.campaign?.id}/${CampaignSubPages.home.name}",
-                    );
-                  },
-                ),
                 CompactableButton(
                   controller: CompactableButtonController(
                     isCompressed: campaignVM.isDrawerClosed,
@@ -60,6 +48,20 @@ class CampaignDrawer extends StatelessWidget {
                     campaignVM.currentPage = CampaignSubPages.sheets;
                     changeURL(
                       "campaign/${campaignVM.campaign?.id}/${CampaignSubPages.sheets.name}",
+                    );
+                  },
+                ),
+                CompactableButton(
+                  controller: CompactableButtonController(
+                    isCompressed: campaignVM.isDrawerClosed,
+                    isSelected: campaignVM.currentPage == CampaignSubPages.home,
+                  ),
+                  title: "Mesa de Ambientação",
+                  leadingIcon: Icons.visibility,
+                  onPressed: () {
+                    campaignVM.currentPage = CampaignSubPages.home;
+                    changeURL(
+                      "campaign/${campaignVM.campaign?.id}/${CampaignSubPages.home.name}",
                     );
                   },
                 ),
@@ -81,16 +83,47 @@ class CampaignDrawer extends StatelessWidget {
               ],
             ),
             //TODO: RollLog
-            CompactableButton(
-              controller: CompactableButtonController(
-                isCompressed: campaignVM.isDrawerClosed,
-                isSelected: false,
-              ),
-              title: "Configurações",
-              leadingIcon: Icons.settings,
-              onPressed: () {
-                showSettingsDialog(context);
-              },
+            Column(
+              spacing: 8,
+              children: [
+                if (campaignVM.isOwner)
+                  CompactableButton(
+                    controller: CompactableButtonController(
+                      isCompressed: campaignVM.isDrawerClosed,
+                      isSelected: campaignVM.isEditing,
+                    ),
+                    title: campaignVM.isEditing
+                        ? "Desativar edição"
+                        : "Ativar edição",
+                    leadingIcon: Icons.edit,
+                    onPressed: () {
+                      campaignVM.isEditing = !campaignVM.isEditing;
+                    },
+                  ),
+                CompactableButton(
+                  controller: CompactableButtonController(
+                    isCompressed: campaignVM.isDrawerClosed,
+                    isSelected: false,
+                  ),
+                  title: "Configurações",
+                  leadingIcon: Icons.settings,
+                  onPressed: () {
+                    showSettingsDialog(context);
+                  },
+                ),
+                CompactableButton(
+                  controller: CompactableButtonController(
+                    isCompressed: campaignVM.isDrawerClosed,
+                    isSelected: false,
+                  ),
+                  title: "Voltar para tela inicial",
+                  leadingIcon: Icons.home,
+                  onPressed: () {
+                    AppRouter().goHome(
+                        context: context, subPage: HomeSubPages.campaigns);
+                  },
+                ),
+              ],
             ),
           ],
         ),

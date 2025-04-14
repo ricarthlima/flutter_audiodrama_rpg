@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/settings/settings_screen.dart';
 
-import '../../../router.dart';
 import '../../_core/dimensions.dart';
 
 import 'package:badges/badges.dart' as badges;
@@ -19,15 +17,16 @@ AppBar? getCampaignAppBar({
       campaignVM.isOwnerOrInvited) {
     return AppBar(
       toolbarHeight: 64,
-      leading: !isClean
-          ? IconButton(
-              onPressed: () {
-                AppRouter()
-                    .goHome(context: context, subPage: HomeSubPages.campaigns);
-              },
-              icon: Icon(Icons.arrow_back),
-            )
-          : null,
+      leading: null,
+      // !isClean
+      //     ? IconButton(
+      //         onPressed: () {
+      //           AppRouter()
+      //               .goHome(context: context, subPage: HomeSubPages.campaigns);
+      //         },
+      //         icon: Icon(Icons.arrow_back),
+      //       )
+      //     : null,
       backgroundColor: isClean
           ? Colors.transparent
           : campaignVM.campaign?.imageBannerUrl != null &&

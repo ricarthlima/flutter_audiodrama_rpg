@@ -3,7 +3,6 @@ import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_sc
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/open_popup.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_appbar.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_drawer.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_achievements_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_first_interact_screen.dart';
@@ -54,21 +53,28 @@ class _CampaignScreenState extends State<CampaignScreen> {
 
     // TODO modularizar esse campanha nao encontrada
     return Scaffold(
-      appBar: campaignVM.currentPage == CampaignSubPages.home
-          ? null
-          : getCampaignAppBar(
-              context: context,
-              campaignVM: campaignVM,
-              isClean: campaignVM.currentPage == CampaignSubPages.home,
-            ),
+      appBar: null,
+      // campaignVM.currentPage == CampaignSubPages.home ||
+      //         (!campaignVM.hasInteracted)
+      //     ? null
+      //     : getCampaignAppBar(
+      //         context: context,
+      //         campaignVM: campaignVM,
+      //         isClean: campaignVM.currentPage == CampaignSubPages.home,
+      //       ),
       extendBodyBehindAppBar: true,
-      body: (!campaignVM.hasInteracted)
-          ? CampaignFirstInteractScreen()
-          : (campaignVM.isLoading)
-              ? Center(child: CircularProgressIndicator())
-              : (campaignVM.campaign != null && campaignVM.isOwnerOrInvited)
-                  ? _buildBodyWithDrawer(campaignVM)
-                  : Center(child: Text("Campanha não encontrada.")),
+      body: AnimatedSwitcher(
+        duration: Duration(milliseconds: 1250),
+        child: (!campaignVM.hasInteracted)
+            ? CampaignFirstInteractScreen()
+            : (campaignVM.isLoading)
+                ? Center(child: CircularProgressIndicator())
+                : (campaignVM.campaign != null && campaignVM.isOwnerOrInvited)
+                    ? _buildBodyWithDrawer(campaignVM)
+                    : Center(
+                        child: Text("Campanha não encontrada."),
+                      ),
+      ),
     );
   }
 
@@ -76,22 +82,16 @@ class _CampaignScreenState extends State<CampaignScreen> {
     return Stack(
       children: [
         _buildBody(),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: SizedBox(
-            height: height(context) - 64,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                VerticalDivider(
-                  thickness: 0.1,
-                  indent: 0,
-                  endIndent: 0,
-                ),
-                CampaignDrawer(),
-              ],
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            VerticalDivider(
+              thickness: 0.1,
+              indent: 0,
+              endIndent: 0,
             ),
-          ),
+            CampaignDrawer(),
+          ],
         ),
         GroupNotifications(),
         Stack(
@@ -149,7 +149,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
           ),
         Padding(
           padding: (!campaignVM.isFullscreen)
-              ? EdgeInsets.only(top: 72, left: 32, right: 32)
+              ? EdgeInsets.only(top: 32, left: 32, right: 32)
               : EdgeInsets.zero,
           child: SingleChildScrollView(
             physics:

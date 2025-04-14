@@ -140,7 +140,7 @@ class SettingsScreen extends StatelessWidget {
                     );
                   },
                   leading: Icon(Icons.logout),
-                  title: Text("Sair"),
+                  title: Text("Deslogar"),
                   contentPadding: EdgeInsets.zero,
                 )
               ],
