@@ -167,6 +167,8 @@ class UserProvider extends ChangeNotifier {
             if (context.mounted) {
               SchedulerBinding.instance.addPostFrameCallback((_) {
                 context.read<CampaignViewModel>().forceUpdateCampaign(campaign);
+                context.read<CampaignViewModel>().activatePresence();
+
                 context.read<CampaignVisualNovelViewModel>().campaignId =
                     campaignId;
                 context.read<CampaignVisualNovelViewModel>().data =

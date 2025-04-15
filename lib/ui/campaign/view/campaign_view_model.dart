@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/data/services/chat_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
@@ -272,6 +273,13 @@ class CampaignViewModel extends ChangeNotifier {
   closeSheetInCampaign(Sheet sheet) {
     listOpenSheet.removeWhere((element) => element.sheet.id == sheet.id);
     notifyListeners();
+  }
+
+  void activatePresence() async {
+    ChatService.instance.addUserToCampaign(
+      userId: FirebaseAuth.instance.currentUser!.uid,
+      campaignId: campaign!.id,
+    );
   }
 }
 

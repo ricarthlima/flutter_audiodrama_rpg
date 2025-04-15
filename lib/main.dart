@@ -32,7 +32,10 @@ void main() async {
   await dotenv.load(fileName: "dotenv");
 
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.currentPlatform.copyWith(
+      databaseURL:
+          "https://flutter-rpg-audiodrama-default-rtdb.firebaseio.com/",
+    ),
   );
 
   await Supabase.initialize(

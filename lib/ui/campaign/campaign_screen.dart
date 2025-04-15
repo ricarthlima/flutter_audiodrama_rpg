@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/data/services/chat_service.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/open_popup.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/vertical_compactable_area.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_drawer.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_achievements_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_first_interact_screen.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_home_screen
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_sheets_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/chat_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/group_notifications.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
@@ -45,6 +48,12 @@ class _CampaignScreenState extends State<CampaignScreen> {
 
       Provider.of<UserProvider>(context, listen: false).onInitialize();
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    ChatService.instance.disconnect();
   }
 
   @override
@@ -118,6 +127,22 @@ class _CampaignScreenState extends State<CampaignScreen> {
               );
             },
           ).toList(),
+        ),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: EdgeInsets.only(right: 64),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                VerticalCompactableArea(
+                  title: Text("Chat"),
+                  child: CampaignChatWidget(),
+                ),
+              ],
+            ),
+          ),
         )
       ],
     );
