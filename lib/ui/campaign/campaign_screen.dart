@@ -98,6 +98,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
+              spacing: 16,
               children: [
                 VerticalCompactableArea(
                   title: Text("Chat"),

@@ -78,7 +78,7 @@ class _VerticalCompactableAreaState extends State<VerticalCompactableArea> {
                 color: Theme.of(context).textTheme.bodyMedium!.color!),
             color: Theme.of(context).scaffoldBackgroundColor,
           ),
-          child: widget.child,
+          child: (isExpanded) ? widget.child : null,
         ),
       ],
     );
