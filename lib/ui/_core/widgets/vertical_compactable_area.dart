@@ -5,11 +5,13 @@ import '../dimensions.dart';
 class VerticalCompactableArea extends StatefulWidget {
   final Widget title;
   final Widget child;
+  final List<Widget>? actions;
 
   const VerticalCompactableArea({
     super.key,
     required this.title,
     required this.child,
+    this.actions,
   });
 
   @override
@@ -19,30 +21,50 @@ class VerticalCompactableArea extends StatefulWidget {
 
 class _VerticalCompactableAreaState extends State<VerticalCompactableArea> {
   bool isExpanded = false;
+  bool isHovering = false;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(
-          width: 250,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              widget.title,
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    isExpanded = !isExpanded;
-                  });
-                },
-                icon: Icon(isExpanded
-                    ? Icons.keyboard_arrow_down_rounded
-                    : Icons.keyboard_arrow_up_rounded),
+        MouseRegion(
+          onEnter: (event) => setState(() {
+            isHovering = true;
+          }),
+          onExit: (event) => setState(() {
+            isHovering = false;
+          }),
+          child: AnimatedOpacity(
+            duration: Duration(milliseconds: 750),
+            curve: Curves.ease,
+            opacity: (isExpanded || isHovering) ? 1 : 0.33,
+            child: Container(
+              width: 250,
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  widget.title,
+                  Row(
+                    children: [
+                      if (widget.actions != null)
+                        Row(children: widget.actions!),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isExpanded = !isExpanded;
+                          });
+                        },
+                        icon: Icon(isExpanded
+                            ? Icons.keyboard_arrow_down_rounded
+                            : Icons.keyboard_arrow_up_rounded),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
         AnimatedContainer(

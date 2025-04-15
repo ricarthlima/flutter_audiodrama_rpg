@@ -91,6 +91,44 @@ class _CampaignScreenState extends State<CampaignScreen> {
     return Stack(
       children: [
         _buildBody(),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: EdgeInsets.only(right: 64),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                VerticalCompactableArea(
+                  title: Text("Chat"),
+                  actions: [
+                    StreamBuilder(
+                      stream: ChatService.instance.listenUserPresences(
+                        campaignId: campaignVM.campaign!.id,
+                      ),
+                      builder: (context, snapshot) {
+                        int count = 1;
+
+                        if (snapshot.data != null) {
+                          count = snapshot.data!.snapshot.children.length;
+                        }
+
+                        return Badge.count(
+                          count: count,
+                          textColor:
+                              Theme.of(context).textTheme.bodyMedium!.color!,
+                          backgroundColor: Colors.transparent,
+                          child: Icon(Icons.person),
+                        );
+                      },
+                    ),
+                  ],
+                  child: CampaignChatWidget(),
+                ),
+              ],
+            ),
+          ),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -128,22 +166,6 @@ class _CampaignScreenState extends State<CampaignScreen> {
             },
           ).toList(),
         ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: EdgeInsets.only(right: 64),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                VerticalCompactableArea(
-                  title: Text("Chat"),
-                  child: CampaignChatWidget(),
-                ),
-              ],
-            ),
-          ),
-        )
       ],
     );
   }
