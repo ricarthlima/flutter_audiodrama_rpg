@@ -6,12 +6,18 @@ class VerticalCompactableArea extends StatefulWidget {
   final Widget title;
   final Widget child;
   final List<Widget>? actions;
+  final double width;
+  final double heightPercentage;
+  final Function? onExpand;
 
   const VerticalCompactableArea({
     super.key,
     required this.title,
     required this.child,
     this.actions,
+    this.width = 250,
+    this.heightPercentage = 0.8,
+    this.onExpand,
   });
 
   @override
@@ -40,7 +46,7 @@ class _VerticalCompactableAreaState extends State<VerticalCompactableArea> {
             curve: Curves.ease,
             opacity: (isExpanded || isHovering) ? 1 : 0.33,
             child: Container(
-              width: 250,
+              width: widget.width,
               color: Theme.of(context).scaffoldBackgroundColor,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -55,6 +61,11 @@ class _VerticalCompactableAreaState extends State<VerticalCompactableArea> {
                           setState(() {
                             isExpanded = !isExpanded;
                           });
+                          if (isExpanded) {
+                            if (widget.onExpand != null) {
+                              widget.onExpand!();
+                            }
+                          }
                         },
                         icon: Icon(isExpanded
                             ? Icons.keyboard_arrow_down_rounded
@@ -69,8 +80,8 @@ class _VerticalCompactableAreaState extends State<VerticalCompactableArea> {
         ),
         AnimatedContainer(
           duration: Duration(milliseconds: 300),
-          width: 250,
-          height: isExpanded ? height(context) * 0.8 : 0,
+          width: widget.width,
+          height: isExpanded ? height(context) * widget.heightPercentage : 0,
           curve: Curves.ease,
           decoration: BoxDecoration(
             border: Border.all(

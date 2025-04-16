@@ -18,7 +18,11 @@ class CampaignDrawer extends StatelessWidget {
     final campaignVM = Provider.of<CampaignViewModel>(context);
 
     return MouseRegion(
-      onEnter: (_) => campaignVM.isDrawerClosed = false,
+      onEnter: (event) {
+        if (event.delta.dx > 0) {
+          campaignVM.isDrawerClosed = false;
+        }
+      },
       onExit: (_) => campaignVM.isDrawerClosed = true,
       child: AnimatedContainer(
         color: Theme.of(context).scaffoldBackgroundColor.withAlpha(

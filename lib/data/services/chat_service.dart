@@ -1,6 +1,11 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_rpg_audiodrama/_core/release_mode.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_chat.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatService {
   ChatService._();
@@ -29,5 +34,42 @@ class ChatService {
 
   disconnect() {
     FirebaseDatabase.instance.goOffline();
+  }
+
+  Future<void> sendMessageToChat({
+    required String campaignId,
+    required String message,
+  }) async {
+    CampaignChatMessage chatMessage = CampaignChatMessage(
+      id: Uuid().v8(),
+      userId: FirebaseAuth.instance.currentUser!.uid,
+      message: message,
+      createdAt: DateTime.now(),
+    );
+
+    await FirebaseFirestore.instance
+        .collection("${releaseCollection}campaigns")
+        .doc(campaignId)
+        .collection("chat")
+        .doc(chatMessage.id)
+        .set(chatMessage.toMap());
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> listenChat(
+      {required String campaignId}) {
+    return FirebaseFirestore.instance
+        .collection("${releaseCollection}campaigns")
+        .doc(campaignId)
+        .collection("chat")
+        .snapshots();
+  }
+
+  deleteMessage({required String campaignId, required String messageId}) async {
+    return FirebaseFirestore.instance
+        .collection("${releaseCollection}campaigns")
+        .doc(campaignId)
+        .collection("chat")
+        .doc(messageId)
+        .delete();
   }
 }

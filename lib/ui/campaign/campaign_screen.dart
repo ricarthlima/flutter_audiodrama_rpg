@@ -45,6 +45,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
         listen: false,
       );
       campaignVM.currentPage = widget.subPage;
+      campaignVM.isChatFirstTime = true;
 
       Provider.of<UserProvider>(context, listen: false).onInitialize();
     });
@@ -102,28 +103,40 @@ class _CampaignScreenState extends State<CampaignScreen> {
               children: [
                 VerticalCompactableArea(
                   title: Text("Chat"),
+                  width: 300,
+                  heightPercentage: 0.9,
                   actions: [
                     StreamBuilder(
-                      stream: ChatService.instance.listenUserPresences(
+                      stream: ChatService.instance.listenChat(
                         campaignId: campaignVM.campaign!.id,
                       ),
                       builder: (context, snapshot) {
-                        int count = 1;
+                        int count = 0;
 
                         if (snapshot.data != null) {
-                          count = snapshot.data!.snapshot.children.length;
+                          if (campaignVM.isChatFirstTime) {
+                            campaignVM.countChatMessages = snapshot.data!.size;
+                            campaignVM.isChatFirstTime = false;
+                          } else {
+                            count = snapshot.data!.size -
+                                campaignVM.countChatMessages;
+                          }
                         }
 
                         return Badge.count(
                           count: count,
+                          isLabelVisible: count > 0,
                           textColor:
                               Theme.of(context).textTheme.bodyMedium!.color!,
-                          backgroundColor: Colors.transparent,
+                          backgroundColor: AppColors.red,
                           child: Icon(Icons.person),
                         );
                       },
                     ),
                   ],
+                  onExpand: () {
+                    campaignVM.isChatFirstTime = true;
+                  },
                   child: CampaignChatWidget(),
                 ),
               ],

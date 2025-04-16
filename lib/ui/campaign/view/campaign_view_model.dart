@@ -281,6 +281,15 @@ class CampaignViewModel extends ChangeNotifier {
       campaignId: campaign!.id,
     );
   }
+
+  bool _isChatFirstTime = true;
+  bool get isChatFirstTime => _isChatFirstTime;
+  set isChatFirstTime(bool value) {
+    _isChatFirstTime = value;
+    notifyListeners();
+  }
+
+  int countChatMessages = 0;
 }
 
 class SheetAppUser {
