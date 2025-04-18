@@ -4,7 +4,6 @@ import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_sc
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/open_popup.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/vertical_compactable_area.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_drawer.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_achievements_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_first_interact_screen.dart';
@@ -12,7 +11,6 @@ import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_home_screen
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_sheets_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/chat_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/group_notifications.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
@@ -92,57 +90,57 @@ class _CampaignScreenState extends State<CampaignScreen> {
     return Stack(
       children: [
         _buildBody(),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: EdgeInsets.only(right: 64),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              spacing: 16,
-              children: [
-                VerticalCompactableArea(
-                  title: Text("Chat"),
-                  width: 300,
-                  heightPercentage: 0.9,
-                  actions: [
-                    StreamBuilder(
-                      stream: ChatService.instance.listenChat(
-                        campaignId: campaignVM.campaign!.id,
-                      ),
-                      builder: (context, snapshot) {
-                        int count = 0;
+        // Align(
+        //   alignment: Alignment.bottomRight,
+        //   child: Padding(
+        //     padding: EdgeInsets.only(right: 64),
+        //     child: Row(
+        //       mainAxisSize: MainAxisSize.min,
+        //       mainAxisAlignment: MainAxisAlignment.end,
+        //       spacing: 16,
+        //       children: [
+        //         VerticalCompactableArea(
+        //           title: Text("Chat"),
+        //           width: 300,
+        //           heightPercentage: 0.9,
+        //           actions: [
+        //             StreamBuilder(
+        //               stream: ChatService.instance.listenChat(
+        //                 campaignId: campaignVM.campaign!.id,
+        //               ),
+        //               builder: (context, snapshot) {
+        //                 int count = 0;
 
-                        if (snapshot.data != null) {
-                          if (campaignVM.isChatFirstTime) {
-                            campaignVM.countChatMessages = snapshot.data!.size;
-                            campaignVM.isChatFirstTime = false;
-                          } else {
-                            count = snapshot.data!.size -
-                                campaignVM.countChatMessages;
-                          }
-                        }
+        //                 if (snapshot.data != null) {
+        //                   if (campaignVM.isChatFirstTime) {
+        //                     campaignVM.countChatMessages = snapshot.data!.size;
+        //                     campaignVM.isChatFirstTime = false;
+        //                   } else {
+        //                     count = snapshot.data!.size -
+        //                         campaignVM.countChatMessages;
+        //                   }
+        //                 }
 
-                        return Badge.count(
-                          count: count,
-                          isLabelVisible: count > 0,
-                          textColor:
-                              Theme.of(context).textTheme.bodyMedium!.color!,
-                          backgroundColor: AppColors.red,
-                          child: Icon(Icons.person),
-                        );
-                      },
-                    ),
-                  ],
-                  onExpand: () {
-                    campaignVM.isChatFirstTime = true;
-                  },
-                  child: CampaignChatWidget(),
-                ),
-              ],
-            ),
-          ),
-        ),
+        //                 return Badge.count(
+        //                   count: count,
+        //                   isLabelVisible: count > 0,
+        //                   textColor:
+        //                       Theme.of(context).textTheme.bodyMedium!.color!,
+        //                   backgroundColor: AppColors.red,
+        //                   child: Icon(Icons.person),
+        //                 );
+        //               },
+        //             ),
+        //           ],
+        //           onExpand: () {
+        //             campaignVM.isChatFirstTime = true;
+        //           },
+        //           child: CampaignChatWidget(),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [

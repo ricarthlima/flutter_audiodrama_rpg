@@ -103,7 +103,6 @@ class _SheetScreenState extends State<SheetScreen> {
                     label: Text("Busque uma ação"),
                   ),
                   onSubmit: (value) {
-                    print(value);
                     Navigator.pop(context, value);
                   },
                 ),

@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_visual.dart';
@@ -9,7 +8,6 @@ import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_pa
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_filter_widget.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/tutorial_populate_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_visual_novel_view_model.dart';
@@ -283,13 +281,13 @@ class _CampaignHomeOwner extends StatelessWidget {
                 Divider(thickness: 0.1),
               ],
             ),
-            Column(
-              children: [
-                _ListBackgrounds(),
-                Divider(thickness: 0.1),
-              ],
-            ),
-            _ListSounds(),
+            // Column(
+            //   children: [
+            //     _ListBackgrounds(),
+            //     Divider(thickness: 0.1),
+            //   ],
+            // ),
+            _RowGroups(),
           ],
         ),
       ),
@@ -480,119 +478,8 @@ class _ImageVisualItem extends StatelessWidget {
   }
 }
 
-class _ListBackgrounds extends StatelessWidget {
-  _ListBackgrounds();
-  final ScrollController scrollController = ScrollController();
-
-  @override
-  Widget build(BuildContext context) {
-    CampaignVisualNovelViewModel visualVM =
-        Provider.of<CampaignVisualNovelViewModel>(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GenericHeader(
-          title: "Planos de fundo",
-          dense: true,
-        ),
-        Scrollbar(
-          controller: scrollController,
-          thumbVisibility: true,
-          trackVisibility: true,
-          thickness: 4,
-          child: Container(
-            height: 90,
-            padding: EdgeInsets.only(bottom: 16),
-            child: ListView.builder(
-              controller: scrollController,
-              scrollDirection: Axis.horizontal,
-              itemCount: visualVM.data.listBackgrounds.length,
-              itemBuilder: (context, index) {
-                final visualBG = visualVM.data.listBackgrounds[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: _BackgroundItem(visualBG: visualBG),
-                );
-              },
-            ),
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class _BackgroundItem extends StatelessWidget {
-  final CampaignVisual visualBG;
-  const _BackgroundItem({required this.visualBG});
-
-  @override
-  Widget build(BuildContext context) {
-    CampaignVisualNovelViewModel visualVM =
-        Provider.of<CampaignVisualNovelViewModel>(context);
-    return InkWell(
-      onTap: () {
-        visualVM.toggleBackground(visualBG);
-      },
-      child: Container(
-        height: 90,
-        width: 160,
-        decoration: BoxDecoration(
-          border: visualVM.data.backgroundActive == visualBG
-              ? Border.all(width: 4, color: AppColors.red)
-              : Border.all(width: 4, color: Colors.transparent),
-        ),
-        child: Stack(
-          children: [
-            CachedNetworkImage(
-              imageUrl: visualBG.url,
-              placeholder: (context, url) => Icon(Icons.landscape),
-              fit: BoxFit.cover,
-              height: 90,
-              width: 160,
-            ),
-            IconViewImageButton(imageUrl: visualBG.url),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ShaderMask(
-                shaderCallback: (bounds) {
-                  return LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                      Colors.black.withAlpha(175),
-                      Colors.transparent,
-                    ],
-                  ).createShader(bounds);
-                },
-                blendMode: BlendMode.dstIn,
-                child: Container(
-                  height: 32,
-                  width: double.infinity,
-                  color: Colors.black,
-                  child: Text(" "),
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Text(
-                visualBG.name,
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ListSounds extends StatelessWidget {
-  const _ListSounds();
+class _RowGroups extends StatelessWidget {
+  const _RowGroups();
 
   @override
   Widget build(BuildContext context) {
@@ -606,6 +493,27 @@ class _ListSounds extends StatelessWidget {
         Flexible(
           flex: 3,
           fit: FlexFit.tight,
+          child: _ImageAreaWidget(
+            title: "Cenários",
+            listImages: visualVM.data.listBackgrounds,
+            width: 200,
+            showTitle: true,
+            onTap: visualVM.toggleBackground,
+          ),
+        ),
+        Flexible(
+          flex: 3,
+          fit: FlexFit.tight,
+          child: _ImageAreaWidget(
+            title: "Objetos, Notas e Itens",
+            listImages: visualVM.data.listObjects,
+            width: 64,
+            onTap: visualVM.toggleObject,
+          ),
+        ),
+        Flexible(
+          flex: 2,
+          fit: FlexFit.tight,
           child: _AudioAreaWidget(
             title: "Músicas",
             type: AudioProviderType.music,
@@ -613,7 +521,7 @@ class _ListSounds extends StatelessWidget {
           ),
         ),
         Flexible(
-          flex: 3,
+          flex: 2,
           fit: FlexFit.tight,
           child: _AudioAreaWidget(
             title: "Ambientações",
@@ -622,7 +530,7 @@ class _ListSounds extends StatelessWidget {
           ),
         ),
         Flexible(
-          flex: 3,
+          flex: 2,
           fit: FlexFit.tight,
           child: _AudioAreaWidget(
             title: "Efeitos",
@@ -630,60 +538,160 @@ class _ListSounds extends StatelessWidget {
             listAudios: visualVM.data.listSfxs,
           ),
         ),
-        Flexible(
-          flex: 3,
-          fit: FlexFit.tight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
-            children: [
-              GenericHeader(
-                title: "Objetos, Notas e Itens",
-                dense: true,
-              ),
-              SizedBox(
-                height: 400,
-                child: MasonryGridView.builder(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 64,
-                  ),
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                  itemCount: visualVM.data.listObjects.length,
-                  itemBuilder: (context, index) {
-                    final visualObject = visualVM.data.listObjects[index];
-                    return Stack(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            visualVM.toggleObject(visualObject);
-                          },
-                          child: Tooltip(
-                            message: visualObject.name,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 2,
-                                  color: visualObject.isEnable
-                                      ? AppColors.red
-                                      : Colors.transparent,
-                                ),
-                              ),
-                              child: CachedNetworkImage(
-                                imageUrl: visualObject.url,
+      ],
+    );
+  }
+}
+
+class _ImageAreaWidget extends StatefulWidget {
+  final String title;
+  final List<CampaignVisual> listImages;
+  final double width;
+  final Function(CampaignVisual object) onTap;
+  final bool showTitle;
+
+  const _ImageAreaWidget({
+    required this.title,
+    required this.listImages,
+    required this.width,
+    required this.onTap,
+    this.showTitle = false,
+  });
+
+  @override
+  State<_ImageAreaWidget> createState() => __ImageAreaWidgetState();
+}
+
+class __ImageAreaWidgetState extends State<_ImageAreaWidget> {
+  List<CampaignVisual> listVisualization = [];
+
+  @override
+  void initState() {
+    super.initState();
+    listVisualization = widget.listImages.toList();
+  }
+
+  @override
+  void didUpdateWidget(covariant _ImageAreaWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.listImages != widget.listImages) {
+      setState(() {
+        listVisualization = List.from(widget.listImages.toList());
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          widget.title,
+          style: TextStyle(
+            fontFamily: FontFamily.bungee,
+          ),
+        ),
+        GenericFilterWidget<CampaignVisual>(
+          listValues: widget.listImages,
+          listOrderers: [
+            GenericFilterOrderer<CampaignVisual>(
+              label: "Por nome",
+              iconAscending: Icons.sort_by_alpha,
+              iconDescending: Icons.sort_by_alpha,
+              orderFunction: (a, b) => a.name.compareTo(b.name),
+            ),
+          ],
+          textExtractor: (p0) => p0.name,
+          enableSearch: true,
+          onFiltered: (listFiltered) {
+            setState(() {
+              listVisualization = listFiltered.map((e) => e).toList();
+            });
+          },
+        ),
+        SizedBox(height: 16),
+        SizedBox(
+          height: 600,
+          child: MasonryGridView.builder(
+            padding: EdgeInsets.only(bottom: 64),
+            shrinkWrap: true,
+            gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: widget.width,
+            ),
+            mainAxisSpacing: 4,
+            crossAxisSpacing: 4,
+            itemCount: listVisualization.length,
+            itemBuilder: (context, index) {
+              final visualObject = listVisualization[index];
+              return SizedBox(
+                height: (!widget.showTitle) ? null : 85,
+                child: Stack(
+                  children: [
+                    InkWell(
+                      onTap: () => widget.onTap(visualObject),
+                      child: Tooltip(
+                        message: visualObject.name,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 2,
+                              color: visualObject.isEnable
+                                  ? AppColors.red
+                                  : Colors.transparent,
+                            ),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl: visualObject.url,
+                            placeholder: (context, url) =>
+                                Icon(Icons.landscape),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconViewImageButton(imageUrl: visualObject.url),
+                    if (widget.showTitle)
+                      Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: ShaderMask(
+                              shaderCallback: (bounds) {
+                                return LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                  colors: [
+                                    Colors.black.withAlpha(175),
+                                    Colors.transparent,
+                                  ],
+                                ).createShader(bounds);
+                              },
+                              blendMode: BlendMode.dstIn,
+                              child: Container(
+                                height: 32,
+                                width: double.infinity,
+                                color: Colors.black,
+                                child: Text(" "),
                               ),
                             ),
                           ),
-                        ),
-                        IconViewImageButton(imageUrl: visualObject.url),
-                      ],
-                    );
-                  },
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Text(
+                              visualObject.name,
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ],
@@ -746,80 +754,11 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GenericHeader(
-          dense: true,
-          title: widget.title,
-          actions: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: Slider(
-                    value: tempVolume,
-                    min: 0,
-                    max: 1,
-                    onChanged: (value) {
-                      setState(() {
-                        tempVolume = value;
-                      });
-                    },
-                    onChangeEnd: (value) {
-                      double volume = safeVolume(value);
-                      switch (widget.type) {
-                        case AudioProviderType.music:
-                          campaignVM.campaign!.audioCampaign.musicVolume =
-                              volume;
-                          break;
-                        case AudioProviderType.ambience:
-                          campaignVM.campaign!.audioCampaign.ambienceVolume =
-                              volume;
-                          break;
-                        case AudioProviderType.sfx:
-                          campaignVM.campaign!.audioCampaign.sfxVolume = volume;
-                          break;
-                      }
-                      AudioProviderFirestore().setAudioCampaign(
-                        campaign: campaignVM.campaign!,
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: 25,
-                  child: Text((tempVolume * 100).toStringAsFixed(0)),
-                ),
-                IconButton(
-                  onPressed: () {
-                    audioProvider.stop(widget.type);
-                    switch (widget.type) {
-                      case AudioProviderType.music:
-                        campaignVM.campaign!.audioCampaign.musicUrl = null;
-                        campaignVM.campaign!.audioCampaign.musicStarted = null;
-                        break;
-                      case AudioProviderType.ambience:
-                        campaignVM.campaign!.audioCampaign.ambienceUrl = null;
-                        campaignVM.campaign!.audioCampaign.ambienceStarted =
-                            null;
-                        break;
-                      case AudioProviderType.sfx:
-                        campaignVM.campaign!.audioCampaign.sfxUrl = null;
-                        campaignVM.campaign!.audioCampaign.sfxStarted = null;
-                        break;
-                    }
-
-                    AudioProviderFirestore()
-                        .setAudioCampaign(campaign: campaignVM.campaign!);
-                  },
-                  tooltip: "Parar",
-                  icon: Icon(
-                    Icons.stop,
-                    color: AppColors.red,
-                  ),
-                )
-              ],
-            )
-          ],
+        Text(
+          widget.title,
+          style: TextStyle(
+            fontFamily: FontFamily.bungee,
+          ),
         ),
         GenericFilterWidget<CampaignVisual>(
           listValues: widget.listAudios,
@@ -839,90 +778,103 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
             });
           },
         ),
-        SizedBox(height: 16),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              fit: FlexFit.loose,
+              child: Slider(
+                value: tempVolume,
+                min: 0,
+                max: 1,
+                onChanged: (value) {
+                  setState(() {
+                    tempVolume = value;
+                  });
+                },
+                onChangeEnd: (value) {
+                  double volume = safeVolume(value);
+                  switch (widget.type) {
+                    case AudioProviderType.music:
+                      campaignVM.campaign!.audioCampaign.musicVolume = volume;
+                      break;
+                    case AudioProviderType.ambience:
+                      campaignVM.campaign!.audioCampaign.ambienceVolume =
+                          volume;
+                      break;
+                    case AudioProviderType.sfx:
+                      campaignVM.campaign!.audioCampaign.sfxVolume = volume;
+                      break;
+                  }
+                  AudioProviderFirestore().setAudioCampaign(
+                    campaign: campaignVM.campaign!,
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              width: 25,
+              child: Text((tempVolume * 100).toStringAsFixed(0)),
+            ),
+            IconButton(
+              onPressed: () {
+                audioProvider.stop(widget.type);
+                switch (widget.type) {
+                  case AudioProviderType.music:
+                    campaignVM.campaign!.audioCampaign.musicUrl = null;
+                    campaignVM.campaign!.audioCampaign.musicStarted = null;
+                    break;
+                  case AudioProviderType.ambience:
+                    campaignVM.campaign!.audioCampaign.ambienceUrl = null;
+                    campaignVM.campaign!.audioCampaign.ambienceStarted = null;
+                    break;
+                  case AudioProviderType.sfx:
+                    campaignVM.campaign!.audioCampaign.sfxUrl = null;
+                    campaignVM.campaign!.audioCampaign.sfxStarted = null;
+                    break;
+                }
+
+                AudioProviderFirestore()
+                    .setAudioCampaign(campaign: campaignVM.campaign!);
+              },
+              tooltip: "Parar",
+              icon: Icon(
+                Icons.stop,
+                color: AppColors.red,
+              ),
+            )
+          ],
+        ),
         SizedBox(
-          height: (height(context) / 1080) * 375,
-          child: (widget.type == AudioProviderType.sfx)
-              ? MasonryGridView.builder(
-                  padding: EdgeInsets.only(bottom: 128),
-                  gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 64,
-                  ),
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                  itemCount: listAudiosVisualization.length,
-                  itemBuilder: (context, index) {
-                    final sfx = listAudiosVisualization[index];
-                    return InkWell(
-                      onTap: () {
-                        setAudio(campaignVM: campaignVM, audio: sfx);
-                      },
-                      child: Tooltip(
-                        message: sfx.name,
-                        child: SizedBox(
-                          height: 72,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                  width: 1,
-                                  color:
-                                      getNeedToHighlight(audioProvider, sfx.url)
-                                          ? AppColors.red
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .color!
-                                              .withAlpha(75)),
-                            ),
-                            padding: EdgeInsets.all(4),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 8,
-                              children: [
-                                Icon(Icons.speaker, size: 18),
-                                Expanded(
-                                  child: Text(
-                                    sfx.name,
-                                    overflow: TextOverflow.clip,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 10),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                )
-              : ListView.builder(
-                  padding: EdgeInsets.only(bottom: 128),
-                  itemCount: listAudiosVisualization.length,
-                  itemBuilder: (context, index) {
-                    final music = listAudiosVisualization[index];
-                    return ListTile(
-                      title: Text(
-                        music.name,
-                        style: getNeedToHighlight(audioProvider, music.url)
-                            ? TextStyle(
-                                color: AppColors.red,
-                                fontWeight: FontWeight.bold,
-                              )
-                            : null,
-                      ),
-                      leading: widget.type == AudioProviderType.music
-                          ? const Icon(Icons.music_note_rounded)
-                          : Icon(Icons.landscape),
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      onTap: () {
-                        setAudio(campaignVM: campaignVM, audio: music);
-                      },
-                    );
-                  },
+          height: 500,
+          child: ListView.builder(
+            padding: EdgeInsets.only(bottom: 128),
+            itemCount: listAudiosVisualization.length,
+            itemBuilder: (context, index) {
+              final music = listAudiosVisualization[index];
+              return ListTile(
+                title: Text(
+                  music.name,
+                  style: getNeedToHighlight(audioProvider, music.url)
+                      ? TextStyle(
+                          color: AppColors.red,
+                          fontWeight: FontWeight.bold,
+                        )
+                      : null,
                 ),
+                leading: widget.type == AudioProviderType.music
+                    ? const Icon(Icons.music_note_rounded)
+                    : widget.type == AudioProviderType.ambience
+                        ? Icon(Icons.landscape)
+                        : Icon(Icons.speaker),
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+                onTap: () {
+                  setAudio(campaignVM: campaignVM, audio: music);
+                },
+              );
+            },
+          ),
         ),
       ],
     );
