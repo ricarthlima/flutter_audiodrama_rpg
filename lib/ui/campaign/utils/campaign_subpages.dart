@@ -1,5 +1,5 @@
-enum CampaignSubPages {
-  home,
+enum CampaignTabs {
+  chat,
   sheets,
   achievements,
 }

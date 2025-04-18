@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/utils/change_url.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
@@ -43,53 +45,83 @@ class CampaignDrawer extends StatelessWidget {
                 CompactableButton(
                   controller: CompactableButtonController(
                     isCompressed: campaignVM.isDrawerClosed,
-                    isSelected:
-                        campaignVM.currentPage == CampaignSubPages.sheets,
+                    isSelected: campaignVM.currentTab == CampaignTabs.chat,
+                  ),
+                  title: "Chat",
+                  leadingIcon: Icons.chat,
+                  onPressed: () {
+                    campaignVM.currentTab = CampaignTabs.chat;
+                    campaignVM.isDrawerClosed = true;
+                  },
+                ),
+                CompactableButton(
+                  controller: CompactableButtonController(
+                    isCompressed: campaignVM.isDrawerClosed,
+                    isSelected: campaignVM.currentTab == CampaignTabs.sheets,
                   ),
                   title: "Personagens",
                   leadingIcon: Icons.list_alt_sharp,
                   onPressed: () {
-                    campaignVM.currentPage = CampaignSubPages.sheets;
-                    changeURL(
-                      "campaign/${campaignVM.campaign?.id}/${CampaignSubPages.sheets.name}",
-                    );
-                  },
-                ),
-                CompactableButton(
-                  controller: CompactableButtonController(
-                    isCompressed: campaignVM.isDrawerClosed,
-                    isSelected: campaignVM.currentPage == CampaignSubPages.home,
-                  ),
-                  title: "Mesa de Ambientação",
-                  leadingIcon: Icons.visibility,
-                  onPressed: () {
-                    campaignVM.currentPage = CampaignSubPages.home;
-                    changeURL(
-                      "campaign/${campaignVM.campaign?.id}/${CampaignSubPages.home.name}",
-                    );
+                    campaignVM.currentTab = CampaignTabs.sheets;
+                    campaignVM.isDrawerClosed = true;
                   },
                 ),
                 CompactableButton(
                   controller: CompactableButtonController(
                     isCompressed: campaignVM.isDrawerClosed,
                     isSelected:
-                        campaignVM.currentPage == CampaignSubPages.achievements,
+                        campaignVM.currentTab == CampaignTabs.achievements,
                   ),
                   title: "Conquistas",
                   leadingIcon: Icons.star,
                   onPressed: () {
-                    campaignVM.currentPage = CampaignSubPages.achievements;
-                    changeURL(
-                      "campaign/${campaignVM.campaign?.id}/${CampaignSubPages.achievements.name}",
-                    );
+                    campaignVM.currentTab = CampaignTabs.achievements;
+                    campaignVM.isDrawerClosed = true;
                   },
                 ),
               ],
             ),
             //TODO: RollLog
             Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: 8,
               children: [
+                if (campaignVM.isOwner && !campaignVM.isDrawerClosed)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        "Código de entrada",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            campaignVM.campaign!.enterCode,
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontFamily: FontFamily.bungee,
+                              fontSize: 24,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Clipboard.setData(
+                                ClipboardData(
+                                    text: campaignVM.campaign!.enterCode),
+                              );
+                            },
+                            tooltip: "Copiar",
+                            icon: Icon(Icons.copy),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                Divider(thickness: 0.1),
                 if (campaignVM.isOwner)
                   CompactableButton(
                     controller: CompactableButtonController(

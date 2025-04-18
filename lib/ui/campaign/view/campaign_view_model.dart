@@ -111,10 +111,10 @@ class CampaignViewModel extends ChangeNotifier {
     }
   }
 
-  CampaignSubPages _currentPage = CampaignSubPages.sheets;
-  CampaignSubPages get currentPage => _currentPage;
-  set currentPage(CampaignSubPages value) {
-    _currentPage = value;
+  CampaignTabs? _currentTab;
+  CampaignTabs? get currentTab => _currentTab;
+  set currentTab(CampaignTabs? value) {
+    _currentTab = value;
     notifyListeners();
   }
 
@@ -253,10 +253,6 @@ class CampaignViewModel extends ChangeNotifier {
         listUsers: campaign!.listIdPlayers,
       ),
     );
-  }
-
-  bool get isFullscreen {
-    return currentPage == CampaignSubPages.home;
   }
 
   List<SheetAppUser> listOpenSheet = [];

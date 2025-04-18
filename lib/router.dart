@@ -116,36 +116,7 @@ class AppRouter {
               if (snapshot.connectionState != ConnectionState.done) {
                 return ScaffoldCenterCPI();
               }
-              return CampaignScreen(
-                key: ValueKey(id),
-                subPage: CampaignSubPages.sheets,
-              );
-            },
-          );
-        },
-      ),
-      GoRoute(
-        path: "/campaign/:campaignId/:subpage",
-        builder: (context, state) {
-          String id = state.pathParameters["campaignId"] ?? "";
-          String subPage = state.pathParameters["subpage"] ?? "";
-
-          return FutureBuilder(
-            future: context.read<UserProvider>().initializeCampaign(
-                  context: context,
-                  campaignId: id,
-                ),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return ScaffoldCenterCPI();
-              }
-              return CampaignScreen(
-                key: ValueKey(id),
-                subPage: CampaignSubPages.values.firstWhere(
-                  (e) => e.name == subPage,
-                  orElse: () => CampaignSubPages.sheets,
-                ),
-              );
+              return CampaignScreen(key: ValueKey(id));
             },
           );
         },
@@ -201,7 +172,7 @@ class AppRouter {
   goCampaign({
     required BuildContext context,
     required String campaignId,
-    CampaignSubPages? subPage,
+    CampaignTabs? subPage,
   }) {
     if (subPage != null) {
       GoRouter.of(context).go("/campaign/$campaignId/${subPage.name}");
