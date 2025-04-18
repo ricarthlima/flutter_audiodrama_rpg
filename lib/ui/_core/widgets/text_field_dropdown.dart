@@ -63,7 +63,7 @@ class _TextFieldDropdownState extends State<TextFieldDropdown> {
           onChanged: _filtrar,
           onTap: () => _filtrar(_controller.text),
           onFieldSubmitted: (value) {
-            widget.onSubmit(_controller.text);
+            widget.onSubmit(opcoesFiltradas.first);
           },
         ),
         SizedBox(

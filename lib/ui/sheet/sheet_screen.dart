@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
@@ -49,10 +50,13 @@ class _SheetScreenState extends State<SheetScreen> {
           HardwareKeyboard.instance.addHandler(_keyListener);
           if (value != null) {
             if (!mounted) return;
+            ActionTemplate actionTemplate =
+                ActionDAO.instance.getAll().firstWhere(
+                      (e) => e.name.toLowerCase() == value.toLowerCase(),
+                    );
             context.read<SheetViewModel>().rollAction(
                   context: context,
-                  action: ActionDAO.instance.getAll().firstWhere(
-                      (e) => e.name.toLowerCase() == value.toLowerCase()),
+                  action: actionTemplate,
                 );
           }
         },
@@ -99,6 +103,7 @@ class _SheetScreenState extends State<SheetScreen> {
                     label: Text("Busque uma ação"),
                   ),
                   onSubmit: (value) {
+                    print(value);
                     Navigator.pop(context, value);
                   },
                 ),
