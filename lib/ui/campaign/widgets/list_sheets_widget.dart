@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/sheet_model.dart';
 import '../../_core/widgets/generic_filter_widget.dart';
-import '../../home/widgets/home_list_item_widget.dart';
 import '../view/campaign_view_model.dart';
+import 'campaign_sheet_item.dart';
 
 class ListSheetsWidget extends StatefulWidget {
   final String title;
@@ -100,7 +100,7 @@ class _ListSheetsWidgetState extends State<ListSheetsWidget> {
                     .where((e) => e.sheet == listSheetsVisualization[index])
                     .first;
                 AppUser appUser = sheetAppUser.appUser;
-                return HomeListItemWidget(
+                return CampaignSheetItem(
                   sheet: listSheetsVisualization[index],
                   appUser: appUser,
                   username: appUser.username ?? "",

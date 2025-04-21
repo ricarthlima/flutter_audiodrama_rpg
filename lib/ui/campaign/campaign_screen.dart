@@ -4,10 +4,10 @@ import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_sc
 import 'package:flutter_rpg_audiodrama/ui/_core/open_popup.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_drawer.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/partials/achievements_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_first_interact_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_home_screen.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_sheets_screen.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/partials/sheets_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/group_notifications.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
@@ -16,7 +16,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../_core/utils/load_image.dart';
-import 'widgets/chat_widget.dart';
+import 'partials/chat_widget.dart';
 
 class CampaignScreen extends StatefulWidget {
   const CampaignScreen({super.key});
@@ -94,7 +94,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
                     alignment: Alignment.topLeft,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 8.0),
-                      child: IconButton(
+                      child: IconButton.filled(
                         onPressed: () {
                           campaignVM.currentTab = null;
                         },
@@ -105,14 +105,14 @@ class _CampaignScreenState extends State<CampaignScreen> {
                   ),
                   Container(
                     width: 300,
+                    padding: EdgeInsets.all(16),
                     color: Theme.of(context).scaffoldBackgroundColor,
                     child: IndexedStack(
                       index: campaignVM.currentTab!.index,
                       children: [
                         CampaignChatWidget(),
-                        CampaignChatWidget(),
-                        CampaignChatWidget(),
-                        CampaignChatWidget(),
+                        CampaignSheetsWidget(),
+                        CampaignAchievementsWidget(),
                       ],
                     ),
                   ),

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../../router.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
+import '../../home/view/home_view_model.dart';
 import '../view/campaign_view_model.dart';
 
 class CampaignFirstInteractScreen extends StatefulWidget {
@@ -85,6 +87,21 @@ class _CampaignFirstInteractScreenState
             ),
           ),
         ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              onPressed: () {
+                AppRouter().goHome(
+                  context: context,
+                  subPage: HomeSubPages.campaigns,
+                );
+              },
+              icon: Icon(Icons.arrow_back),
+            ),
+          ),
+        )
       ],
     );
   }
