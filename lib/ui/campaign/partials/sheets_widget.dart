@@ -15,6 +15,7 @@ class CampaignSheetsWidget extends StatelessWidget {
     UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return Column(
+      spacing: 32,
       children: [
         Flexible(
           fit: FlexFit.tight,

@@ -30,7 +30,9 @@ class CampaignDrawer extends StatelessWidget {
       onExit: (_) => campaignVM.isDrawerClosed = true,
       child: AnimatedContainer(
         color: Theme.of(context).scaffoldBackgroundColor.withAlpha(
-              (campaignVM.isDrawerClosed) ? 20 : 250,
+              (campaignVM.isDrawerClosed && campaignVM.currentTab == null)
+                  ? 25
+                  : 250,
             ),
         duration: Duration(milliseconds: 350),
         curve: Curves.ease,

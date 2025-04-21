@@ -15,30 +15,26 @@ class CampaignAchievementsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GenericHeader(
-            title: "Conquistas",
-            iconButton: (campaignVM.isOwner)
-                ? IconButton(
-                    onPressed: () {
-                      showCreateEditAchievementDialog(context: context);
-                    },
-                    icon: Icon(Icons.add),
-                  )
-                : null,
-          ),
-          Wrap(
-            alignment: WrapAlignment.start,
-            crossAxisAlignment: WrapCrossAlignment.start,
-            spacing: 8,
-            runSpacing: 16,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GenericHeader(
+          title: "Conquistas",
+          iconButton: (campaignVM.isOwner)
+              ? IconButton(
+                  onPressed: () {
+                    showCreateEditAchievementDialog(context: context);
+                  },
+                  icon: Icon(Icons.add),
+                )
+              : null,
+        ),
+        Expanded(
+          child: ListView(
             children: _generateListAchievementsWidget(context, campaignVM),
-          )
-        ],
-      ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -65,13 +61,16 @@ class CampaignAchievementsWidget extends StatelessWidget {
 
     List<Widget> listReturn = [];
     listReturn.addAll(listNotHided.map((achievement) {
-      return AchievementWidget(achievement: achievement);
+      return Padding(
+        padding: EdgeInsets.only(bottom: 16),
+        child: AchievementWidget(achievement: achievement),
+      );
     }));
     listReturn.add(
       Container(
         width: 250,
-        height: 250,
         padding: EdgeInsets.all(16),
+        margin: EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           border: Border.all(

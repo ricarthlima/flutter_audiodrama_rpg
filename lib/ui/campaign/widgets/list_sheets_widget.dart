@@ -92,24 +92,28 @@ class _ListSheetsWidgetState extends State<ListSheetsWidget> {
             ),
           ),
         if (widget.listSheetsAppUser.isNotEmpty)
-          Column(
-            children: List.generate(
-              listSheetsVisualization.length,
-              (index) {
-                SheetAppUser sheetAppUser = widget.listSheetsAppUser
-                    .where((e) => e.sheet == listSheetsVisualization[index])
-                    .first;
-                AppUser appUser = sheetAppUser.appUser;
-                return CampaignSheetItem(
-                  sheet: listSheetsVisualization[index],
-                  appUser: appUser,
-                  username: appUser.username ?? "",
-                  isShowingByCampaign: true,
-                  onDetach: () {
-                    campaignVM.openSheetInCampaign(sheetAppUser);
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
+                children: List.generate(
+                  listSheetsVisualization.length,
+                  (index) {
+                    SheetAppUser sheetAppUser = widget.listSheetsAppUser
+                        .where((e) => e.sheet == listSheetsVisualization[index])
+                        .first;
+                    AppUser appUser = sheetAppUser.appUser;
+                    return CampaignSheetItem(
+                      sheet: listSheetsVisualization[index],
+                      appUser: appUser,
+                      username: appUser.username ?? "",
+                      isShowingByCampaign: true,
+                      onDetach: () {
+                        campaignVM.openSheetInCampaign(sheetAppUser);
+                      },
+                    );
                   },
-                );
-              },
+                ),
+              ),
             ),
           ),
       ],

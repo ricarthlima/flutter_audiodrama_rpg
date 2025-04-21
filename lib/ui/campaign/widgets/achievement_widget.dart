@@ -31,6 +31,7 @@ class AchievementWidget extends StatelessWidget {
         ),
         padding: EdgeInsets.all(4),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           spacing: 8,
           children: [
             Row(
@@ -68,6 +69,7 @@ class AchievementWidget extends StatelessWidget {
                     ),
                   ),
                 Column(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -94,12 +96,8 @@ class AchievementWidget extends StatelessWidget {
                         isUnlockedToAll(campaignVM))
                       SizedBox(
                         width: 175,
-                        child: Tooltip(
-                          message: achievement.description,
-                          child: Text(
-                            achievement.description,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        child: Text(
+                          achievement.description,
                         ),
                       ),
                     if (!campaignVM.isEditing && !isPlayerUnlockedAchievement())
