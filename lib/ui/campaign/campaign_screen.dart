@@ -109,43 +109,6 @@ class _CampaignScreenState extends State<CampaignScreen> {
                   ),
                 ],
               ),
-              // VerticalCompactableArea(
-              //   title: Text("Chat"),
-              //   width: 300,
-              //   heightPercentage: 0.9,
-              //   actions: [
-              //     StreamBuilder(
-              //       stream: ChatService.instance.listenChat(
-              //         campaignId: campaignVM.campaign!.id,
-              //       ),
-              //       builder: (context, snapshot) {
-              //         int count = 0;
-
-              //         if (snapshot.data != null) {
-              //           if (campaignVM.isChatFirstTime) {
-              //             campaignVM.countChatMessages = snapshot.data!.size;
-              //             campaignVM.isChatFirstTime = false;
-              //           } else {
-              //             count =
-              //                 snapshot.data!.size - campaignVM.countChatMessages;
-              //           }
-              //         }
-
-              //         return Badge.count(
-              //           count: count,
-              //           isLabelVisible: count > 0,
-              //           textColor: Theme.of(context).textTheme.bodyMedium!.color!,
-              //           backgroundColor: AppColors.red,
-              //           child: Icon(Icons.person),
-              //         );
-              //       },
-              //     ),
-              //   ],
-              //   onExpand: () {
-              //     campaignVM.isChatFirstTime = true;
-              //   },
-              //   child: CampaignChatWidget(),
-              // ),
             ),
           ),
         Align(alignment: Alignment.centerRight, child: CampaignDrawer()),

@@ -5,7 +5,9 @@ import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart'
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/services/chat_service.dart';
 import '../../../router.dart';
+import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/widgets/compactable_button.dart';
 import '../../home/view/home_view_model.dart';
@@ -92,10 +94,38 @@ class CampaignDrawer extends StatelessWidget {
                     isSelected: campaignVM.currentTab == CampaignTabs.chat,
                   ),
                   title: "Chat",
-                  leadingIcon: Icons.chat,
+                  leading: StreamBuilder(
+                    stream: ChatService.instance.listenChat(
+                      campaignId: campaignVM.campaign!.id,
+                    ),
+                    builder: (context, snapshot) {
+                      int count = 0;
+
+                      if (snapshot.data != null &&
+                          campaignVM.currentTab != CampaignTabs.chat) {
+                        if (campaignVM.isChatFirstTime) {
+                          campaignVM.countChatMessages = snapshot.data!.size;
+                          campaignVM.isChatFirstTime = false;
+                        } else {
+                          count = snapshot.data!.size -
+                              campaignVM.countChatMessages;
+                        }
+                      }
+
+                      return Badge.count(
+                        count: count,
+                        isLabelVisible: count > 0,
+                        textColor:
+                            Theme.of(context).textTheme.bodyMedium!.color!,
+                        backgroundColor: AppColors.red,
+                        child: Icon(Icons.chat),
+                      );
+                    },
+                  ),
                   onPressed: () {
                     campaignVM.currentTab = CampaignTabs.chat;
                     campaignVM.isDrawerClosed = true;
+                    campaignVM.isChatFirstTime = true;
                   },
                 ),
                 CompactableButton(
@@ -145,9 +175,7 @@ class CampaignDrawer extends StatelessWidget {
                         ),
                         title: "Configurar campanha",
                         leadingIcon: Icons.local_florist_outlined,
-                        onPressed: () {
-                          showSettingsDialog(context);
-                        },
+                        onPressed: () {},
                       ),
                       // CompactableButton(
                       //   controller: CompactableButtonController(
