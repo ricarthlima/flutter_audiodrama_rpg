@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/image_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/components/manage_achievement_players.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/components/create_achievement.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +31,7 @@ class AchievementWidget extends StatelessWidget {
         ),
         padding: EdgeInsets.all(4),
         child: Column(
-          spacing: 16,
+          spacing: 8,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -103,109 +104,91 @@ class AchievementWidget extends StatelessWidget {
                       ),
                     if (!campaignVM.isEditing && !isPlayerUnlockedAchievement())
                       SizedBox(height: 8),
-                    if (!campaignVM.isEditing && !isPlayerUnlockedAchievement())
-                      Opacity(
-                        opacity: 0.5,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          spacing: 16,
-                          children: [
-                            if (isUnlockedToAll(campaignVM))
-                              Tooltip(
-                                message: "Desbloqueado para todas as pessoas",
-                                child: Icon(
-                                  Icons.emoji_events,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            if (achievement.isHided &&
-                                !isUnlockedToAll(campaignVM))
-                              Tooltip(
-                                message: "Conquista oculta",
-                                child: Icon(Icons.visibility_off),
-                              ),
-                            if (achievement.isImageHided &&
-                                !isUnlockedToAll(campaignVM))
-                              Tooltip(
-                                message: "Imagem oculta",
-                                child: Icon(Icons.image_not_supported_outlined),
-                              ),
-                            if (achievement.isDescriptionHided &&
-                                !isUnlockedToAll(campaignVM))
-                              Tooltip(
-                                message: "Descrição oculta",
-                                child: Icon(Icons.texture_rounded),
-                              ),
-                          ],
-                        ),
-                      ),
                   ],
                 ),
               ],
             ),
-            if (campaignVM.isOwner && campaignVM.isEditing)
+            if (!campaignVM.isEditing && !isPlayerUnlockedAchievement())
+              Opacity(
+                opacity: 0.5,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 16,
+                  children: [
+                    if (isUnlockedToAll(campaignVM))
+                      Tooltip(
+                        message: "Desbloqueado para todas as pessoas",
+                        child: Icon(
+                          Icons.emoji_events,
+                          color: Colors.green,
+                        ),
+                      ),
+                    if (achievement.isHided && !isUnlockedToAll(campaignVM))
+                      Tooltip(
+                        message: "Conquista oculta",
+                        child: Icon(Icons.visibility_off),
+                      ),
+                    if (achievement.isImageHided &&
+                        !isUnlockedToAll(campaignVM))
+                      Tooltip(
+                        message: "Imagem oculta",
+                        child: Icon(Icons.image_not_supported_outlined),
+                      ),
+                    if (achievement.isDescriptionHided &&
+                        !isUnlockedToAll(campaignVM))
+                      Tooltip(
+                        message: "Descrição oculta",
+                        child: Icon(Icons.texture_rounded),
+                      ),
+                  ],
+                ),
+              ),
+            if (campaignVM.isOwner)
               Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: 8,
                 children: [
-                  Divider(
-                    thickness: 0.25,
-                  ),
-                  CheckboxListTile(
-                    title: Text("Conquista oculta?"),
-                    contentPadding: EdgeInsets.zero,
-                    value: achievement.isHided,
-                    onChanged: (value) {
-                      campaignVM.updateAchievement(
-                        achievement.copyWith(isHided: !achievement.isHided),
-                      );
-                    },
-                  ),
-                  CheckboxListTile(
-                    title: Text("Ocultar imagem?"),
-                    contentPadding: EdgeInsets.zero,
-                    value: achievement.isImageHided,
-                    onChanged: (value) {
-                      campaignVM.updateAchievement(
-                        achievement.copyWith(
-                          isImageHided: !achievement.isImageHided,
-                        ),
-                      );
-                    },
-                  ),
-                  CheckboxListTile(
-                    title: Text("Ocultar descrição?"),
-                    contentPadding: EdgeInsets.zero,
-                    value: achievement.isDescriptionHided,
-                    onChanged: (value) {
-                      campaignVM.updateAchievement(
-                        achievement.copyWith(
-                          isDescriptionHided: !achievement.isDescriptionHided,
-                        ),
-                      );
-                    },
-                  ),
-                  ElevatedButton(
+                  Divider(thickness: 0.25),
+                  if (!isUnlockedToAll(campaignVM))
+                    ElevatedButton(
+                      onPressed: () {
+                        unlockToAllUsers(context, campaignVM);
+                      },
+                      child: Text("Liberar geral"),
+                    ),
+                  ElevatedButton.icon(
                     onPressed: () {
-                      showManageAchievementPlayersDialog(
+                      showCreateEditAchievementDialog(
                         context: context,
                         achievement: achievement,
                       );
                     },
-                    child: Text("Gerenciar"),
+                    icon: Icon(Icons.edit),
+                    label: Text("Editar"),
                   ),
-                ],
-              ),
-            if (campaignVM.isOwner && !isUnlockedToAll(campaignVM))
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Divider(thickness: 0.25),
-                  ElevatedButton(
-                    onPressed: () {
-                      unlockToAllUsers(context, campaignVM);
-                    },
-                    child: Text("Liberar geral"),
+                  Tooltip(
+                    message: "Pressione longamente para remover",
+                    child: ElevatedButton.icon(
+                      onLongPress: () {
+                        campaignVM.onRemoveAchievement(achievement);
+                      },
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                      ),
+                      style: ButtonStyle(
+                          backgroundColor: WidgetStatePropertyAll(
+                        AppColors.redDark,
+                      )),
+                      label: Text(
+                        "Remover",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

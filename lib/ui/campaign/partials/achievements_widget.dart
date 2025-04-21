@@ -24,36 +24,12 @@ class CampaignAchievementsWidget extends StatelessWidget {
             iconButton: (campaignVM.isOwner)
                 ? IconButton(
                     onPressed: () {
-                      showCreateAchievementDialog(context: context);
+                      showCreateEditAchievementDialog(context: context);
                     },
                     icon: Icon(Icons.add),
                   )
                 : null,
           ),
-          if (campaignVM.isOwner)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: SwitchListTile(
-                    dense: true,
-                    contentPadding: EdgeInsets.zero,
-                    thumbIcon: WidgetStatePropertyAll(Icon(Icons.edit)),
-                    title: Text("Edição"),
-                    value: campaignVM.isEditing,
-                    onChanged: (value) {
-                      campaignVM.isEditing = !campaignVM.isEditing;
-                    },
-                  ),
-                ),
-              ],
-            ),
-          if (campaignVM.isOwner && !campaignVM.isEditing)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Text(
-                  "Visualização de pessoa jogadora, entre em modo edição para fazer alterações. Pessoas jogadoras veem integralmente conquistas que já desbloquearam."),
-            ),
           Wrap(
             alignment: WrapAlignment.start,
             crossAxisAlignment: WrapCrossAlignment.start,

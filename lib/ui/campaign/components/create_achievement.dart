@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -7,18 +8,26 @@ import '../../_core/app_colors.dart';
 import '../../_core/utils/load_image.dart';
 import '../../_core/widgets/circular_progress_indicator.dart';
 
-showCreateAchievementDialog({required BuildContext context}) {
+showCreateEditAchievementDialog({
+  required BuildContext context,
+  CampaignAchievement? achievement,
+}) {
   return showDialog(
     barrierDismissible: false,
     context: context,
     builder: (context) {
-      return Dialog(child: _CreateAchievementDialog());
+      return Dialog(
+        child: _CreateAchievementDialog(
+          achievement: achievement,
+        ),
+      );
     },
   );
 }
 
 class _CreateAchievementDialog extends StatefulWidget {
-  const _CreateAchievementDialog();
+  final CampaignAchievement? achievement;
+  const _CreateAchievementDialog({this.achievement});
 
   @override
   State<_CreateAchievementDialog> createState() =>
@@ -36,6 +45,19 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
   bool isImageHided = false;
 
   bool isLoading = false;
+
+  @override
+  void initState() {
+    if (widget.achievement != null) {
+      nameController.text = widget.achievement!.title;
+      descController.text = widget.achievement!.description;
+      isHide = widget.achievement!.isHided;
+      isHideDescription = widget.achievement!.isDescriptionHided;
+      isImageHided = widget.achievement!.isImageHided;
+      setState(() {});
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +79,10 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "Criar conquista",
+              Text(
+                (widget.achievement == null)
+                    ? "Criar conquista"
+                    : "Editar conquista",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -77,46 +101,77 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  (image != null)
+                  (widget.achievement != null &&
+                              widget.achievement!.imageUrl != null ||
+                          image != null)
                       ? SizedBox(
                           height: 300,
-                          child: FutureBuilder(
-                            future: image!.readAsBytes(),
-                            builder: (context, snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.none:
-                                case ConnectionState.waiting:
-                                case ConnectionState.active:
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                case ConnectionState.done:
-                                  return Image.memory(snapshot.data!);
-                              }
-                            },
-                          ),
-                        )
-                      : SizedBox(
-                          height: 128,
-                          width: 128,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          child: Stack(
                             children: [
-                              IconButton(
-                                onPressed: () {
-                                  _onUploadImagePressed();
-                                },
-                                icon: const Icon(Icons.upload),
-                              ),
-                              const Text(
-                                "Opcionalmente,\ninsira um símbolo.\n(Quadrado, até 1 MB)",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12),
+                              if (widget.achievement != null &&
+                                  widget.achievement!.imageUrl != null &&
+                                  image == null)
+                                SizedBox(
+                                  height: 300,
+                                  child: Image.network(
+                                      widget.achievement!.imageUrl!),
+                                ),
+                              if (image != null)
+                                FutureBuilder(
+                                  future: image!.readAsBytes(),
+                                  builder: (context, snapshot) {
+                                    switch (snapshot.connectionState) {
+                                      case ConnectionState.none:
+                                      case ConnectionState.waiting:
+                                      case ConnectionState.active:
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      case ConnectionState.done:
+                                        return Image.memory(snapshot.data!);
+                                    }
+                                  },
+                                ),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: 24.0,
+                                    right: 8,
+                                  ),
+                                  child: IconButton.filled(
+                                    onPressed: () {
+                                      _onUploadImagePressed();
+                                    },
+                                    icon: const Icon(Icons.upload),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
+                        )
+                      : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 16,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                _onUploadImagePressed();
+                              },
+                              icon: const Icon(Icons.upload),
+                            ),
+                            Text(
+                              "Opcionalmente,\nadicione um ícone.",
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
+                  const Text(
+                    "(Proporção quadrada, até 1 MB)",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12),
+                  ),
                   const SizedBox(height: 32),
                   TextFormField(
                     controller: nameController,
@@ -209,6 +264,7 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
       String description = descController.text;
 
       await context.read<CampaignViewModel>().onCreateAchievement(
+            idd: (widget.achievement != null) ? widget.achievement!.id : null,
             name: name,
             description: description,
             isHide: isHide,

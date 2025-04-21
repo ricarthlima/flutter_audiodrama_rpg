@@ -23,7 +23,7 @@ class CampaignAchievementsScreen extends StatelessWidget {
           iconButton: (campaignVM.isOwner)
               ? IconButton(
                   onPressed: () {
-                    showCreateAchievementDialog(context: context);
+                    showCreateEditAchievementDialog(context: context);
                   },
                   icon: Icon(Icons.add),
                 )

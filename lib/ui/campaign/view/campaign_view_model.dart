@@ -175,6 +175,7 @@ class CampaignViewModel extends ChangeNotifier {
   }
 
   Future<void> onCreateAchievement({
+    String? idd,
     required String name,
     required String description,
     required bool isHide,
@@ -183,6 +184,11 @@ class CampaignViewModel extends ChangeNotifier {
     XFile? image,
   }) async {
     String id = Uuid().v7();
+
+    if (idd != null) {
+      id = idd;
+    }
+
     String? urlImage;
 
     if (image != null) {
@@ -191,6 +197,11 @@ class CampaignViewModel extends ChangeNotifier {
         suffix: "achievement-$id",
         campaignId: campaign!.id,
       );
+    } else {
+      if (idd != null) {
+        urlImage =
+            campaign!.listAchievements.where((e) => e.id == idd).first.imageUrl;
+      }
     }
 
     CampaignAchievement achievement = CampaignAchievement(
@@ -204,8 +215,21 @@ class CampaignViewModel extends ChangeNotifier {
       listUsers: [],
     );
 
-    campaign!.listAchievements.add(achievement);
+    if (campaign!.listAchievements.where((e) => e.id == idd).isNotEmpty) {
+      achievement.listUsers =
+          campaign!.listAchievements.where((e) => e.id == idd).first.listUsers;
 
+      int index = campaign!.listAchievements.indexWhere((e) => e.id == idd);
+      campaign!.listAchievements[index] = achievement;
+    } else {
+      campaign!.listAchievements.add(achievement);
+    }
+
+    await onSave();
+  }
+
+  Future<void> onRemoveAchievement(CampaignAchievement achievement) async {
+    campaign!.listAchievements.remove(achievement);
     await onSave();
   }
 
