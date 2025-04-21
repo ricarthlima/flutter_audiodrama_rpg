@@ -88,6 +88,17 @@ class CampaignDrawer extends StatelessWidget {
                       ),
                     ],
                   ),
+                CompactableButton(
+                  controller: CompactableButtonController(
+                    isCompressed: campaignVM.isDrawerClosed,
+                    isSelected: false,
+                  ),
+                  title: "Sobre ${campaignVM.campaign!.name}",
+                  leadingIcon: Icons.local_florist_outlined,
+                  onPressed: () {
+                    showCampaignSettingsDialog(context: context);
+                  },
+                ),
                 Divider(thickness: 0.25),
                 CompactableButton(
                   controller: CompactableButtonController(
@@ -154,34 +165,6 @@ class CampaignDrawer extends StatelessWidget {
                     campaignVM.isDrawerClosed = true;
                   },
                 ),
-                if (campaignVM.isOwner)
-                  Column(
-                    spacing: 8,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Divider(thickness: 0.25),
-                      if (!campaignVM.isDrawerClosed)
-                        Text(
-                          "Área Restrita",
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontFamily: FontFamily.bungee,
-                            fontSize: 9,
-                          ),
-                        ),
-                      CompactableButton(
-                        controller: CompactableButtonController(
-                          isCompressed: campaignVM.isDrawerClosed,
-                          isSelected: false,
-                        ),
-                        title: "Configurar campanha",
-                        leadingIcon: Icons.local_florist_outlined,
-                        onPressed: () {
-                          showCampaignSettingsDialog(context: context);
-                        },
-                      ),
-                    ],
-                  ),
               ],
             ),
             //TODO: RollLog

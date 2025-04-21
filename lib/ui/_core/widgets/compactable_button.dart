@@ -67,7 +67,7 @@ class _CompactableButtonState extends State<CompactableButton> {
                     children: [
                       if (widget.leading == null && widget.leadingIcon != null)
                         Tooltip(
-                          message: widget.title,
+                          message: widget.title ?? "",
                           child: Icon(widget.leadingIcon),
                         ),
                       if (widget.leading != null) widget.leading!,
