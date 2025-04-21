@@ -12,10 +12,8 @@ import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart
 import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/group_notifications.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../_core/utils/load_image.dart';
 import 'partials/chat_widget.dart';
 
 class CampaignScreen extends StatefulWidget {
@@ -140,13 +138,5 @@ class _CampaignScreenState extends State<CampaignScreen> {
         ),
       ],
     );
-  }
-
-  void _onUploadImagePressed(CampaignViewModel campaignVM) async {
-    XFile? image = await onLoadImageClicked(context: context);
-
-    if (image != null) {
-      campaignVM.onUpdateImage(image);
-    }
   }
 }

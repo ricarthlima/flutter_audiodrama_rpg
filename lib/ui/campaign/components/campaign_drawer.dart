@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_settings_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:provider/provider.dart';
@@ -175,21 +176,10 @@ class CampaignDrawer extends StatelessWidget {
                         ),
                         title: "Configurar campanha",
                         leadingIcon: Icons.local_florist_outlined,
-                        onPressed: () {},
+                        onPressed: () {
+                          showCampaignSettingsDialog(context: context);
+                        },
                       ),
-                      // CompactableButton(
-                      //   controller: CompactableButtonController(
-                      //     isCompressed: campaignVM.isDrawerClosed,
-                      //     isSelected: campaignVM.isEditing,
-                      //   ),
-                      //   title: campaignVM.isEditing
-                      //       ? "Desativar edição"
-                      //       : "Ativar edição",
-                      //   leadingIcon: Icons.edit,
-                      //   onPressed: () {
-                      //     campaignVM.isEditing = !campaignVM.isEditing;
-                      //   },
-                      // ),
                     ],
                   ),
               ],
