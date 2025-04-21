@@ -50,17 +50,8 @@ class _CampaignScreenState extends State<CampaignScreen> {
   Widget build(BuildContext context) {
     CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
 
-    // TODO modularizar esse campanha nao encontrada
+    // TODO: modularizar esse campanha nao encontrada
     return Scaffold(
-      appBar: null,
-      // campaignVM.currentPage == CampaignSubPages.home ||
-      //         (!campaignVM.hasInteracted)
-      //     ? null
-      //     : getCampaignAppBar(
-      //         context: context,
-      //         campaignVM: campaignVM,
-      //         isClean: campaignVM.currentPage == CampaignSubPages.home,
-      //       ),
       extendBodyBehindAppBar: true,
       body: AnimatedSwitcher(
         duration: Duration(milliseconds: 1250),

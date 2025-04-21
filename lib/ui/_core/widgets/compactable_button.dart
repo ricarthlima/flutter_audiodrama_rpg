@@ -66,7 +66,10 @@ class _CompactableButtonState extends State<CompactableButton> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       if (widget.leading == null && widget.leadingIcon != null)
-                        Icon(widget.leadingIcon),
+                        Tooltip(
+                          message: widget.title,
+                          child: Icon(widget.leadingIcon),
+                        ),
                       if (widget.leading != null) widget.leading!,
                       if (value > 0.2 && !widget.controller.isCompressed)
                         SizedBox(width: 8),

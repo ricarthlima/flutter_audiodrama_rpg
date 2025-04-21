@@ -30,6 +30,24 @@ class CampaignAchievementsWidget extends StatelessWidget {
                   )
                 : null,
           ),
+          if (campaignVM.isOwner)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: SwitchListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    thumbIcon: WidgetStatePropertyAll(Icon(Icons.edit)),
+                    title: Text("Edição"),
+                    value: campaignVM.isEditing,
+                    onChanged: (value) {
+                      campaignVM.isEditing = !campaignVM.isEditing;
+                    },
+                  ),
+                ),
+              ],
+            ),
           if (campaignVM.isOwner && !campaignVM.isEditing)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),

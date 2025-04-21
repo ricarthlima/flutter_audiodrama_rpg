@@ -19,15 +19,15 @@ class CampaignDrawer extends StatelessWidget {
     final campaignVM = Provider.of<CampaignViewModel>(context);
 
     return MouseRegion(
-      onEnter: (event) {
-        if (event.delta.dx > 0) {
-          campaignVM.isDrawerClosed = false;
-        }
-      },
+      // onEnter: (event) {
+      //   if (event.delta.dx > 0) {
+      //     campaignVM.isDrawerClosed = false;
+      //   }
+      // },
       onExit: (_) => campaignVM.isDrawerClosed = true,
       child: AnimatedContainer(
         color: Theme.of(context).scaffoldBackgroundColor.withAlpha(
-              (campaignVM.isDrawerClosed) ? 0 : 250,
+              (campaignVM.isDrawerClosed) ? 20 : 250,
             ),
         duration: Duration(milliseconds: 350),
         curve: Curves.ease,
@@ -41,6 +41,51 @@ class CampaignDrawer extends StatelessWidget {
             Column(
               spacing: 8,
               children: [
+                if (campaignVM.isDrawerClosed)
+                  IconButton(
+                    onPressed: () {
+                      campaignVM.isDrawerClosed = false;
+                    },
+                    tooltip: "Expandir",
+                    padding: EdgeInsets.zero,
+                    icon: Icon(Icons.menu),
+                  ),
+                if (!campaignVM.isDrawerClosed)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        "Código de entrada",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            campaignVM.campaign!.enterCode,
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontFamily: FontFamily.bungee,
+                              fontSize: 24,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Clipboard.setData(
+                                ClipboardData(
+                                    text: campaignVM.campaign!.enterCode),
+                              );
+                            },
+                            tooltip: "Copiar",
+                            icon: Icon(Icons.copy),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                Divider(thickness: 0.25),
                 CompactableButton(
                   controller: CompactableButtonController(
                     isCompressed: campaignVM.isDrawerClosed,
@@ -78,6 +123,47 @@ class CampaignDrawer extends StatelessWidget {
                     campaignVM.isDrawerClosed = true;
                   },
                 ),
+                if (campaignVM.isOwner)
+                  Column(
+                    spacing: 8,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Divider(thickness: 0.25),
+                      if (!campaignVM.isDrawerClosed)
+                        Text(
+                          "Área Restrita",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontFamily: FontFamily.bungee,
+                            fontSize: 9,
+                          ),
+                        ),
+                      CompactableButton(
+                        controller: CompactableButtonController(
+                          isCompressed: campaignVM.isDrawerClosed,
+                          isSelected: false,
+                        ),
+                        title: "Configurar campanha",
+                        leadingIcon: Icons.local_florist_outlined,
+                        onPressed: () {
+                          showSettingsDialog(context);
+                        },
+                      ),
+                      // CompactableButton(
+                      //   controller: CompactableButtonController(
+                      //     isCompressed: campaignVM.isDrawerClosed,
+                      //     isSelected: campaignVM.isEditing,
+                      //   ),
+                      //   title: campaignVM.isEditing
+                      //       ? "Desativar edição"
+                      //       : "Ativar edição",
+                      //   leadingIcon: Icons.edit,
+                      //   onPressed: () {
+                      //     campaignVM.isEditing = !campaignVM.isEditing;
+                      //   },
+                      // ),
+                    ],
+                  ),
               ],
             ),
             //TODO: RollLog
@@ -85,62 +171,13 @@ class CampaignDrawer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: 8,
               children: [
-                if (campaignVM.isOwner && !campaignVM.isDrawerClosed)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        "Código de entrada",
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 10),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            campaignVM.campaign!.enterCode,
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontFamily: FontFamily.bungee,
-                              fontSize: 24,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Clipboard.setData(
-                                ClipboardData(
-                                    text: campaignVM.campaign!.enterCode),
-                              );
-                            },
-                            tooltip: "Copiar",
-                            icon: Icon(Icons.copy),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                Divider(thickness: 0.1),
-                if (campaignVM.isOwner)
-                  CompactableButton(
-                    controller: CompactableButtonController(
-                      isCompressed: campaignVM.isDrawerClosed,
-                      isSelected: campaignVM.isEditing,
-                    ),
-                    title: campaignVM.isEditing
-                        ? "Desativar edição"
-                        : "Ativar edição",
-                    leadingIcon: Icons.edit,
-                    onPressed: () {
-                      campaignVM.isEditing = !campaignVM.isEditing;
-                    },
-                  ),
+                Divider(thickness: 0.25),
                 CompactableButton(
                   controller: CompactableButtonController(
                     isCompressed: campaignVM.isDrawerClosed,
                     isSelected: false,
                   ),
-                  title: "Configurações",
+                  title: "Configurações gerais",
                   leadingIcon: Icons.settings,
                   onPressed: () {
                     showSettingsDialog(context);
