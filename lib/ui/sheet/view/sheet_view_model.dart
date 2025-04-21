@@ -12,7 +12,6 @@ import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/list_action.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/conditions_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_body_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_works_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet_notes/sheet_notes.dart';
@@ -267,6 +266,10 @@ class SheetViewModel extends ChangeNotifier {
       stressLevel = max(stressLevel - 1, 0);
     }
     notifyListeners();
+
+    if (isWindowed) {
+      saveChanges();
+    }
   }
 
   changeEffortPoints({bool isAdding = true}) {
@@ -276,6 +279,10 @@ class SheetViewModel extends ChangeNotifier {
       effortPoints = max(effortPoints - 1, -1);
     }
     notifyListeners();
+
+    if (isWindowed) {
+      saveChanges();
+    }
   }
 
   int getAptidaoMaxByLevel() {
@@ -333,10 +340,6 @@ class SheetViewModel extends ChangeNotifier {
         ),
       );
     }
-  }
-
-  onConditionButtonClicked(BuildContext context) async {
-    await showSheetConditionsDialog(context);
   }
 
   void toggleKeepingGlobalModifier() {

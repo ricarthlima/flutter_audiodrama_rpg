@@ -19,7 +19,7 @@ class MovableExpandablePanel extends StatefulWidget {
 class _MovableExpandablePanelState extends State<MovableExpandablePanel> {
   late Offset position;
   bool expanded = true;
-  double scaleFactor = 1.0;
+  double scaleFactor = 0.75;
   double contentWidth = 300;
   double contentHeight = 200;
   bool _initializedPosition = false;
@@ -32,7 +32,7 @@ class _MovableExpandablePanelState extends State<MovableExpandablePanel> {
 
   void _updateScale(double delta) {
     setState(() {
-      scaleFactor = (scaleFactor + delta).clamp(0.5, 4.0);
+      scaleFactor = (scaleFactor + delta).clamp(0.1, 3);
     });
   }
 
@@ -45,7 +45,7 @@ class _MovableExpandablePanelState extends State<MovableExpandablePanel> {
         onPointerSignal: (event) {
           if (event is PointerScrollEvent) {
             final delta = event.scrollDelta.dy;
-            _updateScale(-delta * 0.001);
+            _updateScale(-delta * 0.0002);
           }
         },
         child: GestureDetector(
@@ -126,6 +126,18 @@ class _MovableExpandablePanelState extends State<MovableExpandablePanel> {
 
                               if (!_initializedPosition) {
                                 final screenSize = MediaQuery.of(context).size;
+                                final maxWidth = screenSize.width * 0.4;
+                                final maxHeight = screenSize.height * 0.4;
+
+                                final double initialScaleX =
+                                    maxWidth / contentWidth;
+                                final double initialScaleY =
+                                    maxHeight / contentHeight;
+                                scaleFactor = initialScaleX < initialScaleY
+                                    ? initialScaleX
+                                    : initialScaleY;
+                                scaleFactor = scaleFactor.clamp(0.1, 1.0);
+
                                 position = Offset(
                                   (screenSize.width -
                                           contentWidth * scaleFactor) /

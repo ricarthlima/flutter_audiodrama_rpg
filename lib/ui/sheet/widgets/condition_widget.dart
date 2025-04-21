@@ -9,7 +9,7 @@ class ConditionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SheetViewModel sheetViewModel = Provider.of<SheetViewModel>(context);
+    final sheetViewModel = Provider.of<SheetViewModel>(context);
     return ListTile(
       leading: Checkbox(
         value: sheetViewModel.getHasCondition(condition.id),

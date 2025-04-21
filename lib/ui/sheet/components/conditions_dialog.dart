@@ -32,8 +32,7 @@ class SheetConditionsScreen extends StatelessWidget {
               ConditionDAO.instance.getConditions.length,
               (index) {
                 return ConditionWidget(
-                  condition: ConditionDAO.instance.getConditions[index],
-                );
+                    condition: ConditionDAO.instance.getConditions[index]);
               },
             ),
           ),

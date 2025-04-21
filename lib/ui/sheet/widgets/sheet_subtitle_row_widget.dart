@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../_core/fonts.dart';
 import '../../_core/stress_level.dart';
 import '../../_core/widgets/named_widget.dart';
+import '../components/conditions_dialog.dart';
 import '../view/sheet_view_model.dart';
 
 class SheetSubtitleRowWidget extends StatelessWidget {
@@ -24,7 +25,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
   }
 
   List<Widget> _getListWidget(BuildContext context) {
-    final viewModel = Provider.of<SheetViewModel>(context);
+    final sheetVM = Provider.of<SheetViewModel>(context);
     final themeProvider = Provider.of<SettingsProvider>(context);
     return [
       NamedWidget(
@@ -38,13 +39,13 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Visibility(
-              visible: viewModel.isEditing,
+              visible: sheetVM.isEditing || sheetVM.isWindowed,
               child: SizedBox(
                 width: 32,
-                child: (viewModel.stressLevel > 0)
+                child: (sheetVM.stressLevel > 0)
                     ? IconButton(
                         onPressed: () {
-                          viewModel.changeStressLevel(isAdding: false);
+                          sheetVM.changeStressLevel(isAdding: false);
                         },
                         padding: EdgeInsets.zero,
                         icon: Icon(Icons.remove),
@@ -55,7 +56,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             SizedBox(
               width: 100,
               child: Text(
-                StressLevel().getByStressLevel(viewModel.stressLevel),
+                StressLevel().getByStressLevel(sheetVM.stressLevel),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: FontFamily.bungee,
@@ -63,13 +64,13 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               ),
             ),
             Visibility(
-              visible: viewModel.isEditing,
+              visible: sheetVM.isEditing || sheetVM.isWindowed,
               child: SizedBox(
                 width: 32,
-                child: (viewModel.stressLevel < StressLevel.total - 1)
+                child: (sheetVM.stressLevel < StressLevel.total - 1)
                     ? IconButton(
                         onPressed: () {
-                          viewModel.changeStressLevel();
+                          sheetVM.changeStressLevel();
                         },
                         padding: EdgeInsets.zero,
                         icon: Icon(Icons.add),
@@ -91,13 +92,13 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Visibility(
-              visible: viewModel.isEditing,
+              visible: sheetVM.isEditing || sheetVM.isWindowed,
               child: SizedBox(
                 width: 32,
-                child: (viewModel.effortPoints > -1)
+                child: (sheetVM.effortPoints > -1)
                     ? IconButton(
                         onPressed: () {
-                          viewModel.changeEffortPoints(
+                          sheetVM.changeEffortPoints(
                             isAdding: false,
                           );
                         },
@@ -113,7 +114,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                 3,
                 (index) {
                   return Opacity(
-                    opacity: (index <= viewModel.effortPoints) ? 1 : 0.5,
+                    opacity: (index <= sheetVM.effortPoints) ? 1 : 0.5,
                     child: Image.asset(
                       (themeProvider.themeMode == ThemeMode.dark)
                           ? "assets/images/brain.png"
@@ -125,13 +126,13 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               ),
             ),
             Visibility(
-              visible: viewModel.isEditing,
+              visible: sheetVM.isEditing || sheetVM.isWindowed,
               child: SizedBox(
                 width: 32,
-                child: (viewModel.effortPoints < 3)
+                child: (sheetVM.effortPoints < 3)
                     ? IconButton(
                         onPressed: () {
-                          viewModel.changeEffortPoints();
+                          sheetVM.changeEffortPoints();
                         },
                         padding: EdgeInsets.zero,
                         icon: Icon(Icons.add),
@@ -143,7 +144,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         ),
       ),
       NamedWidget(
-        isVisible: !viewModel.isEditing,
+        isVisible: !sheetVM.isEditing,
         title: "Mod. Global",
         tooltip: "Modificador global de treinamento",
         hardHeight: 32,
@@ -153,13 +154,13 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (viewModel.isOwner)
+            if (sheetVM.isOwner)
               SizedBox(
                 width: 32,
-                child: (viewModel.modGlobalTrain > -4)
+                child: (sheetVM.modGlobalTrain > -4)
                     ? IconButton(
                         onPressed: () {
-                          viewModel.changeModGlobal(isAdding: false);
+                          sheetVM.changeModGlobal(isAdding: false);
                         },
                         padding: EdgeInsets.zero,
                         icon: Icon(Icons.remove),
@@ -171,17 +172,17 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               child: SizedBox(
                 width: 42,
                 child: InkWell(
-                  onTap: viewModel.isOwner
+                  onTap: sheetVM.isOwner
                       ? () {
-                          viewModel.toggleKeepingGlobalModifier();
+                          sheetVM.toggleKeepingGlobalModifier();
                         }
                       : null,
                   child: Text(
-                    viewModel.modGlobalTrain.toString(),
+                    sheetVM.modGlobalTrain.toString(),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: FontFamily.bungee,
-                      color: (viewModel.isKeepingGlobalModifier)
+                      color: (sheetVM.isKeepingGlobalModifier)
                           ? AppColors.red
                           : null,
                     ),
@@ -189,13 +190,13 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                 ),
               ),
             ),
-            if (viewModel.isOwner)
+            if (sheetVM.isOwner)
               SizedBox(
                 width: 32,
-                child: (viewModel.modGlobalTrain < 4)
+                child: (sheetVM.modGlobalTrain < 4)
                     ? IconButton(
                         onPressed: () {
-                          viewModel.changeModGlobal();
+                          sheetVM.changeModGlobal();
                         },
                         padding: EdgeInsets.zero,
                         icon: Icon(Icons.add),
@@ -205,7 +206,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           ],
         ),
       ),
-      if (!viewModel.isEditing)
+      if (!sheetVM.isEditing)
         NamedWidget(
           title: "Descansos",
           hardHeight: 32,
@@ -217,9 +218,9 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               Tooltip(
                 message: "Descanso curto",
                 child: InkWell(
-                  onTap: viewModel.isOwner
+                  onTap: sheetVM.isOwner
                       ? () {
-                          viewModel.changeEffortPoints(isAdding: false);
+                          sheetVM.changeEffortPoints(isAdding: false);
                         }
                       : null,
                   child: Icon(
@@ -231,9 +232,9 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               Tooltip(
                 message: "Descanso longo",
                 child: InkWell(
-                  onTap: viewModel.isOwner
+                  onTap: sheetVM.isOwner
                       ? () {
-                          viewModel.changeStressLevel(isAdding: false);
+                          sheetVM.changeStressLevel(isAdding: false);
                         }
                       : null,
                   child: Icon(
@@ -246,7 +247,8 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           ),
         ),
       NamedWidget(
-        isVisible: !viewModel.isEditing,
+        isVisible: !sheetVM.isEditing &&
+            !sheetVM.isWindowed, //TODO: Poder mudar na janelinha
         title: "Estado",
         tooltip: "Clique para gerenciar seu estado.",
         hardHeight: 32,
@@ -254,21 +256,21 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(top: 5.0),
           child: InkWell(
-              onTap: viewModel.isOwner
-                  ? () => viewModel.onConditionButtonClicked(context)
+              onTap: sheetVM.isOwner
+                  ? () => showSheetConditionsDialog(context)
                   : null,
               child: Text(
-                viewModel.getMajorCondition(),
+                sheetVM.getMajorCondition(),
                 style: TextStyle(
                   fontFamily: FontFamily.bungee,
-                  color: (viewModel.getMajorCondition() != "DESPERTO")
+                  color: (sheetVM.getMajorCondition() != "DESPERTO")
                       ? AppColors.red
                       : null,
                 ),
               )),
         ),
       ),
-      if (!viewModel.isEditing)
+      if (!sheetVM.isEditing)
         NamedWidget(
           title: "Dados de Corpo",
           hardHeight: 32,
@@ -281,7 +283,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                 message: "Leve",
                 child: InkWell(
                   onTap: () {
-                    viewModel.onRollBodyDice(
+                    sheetVM.onRollBodyDice(
                       context: context,
                       isSerious: false,
                     );
@@ -296,7 +298,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                 message: "Grave",
                 child: InkWell(
                   onTap: () {
-                    viewModel.onRollBodyDice(
+                    sheetVM.onRollBodyDice(
                       context: context,
                       isSerious: true,
                     );
@@ -315,8 +317,9 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         tooltip: "Clique para gerenciar seus ofícios",
         hardHeight: 32,
         isShowRightSeparator: true,
+        isVisible: !sheetVM.isWindowed,
         child: InkWell(
-          onTap: () => viewModel.onWorksButtonClicked(context),
+          onTap: () => sheetVM.onWorksButtonClicked(context),
           child: Icon(
             Icons.workspace_premium_outlined,
             size: 18,
