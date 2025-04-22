@@ -60,33 +60,52 @@ class CampaignAchievementsWidget extends StatelessWidget {
         campaignVM.campaign!.listAchievements.length - listNotHided.length;
 
     List<Widget> listReturn = [];
-    listReturn.addAll(listNotHided.map((achievement) {
-      return Padding(
-        padding: EdgeInsets.only(bottom: 16),
-        child: AchievementWidget(achievement: achievement),
-      );
+
+    List<CampaignAchievement> listHave = listNotHided
+        .where(
+            (e) => e.listUsers.contains(FirebaseAuth.instance.currentUser!.uid))
+        .toList();
+
+    List<CampaignAchievement> listDontHave = listNotHided
+        .where((e) =>
+            !e.listUsers.contains(FirebaseAuth.instance.currentUser!.uid))
+        .toList();
+
+    listHave.sort((a, b) => a.title.compareTo(b.title));
+    listDontHave.sort((a, b) => a.title.compareTo(b.title));
+
+    listReturn.addAll(listHave.map((achievement) {
+      return AchievementWidget(achievement: achievement);
     }));
-    listReturn.add(
-      Container(
-        width: 250,
-        padding: EdgeInsets.all(16),
-        margin: EdgeInsets.only(bottom: 16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            width: 4,
-            color: Theme.of(context).textTheme.bodyMedium!.color!.withAlpha(90),
+
+    listReturn.addAll(listDontHave.map((achievement) {
+      return AchievementWidget(achievement: achievement);
+    }));
+
+    if (totalHided > 0) {
+      listReturn.add(
+        Container(
+          width: 250,
+          padding: EdgeInsets.all(16),
+          margin: EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              width: 4,
+              color:
+                  Theme.of(context).textTheme.bodyMedium!.color!.withAlpha(90),
+            ),
+          ),
+          child: Center(
+            child: Text(
+              "E mais $totalHided conquista${(totalHided != 1) ? 's' : ''} oculta${(totalHided != 1) ? 's' : ''}.",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18),
+            ),
           ),
         ),
-        child: Center(
-          child: Text(
-            "E mais $totalHided conquista${(totalHided != 1) ? 's' : ''} oculta${(totalHided != 1) ? 's' : ''}.",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18),
-          ),
-        ),
-      ),
-    );
+      );
+    }
     return listReturn;
   }
 }
