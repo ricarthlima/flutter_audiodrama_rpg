@@ -28,25 +28,26 @@ class _CampaignFirstInteractScreenState
 
     return Stack(
       children: [
-        ShaderMask(
-          shaderCallback: (bounds) {
-            return LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.black.withAlpha(100),
-                Colors.transparent,
-              ],
-            ).createShader(bounds);
-          },
-          blendMode: BlendMode.dstIn,
-          child: Image.network(
-            campaignVM.campaign!.imageBannerUrl!,
-            height: 400,
-            width: width(context),
-            fit: BoxFit.fitWidth,
+        if (campaignVM.campaign!.imageBannerUrl != null)
+          ShaderMask(
+            shaderCallback: (bounds) {
+              return LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black.withAlpha(100),
+                  Colors.transparent,
+                ],
+              ).createShader(bounds);
+            },
+            blendMode: BlendMode.dstIn,
+            child: Image.network(
+              campaignVM.campaign!.imageBannerUrl!,
+              height: 400,
+              width: width(context),
+              fit: BoxFit.fitWidth,
+            ),
           ),
-        ),
         SizedBox(
           width: width(context),
           height: height(context),

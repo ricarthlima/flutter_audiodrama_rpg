@@ -109,7 +109,10 @@ class _CampaignScreenState extends State<CampaignScreen> {
               ),
             ),
           ),
-        Align(alignment: Alignment.centerRight, child: CampaignDrawer()),
+        Align(
+          alignment: Alignment.centerRight,
+          child: CampaignDrawer(),
+        ),
         GroupNotifications(),
         Stack(
           children: campaignVM.listOpenSheet.map(
