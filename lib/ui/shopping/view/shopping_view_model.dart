@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/item_dao.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/item_sheet.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/helpers.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
-import 'package:provider/provider.dart';
 
+import '../../../data/daos/item_dao.dart';
 import '../../../domain/models/item.dart';
+import '../../../domain/models/item_sheet.dart';
+import '../../_core/helpers.dart';
+import '../../sheet/view/sheet_view_model.dart';
 
 class ShoppingViewModel extends ChangeNotifier {
+  SheetViewModel sheetVM;
+  ShoppingViewModel(this.sheetVM);
+
   bool _isBuying = false;
-
   bool get isBuying => _isBuying;
-
   set isBuying(bool value) {
     _isBuying = value;
     notifyListeners();
@@ -24,9 +23,7 @@ class ShoppingViewModel extends ChangeNotifier {
   }
 
   bool _isFree = false;
-
   bool get isFree => _isFree;
-
   set isFree(bool value) {
     _isFree = value;
     notifyListeners();
@@ -36,13 +33,12 @@ class ShoppingViewModel extends ChangeNotifier {
 
   final TextEditingController _moneyController = TextEditingController();
 
-  TextEditingController getMoneyTextController(BuildContext context) {
-    final sheetViewModel = Provider.of<SheetViewModel>(context);
-    _moneyController.text = sheetViewModel.money.toString();
+  TextEditingController getMoneyTextController(SheetViewModel sheetVM) {
+    _moneyController.text = sheetVM.money.toString();
     return _moneyController;
   }
 
-  buyItem({required BuildContext context, required Item item}) {
+  buyItem({required Item item}) {
     double money = double.parse(_moneyController.text);
 
     if (money >= item.price || isFree) {
@@ -56,10 +52,10 @@ class ShoppingViewModel extends ChangeNotifier {
 
       if (!isFree) {
         money = money - item.price;
-        saveChanges(context, money: money);
+        saveChanges(money: money);
       }
 
-      saveChanges(context);
+      saveChanges();
     } else {
       _showHaveNoMoneyFeedback();
     }
@@ -75,7 +71,7 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  sellItem({required BuildContext context, required String itemId}) {
+  sellItem({required String itemId}) {
     Item item = ItemDAO.instance.getItemById(itemId)!;
     _listSheetItems.where((e) => e.itemId == itemId).first.amount--;
     if (_listSheetItems.where((e) => e.itemId == itemId).first.amount <= 0) {
@@ -83,7 +79,7 @@ class ShoppingViewModel extends ChangeNotifier {
     }
     double money = double.parse(_moneyController.text);
     money = money + item.price;
-    saveChanges(context, money: money);
+    saveChanges(money: money);
     notifyListeners();
   }
 
@@ -93,7 +89,7 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  reloadUses({required BuildContext context, required String itemId}) {
+  reloadUses({required String itemId}) {
     _listSheetItems
         .firstWhere(
           (ItemSheet itemSheet) => itemSheet.itemId == itemId,
@@ -101,10 +97,10 @@ class ShoppingViewModel extends ChangeNotifier {
         .uses = 0;
 
     notifyListeners();
-    saveChanges(context);
+    saveChanges();
   }
 
-  useItem({required BuildContext context, required String itemId}) {
+  useItem({required String itemId}) {
     Item item = ItemDAO.instance.getItemById(itemId)!;
 
     int index = _listSheetItems.indexWhere(
@@ -118,88 +114,52 @@ class ShoppingViewModel extends ChangeNotifier {
           _listSheetItems[index].uses = 0;
         }
         if (_listSheetItems[index].amount <= 0) {
-          removeAllFromItem(context: context, itemId: itemId, isOver: true);
+          // removeAllFromItem(itemId: itemId, isOver: true);
         }
       }
     }
 
     notifyListeners();
-    saveChanges(context);
+    saveChanges();
   }
 
-  removeItem({
-    required BuildContext context,
-    required String itemId,
-    bool isOver = false,
-  }) async {
-    Item item = ItemDAO.instance.getItemById(itemId)!;
+  removeItem({required String itemId}) async {
+    _listSheetItems
+        .firstWhere((ItemSheet itemSheet) => itemSheet.itemId == itemId)
+        .amount--;
+    notifyListeners();
+    saveChanges();
+  }
 
-    bool? result = await showRemoveItemDialog(
-      context: context,
-      name: item.name,
+  removeAllFromItem({required String itemId}) async {
+    _listSheetItems.removeWhere(
+      (ItemSheet itemSheet) => itemSheet.itemId == itemId,
     );
 
-    if (result != null && result) {
-      _listSheetItems
-          .firstWhere(
-            (ItemSheet itemSheet) => itemSheet.itemId == itemId,
-          )
-          .amount--;
-    }
-
     notifyListeners();
-
-    if (!context.mounted) return;
-    saveChanges(context);
+    saveChanges();
   }
 
-  removeAllFromItem({
-    required BuildContext context,
-    required String itemId,
-    bool isOver = false,
-  }) async {
-    Item item = ItemDAO.instance.getItemById(itemId)!;
-
-    bool? result = await showRemoveItemDialog(
-      context: context,
-      name: item.name,
-      isOver: isOver,
-    );
-
-    if (result != null && result) {
-      _listSheetItems.removeWhere(
-        (ItemSheet itemSheet) => itemSheet.itemId == itemId,
-      );
-    }
-
-    notifyListeners();
-
-    if (!context.mounted) return;
-    saveChanges(context);
-  }
-
-  onEditingMoney(BuildContext context) async {
+  onEditingMoney() async {
     double? money = double.tryParse(_moneyController.text);
     if (money != null) {
       _showMoneyFeedback(true);
-      await saveChanges(context, money: money);
+      await saveChanges(money: money);
     } else {
-      final sheetViewModel = context.read<SheetViewModel>();
-      _moneyController.text = sheetViewModel.money.toString();
+      _moneyController.text = sheetVM.money.toString();
       _showMoneyFeedback(false);
       notifyListeners();
     }
   }
 
-  saveChanges(BuildContext context, {double? money}) async {
-    final sheetViewModel = context.read<SheetViewModel>();
-    sheetViewModel.listSheetItems = _listSheetItems;
+  saveChanges({double? money}) async {
+    sheetVM.listSheetItems = _listSheetItems;
 
     if (money != null) {
-      sheetViewModel.money = money;
+      sheetVM.money = money;
     }
 
-    await sheetViewModel.saveChanges();
+    await sheetVM.saveChanges();
 
     notifyListeners();
   }

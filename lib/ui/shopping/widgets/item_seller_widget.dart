@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/utils/i18n_categories.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/item.dart';
 import '../../../domain/models/item_sheet.dart';
+import '../../_core/utils/i18n_categories.dart';
 import '../view/shopping_view_model.dart';
 
 class ItemSellerWidget extends StatelessWidget {
@@ -28,10 +28,7 @@ class ItemSellerWidget extends StatelessWidget {
         ListTile(
           leading: (shoppingViewModel.isBuying)
               ? IconButton(
-                  onPressed: () => shoppingViewModel.buyItem(
-                    context: context,
-                    item: item,
-                  ),
+                  onPressed: () => shoppingViewModel.buyItem(item: item),
                   tooltip: "Comprar",
                   color: Colors.green[900],
                   iconSize: 48,

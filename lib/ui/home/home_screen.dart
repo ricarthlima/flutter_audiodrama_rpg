@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/version.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/components/home_app_bar.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/utils/home_tabs.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/widgets/home_drawer.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/widgets/home_list_sheets_widget.dart';
-import 'package:flutter_rpg_audiodrama/ui/home_campaign/home_campaign_screen.dart';
 import 'package:provider/provider.dart';
+
+import '../../_core/providers/user_provider.dart';
+import '../../_core/version.dart';
+import '../_core/dimensions.dart';
+import '../home_campaign/home_campaign_screen.dart';
+import 'components/home_app_bar.dart';
+import 'utils/home_tabs.dart';
+import 'view/home_interact.dart';
+import 'view/home_view_model.dart';
+import 'widgets/home_drawer.dart';
+import 'widgets/home_list_sheets_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final HomeTabs? page;
@@ -88,9 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 subtitle: "(Não inclusos em campanhas)",
                 listSheets: userProvider.listSheets
                     .where((e) =>
-                        context
-                            .read<HomeSheetViewModel>()
-                            .getWorldName(context: context, sheet: e) ==
+                        HomeInteract.getWorldName(context: context, sheet: e) ==
                         null)
                     .toList(),
                 username: userProvider.currentAppUser.username!,

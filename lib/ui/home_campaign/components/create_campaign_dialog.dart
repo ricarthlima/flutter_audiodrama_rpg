@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 
 import '../../_core/app_colors.dart';
 import '../../_core/utils/load_image.dart';
@@ -161,11 +160,6 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
   }
 
   void _onCreatePressed() async {
-    HomeCampaignViewModel homeCampaignVM = Provider.of<HomeCampaignViewModel>(
-      context,
-      listen: false,
-    );
-
     String name = nameController.text;
     String desc = descController.text;
 
@@ -174,7 +168,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
         isLoading = true;
       });
 
-      await homeCampaignVM.createCampaign(
+      await HomeCampaignInteract.createCampaign(
         context: context,
         name: name,
         description: desc,

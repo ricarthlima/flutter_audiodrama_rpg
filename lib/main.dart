@@ -2,29 +2,26 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/condition_dao.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/theme.dart';
-import 'package:flutter_rpg_audiodrama/router.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
-
-import 'package:flutter_rpg_audiodrama/firebase_options.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_visual_novel_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/home_campaign/view/home_campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/statistics/view/statistics_view_model.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '_core/providers/audio_provider.dart';
-import 'ui/settings/view/settings_provider.dart';
+import '_core/providers/user_provider.dart';
+import 'data/daos/action_dao.dart';
+import 'data/daos/condition_dao.dart';
 import 'data/daos/item_dao.dart';
+import 'firebase_options.dart';
+import 'router.dart';
+import 'ui/_core/theme.dart';
+import 'ui/campaign/view/campaign_view_model.dart';
+import 'ui/campaign/view/campaign_visual_novel_view_model.dart';
+import 'ui/home/view/home_view_model.dart';
+import 'ui/settings/view/settings_provider.dart';
+import 'ui/sheet/view/sheet_view_model.dart';
+import 'ui/shopping/view/shopping_view_model.dart';
+import 'ui/statistics/view/statistics_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,22 +50,26 @@ void main() async {
   AudioProvider audioProvider = AudioProvider();
   await audioProvider.onInitialize();
 
+  HomeViewModel homeVM = HomeViewModel();
+  SheetViewModel sheetVM = SheetViewModel(id: "", username: "");
+  ShoppingViewModel shoppingVM = ShoppingViewModel(sheetVM);
+  StatisticsViewModel statisticsVM = StatisticsViewModel();
+  CampaignViewModel campaignVM = CampaignViewModel();
+  CampaignVisualNovelViewModel campaignVisualVM =
+      CampaignVisualNovelViewModel(campaignId: "");
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => settingsProvider),
         ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => HomeViewModel()),
-        ChangeNotifierProvider(create: (_) => HomeSheetViewModel()),
-        ChangeNotifierProvider(
-            create: (_) => SheetViewModel(id: "", username: "")),
-        ChangeNotifierProvider(create: (_) => ShoppingViewModel()),
-        ChangeNotifierProvider(create: (_) => StatisticsViewModel()),
-        ChangeNotifierProvider(create: (_) => HomeCampaignViewModel()),
-        ChangeNotifierProvider(create: (_) => CampaignViewModel()),
-        ChangeNotifierProvider(
-            create: (_) => CampaignVisualNovelViewModel(campaignId: "")),
-        ChangeNotifierProvider(create: (_) => audioProvider),
+        ChangeNotifierProvider(create: (_) => settingsProvider), //✅
+        ChangeNotifierProvider(create: (_) => homeVM), //✅
+        ChangeNotifierProvider(create: (_) => sheetVM),
+        ChangeNotifierProvider(create: (_) => shoppingVM),
+        ChangeNotifierProvider(create: (_) => statisticsVM), //✅
+        ChangeNotifierProvider(create: (_) => campaignVM), //✅
+        ChangeNotifierProvider(create: (_) => campaignVisualVM), //✅
+        ChangeNotifierProvider(create: (_) => audioProvider), //✅
       ],
       child: const MainApp(),
     ),

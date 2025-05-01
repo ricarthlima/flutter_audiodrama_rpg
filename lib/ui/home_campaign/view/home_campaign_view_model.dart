@@ -1,25 +1,20 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
-import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../data/services/campaign_service.dart';
 import '../../../domain/models/campaign.dart';
+import '../../../router.dart';
 
-class HomeCampaignViewModel extends ChangeNotifier {
-  String uid = FirebaseAuth.instance.currentUser!.uid;
-  CampaignService campaignService = CampaignService.instance;
-
-  Future<void> createCampaign({
+abstract class HomeCampaignInteract {
+  static Future<void> createCampaign({
     required BuildContext context,
     required String name,
     required String description,
     XFile? fileImage,
   }) async {
-    Campaign campaign = await campaignService.createCampaign(
+    Campaign campaign = await CampaignService.instance.createCampaign(
       name: name,
       description: description,
       fileImage: fileImage,
@@ -29,7 +24,7 @@ class HomeCampaignViewModel extends ChangeNotifier {
     AppRouter().goCampaign(context: context, campaignId: campaign.id);
   }
 
-  Future<void> joinCampaign({required String joinCode}) async {
-    return campaignService.joinCampaign(joinCode);
+  static Future<void> joinCampaign({required String joinCode}) async {
+    return CampaignService.instance.joinCampaign(joinCode);
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../_core/providers/user_provider.dart';
+import '../../../domain/models/campaign.dart';
 import '../../../domain/models/sheet_model.dart';
 import '../../_core/components/remove_dialog.dart';
 import '../components/create_sheet_dialog.dart';
@@ -34,5 +36,22 @@ abstract class HomeInteract {
       if (!context.mounted) return;
       await context.read<HomeViewModel>().onRemoveSheet(sheet: sheet);
     }
+  }
+
+  static String? getWorldName({
+    required BuildContext context,
+    required Sheet sheet,
+  }) {
+    UserProvider userProvider = Provider.of<UserProvider>(
+      context,
+      listen: false,
+    );
+
+    Campaign? campaign = userProvider.getCampaignBySheet(sheet.id);
+
+    if (campaign != null) {
+      return campaign.name!;
+    }
+    return null;
   }
 }
