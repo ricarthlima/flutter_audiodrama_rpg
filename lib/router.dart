@@ -7,6 +7,7 @@ import 'package:flutter_rpg_audiodrama/ui/auth/login_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/campaign_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/utils/home_tabs.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_works_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
@@ -42,21 +43,21 @@ class AppRouter {
         path: "/sheets",
         builder: (context, state) {
           disposeListeners(context);
-          return HomeScreen(page: HomeSubPages.sheets);
+          return HomeScreen(page: HomeTabs.sheets);
         },
       ),
       GoRoute(
         path: "/campaigns",
         builder: (context, state) {
           disposeListeners(context);
-          return HomeScreen(page: HomeSubPages.campaigns);
+          return HomeScreen(page: HomeTabs.campaigns);
         },
       ),
       GoRoute(
         path: "/profile",
         builder: (context, state) {
           disposeListeners(context);
-          return HomeScreen(page: HomeSubPages.profile);
+          return HomeScreen(page: HomeTabs.profile);
         },
       ),
       GoRoute(
@@ -144,7 +145,7 @@ class AppRouter {
     campaignVM.hasInteractedDisable();
   }
 
-  goHome({required BuildContext context, HomeSubPages? subPage}) {
+  goHome({required BuildContext context, HomeTabs? subPage}) {
     if (subPage != null) {
       GoRouter.of(context).go("/${subPage.name}");
     } else {

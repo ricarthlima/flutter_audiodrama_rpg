@@ -4,6 +4,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_settings_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/utils/home_tabs.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/services/chat_service.dart';
@@ -196,7 +197,7 @@ class CampaignDrawer extends StatelessWidget {
                   onPressed: () {
                     AppRouter().goHome(
                       context: context,
-                      subPage: HomeSubPages.campaigns,
+                      subPage: HomeTabs.campaigns,
                     );
                   },
                 ),

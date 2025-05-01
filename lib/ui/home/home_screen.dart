@@ -3,6 +3,7 @@ import 'package:flutter_rpg_audiodrama/_core/version.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/home_app_bar.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/utils/home_tabs.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/widgets/home_drawer.dart';
@@ -11,7 +12,7 @@ import 'package:flutter_rpg_audiodrama/ui/home_campaign/home_campaign_screen.dar
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  final HomeSubPages? page;
+  final HomeTabs? page;
   const HomeScreen({super.key, this.page});
 
   @override
@@ -79,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: IndexedStack(
-            index: HomeSubPages.values.indexOf(homeViewModel.currentPage),
+            index: HomeTabs.values.indexOf(homeViewModel.currentPage),
             children: [
               // Personagens
               HomeListSheetsWidget(

@@ -2,66 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/utils/home_tabs.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../data/services/sheet_service.dart';
 import '../../../domain/models/sheet_model.dart';
-import '../../../router.dart';
-import '../components/create_sheet_dialog.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final SheetService sheetService = SheetService();
-
-  void goToSheet(
-    BuildContext context, {
-    required String username,
-    required Sheet sheet,
-    bool isPushing = false,
-  }) {
-    AppRouter().goSheet(
-      context: context,
-      username: username,
-      sheet: sheet,
-      isPushing: isPushing,
-    );
-  }
-
-  Future<void> onCreateSheetClicked(context, {String? campaignId}) async {
-    String? resultName = await showCreateSheetDialog(context);
-    if (resultName != null) {
-      await sheetService.createSheet(resultName, campaignId: campaignId);
-    }
-  }
-
-  Future<void> onRemoveSheet(
-      {required BuildContext context, required Sheet sheet}) async {
-    bool? isRemoving = await showRemoveSheetDialog(
-      context: context,
-      name: sheet.characterName,
-    );
-
-    if (isRemoving != null && isRemoving) {
-      await sheetService.removeSheet(sheet);
-    }
-  }
-
-  Future<void> onDuplicateSheet({
-    required BuildContext context,
-    required Sheet sheet,
-  }) async {
-    await sheetService.duplicateSheet(sheet);
-  }
-
-  Future<void> onDuplicateSheetToMe({
-    required BuildContext context,
-    required Sheet sheet,
-  }) async {
-    String? campaignId = context.read<CampaignViewModel>().campaign?.id;
-    await sheetService.duplicateSheetToMe(sheet, campaignId);
-  }
 
   bool _isDrawerClosed = true;
   bool get isDrawerClosed => _isDrawerClosed;
@@ -72,11 +20,33 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  HomeSubPages _currentPage = HomeSubPages.sheets;
-  HomeSubPages get currentPage => _currentPage;
-  set currentPage(HomeSubPages value) {
+  HomeTabs _currentPage = HomeTabs.sheets;
+  HomeTabs get currentPage => _currentPage;
+  set currentPage(HomeTabs value) {
     _currentPage = value;
     notifyListeners();
+  }
+
+  Future<void> onCreateSheetClicked({
+    required String name,
+    String? campaignId,
+  }) async {
+    await sheetService.createSheet(name, campaignId: campaignId);
+  }
+
+  Future<void> onRemoveSheet({required Sheet sheet}) async {
+    await sheetService.removeSheet(sheet);
+  }
+
+  Future<void> onDuplicateSheet({required Sheet sheet}) async {
+    await sheetService.duplicateSheet(sheet);
+  }
+
+  Future<void> onDuplicateSheetToMe({
+    required Sheet sheet,
+    String? campaignId,
+  }) async {
+    await sheetService.duplicateSheetToMe(sheet, campaignId);
   }
 
   Future<void> saveCampaignSheet({
@@ -104,10 +74,4 @@ class HomeViewModel extends ChangeNotifier {
 
     await sheetService.saveSheet(sheet);
   }
-}
-
-enum HomeSubPages {
-  sheets,
-  campaigns,
-  profile,
 }

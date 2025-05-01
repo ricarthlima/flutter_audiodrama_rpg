@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/utils/change_url.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/utils/home_tabs.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/dimensions.dart';
@@ -42,27 +43,25 @@ class HomeDrawer extends StatelessWidget {
                 CompactableButton(
                   controller: CompactableButtonController(
                     isCompressed: homeViewModel.isDrawerClosed,
-                    isSelected:
-                        homeViewModel.currentPage == HomeSubPages.sheets,
+                    isSelected: homeViewModel.currentPage == HomeTabs.sheets,
                   ),
                   title: "Personagens",
                   leadingIcon: Icons.list_alt_sharp,
                   onPressed: () {
-                    homeViewModel.currentPage = HomeSubPages.sheets;
-                    changeURL(HomeSubPages.sheets.name);
+                    homeViewModel.currentPage = HomeTabs.sheets;
+                    changeURL(HomeTabs.sheets.name);
                   },
                 ),
                 CompactableButton(
                   controller: CompactableButtonController(
                     isCompressed: homeViewModel.isDrawerClosed,
-                    isSelected:
-                        homeViewModel.currentPage == HomeSubPages.campaigns,
+                    isSelected: homeViewModel.currentPage == HomeTabs.campaigns,
                   ),
                   title: "Campanhas",
                   leadingIcon: Icons.local_florist_outlined,
                   onPressed: () {
-                    homeViewModel.currentPage = HomeSubPages.campaigns;
-                    changeURL(HomeSubPages.campaigns.name);
+                    homeViewModel.currentPage = HomeTabs.campaigns;
+                    changeURL(HomeTabs.campaigns.name);
                   },
                 ),
               ],
@@ -70,7 +69,7 @@ class HomeDrawer extends StatelessWidget {
             CompactableButton(
               controller: CompactableButtonController(
                 isCompressed: homeViewModel.isDrawerClosed,
-                isSelected: homeViewModel.currentPage == HomeSubPages.profile,
+                isSelected: homeViewModel.currentPage == HomeTabs.profile,
               ),
               leadingIcon: (userProvider.currentAppUser.imageB64 == null)
                   ? Icons.person_outline
@@ -100,8 +99,8 @@ class HomeDrawer extends StatelessWidget {
                 ],
               ),
               onPressed: () {
-                homeViewModel.currentPage = HomeSubPages.profile;
-                changeURL(HomeSubPages.profile.name);
+                homeViewModel.currentPage = HomeTabs.profile;
+                changeURL(HomeTabs.profile.name);
               },
             )
           ],

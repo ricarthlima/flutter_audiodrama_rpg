@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/utils/home_tabs.dart';
 import 'package:provider/provider.dart';
 
 import '../../../router.dart';
@@ -96,7 +97,7 @@ class _CampaignFirstInteractScreenState
               onPressed: () {
                 AppRouter().goHome(
                   context: context,
-                  subPage: HomeSubPages.campaigns,
+                  subPage: HomeTabs.campaigns,
                 );
               },
               icon: Icon(Icons.arrow_back),

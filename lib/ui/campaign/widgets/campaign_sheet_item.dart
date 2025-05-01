@@ -1,14 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/helpers.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/utils/download_json_file.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/components/move_sheet_to_campaign_dialog.dart';
 import 'package:provider/provider.dart';
+
+import '../../../domain/models/app_user.dart';
 import '../../../domain/models/sheet_model.dart';
+import '../../../router.dart';
+import '../../_core/app_colors.dart';
 import '../../_core/components/image_dialog.dart';
+import '../../_core/dimensions.dart';
+import '../../_core/helpers.dart';
+import '../../_core/utils/download_json_file.dart';
+import '../../home/components/move_sheet_to_campaign_dialog.dart';
+import '../../home/view/home_interact.dart';
 import '../../home/view/home_view_model.dart';
 
 class CampaignSheetItem extends StatelessWidget {
@@ -29,7 +32,7 @@ class CampaignSheetItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<HomeViewModel>(context);
+    final homeViewModel = Provider.of<HomeViewModel>(context);
     return ListTile(
       dense: true,
       contentPadding: EdgeInsets.zero,
@@ -108,10 +111,10 @@ class CampaignSheetItem extends StatelessWidget {
                   "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json");
               return;
             case _SheetMenuOptions.openInScreen:
-              viewModel.goToSheet(
-                context,
-                sheet: sheet,
+              AppRouter().goSheet(
+                context: context,
                 username: username,
+                sheet: sheet,
                 isPushing: isShowingByCampaign,
               );
               return;
@@ -122,10 +125,10 @@ class CampaignSheetItem extends StatelessWidget {
               );
               return;
             case _SheetMenuOptions.duplicate:
-              viewModel.onDuplicateSheet(context: context, sheet: sheet);
+              homeViewModel.onDuplicateSheet(sheet: sheet);
               return;
             case _SheetMenuOptions.remove:
-              viewModel.onRemoveSheet(context: context, sheet: sheet);
+              HomeInteract.onRemoveSheet(context: context, sheet: sheet);
               return;
           }
         },
@@ -196,10 +199,10 @@ class CampaignSheetItem extends StatelessWidget {
             onDetach!();
           }
         } else {
-          viewModel.goToSheet(
-            context,
-            sheet: sheet,
+          AppRouter().goSheet(
+            context: context,
             username: username,
+            sheet: sheet,
             isPushing: isShowingByCampaign,
           );
         }

@@ -47,8 +47,8 @@ void main() async {
   await ItemDAO.instance.initialize();
   await ConditionDAO.instance.initialize();
 
-  SettingsProvider themeProvider = SettingsProvider();
-  await themeProvider.loadSettings();
+  SettingsProvider settingsProvider = SettingsProvider();
+  await settingsProvider.loadSettings();
 
   AudioProvider audioProvider = AudioProvider();
   await audioProvider.onInitialize();
@@ -56,7 +56,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => themeProvider),
+        ChangeNotifierProvider(create: (_) => settingsProvider),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => HomeSheetViewModel()),
