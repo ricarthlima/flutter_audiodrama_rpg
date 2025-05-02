@@ -62,14 +62,14 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => settingsProvider), //✅
-        ChangeNotifierProvider(create: (_) => homeVM), //✅
+        ChangeNotifierProvider(create: (_) => settingsProvider),
+        ChangeNotifierProvider(create: (_) => homeVM),
         ChangeNotifierProvider(create: (_) => sheetVM),
         ChangeNotifierProvider(create: (_) => shoppingVM),
-        ChangeNotifierProvider(create: (_) => statisticsVM), //✅
-        ChangeNotifierProvider(create: (_) => campaignVM), //✅
-        ChangeNotifierProvider(create: (_) => campaignVisualVM), //✅
-        ChangeNotifierProvider(create: (_) => audioProvider), //✅
+        ChangeNotifierProvider(create: (_) => statisticsVM),
+        ChangeNotifierProvider(create: (_) => campaignVM),
+        ChangeNotifierProvider(create: (_) => campaignVisualVM),
+        ChangeNotifierProvider(create: (_) => audioProvider),
       ],
       child: const MainApp(),
     ),

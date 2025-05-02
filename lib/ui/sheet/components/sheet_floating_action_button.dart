@@ -1,11 +1,11 @@
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:provider/provider.dart';
 
 import '../../settings/view/settings_provider.dart';
+import '../view/sheet_interact.dart';
 import '../view/sheet_view_model.dart';
-
-import 'package:badges/badges.dart' as badges;
 
 Widget? getSheetFloatingActionButton(BuildContext context) {
   final themeProvider = Provider.of<SettingsProvider>(context);
@@ -63,7 +63,7 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
             tooltip: "Itens",
             onPressed: () {
               viewModel.closeFab();
-              viewModel.onItemsButtonClicked(context);
+              SheetInteract.onItemsButtonClicked(context);
             },
             child: Image.asset(
               (themeProvider.themeMode == ThemeMode.dark)
@@ -83,7 +83,7 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
             tooltip: "Caderneta",
             onPressed: () {
               viewModel.closeFab();
-              viewModel.onNotesButtonClicked(context);
+              SheetInteract.onNotesButtonClicked(context);
             },
             child: Icon(Icons.description),
           ),
@@ -98,7 +98,7 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
             tooltip: "Estatísticas",
             onPressed: () {
               viewModel.closeFab();
-              viewModel.onStatisticsButtonClicked(context);
+              SheetInteract.onStatisticsButtonClicked(context);
             },
             child: Icon(Icons.bar_chart),
           ),
@@ -113,7 +113,7 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
             tooltip: "Ofícios",
             onPressed: () {
               viewModel.closeFab();
-              viewModel.onWorksButtonClicked(context);
+              SheetInteract.onWorksButtonClicked(context);
             },
             child: Icon(Icons.workspace_premium_outlined),
           ),

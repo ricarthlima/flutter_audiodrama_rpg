@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/settings/view/settings_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../_core/app_colors.dart';
 import '../../_core/fonts.dart';
 import '../../_core/stress_level.dart';
 import '../../_core/widgets/named_widget.dart';
+import '../../settings/view/settings_provider.dart';
 import '../components/conditions_dialog.dart';
+import '../view/sheet_interact.dart';
 import '../view/sheet_view_model.dart';
 
 class SheetSubtitleRowWidget extends StatelessWidget {
@@ -283,7 +284,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                 message: "Leve",
                 child: InkWell(
                   onTap: () {
-                    sheetVM.onRollBodyDice(
+                    SheetInteract.onRollBodyDice(
                       context: context,
                       isSerious: false,
                     );
@@ -298,7 +299,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                 message: "Grave",
                 child: InkWell(
                   onTap: () {
-                    sheetVM.onRollBodyDice(
+                    SheetInteract.onRollBodyDice(
                       context: context,
                       isSerious: true,
                     );
@@ -319,7 +320,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         isShowRightSeparator: true,
         isVisible: !sheetVM.isWindowed,
         child: InkWell(
-          onTap: () => sheetVM.onWorksButtonClicked(context),
+          onTap: () => SheetInteract.onWorksButtonClicked(context),
           child: Icon(
             Icons.workspace_premium_outlined,
             size: 18,

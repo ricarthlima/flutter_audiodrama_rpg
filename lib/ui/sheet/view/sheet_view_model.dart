@@ -5,30 +5,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/condition_dao.dart';
-import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_lore.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/list_action.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_body_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_works_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet_notes/sheet_notes.dart';
-import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/statistics/statistics_screen.dart';
-import 'package:flutter_rpg_audiodrama/ui/statistics/view/statistics_view_model.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 
 import '../../../data/daos/action_dao.dart';
+import '../../../data/daos/condition_dao.dart';
+import '../../../data/services/sheet_service.dart';
 import '../../../domain/exceptions/sheet_service_exceptions.dart';
+import '../../../domain/models/action_lore.dart';
 import '../../../domain/models/action_template.dart';
+import '../../../domain/models/action_value.dart';
 import '../../../domain/models/item_sheet.dart';
+import '../../../domain/models/list_action.dart';
+import '../../../domain/models/roll_log.dart';
 import '../../../domain/models/sheet_model.dart';
-import '../../shopping/shopping_screen.dart';
-import '../components/action_dialog_tooltip.dart';
-import '../components/roll_dialog.dart';
 
 class SheetViewModel extends ChangeNotifier {
   String id;
@@ -88,6 +77,9 @@ class SheetViewModel extends ChangeNotifier {
   GlobalKey<ExpandableFabState> fabKey = GlobalKey<ExpandableFabState>();
   Future<Sheet?> futureGetSheet = Future.delayed(Duration.zero);
   final TextEditingController nameController = TextEditingController();
+
+  bool? isSavingNotes;
+  final TextEditingController _notesTextController = TextEditingController();
 
   updateCredentials({String? id, String? username}) {
     this.id = id ?? this.id;
@@ -218,47 +210,6 @@ class SheetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> onRoll(BuildContext context, {required RollLog roll}) async {
-    ActionTemplate? action = ActionDAO.instance.getActionById(roll.idAction);
-
-    if (!ActionDAO.instance.isOnlyFreeOrPreparation(roll.idAction) ||
-        ActionDAO.instance.isLuckAction(roll.idAction)) {
-      showRollDialog(context: context, rollLog: roll);
-    } else {
-      if (action != null) {
-        showDialogTip(
-          context,
-          action,
-          isEffortUsed: action.isPreparation,
-        );
-      }
-    }
-
-    listRollLog.add(roll);
-    await saveChanges();
-    notificationCount++;
-
-    if (!isKeepingGlobalModifier) {
-      modGlobalTrain = 0;
-    }
-
-    notifyListeners();
-
-    if (action != null && action.isPreparation) {
-      effortPoints++;
-      if (effortPoints >= 2) {
-        effortPoints = -1;
-        changeStressLevel(isAdding: true);
-      }
-      saveChanges();
-    }
-  }
-
-  onRollBodyDice({required BuildContext context, required bool isSerious}) {
-    int roll = Random().nextInt(6) + 1;
-    showRollBodyDialog(context: context, roll: roll, isSerious: isSerious);
-  }
-
   changeStressLevel({bool isAdding = true}) {
     if (isAdding) {
       stressLevel = min(stressLevel + 1, 3);
@@ -321,25 +272,6 @@ class SheetViewModel extends ChangeNotifier {
     }
 
     notifyListeners();
-  }
-
-  onItemsButtonClicked(BuildContext context) async {
-    final shoppingViewModel = Provider.of<ShoppingViewModel>(
-      context,
-      listen: false,
-    );
-    shoppingViewModel.openInventory(listSheetItems);
-
-    if (!isVertical(context)) {
-      await showShoppingDialog(context);
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ShoppingDialogScreen(),
-        ),
-      );
-    }
   }
 
   void toggleKeepingGlobalModifier() {
@@ -468,50 +400,6 @@ class SheetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  onNotesButtonClicked(BuildContext context) async {
-    if (!isVertical(context)) {
-      await showSheetNotesDialog(context);
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SheetNotesScreen(),
-        ),
-      );
-    }
-  }
-
-  onStatisticsButtonClicked(BuildContext context) async {
-    context.read<StatisticsViewModel>().listCompleteRollLog = listRollLog;
-
-    if (!isVertical(context)) {
-      await showSheetStatisticsDialog(context);
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SheetStatisticsScreen(),
-        ),
-      );
-    }
-  }
-
-  void onWorksButtonClicked(BuildContext context) async {
-    if (!isVertical(context)) {
-      await showSheetWorksDialog(context);
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SheetWorksDialog(),
-        ),
-      );
-    }
-  }
-
-  bool? isSavingNotes;
-  final TextEditingController _notesTextController = TextEditingController();
-
   TextEditingController notesTextController() {
     _notesTextController.text = notes;
     return _notesTextController;
@@ -594,39 +482,30 @@ class SheetViewModel extends ChangeNotifier {
     return result;
   }
 
-  onUploadBioImageClicked(BuildContext context) async {
-    ImagePicker picker = ImagePicker();
+  onUploadBioImageClicked(XFile image) async {
+    int sizeInBytes = await image.length();
 
-    XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
-      requestFullMetadata: false,
-    );
-
-    if (image != null) {
-      int sizeInBytes = await image.length();
-
-      if (sizeInBytes >= 2000000) {
-        //TODO: Sua imagem é muito pesada.
+    if (sizeInBytes >= 2000000) {
+      //TODO: Sua imagem é muito pesada.
+    } else {
+      String? path;
+      if (!kIsWeb) {
+        path = await sheetService.uploadBioImage(
+          File(image.path),
+          "${DateTime.now().millisecondsSinceEpoch}-$id.${image.name.split(".").last}",
+        );
       } else {
-        String? path;
-        if (!kIsWeb) {
-          path = await sheetService.uploadBioImage(
-            File(image.path),
-            "${DateTime.now().millisecondsSinceEpoch}-$id.${image.name.split(".").last}",
-          );
-        } else {
-          Uint8List bytes = await image.readAsBytes();
-          path = await sheetService.uploadBioImageBytes(
-            bytes,
-            "${DateTime.now().millisecondsSinceEpoch}-$id.${image.name.split(".").last}",
-          );
-        }
-
-        imageUrl = path;
-
-        notifyListeners();
-        saveChanges();
+        Uint8List bytes = await image.readAsBytes();
+        path = await sheetService.uploadBioImageBytes(
+          bytes,
+          "${DateTime.now().millisecondsSinceEpoch}-$id.${image.name.split(".").last}",
+        );
       }
+
+      imageUrl = path;
+
+      notifyListeners();
+      saveChanges();
     }
   }
 
@@ -681,45 +560,26 @@ class SheetViewModel extends ChangeNotifier {
     return ownerId == FirebaseAuth.instance.currentUser!.uid;
   }
 
-  Future<void> rollAction({
-    required BuildContext context,
-    required ActionTemplate action,
-  }) async {
-    List<int> rolls = [];
+  Future<void> onRoll({required RollLog roll}) async {
+    ActionTemplate? action = ActionDAO.instance.getActionById(roll.idAction);
 
-    int newActionValue = getTrainLevelByAction(action.id) + (modGlobalTrain);
+    listRollLog.add(roll);
+    await saveChanges();
+    notificationCount++;
 
-    if (newActionValue < 0) {
-      newActionValue = 0;
+    if (!isKeepingGlobalModifier) {
+      modGlobalTrain = 0;
     }
 
-    if (newActionValue > 4) {
-      newActionValue = 4;
-    }
+    notifyListeners();
 
-    if (ActionDAO.instance.isOnlyFreeOrPreparation(action.id)) {
-      rolls.add(Random().nextInt(20) + 1);
-    } else {
-      if (newActionValue == 0 || newActionValue == 4) {
-        rolls.add(Random().nextInt(20) + 1);
-        rolls.add(Random().nextInt(20) + 1);
-        rolls.add(Random().nextInt(20) + 1);
-      } else if (newActionValue == 1 || newActionValue == 3) {
-        rolls.add(Random().nextInt(20) + 1);
-        rolls.add(Random().nextInt(20) + 1);
-      } else if (newActionValue == 2) {
-        rolls.add(Random().nextInt(20) + 1);
+    if (action != null && action.isPreparation) {
+      effortPoints++;
+      if (effortPoints >= 2) {
+        effortPoints = -1;
+        changeStressLevel(isAdding: true);
       }
+      saveChanges();
     }
-
-    await onRoll(
-      context,
-      roll: RollLog(
-        rolls: rolls,
-        idAction: action.id,
-        dateTime: DateTime.now(),
-        isGettingLower: newActionValue <= 1,
-      ),
-    );
   }
 }

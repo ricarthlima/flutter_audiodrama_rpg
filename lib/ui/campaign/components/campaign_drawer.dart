@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/components/campaign_settings_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/utils/home_tabs.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/services/chat_service.dart';
 import '../../../router.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart';
+import '../../_core/fonts.dart';
 import '../../_core/widgets/compactable_button.dart';
-import '../../home/view/home_view_model.dart';
+import '../../home/utils/home_tabs.dart';
 import '../../settings/settings_screen.dart';
+import '../utils/campaign_subpages.dart';
+import '../view/campaign_view_model.dart';
+import 'campaign_settings_dialog.dart';
 
 class CampaignDrawer extends StatelessWidget {
   const CampaignDrawer({super.key});

@@ -5,6 +5,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/color_filter_inverter.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/wip_snackbar.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/action_lore_dialog.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_interact.dart';
 import 'package:provider/provider.dart';
 
 import '../../settings/view/settings_provider.dart';
@@ -68,7 +69,7 @@ class _ActionWidgetState extends State<ActionWidget> {
               child: InkWell(
                 onTap: (!viewModel.isEditing)
                     ? () {
-                        viewModel.rollAction(
+                        SheetInteract.rollAction(
                           context: context,
                           action: widget.action,
                         );

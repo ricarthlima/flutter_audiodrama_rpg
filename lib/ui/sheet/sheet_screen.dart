@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/text_field_dropdown.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_app_bar.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_drawer.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_floating_action_button.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/sheet_actions_columns_widget.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/sheet_not_found_widget.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/sheet_subtitle_row_widget.dart';
 import 'package:provider/provider.dart';
+
+import '../../data/daos/action_dao.dart';
+import '../../domain/models/action_template.dart';
+import '../_core/app_colors.dart';
 import '../_core/components/image_dialog.dart';
+import '../_core/dimensions.dart';
+import '../_core/fonts.dart';
 import '../_core/helpers.dart';
+import '../_core/widgets/generic_header.dart';
 import '../_core/widgets/loading_widget.dart';
 import '../_core/widgets/named_widget.dart';
+import '../_core/widgets/text_field_dropdown.dart';
 import '../campaign/widgets/group_notifications.dart';
+import 'components/sheet_app_bar.dart';
+import 'components/sheet_drawer.dart';
+import 'components/sheet_floating_action_button.dart';
+import 'view/sheet_interact.dart';
+import 'view/sheet_view_model.dart';
+import 'widgets/sheet_actions_columns_widget.dart';
+import 'widgets/sheet_not_found_widget.dart';
+import 'widgets/sheet_subtitle_row_widget.dart';
 
 class SheetScreen extends StatefulWidget {
   const SheetScreen({super.key});
@@ -54,10 +56,8 @@ class _SheetScreenState extends State<SheetScreen> {
                 ActionDAO.instance.getAll().firstWhere(
                       (e) => e.name.toLowerCase() == value.toLowerCase(),
                     );
-            context.read<SheetViewModel>().rollAction(
-                  context: context,
-                  action: actionTemplate,
-                );
+
+            SheetInteract.rollAction(context: context, action: actionTemplate);
           }
         },
       );
@@ -148,13 +148,13 @@ class _SheetScreenState extends State<SheetScreen> {
   }
 
   Widget _generateScreen() {
-    final viewModel = Provider.of<SheetViewModel>(context);
+    final sheetVM = Provider.of<SheetViewModel>(context);
 
-    viewModel.nameController.text = viewModel.characterName;
+    sheetVM.nameController.text = sheetVM.characterName;
 
     return Stack(
       children: [
-        if (viewModel.imageUrl != null)
+        if (sheetVM.imageUrl != null)
           ShaderMask(
             shaderCallback: (bounds) {
               return LinearGradient(
@@ -168,14 +168,14 @@ class _SheetScreenState extends State<SheetScreen> {
             },
             blendMode: BlendMode.dstIn,
             child: Image.network(
-              viewModel.imageUrl!,
+              sheetVM.imageUrl!,
               height: (isVertical(context)) ? 250 : 300,
               width: width(context),
               fit: BoxFit.fitWidth,
             ),
           ),
         Container(
-          padding: (viewModel.isWindowed) ? null : EdgeInsets.only(top: 64),
+          padding: (sheetVM.isWindowed) ? null : EdgeInsets.only(top: 64),
           margin: EdgeInsets.all(16),
           height: double.infinity,
           child: Column(
@@ -197,7 +197,7 @@ class _SheetScreenState extends State<SheetScreen> {
                           AnimatedContainer(
                             width: 120,
                             duration: Duration(milliseconds: 750),
-                            child: (viewModel.imageUrl != null)
+                            child: (sheetVM.imageUrl != null)
                                 ? SizedBox(
                                     height: 150,
                                     width: 120,
@@ -207,11 +207,11 @@ class _SheetScreenState extends State<SheetScreen> {
                                           onTap: () {
                                             showImageDialog(
                                               context: context,
-                                              imageUrl: viewModel.imageUrl!,
+                                              imageUrl: sheetVM.imageUrl!,
                                             );
                                           },
                                           child: Image.network(
-                                            viewModel.imageUrl!,
+                                            sheetVM.imageUrl!,
                                             fit: BoxFit.cover,
                                             height: 150,
                                             width: 120,
@@ -235,7 +235,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                             child: Tooltip(
                                               message: "Remover imagem",
                                               child: InkWell(
-                                                onTap: () => viewModel
+                                                onTap: () => sheetVM
                                                     .onRemoveImageClicked(),
                                                 child: Icon(
                                                   Icons.delete,
@@ -261,11 +261,11 @@ class _SheetScreenState extends State<SheetScreen> {
                                           MainAxisAlignment.center,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
-                                      children: viewModel.isOwner
+                                      children: sheetVM.isOwner
                                           ? [
                                               IconButton(
                                                 onPressed: () {
-                                                  viewModel
+                                                  SheetInteract
                                                       .onUploadBioImageClicked(
                                                           context);
                                                 },
@@ -292,7 +292,7 @@ class _SheetScreenState extends State<SheetScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           spacing: 8,
                           children: [
-                            _getNameWidget(viewModel),
+                            _getNameWidget(sheetVM),
                             SheetSubtitleRowWidget(),
                           ],
                         ),
@@ -304,16 +304,16 @@ class _SheetScreenState extends State<SheetScreen> {
                         children: [
                           AnimatedSwitcher(
                             duration: Duration(seconds: 1),
-                            child: (!viewModel.isEditing)
+                            child: (!sheetVM.isEditing)
                                 ? Text(
-                                    getBaseLevel(viewModel.baseLevel),
+                                    getBaseLevel(sheetVM.baseLevel),
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontFamily: FontFamily.sourceSerif4,
                                     ),
                                   )
                                 : DropdownButton<int>(
-                                    value: viewModel.baseLevel,
+                                    value: sheetVM.baseLevel,
                                     items: [
                                       DropdownMenuItem(
                                         value: 0,
@@ -335,7 +335,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                     onChanged: (value) {
                                       if (value != null) {
                                         setState(() {
-                                          viewModel.baseLevel = value;
+                                          sheetVM.baseLevel = value;
                                         });
                                       }
                                     },
@@ -351,7 +351,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      viewModel
+                                      sheetVM
                                           .getActionsValuesWithWorks()
                                           .where(
                                             (e) => e.value == 2,
@@ -364,7 +364,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                       ),
                                     ),
                                     Text(
-                                      "/${viewModel.getAptidaoMaxByLevel()}",
+                                      "/${sheetVM.getAptidaoMaxByLevel()}",
                                       style: TextStyle(
                                         fontSize: 22,
                                         fontFamily: FontFamily.sourceSerif4,
@@ -379,7 +379,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      viewModel
+                                      sheetVM
                                           .getActionsValuesWithWorks()
                                           .where(
                                             (e) => e.value == 3,
@@ -392,7 +392,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                       ),
                                     ),
                                     Text(
-                                      "/${viewModel.getTreinamentoMaxByLevel()}",
+                                      "/${sheetVM.getTreinamentoMaxByLevel()}",
                                       style: TextStyle(
                                         fontSize: 22,
                                         fontFamily: FontFamily.sourceSerif4,
@@ -403,9 +403,9 @@ class _SheetScreenState extends State<SheetScreen> {
                               ),
                             ],
                           ),
-                          if (viewModel.getPropositoMinusAversao() > 0)
+                          if (sheetVM.getPropositoMinusAversao() > 0)
                             Text(
-                              "Faltam ${viewModel.getPropositoMinusAversao()} aversões",
+                              "Faltam ${sheetVM.getPropositoMinusAversao()} aversões",
                               style: TextStyle(
                                 color: AppColors.red,
                                 fontWeight: FontWeight.bold,
@@ -421,7 +421,7 @@ class _SheetScreenState extends State<SheetScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 8,
                   children: [
-                    _getNameWidget(viewModel),
+                    _getNameWidget(sheetVM),
                     SheetSubtitleRowWidget(),
                   ],
                 ),
@@ -433,12 +433,12 @@ class _SheetScreenState extends State<SheetScreen> {
             ],
           ),
         ),
-        if (viewModel.isEditing && isVertical(context))
+        if (sheetVM.isEditing && isVertical(context))
           Align(
             alignment: Alignment.topRight,
             child: IconButton(
               onPressed: () {
-                viewModel.onUploadBioImageClicked(context);
+                SheetInteract.onUploadBioImageClicked(context);
               },
               icon: Icon(Icons.image),
             ),
