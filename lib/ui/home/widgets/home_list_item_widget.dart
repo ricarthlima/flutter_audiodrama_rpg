@@ -8,7 +8,10 @@ import 'package:flutter_rpg_audiodrama/ui/_core/utils/download_json_file.dart';
 import 'package:flutter_rpg_audiodrama/ui/home/components/move_sheet_to_campaign_dialog.dart';
 import 'package:provider/provider.dart';
 import '../../../domain/models/sheet_model.dart';
+import '../../../router.dart';
 import '../../_core/components/image_dialog.dart';
+import '../../campaign/view/campaign_view_model.dart';
+import '../view/home_interact.dart';
 import '../view/home_view_model.dart';
 
 class HomeListItemWidget extends StatelessWidget {
@@ -29,7 +32,7 @@ class HomeListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<HomeViewModel>(context);
+    final homeVM = Provider.of<HomeViewModel>(context);
     return ListTile(
       leading: SizedBox(
         height: isVertical(context) ? 32 : 64,
@@ -89,10 +92,10 @@ class HomeListItemWidget extends StatelessWidget {
           if (isShowingByCampaign)
             IconButton(
               onPressed: () {
-                viewModel.goToSheet(
-                  context,
-                  sheet: sheet,
+                AppRouter().goSheet(
+                  context: context,
                   username: username,
+                  sheet: sheet,
                   isPushing: isShowingByCampaign,
                 );
               },
@@ -117,15 +120,17 @@ class HomeListItemWidget extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        viewModel.onDuplicateSheet(
-                            context: context, sheet: sheet);
+                        homeVM.onDuplicateSheet(sheet: sheet);
                       },
                       tooltip: "Duplicar",
                       icon: Icon(Icons.copy),
                     ),
                     IconButton(
                       onPressed: () {
-                        viewModel.onRemoveSheet(context: context, sheet: sheet);
+                        HomeInteract.onRemoveSheet(
+                          context: context,
+                          sheet: sheet,
+                        );
                       },
                       tooltip: "Remover",
                       icon: Icon(
@@ -137,8 +142,12 @@ class HomeListItemWidget extends StatelessWidget {
                 )
               : IconButton(
                   onPressed: () {
-                    viewModel.onDuplicateSheetToMe(
-                        context: context, sheet: sheet);
+                    String? campaignId =
+                        context.read<CampaignViewModel>().campaign?.id;
+                    homeVM.onDuplicateSheetToMe(
+                      campaignId: campaignId,
+                      sheet: sheet,
+                    );
                   },
                   tooltip: "Duplicar",
                   icon: Icon(Icons.copy),
@@ -186,10 +195,10 @@ class HomeListItemWidget extends StatelessWidget {
             onDetach!();
           }
         } else {
-          viewModel.goToSheet(
-            context,
-            sheet: sheet,
+          AppRouter().goSheet(
+            context: context,
             username: username,
+            sheet: sheet,
             isPushing: isShowingByCampaign,
           );
         }

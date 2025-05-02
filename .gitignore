@@ -1,55 +1,152 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
-
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+# ====================================================
+# FLUTTER / DART
+# ====================================================
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
-/build/
+build/
+coverage/
+lib/generated_plugin_registrant.dart
+.fvm/flutter_sdk
 
-# Symbolication related
-app.*.symbols
+# Evitar comitar pubspec.lock em pacotes (liberado para apps)
+#pubspec.lock
 
-# Obfuscation related
-app.*.map.json
+# Diretórios de documentação gerada
+**/doc/api/
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# Build ID do Flutter iOS
+**/ios/Flutter/.last_build_id
 
+# Arquivos e scripts auxiliares
 /lib/_core/private/*
 /lib/_core/private/auth_user.dart
+/lib/estrutura.json
+/lib/dir_to_json.py
 
-# .env
+# Arquivos de ambiente (.env)
 *.env
 *dotenv.env
 *dotenv
 
-/lib/estrutura.json
+# ====================================================
+# FLUTTERFIRE / FIREBASE
+# ====================================================
+**/android/app/google-services.json
+**/ios/Runner/GoogleService-Info.plist
+**/macos/Runner/GoogleService-Info.plist
+firebase.json
+firebase_app_id_file.json
+firebase_options.dart
+
+# ====================================================
+# ANDROID
+# ====================================================
+**/android/.gradle
+**/android/gradle-wrapper.jar
+**/android/gradlew
+**/android/gradlew.bat
+**/android/key.properties
+**/android/local.properties
+**/android/captures/
+**/android/**/GeneratedPluginRegistrant.java
+
+# Pastas de build por flavor
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Keystores e certificados
+*.keystore
+*.jks
+**/android/app/upload-keystore.jks
+
+# ====================================================
+# IOS / XCODE
+# ====================================================
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*.moved-aside
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/.generated/
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# Permitir arquivos padrão do Xcode
+!**/ios/**/default.mode1v3
+!**/ios/**/default.mode2v3
+!**/ios/**/default.pbxuser
+!**/ios/**/default.perspectivev3
+
+# Certificados Apple
+*.p8
+*.p12
+*.mobileprovision
+
+# ====================================================
+# IDEs e FERRAMENTAS
+# ====================================================
+
+# VSCode
+#.vscode/
+
+# IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+.idea/
+.idea_modules/
+
+# Melos / CLI tooling
+.melos_tool/
+
+# Fastlane
+**/fastlane/*.env
+fastlane/.env
+**/fastlane/report.xml
+**/fastlane/Preview.html
+
+# Codemagic
+.codemagic/
+
+# GitHub Actions
+.github/workflows/*.log
+
+# ====================================================
+# OBFUSCAÇÃO / SIMBOLICAÇÃO
+# ====================================================
+app.*.symbols
+app.*.map.json
+
+# ====================================================
+# OUTROS (gerais)
+# ====================================================
+*.class
+*.log
+*.pyc
+*.swp
+*.orig
+*.bak
+*.tmp

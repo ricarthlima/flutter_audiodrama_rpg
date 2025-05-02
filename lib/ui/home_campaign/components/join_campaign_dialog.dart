@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/show_snackbar.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:provider/provider.dart';
 
 import '../../_core/app_colors.dart';
 import '../../_core/widgets/circular_progress_indicator.dart';
@@ -101,12 +100,7 @@ class __JoinCampaignDialogState extends State<_JoinCampaignDialog> {
   }
 
   void _onJoinPressed() async {
-    HomeCampaignViewModel homeCampaignVM = Provider.of<HomeCampaignViewModel>(
-      context,
-      listen: false,
-    );
-
-    homeCampaignVM.joinCampaign(joinCode: _codeController.text).then(
+    HomeCampaignInteract.joinCampaign(joinCode: _codeController.text).then(
       (value) {
         if (!mounted) return;
         Navigator.pop(context);

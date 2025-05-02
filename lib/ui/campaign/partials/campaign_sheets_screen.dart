@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/list_sheets_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../../home/view/home_view_model.dart';
+import '../../../_core/providers/user_provider.dart';
+import '../../_core/dimensions.dart';
+import '../../home/view/home_interact.dart';
+import '../view/campaign_view_model.dart';
+import '../widgets/list_sheets_widget.dart';
 
 class CampaignSheetsScreen extends StatelessWidget {
   const CampaignSheetsScreen({super.key});
@@ -41,10 +41,10 @@ class CampaignSheetsScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              context.read<HomeViewModel>().onCreateSheetClicked(
-                    context,
-                    campaignId: campaignVM.campaign?.id,
-                  );
+              HomeInteract.onCreateCharacterClicked(
+                context,
+                campaignId: campaignVM.campaign?.id,
+              );
             },
             tooltip: "Criar personagem",
             icon: Icon(Icons.add),

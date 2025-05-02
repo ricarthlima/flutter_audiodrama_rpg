@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_filter_widget.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
-
 import '../../../domain/models/sheet_model.dart';
 import '../../_core/fonts.dart';
 import '../../_core/utils/download_json_file.dart';
+import '../../_core/widgets/generic_filter_widget.dart';
+import '../../_core/widgets/generic_header.dart';
+import '../view/home_interact.dart';
+import '../view/home_view_model.dart';
 import 'home_list_item_widget.dart';
 
 class HomeListSheetsWidget extends StatefulWidget {
@@ -72,7 +72,7 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
             ],
             iconButton: IconButton(
               onPressed: () {
-                context.read<HomeViewModel>().onCreateSheetClicked(context);
+                HomeInteract.onCreateCharacterClicked(context);
               },
               tooltip: "Criar personagem",
               icon: Icon(Icons.add),

@@ -7,6 +7,6 @@ import '../view/sheet_view_model.dart';
 Drawer getSheetDrawer(BuildContext context) {
   final viewModel = Provider.of<SheetViewModel>(context);
   return Drawer(
-    child: SheetHistoryDrawer(listRollLog: viewModel.listRollLog),
+    child: SheetHistoryDrawer(listRollLog: viewModel.sheet!.listRollLog),
   );
 }

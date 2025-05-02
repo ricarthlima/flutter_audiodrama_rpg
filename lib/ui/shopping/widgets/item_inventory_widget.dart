@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/item.dart';
 import '../../../domain/models/item_sheet.dart';
+import '../../_core/app_colors.dart';
 import '../../_core/utils/i18n_categories.dart';
+import '../view/shopping_interact.dart';
 import '../view/shopping_view_model.dart';
 
 class ItemInventoryWidget extends StatelessWidget {
@@ -118,10 +119,7 @@ class ItemInventoryWidget extends StatelessWidget {
           ),
           trailing: (shoppingViewModel.isBuying)
               ? IconButton(
-                  onPressed: () => shoppingViewModel.sellItem(
-                    context: context,
-                    itemId: item.id,
-                  ),
+                  onPressed: () => shoppingViewModel.sellItem(itemId: item.id),
                   tooltip: "Vender",
                   color: AppColors.red,
                   iconSize: 48,
@@ -140,29 +138,25 @@ class ItemInventoryWidget extends StatelessWidget {
                 children: [
                   if (item.isFinite)
                     TextButton(
-                      onPressed: () => shoppingViewModel.useItem(
-                        context: context,
-                        itemId: item.id,
-                      ),
+                      onPressed: () =>
+                          shoppingViewModel.useItem(itemId: item.id),
                       child: Text("Usar"),
                     ),
                   if (item.isFinite)
                     TextButton(
-                      onPressed: () => shoppingViewModel.reloadUses(
-                        context: context,
-                        itemId: item.id,
-                      ),
+                      onPressed: () =>
+                          shoppingViewModel.reloadUses(itemId: item.id),
                       child: Text("Recarregar usos"),
                     ),
                   TextButton(
-                    onPressed: () => shoppingViewModel.removeItem(
+                    onPressed: () => ShoppingInteract.removeItem(
                       context: context,
                       itemId: item.id,
                     ),
                     child: Text("Remover"),
                   ),
                   TextButton(
-                    onPressed: () => shoppingViewModel.removeAllFromItem(
+                    onPressed: () => ShoppingInteract.removeAllFromItem(
                       context: context,
                       itemId: item.id,
                     ),

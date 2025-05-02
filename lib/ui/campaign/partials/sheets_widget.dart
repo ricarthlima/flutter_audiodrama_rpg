@@ -4,7 +4,7 @@ import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart
 import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/list_sheets_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../../home/view/home_view_model.dart';
+import '../../home/view/home_interact.dart';
 
 class CampaignSheetsWidget extends StatelessWidget {
   const CampaignSheetsWidget({super.key});
@@ -24,10 +24,10 @@ class CampaignSheetsWidget extends StatelessWidget {
             actions: [
               IconButton(
                 onPressed: () {
-                  context.read<HomeViewModel>().onCreateSheetClicked(
-                        context,
-                        campaignId: campaignVM.campaign?.id,
-                      );
+                  HomeInteract.onCreateCharacterClicked(
+                    context,
+                    campaignId: campaignVM.campaign?.id,
+                  );
                 },
                 tooltip: "Criar personagem",
                 icon: Icon(Icons.add),

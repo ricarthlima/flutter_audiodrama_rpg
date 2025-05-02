@@ -5,63 +5,37 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/condition_dao.dart';
-import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_lore.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/list_action.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_body_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_works_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet_notes/sheet_notes.dart';
-import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/statistics/statistics_screen.dart';
-import 'package:flutter_rpg_audiodrama/ui/statistics/view/statistics_view_model.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories/action_repository.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories/condition_repository.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 
-import '../../../data/daos/action_dao.dart';
+import '../../../data/services/sheet_service.dart';
 import '../../../domain/exceptions/sheet_service_exceptions.dart';
+import '../../../domain/models/action_lore.dart';
 import '../../../domain/models/action_template.dart';
-import '../../../domain/models/item_sheet.dart';
+import '../../../domain/models/action_value.dart';
+import '../../../domain/models/list_action.dart';
+import '../../../domain/models/roll_log.dart';
 import '../../../domain/models/sheet_model.dart';
-import '../../shopping/shopping_screen.dart';
-import '../components/action_dialog_tooltip.dart';
-import '../components/roll_dialog.dart';
 
 class SheetViewModel extends ChangeNotifier {
   String id;
   String username;
   bool isWindowed;
+  ActionRepository actionRepo;
+  ConditionRepository conditionRepo;
 
   SheetViewModel({
     required this.id,
     required this.username,
+    required this.actionRepo,
+    required this.conditionRepo,
     this.isWindowed = false,
   });
+
   SheetService sheetService = SheetService();
 
-  // Atributos de ficha
-  String characterName = "";
-  int stressLevel = 0;
-  int effortPoints = -1;
-  List<ActionValue> listActionValue = [];
-  List<RollLog> listRollLog = [];
-  int baseLevel = 0;
-  List<ItemSheet> listSheetItems = [];
-  double money = 0;
-  double weight = 0;
-  List<ActionLore> listActionLore = [];
-  String bio = "";
-  String notes = "";
-  List<String> listActiveConditions = [];
-  String? imageUrl;
-  List<ActionValue> listWorks = [];
-  String? campaignId;
-  List<String> listSharedIds = [];
-  String _ownerId = "";
-  String get ownerId => _ownerId;
+  Sheet? sheet;
 
   // Atributos locais
   int modGlobalTrain = 0;
@@ -88,6 +62,9 @@ class SheetViewModel extends ChangeNotifier {
   GlobalKey<ExpandableFabState> fabKey = GlobalKey<ExpandableFabState>();
   Future<Sheet?> futureGetSheet = Future.delayed(Duration.zero);
   final TextEditingController nameController = TextEditingController();
+
+  bool? isSavingNotes;
+  final TextEditingController _notesTextController = TextEditingController();
 
   updateCredentials({String? id, String? username}) {
     this.id = id ?? this.id;
@@ -123,25 +100,7 @@ class SheetViewModel extends ChangeNotifier {
 
       if (sheetModel != null) {
         nameController.text = sheetModel.characterName;
-        characterName = sheetModel.characterName;
-        listActionValue = sheetModel.listActionValue;
-        listRollLog = sheetModel.listRollLog;
-        effortPoints = sheetModel.effortPoints;
-        stressLevel = sheetModel.stressLevel;
-        baseLevel = sheetModel.baseLevel;
-        listSheetItems = sheetModel.listItemSheet;
-        money = sheetModel.money;
-        weight = sheetModel.weight;
-        listActionLore = sheetModel.listActionLore;
-        bio = sheetModel.bio;
-        notes = sheetModel.notes;
-        listActiveConditions = sheetModel.listActiveConditions;
-        imageUrl = sheetModel.imageUrl;
-        listWorks = sheetModel.listWorks;
-        campaignId = sheetModel.campaignId;
-        listSharedIds = sheetModel.listSharedIds;
-        _ownerId = sheetModel.ownerId;
-
+        sheet = sheetModel;
         isFoundSheet = true;
       }
 
@@ -173,97 +132,43 @@ class SheetViewModel extends ChangeNotifier {
     }
   }
 
-  Future<Sheet> saveChanges() async {
-    Sheet sheet = Sheet(
-      id: id,
-      characterName:
-          (nameController.text != "") ? nameController.text : characterName,
-      listActionValue: listActionValue,
-      listRollLog: listRollLog,
-      effortPoints: effortPoints,
-      stressLevel: stressLevel,
-      baseLevel: baseLevel,
-      listItemSheet: listSheetItems,
-      money: money,
-      weight: weight,
-      listActionLore: listActionLore,
-      bio: bio,
-      notes: notes,
-      listActiveConditions: listActiveConditions,
-      imageUrl: imageUrl,
-      listWorks: listWorks,
-      listSharedIds: listSharedIds,
-      campaignId: campaignId,
-      ownerId: _ownerId,
-    );
-    // Beleza, mas você colocou também no refresh?
+  Future<Sheet?> saveChanges() async {
+    if (sheet != null) {
+      if (nameController.text != "") {
+        sheet!.characterName = nameController.text;
+      }
 
-    await SheetService().saveSheet(sheet);
-
+      await SheetService().saveSheet(sheet!);
+    }
     return sheet;
   }
 
   onActionValueChanged({required ActionValue ac, required bool isWork}) {
+    if (sheet == null) return;
+
     if (!isWork) {
-      if (listActionValue.where((e) => e.actionId == ac.actionId).isNotEmpty) {
-        listActionValue.removeWhere((e) => e.actionId == ac.actionId);
+      if (sheet!.listActionValue
+          .where((e) => e.actionId == ac.actionId)
+          .isNotEmpty) {
+        sheet!.listActionValue.removeWhere((e) => e.actionId == ac.actionId);
       }
-      listActionValue.add(ac);
+      sheet!.listActionValue.add(ac);
     } else {
-      if (listWorks.where((e) => e.actionId == ac.actionId).isNotEmpty) {
-        listWorks.removeWhere((e) => e.actionId == ac.actionId);
+      if (sheet!.listWorks.where((e) => e.actionId == ac.actionId).isNotEmpty) {
+        sheet!.listWorks.removeWhere((e) => e.actionId == ac.actionId);
       }
-      listWorks.add(ac);
+      sheet!.listWorks.add(ac);
     }
     notifyListeners();
-  }
-
-  Future<void> onRoll(BuildContext context, {required RollLog roll}) async {
-    ActionTemplate? action = ActionDAO.instance.getActionById(roll.idAction);
-
-    if (!ActionDAO.instance.isOnlyFreeOrPreparation(roll.idAction) ||
-        ActionDAO.instance.isLuckAction(roll.idAction)) {
-      showRollDialog(context: context, rollLog: roll);
-    } else {
-      if (action != null) {
-        showDialogTip(
-          context,
-          action,
-          isEffortUsed: action.isPreparation,
-        );
-      }
-    }
-
-    listRollLog.add(roll);
-    await saveChanges();
-    notificationCount++;
-
-    if (!isKeepingGlobalModifier) {
-      modGlobalTrain = 0;
-    }
-
-    notifyListeners();
-
-    if (action != null && action.isPreparation) {
-      effortPoints++;
-      if (effortPoints >= 2) {
-        effortPoints = -1;
-        changeStressLevel(isAdding: true);
-      }
-      saveChanges();
-    }
-  }
-
-  onRollBodyDice({required BuildContext context, required bool isSerious}) {
-    int roll = Random().nextInt(6) + 1;
-    showRollBodyDialog(context: context, roll: roll, isSerious: isSerious);
   }
 
   changeStressLevel({bool isAdding = true}) {
+    if (sheet == null) return;
+
     if (isAdding) {
-      stressLevel = min(stressLevel + 1, 3);
+      sheet!.stressLevel = min(sheet!.stressLevel + 1, 3);
     } else {
-      stressLevel = max(stressLevel - 1, 0);
+      sheet!.stressLevel = max(sheet!.stressLevel - 1, 0);
     }
     notifyListeners();
 
@@ -273,10 +178,12 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   changeEffortPoints({bool isAdding = true}) {
+    if (sheet == null) return;
+
     if (isAdding) {
-      effortPoints = min(effortPoints + 1, 2);
+      sheet!.effortPoints = min(sheet!.effortPoints + 1, 2);
     } else {
-      effortPoints = max(effortPoints - 1, -1);
+      sheet!.effortPoints = max(sheet!.effortPoints - 1, -1);
     }
     notifyListeners();
 
@@ -286,7 +193,7 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   int getAptidaoMaxByLevel() {
-    switch (baseLevel) {
+    switch (sheet!.baseLevel) {
       case 0:
         return 8;
       case 1:
@@ -300,7 +207,7 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   int getTreinamentoMaxByLevel() {
-    switch (baseLevel) {
+    switch (sheet!.baseLevel) {
       case 0:
         return 2;
       case 1:
@@ -323,32 +230,13 @@ class SheetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  onItemsButtonClicked(BuildContext context) async {
-    final shoppingViewModel = Provider.of<ShoppingViewModel>(
-      context,
-      listen: false,
-    );
-    shoppingViewModel.openInventory(listSheetItems);
-
-    if (!isVertical(context)) {
-      await showShoppingDialog(context);
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ShoppingDialogScreen(),
-        ),
-      );
-    }
-  }
-
   void toggleKeepingGlobalModifier() {
     isKeepingGlobalModifier = !isKeepingGlobalModifier;
     notifyListeners();
   }
 
   String getHelperText(ActionTemplate action) {
-    int trainingLevel = listActionValue
+    int trainingLevel = sheet!.listActionValue
         .firstWhere(
           (ActionValue actionValue) => actionValue.actionId == action.id,
           orElse: () => ActionValue(actionId: "", value: 1),
@@ -417,7 +305,7 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   int getTrainLevelByAction(String actionId) {
-    List<ActionValue> listFromBaseActions = listActionValue
+    List<ActionValue> listFromBaseActions = sheet!.listActionValue
         .where(
           (e) => e.actionId == actionId,
         )
@@ -427,7 +315,7 @@ class SheetViewModel extends ChangeNotifier {
       return listFromBaseActions[0].value;
     }
 
-    List<ActionValue> listFromWorks = listWorks
+    List<ActionValue> listFromWorks = sheet!.listWorks
         .where(
           (e) => e.actionId == actionId,
         )
@@ -442,8 +330,8 @@ class SheetViewModel extends ChangeNotifier {
 
   List<String> getWorkIds() {
     List<String> result = [];
-    for (ActionValue ac in listWorks) {
-      List<ListAction> listAllWorks = ActionDAO.instance.getListWorks();
+    for (ActionValue ac in sheet!.listWorks) {
+      List<ListAction> listAllWorks = actionRepo.getListWorks();
 
       for (ListAction la in listAllWorks) {
         if (la.listActions.where((e) => e.id == ac.actionId).isNotEmpty) {
@@ -458,67 +346,25 @@ class SheetViewModel extends ChangeNotifier {
 
   void saveActionLore(
       {required String actionId, required String loreText}) async {
-    if (listActionLore.where((e) => e.actionId == actionId).isNotEmpty) {
-      int index = listActionLore.indexWhere((e) => e.actionId == actionId);
-      listActionLore[index].loreText = loreText;
+    if (sheet!.listActionLore.where((e) => e.actionId == actionId).isNotEmpty) {
+      int index =
+          sheet!.listActionLore.indexWhere((e) => e.actionId == actionId);
+      sheet!.listActionLore[index].loreText = loreText;
     } else {
-      listActionLore.add(ActionLore(actionId: actionId, loreText: loreText));
+      sheet!.listActionLore
+          .add(ActionLore(actionId: actionId, loreText: loreText));
     }
     saveChanges();
     notifyListeners();
   }
 
-  onNotesButtonClicked(BuildContext context) async {
-    if (!isVertical(context)) {
-      await showSheetNotesDialog(context);
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SheetNotesScreen(),
-        ),
-      );
-    }
-  }
-
-  onStatisticsButtonClicked(BuildContext context) async {
-    context.read<StatisticsViewModel>().listCompleteRollLog = listRollLog;
-
-    if (!isVertical(context)) {
-      await showSheetStatisticsDialog(context);
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SheetStatisticsScreen(),
-        ),
-      );
-    }
-  }
-
-  void onWorksButtonClicked(BuildContext context) async {
-    if (!isVertical(context)) {
-      await showSheetWorksDialog(context);
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SheetWorksDialog(),
-        ),
-      );
-    }
-  }
-
-  bool? isSavingNotes;
-  final TextEditingController _notesTextController = TextEditingController();
-
   TextEditingController notesTextController() {
-    _notesTextController.text = notes;
+    _notesTextController.text = sheet!.notes;
     return _notesTextController;
   }
 
   void saveNotes() async {
-    notes = _notesTextController.text;
+    sheet!.notes = _notesTextController.text;
     notifyListeners();
 
     isSavingNotes = true;
@@ -537,12 +383,12 @@ class SheetViewModel extends ChangeNotifier {
   final TextEditingController _bioEditingController = TextEditingController();
 
   TextEditingController bioEditingController() {
-    _bioEditingController.text = bio;
+    _bioEditingController.text = sheet!.bio;
     return _bioEditingController;
   }
 
   void saveBio() async {
-    bio = _bioEditingController.text;
+    sheet!.bio = _bioEditingController.text;
     notifyListeners();
 
     isSavingBio = true;
@@ -558,14 +404,14 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   bool getHasCondition(String id) {
-    return listActiveConditions.contains(id);
+    return sheet!.listActiveConditions.contains(id);
   }
 
   toggleCondition(String id) {
-    if (listActiveConditions.contains(id)) {
-      listActiveConditions.remove(id);
+    if (sheet!.listActiveConditions.contains(id)) {
+      sheet!.listActiveConditions.remove(id);
     } else {
-      listActiveConditions.add(id);
+      sheet!.listActiveConditions.add(id);
     }
     saveChanges();
     notifyListeners();
@@ -574,69 +420,57 @@ class SheetViewModel extends ChangeNotifier {
   String getMajorCondition() {
     String result = "DESPERTO";
 
-    if (listActiveConditions.isNotEmpty) {
-      listActiveConditions.sort(
+    if (sheet!.listActiveConditions.isNotEmpty) {
+      sheet!.listActiveConditions.sort(
         (a, b) {
-          int showA = ConditionDAO.instance.getConditionById(a)!.showingOrder;
-          int showB = ConditionDAO.instance.getConditionById(b)!.showingOrder;
+          int showA = conditionRepo.getConditionById(a)!.showingOrder;
+          int showB = conditionRepo.getConditionById(b)!.showingOrder;
 
           return showA.compareTo(showB);
         },
       );
 
-      String idMajor = listActiveConditions.last;
-      return ConditionDAO.instance
-          .getConditionById(idMajor)!
-          .name
-          .toUpperCase();
+      String idMajor = sheet!.listActiveConditions.last;
+      return conditionRepo.getConditionById(idMajor)!.name.toUpperCase();
     }
 
     return result;
   }
 
-  onUploadBioImageClicked(BuildContext context) async {
-    ImagePicker picker = ImagePicker();
+  onUploadBioImageClicked(XFile image) async {
+    int sizeInBytes = await image.length();
 
-    XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
-      requestFullMetadata: false,
-    );
-
-    if (image != null) {
-      int sizeInBytes = await image.length();
-
-      if (sizeInBytes >= 2000000) {
-        //TODO: Sua imagem é muito pesada.
+    if (sizeInBytes >= 2000000) {
+      //TODO: Sua imagem é muito pesada.
+    } else {
+      String? path;
+      if (!kIsWeb) {
+        path = await sheetService.uploadBioImage(
+          File(image.path),
+          "${DateTime.now().millisecondsSinceEpoch}-$id.${image.name.split(".").last}",
+        );
       } else {
-        String? path;
-        if (!kIsWeb) {
-          path = await sheetService.uploadBioImage(
-            File(image.path),
-            "${DateTime.now().millisecondsSinceEpoch}-$id.${image.name.split(".").last}",
-          );
-        } else {
-          Uint8List bytes = await image.readAsBytes();
-          path = await sheetService.uploadBioImageBytes(
-            bytes,
-            "${DateTime.now().millisecondsSinceEpoch}-$id.${image.name.split(".").last}",
-          );
-        }
-
-        imageUrl = path;
-
-        notifyListeners();
-        saveChanges();
+        Uint8List bytes = await image.readAsBytes();
+        path = await sheetService.uploadBioImageBytes(
+          bytes,
+          "${DateTime.now().millisecondsSinceEpoch}-$id.${image.name.split(".").last}",
+        );
       }
+
+      sheet!.imageUrl = path;
+
+      notifyListeners();
+      saveChanges();
     }
   }
 
   onRemoveImageClicked() async {
-    if (imageUrl == null) return;
+    if (sheet!.imageUrl == null) return;
 
-    String fileName = imageUrl!.split("/").last;
+    String fileName = sheet!.imageUrl!.split("/").last;
 
     await sheetService.deleteBioImage(fileName);
-    imageUrl = null;
+    sheet!.imageUrl = null;
 
     notifyListeners();
     saveChanges();
@@ -644,11 +478,11 @@ class SheetViewModel extends ChangeNotifier {
 
   List<ActionValue> getActionsValuesWithWorks() {
     // TODO: A enebalcencia da action devia ser por campanha
-    List<ActionValue> listAC = listActionValue.map((e) => e).toList() +
-        listWorks.map((e) => e).toList();
+    List<ActionValue> listAC = sheet!.listActionValue.map((e) => e).toList() +
+        sheet!.listWorks.map((e) => e).toList();
 
-    List<String> listAllEnabled = ActionDAO.instance
-        .getAll()
+    List<String> listAllEnabled = actionRepo
+        .getAllActions()
         .where((e) => e.enabled)
         .toList()
         .map((e) => e.id)
@@ -662,64 +496,48 @@ class SheetViewModel extends ChangeNotifier {
   void addTextToEndActionValues() {
     String result = "\n";
     List<ActionTemplate> listActions = getActionsValuesWithWorks()
-        .map((e) => ActionDAO.instance.getActionById(e.actionId)!)
+        .map((e) => actionRepo.getActionById(e.actionId)!)
         .toList();
     for (ActionTemplate action in listActions) {
       result +=
           "## ${getTrainLevelByActionName(action.id)} em ${action.name}\n";
-      if (listActionLore.where((e) => e.actionId == action.id).isNotEmpty) {
-        result +=
-            listActionLore.firstWhere((e) => e.actionId == action.id).loreText;
+      if (sheet!.listActionLore
+          .where((e) => e.actionId == action.id)
+          .isNotEmpty) {
+        result += sheet!.listActionLore
+            .firstWhere((e) => e.actionId == action.id)
+            .loreText;
       }
       result += "\n\n";
     }
-    bio += result;
+    sheet!.bio += result;
     notifyListeners();
   }
 
   bool get isOwner {
-    return ownerId == FirebaseAuth.instance.currentUser!.uid;
+    return sheet!.ownerId == FirebaseAuth.instance.currentUser!.uid;
   }
 
-  Future<void> rollAction({
-    required BuildContext context,
-    required ActionTemplate action,
-  }) async {
-    List<int> rolls = [];
+  Future<void> onRoll({required RollLog roll}) async {
+    ActionTemplate? action = actionRepo.getActionById(roll.idAction);
 
-    int newActionValue = getTrainLevelByAction(action.id) + (modGlobalTrain);
+    sheet!.listRollLog.add(roll);
+    await saveChanges();
+    notificationCount++;
 
-    if (newActionValue < 0) {
-      newActionValue = 0;
+    if (!isKeepingGlobalModifier) {
+      modGlobalTrain = 0;
     }
 
-    if (newActionValue > 4) {
-      newActionValue = 4;
-    }
+    notifyListeners();
 
-    if (ActionDAO.instance.isOnlyFreeOrPreparation(action.id)) {
-      rolls.add(Random().nextInt(20) + 1);
-    } else {
-      if (newActionValue == 0 || newActionValue == 4) {
-        rolls.add(Random().nextInt(20) + 1);
-        rolls.add(Random().nextInt(20) + 1);
-        rolls.add(Random().nextInt(20) + 1);
-      } else if (newActionValue == 1 || newActionValue == 3) {
-        rolls.add(Random().nextInt(20) + 1);
-        rolls.add(Random().nextInt(20) + 1);
-      } else if (newActionValue == 2) {
-        rolls.add(Random().nextInt(20) + 1);
+    if (action != null && action.isPreparation) {
+      sheet!.effortPoints++;
+      if (sheet!.effortPoints >= 2) {
+        sheet!.effortPoints = -1;
+        changeStressLevel(isAdding: true);
       }
+      saveChanges();
     }
-
-    await onRoll(
-      context,
-      roll: RollLog(
-        rolls: rolls,
-        idAction: action.id,
-        dateTime: DateTime.now(),
-        isGettingLower: newActionValue <= 1,
-      ),
-    );
   }
 }

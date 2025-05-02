@@ -1,20 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/circular_progress_indicator.dart';
-import 'package:flutter_rpg_audiodrama/ui/auth/login_screen.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/campaign_screen.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/sheet_works_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/sheet_screen.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/home_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '_core/providers/audio_provider.dart';
+import '_core/providers/user_provider.dart';
 import 'domain/models/sheet_model.dart';
+import 'ui/_core/widgets/circular_progress_indicator.dart';
+import 'ui/auth/login_screen.dart';
+import 'ui/campaign/campaign_screen.dart';
+import 'ui/campaign/utils/campaign_subpages.dart';
+import 'ui/campaign/view/campaign_view_model.dart';
+import 'ui/home/home_screen.dart';
+import 'ui/home/utils/home_tabs.dart';
+import 'ui/sheet/components/sheet_works_dialog.dart';
+import 'ui/sheet/sheet_screen.dart';
 import 'ui/sheet/view/sheet_view_model.dart';
 
 class AppRouter {
@@ -42,21 +42,21 @@ class AppRouter {
         path: "/sheets",
         builder: (context, state) {
           disposeListeners(context);
-          return HomeScreen(page: HomeSubPages.sheets);
+          return HomeScreen(page: HomeTabs.sheets);
         },
       ),
       GoRoute(
         path: "/campaigns",
         builder: (context, state) {
           disposeListeners(context);
-          return HomeScreen(page: HomeSubPages.campaigns);
+          return HomeScreen(page: HomeTabs.campaigns);
         },
       ),
       GoRoute(
         path: "/profile",
         builder: (context, state) {
           disposeListeners(context);
-          return HomeScreen(page: HomeSubPages.profile);
+          return HomeScreen(page: HomeTabs.profile);
         },
       ),
       GoRoute(
@@ -144,7 +144,7 @@ class AppRouter {
     campaignVM.hasInteractedDisable();
   }
 
-  goHome({required BuildContext context, HomeSubPages? subPage}) {
+  goHome({required BuildContext context, HomeTabs? subPage}) {
     if (subPage != null) {
       GoRouter.of(context).go("/${subPage.name}");
     } else {

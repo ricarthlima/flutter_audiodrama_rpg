@@ -2,29 +2,29 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/condition_dao.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/theme.dart';
-import 'package:flutter_rpg_audiodrama/router.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
-
-import 'package:flutter_rpg_audiodrama/firebase_options.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_visual_novel_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/view/home_sheet_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/view/home_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/home_campaign/view/home_campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/shopping/view/shopping_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/statistics/view/statistics_view_model.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories/action_repository.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories/condition_repository.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories/item_repository.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '_core/providers/audio_provider.dart';
+import '_core/providers/user_provider.dart';
+import 'data/repositories_local/action_repository_local.dart';
+import 'data/repositories_local/condition_repository_local.dart';
+import 'data/repositories_local/item_repository_local.dart';
+import 'firebase_options.dart';
+import 'router.dart';
+import 'ui/_core/theme.dart';
+import 'ui/campaign/view/campaign_view_model.dart';
+import 'ui/campaign/view/campaign_visual_novel_view_model.dart';
+import 'ui/home/view/home_view_model.dart';
 import 'ui/settings/view/settings_provider.dart';
-import 'data/daos/item_dao.dart';
+import 'ui/sheet/view/sheet_view_model.dart';
+import 'ui/shopping/view/shopping_view_model.dart';
+import 'ui/statistics/view/statistics_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,8 +33,7 @@ void main() async {
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform.copyWith(
-      databaseURL:
-          "https://flutter-rpg-audiodrama-default-rtdb.firebaseio.com/",
+      databaseURL: dotenv.env["FIREBASE_URL"],
     ),
   );
 
@@ -43,31 +42,48 @@ void main() async {
     anonKey: dotenv.env["SUPABASE_ANON_KEY"]!,
   );
 
-  await ActionDAO.instance.initialize();
-  await ItemDAO.instance.initialize();
-  await ConditionDAO.instance.initialize();
+  ActionRepository actionRepo = ActionRepositoryLocal();
+  await actionRepo.onInitialize();
 
-  SettingsProvider themeProvider = SettingsProvider();
-  await themeProvider.loadSettings();
+  ItemRepository itemRepo = ItemRepositoryLocal();
+  await itemRepo.onInitialize();
+
+  ConditionRepository conditionRepo = ConditionRepositoryLocal();
+  await conditionRepo.onInitialize();
+
+  SettingsProvider settingsProvider = SettingsProvider();
+  await settingsProvider.loadSettings();
 
   AudioProvider audioProvider = AudioProvider();
   await audioProvider.onInitialize();
 
+  HomeViewModel homeVM = HomeViewModel();
+  SheetViewModel sheetVM = SheetViewModel(
+    id: "",
+    username: "",
+    actionRepo: actionRepo,
+    conditionRepo: conditionRepo,
+  );
+  ShoppingViewModel shoppingVM = ShoppingViewModel(
+    sheetVM: sheetVM,
+    itemRepo: itemRepo,
+  );
+  StatisticsViewModel statisticsVM = StatisticsViewModel();
+  CampaignViewModel campaignVM = CampaignViewModel();
+  CampaignVisualNovelViewModel campaignVisualVM =
+      CampaignVisualNovelViewModel(campaignId: "");
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => themeProvider),
         ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => HomeViewModel()),
-        ChangeNotifierProvider(create: (_) => HomeSheetViewModel()),
-        ChangeNotifierProvider(
-            create: (_) => SheetViewModel(id: "", username: "")),
-        ChangeNotifierProvider(create: (_) => ShoppingViewModel()),
-        ChangeNotifierProvider(create: (_) => StatisticsViewModel()),
-        ChangeNotifierProvider(create: (_) => HomeCampaignViewModel()),
-        ChangeNotifierProvider(create: (_) => CampaignViewModel()),
-        ChangeNotifierProvider(
-            create: (_) => CampaignVisualNovelViewModel(campaignId: "")),
+        ChangeNotifierProvider(create: (_) => settingsProvider),
+        ChangeNotifierProvider(create: (_) => homeVM),
+        ChangeNotifierProvider(create: (_) => sheetVM),
+        ChangeNotifierProvider(create: (_) => shoppingVM),
+        ChangeNotifierProvider(create: (_) => statisticsVM),
+        ChangeNotifierProvider(create: (_) => campaignVM),
+        ChangeNotifierProvider(create: (_) => campaignVisualVM),
         ChangeNotifierProvider(create: (_) => audioProvider),
       ],
       child: const MainApp(),

@@ -34,7 +34,7 @@ class _ShoppingDialogScreenState extends State<ShoppingDialogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<SheetViewModel>(context);
+    final sheetVM = Provider.of<SheetViewModel>(context);
     final shoppingViewModel = Provider.of<ShoppingViewModel>(context);
 
     return Scaffold(
@@ -43,7 +43,7 @@ class _ShoppingDialogScreenState extends State<ShoppingDialogScreen> {
         actions: [
           if (!shoppingViewModel.isBuying)
             Text(
-              "\$ ${viewModel.money}",
+              "\$ ${sheetVM.sheet!.money}",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -53,7 +53,7 @@ class _ShoppingDialogScreenState extends State<ShoppingDialogScreen> {
             SizedBox(
               width: 150,
               child: TextFormField(
-                controller: shoppingViewModel.getMoneyTextController(context),
+                controller: shoppingViewModel.getMoneyTextController(sheetVM),
                 textAlign: TextAlign.right,
                 decoration: InputDecoration(
                   prefixIcon: Icon(
@@ -65,7 +65,7 @@ class _ShoppingDialogScreenState extends State<ShoppingDialogScreen> {
                   suffix: InkWell(
                     onTap: (shoppingViewModel.isShowingMoneyFeedback == null)
                         ? () {
-                            shoppingViewModel.onEditingMoney(context);
+                            shoppingViewModel.onEditingMoney();
                           }
                         : null,
                     child: Padding(
@@ -91,7 +91,7 @@ class _ShoppingDialogScreenState extends State<ShoppingDialogScreen> {
               ),
             ),
           if (!isVertical(context)) SizedBox(width: 16),
-          if (!isVertical(context) && viewModel.isOwner)
+          if (!isVertical(context) && sheetVM.isOwner)
             SizedBox(
               width: 150,
               child: SwitchListTile(

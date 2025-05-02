@@ -7,7 +7,7 @@ import 'package:flutter_rpg_audiodrama/data/services/chat_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:flutter_rpg_audiodrama/data/local/local_data_manager.dart';
+import 'package:flutter_rpg_audiodrama/data/preferences/local_data_manager.dart';
 import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
 import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
