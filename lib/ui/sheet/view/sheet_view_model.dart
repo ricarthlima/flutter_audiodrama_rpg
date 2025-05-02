@@ -14,7 +14,6 @@ import '../../../domain/exceptions/sheet_service_exceptions.dart';
 import '../../../domain/models/action_lore.dart';
 import '../../../domain/models/action_template.dart';
 import '../../../domain/models/action_value.dart';
-import '../../../domain/models/item_sheet.dart';
 import '../../../domain/models/list_action.dart';
 import '../../../domain/models/roll_log.dart';
 import '../../../domain/models/sheet_model.dart';
@@ -29,28 +28,10 @@ class SheetViewModel extends ChangeNotifier {
     required this.username,
     this.isWindowed = false,
   });
+
   SheetService sheetService = SheetService();
 
-  // Atributos de ficha
-  String characterName = "";
-  int stressLevel = 0;
-  int effortPoints = -1;
-  List<ActionValue> listActionValue = [];
-  List<RollLog> listRollLog = [];
-  int baseLevel = 0;
-  List<ItemSheet> listSheetItems = [];
-  double money = 0;
-  double weight = 0;
-  List<ActionLore> listActionLore = [];
-  String bio = "";
-  String notes = "";
-  List<String> listActiveConditions = [];
-  String? imageUrl;
-  List<ActionValue> listWorks = [];
-  String? campaignId;
-  List<String> listSharedIds = [];
-  String _ownerId = "";
-  String get ownerId => _ownerId;
+  Sheet? sheet;
 
   // Atributos locais
   int modGlobalTrain = 0;
@@ -115,25 +96,7 @@ class SheetViewModel extends ChangeNotifier {
 
       if (sheetModel != null) {
         nameController.text = sheetModel.characterName;
-        characterName = sheetModel.characterName;
-        listActionValue = sheetModel.listActionValue;
-        listRollLog = sheetModel.listRollLog;
-        effortPoints = sheetModel.effortPoints;
-        stressLevel = sheetModel.stressLevel;
-        baseLevel = sheetModel.baseLevel;
-        listSheetItems = sheetModel.listItemSheet;
-        money = sheetModel.money;
-        weight = sheetModel.weight;
-        listActionLore = sheetModel.listActionLore;
-        bio = sheetModel.bio;
-        notes = sheetModel.notes;
-        listActiveConditions = sheetModel.listActiveConditions;
-        imageUrl = sheetModel.imageUrl;
-        listWorks = sheetModel.listWorks;
-        campaignId = sheetModel.campaignId;
-        listSharedIds = sheetModel.listSharedIds;
-        _ownerId = sheetModel.ownerId;
-
+        sheet = sheetModel;
         isFoundSheet = true;
       }
 
@@ -165,56 +128,43 @@ class SheetViewModel extends ChangeNotifier {
     }
   }
 
-  Future<Sheet> saveChanges() async {
-    Sheet sheet = Sheet(
-      id: id,
-      characterName:
-          (nameController.text != "") ? nameController.text : characterName,
-      listActionValue: listActionValue,
-      listRollLog: listRollLog,
-      effortPoints: effortPoints,
-      stressLevel: stressLevel,
-      baseLevel: baseLevel,
-      listItemSheet: listSheetItems,
-      money: money,
-      weight: weight,
-      listActionLore: listActionLore,
-      bio: bio,
-      notes: notes,
-      listActiveConditions: listActiveConditions,
-      imageUrl: imageUrl,
-      listWorks: listWorks,
-      listSharedIds: listSharedIds,
-      campaignId: campaignId,
-      ownerId: _ownerId,
-    );
-    // Beleza, mas você colocou também no refresh?
+  Future<Sheet?> saveChanges() async {
+    if (sheet != null) {
+      if (nameController.text != "") {
+        sheet!.characterName = nameController.text;
+      }
 
-    await SheetService().saveSheet(sheet);
-
+      await SheetService().saveSheet(sheet!);
+    }
     return sheet;
   }
 
   onActionValueChanged({required ActionValue ac, required bool isWork}) {
+    if (sheet == null) return;
+
     if (!isWork) {
-      if (listActionValue.where((e) => e.actionId == ac.actionId).isNotEmpty) {
-        listActionValue.removeWhere((e) => e.actionId == ac.actionId);
+      if (sheet!.listActionValue
+          .where((e) => e.actionId == ac.actionId)
+          .isNotEmpty) {
+        sheet!.listActionValue.removeWhere((e) => e.actionId == ac.actionId);
       }
-      listActionValue.add(ac);
+      sheet!.listActionValue.add(ac);
     } else {
-      if (listWorks.where((e) => e.actionId == ac.actionId).isNotEmpty) {
-        listWorks.removeWhere((e) => e.actionId == ac.actionId);
+      if (sheet!.listWorks.where((e) => e.actionId == ac.actionId).isNotEmpty) {
+        sheet!.listWorks.removeWhere((e) => e.actionId == ac.actionId);
       }
-      listWorks.add(ac);
+      sheet!.listWorks.add(ac);
     }
     notifyListeners();
   }
 
   changeStressLevel({bool isAdding = true}) {
+    if (sheet == null) return;
+
     if (isAdding) {
-      stressLevel = min(stressLevel + 1, 3);
+      sheet!.stressLevel = min(sheet!.stressLevel + 1, 3);
     } else {
-      stressLevel = max(stressLevel - 1, 0);
+      sheet!.stressLevel = max(sheet!.stressLevel - 1, 0);
     }
     notifyListeners();
 
@@ -224,10 +174,12 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   changeEffortPoints({bool isAdding = true}) {
+    if (sheet == null) return;
+
     if (isAdding) {
-      effortPoints = min(effortPoints + 1, 2);
+      sheet!.effortPoints = min(sheet!.effortPoints + 1, 2);
     } else {
-      effortPoints = max(effortPoints - 1, -1);
+      sheet!.effortPoints = max(sheet!.effortPoints - 1, -1);
     }
     notifyListeners();
 
@@ -237,7 +189,7 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   int getAptidaoMaxByLevel() {
-    switch (baseLevel) {
+    switch (sheet!.baseLevel) {
       case 0:
         return 8;
       case 1:
@@ -251,7 +203,7 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   int getTreinamentoMaxByLevel() {
-    switch (baseLevel) {
+    switch (sheet!.baseLevel) {
       case 0:
         return 2;
       case 1:
@@ -280,7 +232,7 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   String getHelperText(ActionTemplate action) {
-    int trainingLevel = listActionValue
+    int trainingLevel = sheet!.listActionValue
         .firstWhere(
           (ActionValue actionValue) => actionValue.actionId == action.id,
           orElse: () => ActionValue(actionId: "", value: 1),
@@ -349,7 +301,7 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   int getTrainLevelByAction(String actionId) {
-    List<ActionValue> listFromBaseActions = listActionValue
+    List<ActionValue> listFromBaseActions = sheet!.listActionValue
         .where(
           (e) => e.actionId == actionId,
         )
@@ -359,7 +311,7 @@ class SheetViewModel extends ChangeNotifier {
       return listFromBaseActions[0].value;
     }
 
-    List<ActionValue> listFromWorks = listWorks
+    List<ActionValue> listFromWorks = sheet!.listWorks
         .where(
           (e) => e.actionId == actionId,
         )
@@ -374,7 +326,7 @@ class SheetViewModel extends ChangeNotifier {
 
   List<String> getWorkIds() {
     List<String> result = [];
-    for (ActionValue ac in listWorks) {
+    for (ActionValue ac in sheet!.listWorks) {
       List<ListAction> listAllWorks = ActionDAO.instance.getListWorks();
 
       for (ListAction la in listAllWorks) {
@@ -390,23 +342,25 @@ class SheetViewModel extends ChangeNotifier {
 
   void saveActionLore(
       {required String actionId, required String loreText}) async {
-    if (listActionLore.where((e) => e.actionId == actionId).isNotEmpty) {
-      int index = listActionLore.indexWhere((e) => e.actionId == actionId);
-      listActionLore[index].loreText = loreText;
+    if (sheet!.listActionLore.where((e) => e.actionId == actionId).isNotEmpty) {
+      int index =
+          sheet!.listActionLore.indexWhere((e) => e.actionId == actionId);
+      sheet!.listActionLore[index].loreText = loreText;
     } else {
-      listActionLore.add(ActionLore(actionId: actionId, loreText: loreText));
+      sheet!.listActionLore
+          .add(ActionLore(actionId: actionId, loreText: loreText));
     }
     saveChanges();
     notifyListeners();
   }
 
   TextEditingController notesTextController() {
-    _notesTextController.text = notes;
+    _notesTextController.text = sheet!.notes;
     return _notesTextController;
   }
 
   void saveNotes() async {
-    notes = _notesTextController.text;
+    sheet!.notes = _notesTextController.text;
     notifyListeners();
 
     isSavingNotes = true;
@@ -425,12 +379,12 @@ class SheetViewModel extends ChangeNotifier {
   final TextEditingController _bioEditingController = TextEditingController();
 
   TextEditingController bioEditingController() {
-    _bioEditingController.text = bio;
+    _bioEditingController.text = sheet!.bio;
     return _bioEditingController;
   }
 
   void saveBio() async {
-    bio = _bioEditingController.text;
+    sheet!.bio = _bioEditingController.text;
     notifyListeners();
 
     isSavingBio = true;
@@ -446,14 +400,14 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   bool getHasCondition(String id) {
-    return listActiveConditions.contains(id);
+    return sheet!.listActiveConditions.contains(id);
   }
 
   toggleCondition(String id) {
-    if (listActiveConditions.contains(id)) {
-      listActiveConditions.remove(id);
+    if (sheet!.listActiveConditions.contains(id)) {
+      sheet!.listActiveConditions.remove(id);
     } else {
-      listActiveConditions.add(id);
+      sheet!.listActiveConditions.add(id);
     }
     saveChanges();
     notifyListeners();
@@ -462,8 +416,8 @@ class SheetViewModel extends ChangeNotifier {
   String getMajorCondition() {
     String result = "DESPERTO";
 
-    if (listActiveConditions.isNotEmpty) {
-      listActiveConditions.sort(
+    if (sheet!.listActiveConditions.isNotEmpty) {
+      sheet!.listActiveConditions.sort(
         (a, b) {
           int showA = ConditionDAO.instance.getConditionById(a)!.showingOrder;
           int showB = ConditionDAO.instance.getConditionById(b)!.showingOrder;
@@ -472,7 +426,7 @@ class SheetViewModel extends ChangeNotifier {
         },
       );
 
-      String idMajor = listActiveConditions.last;
+      String idMajor = sheet!.listActiveConditions.last;
       return ConditionDAO.instance
           .getConditionById(idMajor)!
           .name
@@ -502,7 +456,7 @@ class SheetViewModel extends ChangeNotifier {
         );
       }
 
-      imageUrl = path;
+      sheet!.imageUrl = path;
 
       notifyListeners();
       saveChanges();
@@ -510,12 +464,12 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   onRemoveImageClicked() async {
-    if (imageUrl == null) return;
+    if (sheet!.imageUrl == null) return;
 
-    String fileName = imageUrl!.split("/").last;
+    String fileName = sheet!.imageUrl!.split("/").last;
 
     await sheetService.deleteBioImage(fileName);
-    imageUrl = null;
+    sheet!.imageUrl = null;
 
     notifyListeners();
     saveChanges();
@@ -523,8 +477,8 @@ class SheetViewModel extends ChangeNotifier {
 
   List<ActionValue> getActionsValuesWithWorks() {
     // TODO: A enebalcencia da action devia ser por campanha
-    List<ActionValue> listAC = listActionValue.map((e) => e).toList() +
-        listWorks.map((e) => e).toList();
+    List<ActionValue> listAC = sheet!.listActionValue.map((e) => e).toList() +
+        sheet!.listWorks.map((e) => e).toList();
 
     List<String> listAllEnabled = ActionDAO.instance
         .getAll()
@@ -546,24 +500,27 @@ class SheetViewModel extends ChangeNotifier {
     for (ActionTemplate action in listActions) {
       result +=
           "## ${getTrainLevelByActionName(action.id)} em ${action.name}\n";
-      if (listActionLore.where((e) => e.actionId == action.id).isNotEmpty) {
-        result +=
-            listActionLore.firstWhere((e) => e.actionId == action.id).loreText;
+      if (sheet!.listActionLore
+          .where((e) => e.actionId == action.id)
+          .isNotEmpty) {
+        result += sheet!.listActionLore
+            .firstWhere((e) => e.actionId == action.id)
+            .loreText;
       }
       result += "\n\n";
     }
-    bio += result;
+    sheet!.bio += result;
     notifyListeners();
   }
 
   bool get isOwner {
-    return ownerId == FirebaseAuth.instance.currentUser!.uid;
+    return sheet!.ownerId == FirebaseAuth.instance.currentUser!.uid;
   }
 
   Future<void> onRoll({required RollLog roll}) async {
     ActionTemplate? action = ActionDAO.instance.getActionById(roll.idAction);
 
-    listRollLog.add(roll);
+    sheet!.listRollLog.add(roll);
     await saveChanges();
     notificationCount++;
 
@@ -574,9 +531,9 @@ class SheetViewModel extends ChangeNotifier {
     notifyListeners();
 
     if (action != null && action.isPreparation) {
-      effortPoints++;
-      if (effortPoints >= 2) {
-        effortPoints = -1;
+      sheet!.effortPoints++;
+      if (sheet!.effortPoints >= 2) {
+        sheet!.effortPoints = -1;
         changeStressLevel(isAdding: true);
       }
       saveChanges();

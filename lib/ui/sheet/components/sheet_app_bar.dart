@@ -37,7 +37,7 @@ AppBar getSheetAppBar(BuildContext context) {
       },
       icon: Icon(Icons.arrow_back),
     ),
-    backgroundColor: sheetVM.imageUrl != null
+    backgroundColor: sheetVM.sheet!.imageUrl != null
         ? Theme.of(context).scaffoldBackgroundColor.withAlpha(75)
         : null,
     actions: [
@@ -52,7 +52,7 @@ AppBar getSheetAppBar(BuildContext context) {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Text("•"),
       ),
-      if (sheetVM.ownerId == FirebaseAuth.instance.currentUser!.uid &&
+      if (sheetVM.sheet!.ownerId == FirebaseAuth.instance.currentUser!.uid &&
           !isVertical(context) &&
           sheetVM.listSheets.isNotEmpty)
         DropdownButton<Sheet>(
@@ -75,7 +75,7 @@ AppBar getSheetAppBar(BuildContext context) {
             }
           },
         ),
-      if (sheetVM.ownerId == FirebaseAuth.instance.currentUser!.uid)
+      if (sheetVM.sheet!.ownerId == FirebaseAuth.instance.currentUser!.uid)
         Row(
           children: [
             Visibility(
@@ -148,9 +148,12 @@ AppBar getSheetAppBar(BuildContext context) {
 }
 
 _downloadSheetJSON(SheetViewModel sheetVM) async {
-  Sheet sheet = await sheetVM.saveChanges();
-  downloadJsonFile(
-    sheet.toMapWithoutId(),
-    "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json",
-  );
+  Sheet? sheet = await sheetVM.saveChanges();
+
+  if (sheet != null) {
+    downloadJsonFile(
+      sheet.toMapWithoutId(),
+      "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json",
+    );
+  }
 }

@@ -36,7 +36,7 @@ class _ActionLoreDialogState extends State<_ActionLoreDialog> {
   void initState() {
     super.initState();
     final sheetViewModel = context.read<SheetViewModel>();
-    _loreController.text = sheetViewModel.listActionLore
+    _loreController.text = sheetViewModel.sheet!.listActionLore
         .firstWhere(
           (e) => e.actionId == widget.action.id,
           orElse: () => ActionLore(actionId: widget.action.id, loreText: ""),

@@ -35,7 +35,8 @@ abstract class SheetInteract {
       context,
       listen: false,
     );
-    shoppingVM.openInventory(context.read<SheetViewModel>().listSheetItems);
+    shoppingVM
+        .openInventory(context.read<SheetViewModel>().sheet!.listItemSheet);
 
     if (!isVertical(context)) {
       await showShoppingDialog(context);
@@ -64,7 +65,7 @@ abstract class SheetInteract {
 
   static onStatisticsButtonClicked(BuildContext context) async {
     context.read<StatisticsViewModel>().listCompleteRollLog =
-        context.read<SheetViewModel>().listRollLog;
+        context.read<SheetViewModel>().sheet!.listRollLog;
 
     if (!isVertical(context)) {
       await showSheetStatisticsDialog(context);

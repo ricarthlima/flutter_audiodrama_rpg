@@ -150,11 +150,11 @@ class _SheetScreenState extends State<SheetScreen> {
   Widget _generateScreen() {
     final sheetVM = Provider.of<SheetViewModel>(context);
 
-    sheetVM.nameController.text = sheetVM.characterName;
+    sheetVM.nameController.text = sheetVM.sheet!.characterName;
 
     return Stack(
       children: [
-        if (sheetVM.imageUrl != null)
+        if (sheetVM.sheet!.imageUrl != null)
           ShaderMask(
             shaderCallback: (bounds) {
               return LinearGradient(
@@ -168,7 +168,7 @@ class _SheetScreenState extends State<SheetScreen> {
             },
             blendMode: BlendMode.dstIn,
             child: Image.network(
-              sheetVM.imageUrl!,
+              sheetVM.sheet!.imageUrl!,
               height: (isVertical(context)) ? 250 : 300,
               width: width(context),
               fit: BoxFit.fitWidth,
@@ -197,7 +197,7 @@ class _SheetScreenState extends State<SheetScreen> {
                           AnimatedContainer(
                             width: 120,
                             duration: Duration(milliseconds: 750),
-                            child: (sheetVM.imageUrl != null)
+                            child: (sheetVM.sheet!.imageUrl != null)
                                 ? SizedBox(
                                     height: 150,
                                     width: 120,
@@ -207,11 +207,12 @@ class _SheetScreenState extends State<SheetScreen> {
                                           onTap: () {
                                             showImageDialog(
                                               context: context,
-                                              imageUrl: sheetVM.imageUrl!,
+                                              imageUrl:
+                                                  sheetVM.sheet!.imageUrl!,
                                             );
                                           },
                                           child: Image.network(
-                                            sheetVM.imageUrl!,
+                                            sheetVM.sheet!.imageUrl!,
                                             fit: BoxFit.cover,
                                             height: 150,
                                             width: 120,
@@ -306,14 +307,14 @@ class _SheetScreenState extends State<SheetScreen> {
                             duration: Duration(seconds: 1),
                             child: (!sheetVM.isEditing)
                                 ? Text(
-                                    getBaseLevel(sheetVM.baseLevel),
+                                    getBaseLevel(sheetVM.sheet!.baseLevel),
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontFamily: FontFamily.sourceSerif4,
                                     ),
                                   )
                                 : DropdownButton<int>(
-                                    value: sheetVM.baseLevel,
+                                    value: sheetVM.sheet!.baseLevel,
                                     items: [
                                       DropdownMenuItem(
                                         value: 0,
@@ -335,7 +336,7 @@ class _SheetScreenState extends State<SheetScreen> {
                                     onChanged: (value) {
                                       if (value != null) {
                                         setState(() {
-                                          sheetVM.baseLevel = value;
+                                          sheetVM.sheet!.baseLevel = value;
                                         });
                                       }
                                     },
@@ -474,7 +475,7 @@ class _SheetScreenState extends State<SheetScreen> {
                 ),
               )
             : Text(
-                viewModel.characterName,
+                viewModel.sheet!.characterName,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: isVertical(context) ? 18 : 48,

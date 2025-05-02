@@ -43,7 +43,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               visible: sheetVM.isEditing || sheetVM.isWindowed,
               child: SizedBox(
                 width: 32,
-                child: (sheetVM.stressLevel > 0)
+                child: (sheetVM.sheet!.stressLevel > 0)
                     ? IconButton(
                         onPressed: () {
                           sheetVM.changeStressLevel(isAdding: false);
@@ -57,7 +57,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             SizedBox(
               width: 100,
               child: Text(
-                StressLevel().getByStressLevel(sheetVM.stressLevel),
+                StressLevel().getByStressLevel(sheetVM.sheet!.stressLevel),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: FontFamily.bungee,
@@ -68,7 +68,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               visible: sheetVM.isEditing || sheetVM.isWindowed,
               child: SizedBox(
                 width: 32,
-                child: (sheetVM.stressLevel < StressLevel.total - 1)
+                child: (sheetVM.sheet!.stressLevel < StressLevel.total - 1)
                     ? IconButton(
                         onPressed: () {
                           sheetVM.changeStressLevel();
@@ -96,7 +96,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               visible: sheetVM.isEditing || sheetVM.isWindowed,
               child: SizedBox(
                 width: 32,
-                child: (sheetVM.effortPoints > -1)
+                child: (sheetVM.sheet!.effortPoints > -1)
                     ? IconButton(
                         onPressed: () {
                           sheetVM.changeEffortPoints(
@@ -115,7 +115,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                 3,
                 (index) {
                   return Opacity(
-                    opacity: (index <= sheetVM.effortPoints) ? 1 : 0.5,
+                    opacity: (index <= sheetVM.sheet!.effortPoints) ? 1 : 0.5,
                     child: Image.asset(
                       (themeProvider.themeMode == ThemeMode.dark)
                           ? "assets/images/brain.png"
@@ -130,7 +130,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               visible: sheetVM.isEditing || sheetVM.isWindowed,
               child: SizedBox(
                 width: 32,
-                child: (sheetVM.effortPoints < 3)
+                child: (sheetVM.sheet!.effortPoints < 3)
                     ? IconButton(
                         onPressed: () {
                           sheetVM.changeEffortPoints();

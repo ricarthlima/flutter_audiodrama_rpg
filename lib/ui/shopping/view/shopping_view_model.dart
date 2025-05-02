@@ -34,7 +34,7 @@ class ShoppingViewModel extends ChangeNotifier {
   final TextEditingController _moneyController = TextEditingController();
 
   TextEditingController getMoneyTextController(SheetViewModel sheetVM) {
-    _moneyController.text = sheetVM.money.toString();
+    _moneyController.text = sheetVM.sheet!.money.toString();
     return _moneyController;
   }
 
@@ -146,17 +146,17 @@ class ShoppingViewModel extends ChangeNotifier {
       _showMoneyFeedback(true);
       await saveChanges(money: money);
     } else {
-      _moneyController.text = sheetVM.money.toString();
+      _moneyController.text = sheetVM.sheet!.money.toString();
       _showMoneyFeedback(false);
       notifyListeners();
     }
   }
 
   saveChanges({double? money}) async {
-    sheetVM.listSheetItems = _listSheetItems;
+    sheetVM.sheet!.listItemSheet = _listSheetItems;
 
     if (money != null) {
-      sheetVM.money = money;
+      sheetVM.sheet!.money = money;
     }
 
     await sheetVM.saveChanges();

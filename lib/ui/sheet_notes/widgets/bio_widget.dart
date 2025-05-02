@@ -125,7 +125,7 @@ class _ActionLoreWidget extends StatelessWidget {
       title: Text(
         "(${sheetViewModel.getTrainLevelByActionName(action.id)}) ${action.name}",
         style: TextStyle(
-          color: (!sheetViewModel.listActionLore
+          color: (!sheetViewModel.sheet!.listActionLore
                   .where((e) => e.actionId == action.id)
                   .isNotEmpty)
               ? AppColors.red
@@ -133,10 +133,10 @@ class _ActionLoreWidget extends StatelessWidget {
           fontFamily: FontFamily.bungee,
         ),
       ),
-      subtitle: (sheetViewModel.listActionLore
+      subtitle: (sheetViewModel.sheet!.listActionLore
               .where((e) => e.actionId == action.id)
               .isNotEmpty)
-          ? SelectableText(sheetViewModel.listActionLore
+          ? SelectableText(sheetViewModel.sheet!.listActionLore
               .firstWhere((e) => e.actionId == action.id)
               .loreText)
           : null,

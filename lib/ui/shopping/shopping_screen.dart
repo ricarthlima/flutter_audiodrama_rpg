@@ -43,7 +43,7 @@ class _ShoppingDialogScreenState extends State<ShoppingDialogScreen> {
         actions: [
           if (!shoppingViewModel.isBuying)
             Text(
-              "\$ ${sheetVM.money}",
+              "\$ ${sheetVM.sheet!.money}",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
