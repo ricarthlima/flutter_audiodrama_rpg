@@ -5,10 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories/action_repository.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories/condition_repository.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../data/daos/action_dao.dart';
-import '../../../data/daos/condition_dao.dart';
 import '../../../data/services/sheet_service.dart';
 import '../../../domain/exceptions/sheet_service_exceptions.dart';
 import '../../../domain/models/action_lore.dart';
@@ -22,10 +22,14 @@ class SheetViewModel extends ChangeNotifier {
   String id;
   String username;
   bool isWindowed;
+  ActionRepository actionRepo;
+  ConditionRepository conditionRepo;
 
   SheetViewModel({
     required this.id,
     required this.username,
+    required this.actionRepo,
+    required this.conditionRepo,
     this.isWindowed = false,
   });
 
@@ -327,7 +331,7 @@ class SheetViewModel extends ChangeNotifier {
   List<String> getWorkIds() {
     List<String> result = [];
     for (ActionValue ac in sheet!.listWorks) {
-      List<ListAction> listAllWorks = ActionDAO.instance.getListWorks();
+      List<ListAction> listAllWorks = actionRepo.getListWorks();
 
       for (ListAction la in listAllWorks) {
         if (la.listActions.where((e) => e.id == ac.actionId).isNotEmpty) {
@@ -419,18 +423,15 @@ class SheetViewModel extends ChangeNotifier {
     if (sheet!.listActiveConditions.isNotEmpty) {
       sheet!.listActiveConditions.sort(
         (a, b) {
-          int showA = ConditionDAO.instance.getConditionById(a)!.showingOrder;
-          int showB = ConditionDAO.instance.getConditionById(b)!.showingOrder;
+          int showA = conditionRepo.getConditionById(a)!.showingOrder;
+          int showB = conditionRepo.getConditionById(b)!.showingOrder;
 
           return showA.compareTo(showB);
         },
       );
 
       String idMajor = sheet!.listActiveConditions.last;
-      return ConditionDAO.instance
-          .getConditionById(idMajor)!
-          .name
-          .toUpperCase();
+      return conditionRepo.getConditionById(idMajor)!.name.toUpperCase();
     }
 
     return result;
@@ -480,8 +481,8 @@ class SheetViewModel extends ChangeNotifier {
     List<ActionValue> listAC = sheet!.listActionValue.map((e) => e).toList() +
         sheet!.listWorks.map((e) => e).toList();
 
-    List<String> listAllEnabled = ActionDAO.instance
-        .getAll()
+    List<String> listAllEnabled = actionRepo
+        .getAllActions()
         .where((e) => e.enabled)
         .toList()
         .map((e) => e.id)
@@ -495,7 +496,7 @@ class SheetViewModel extends ChangeNotifier {
   void addTextToEndActionValues() {
     String result = "\n";
     List<ActionTemplate> listActions = getActionsValuesWithWorks()
-        .map((e) => ActionDAO.instance.getActionById(e.actionId)!)
+        .map((e) => actionRepo.getActionById(e.actionId)!)
         .toList();
     for (ActionTemplate action in listActions) {
       result +=
@@ -518,7 +519,7 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   Future<void> onRoll({required RollLog roll}) async {
-    ActionTemplate? action = ActionDAO.instance.getActionById(roll.idAction);
+    ActionTemplate? action = actionRepo.getActionById(roll.idAction);
 
     sheet!.listRollLog.add(roll);
     await saveChanges();

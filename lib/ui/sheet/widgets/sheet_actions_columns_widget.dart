@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/daos/action_dao.dart';
 import '../../_core/dimensions.dart';
 import '../view/sheet_view_model.dart';
 import 'list_actions_widget.dart';
@@ -24,27 +23,32 @@ class SheetActionsColumnsWidget extends StatelessWidget {
             ListActionsWidget(
               name: "Ações Básicas",
               isEditing: viewModel.isEditing,
-              listActions: ActionDAO.instance.getBasics(),
+              listActions:
+                  context.read<SheetViewModel>().actionRepo.getBasics(),
             ),
             ListActionsWidget(
               name: "Ações de Força",
               isEditing: viewModel.isEditing,
-              listActions: ActionDAO.instance.getStrength(),
+              listActions:
+                  context.read<SheetViewModel>().actionRepo.getStrength(),
             ),
             ListActionsWidget(
               name: "Ações de Agilidade",
               isEditing: viewModel.isEditing,
-              listActions: ActionDAO.instance.getAgility(),
+              listActions:
+                  context.read<SheetViewModel>().actionRepo.getAgility(),
             ),
             ListActionsWidget(
               name: "Ações de Intelecto",
               isEditing: viewModel.isEditing,
-              listActions: ActionDAO.instance.getIntellect(),
+              listActions:
+                  context.read<SheetViewModel>().actionRepo.getIntellect(),
             ),
             ListActionsWidget(
               name: "Ações Sociais",
               isEditing: viewModel.isEditing,
-              listActions: ActionDAO.instance.getSocial(),
+              listActions:
+                  context.read<SheetViewModel>().actionRepo.getSocial(),
             ),
           ],
         ),

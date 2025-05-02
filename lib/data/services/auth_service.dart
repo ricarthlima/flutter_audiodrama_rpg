@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-import '../local/local_data_manager.dart';
+import '../preferences/local_data_manager.dart';
 
 class AuthService {
   Future<void> signInWithGoogle(BuildContext context) async {

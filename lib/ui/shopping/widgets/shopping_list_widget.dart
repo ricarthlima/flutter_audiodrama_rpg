@@ -4,7 +4,6 @@ import 'package:flutter_rpg_audiodrama/ui/shopping/widgets/item_category_widget.
 import 'package:flutter_rpg_audiodrama/ui/shopping/widgets/item_seller_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/daos/item_dao.dart';
 import '../../../domain/models/item.dart';
 import '../../../domain/models/item_sheet.dart';
 import '../../_core/dimensions.dart';
@@ -190,7 +189,11 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
           ),
           SizedBox(height: 8),
           Wrap(
-            children: ItemDAO.instance.listCategories.map((e) {
+            children: context
+                .read<ShoppingViewModel>()
+                .itemRepo
+                .listCategories
+                .map((e) {
               return ItemCategoryWidget(
                 category: e,
                 isSeller: widget.isSeller,
@@ -228,7 +231,9 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                               (index) {
                                 ItemSheet itemSheet =
                                     shoppingViewModel.listInventoryItems[index];
-                                Item item = ItemDAO.instance
+                                Item item = context
+                                    .read<ShoppingViewModel>()
+                                    .itemRepo
                                     .getItemById(itemSheet.itemId)!;
                                 return ItemInventoryWidget(
                                   item: item,
@@ -313,8 +318,10 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
 
     if (isOrderedByName) {
       shoppingViewModel.listInventoryItems.sort((a, b) {
-        Item itemA = ItemDAO.instance.getItemById(a.itemId)!;
-        Item itemB = ItemDAO.instance.getItemById(b.itemId)!;
+        Item itemA =
+            context.read<ShoppingViewModel>().itemRepo.getItemById(a.itemId)!;
+        Item itemB =
+            context.read<ShoppingViewModel>().itemRepo.getItemById(b.itemId)!;
         return removeDiacritics(itemA.name).compareTo(
           removeDiacritics(itemB.name),
         );
@@ -327,8 +334,10 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
 
     if (isOrderedByPrice) {
       shoppingViewModel.listInventoryItems.sort((a, b) {
-        Item itemA = ItemDAO.instance.getItemById(a.itemId)!;
-        Item itemB = ItemDAO.instance.getItemById(b.itemId)!;
+        Item itemA =
+            context.read<ShoppingViewModel>().itemRepo.getItemById(a.itemId)!;
+        Item itemB =
+            context.read<ShoppingViewModel>().itemRepo.getItemById(b.itemId)!;
         return itemA.price.compareTo(itemB.price);
       });
       if (!isAscendent) {
@@ -339,8 +348,10 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
 
     if (isOrderedByWeight) {
       shoppingViewModel.listInventoryItems.sort((a, b) {
-        Item itemA = ItemDAO.instance.getItemById(a.itemId)!;
-        Item itemB = ItemDAO.instance.getItemById(b.itemId)!;
+        Item itemA =
+            context.read<ShoppingViewModel>().itemRepo.getItemById(a.itemId)!;
+        Item itemB =
+            context.read<ShoppingViewModel>().itemRepo.getItemById(b.itemId)!;
         return itemA.weight.compareTo(itemB.weight);
       });
       if (!isAscendent) {

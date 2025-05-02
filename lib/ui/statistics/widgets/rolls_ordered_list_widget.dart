@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
+import 'package:provider/provider.dart';
+
 import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
-import 'package:provider/provider.dart';
 
 import '../view/statistics_view_model.dart';
 
@@ -26,8 +26,10 @@ class RollsOrderedListWidget extends StatelessWidget {
           statisticsViewModel.getListByCount().length,
           (index) {
             Map<String, int> map = statisticsViewModel.getListByCount()[index];
-            ActionTemplate action =
-                ActionDAO.instance.getActionById(map.keys.first)!;
+            ActionTemplate action = context
+                .read<SheetViewModel>()
+                .actionRepo
+                .getActionById(map.keys.first)!;
 
             return ListTile(
               title: Text(

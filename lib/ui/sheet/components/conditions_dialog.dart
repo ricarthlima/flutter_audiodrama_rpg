@@ -1,9 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/condition_dao.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/condition_widget.dart';
+import 'package:provider/provider.dart';
+
+import '../../_core/dimensions.dart';
+import '../view/sheet_view_model.dart';
+import '../widgets/condition_widget.dart';
 
 Future<dynamic> showSheetConditionsDialog(BuildContext context) {
   return showDialog(
@@ -29,10 +31,13 @@ class SheetConditionsScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: List.generate(
-              ConditionDAO.instance.getConditions.length,
+              context.read<SheetViewModel>().conditionRepo.getConditions.length,
               (index) {
                 return ConditionWidget(
-                    condition: ConditionDAO.instance.getConditions[index]);
+                    condition: context
+                        .read<SheetViewModel>()
+                        .conditionRepo
+                        .getConditions[index]);
               },
             ),
           ),

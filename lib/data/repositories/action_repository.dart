@@ -1,45 +1,15 @@
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/list_action.dart';
-import 'package:logger/logger.dart';
+import '../../domain/models/action_template.dart';
+import '../../domain/models/action_value.dart';
+import '../../domain/models/list_action.dart';
 
-class ActionDAO {
-  ActionDAO._();
-  static final ActionDAO _instance = ActionDAO._();
-  static ActionDAO get instance {
-    return _instance;
-  }
+abstract class ActionRepository {
+  Future<void> onInitialize();
 
-  List<ListAction> listListActions = [];
-
-  Future<void> initialize() async {
-    String jsonString =
-        await rootBundle.loadString('assets/sheets/acoes-0.0.6.json');
-    Map<String, dynamic> jsonData = json.decode(jsonString);
-
-    for (String key in jsonData.keys) {
-      String name = key;
-      bool isWork = (jsonData[key] as List<dynamic>).first["isWork"];
-      List<ActionTemplate> listAc = (jsonData[key] as List<dynamic>)
-          .map((e) => ActionTemplate.fromMap(e))
-          .toList();
-      listListActions.add(
-        ListAction(
-          name: name,
-          isWork: isWork,
-          listActions: listAc,
-        ),
-      );
-    }
-
-    Logger().i("${getAll().length} ações carregadas");
-  }
+  List<ListAction> getAll();
 
   ActionTemplate? getActionById(String id) {
     List<ActionTemplate> query =
-        getAll().where((element) => element.id == id).toList();
+        getAllActions().where((element) => element.id == id).toList();
 
     if (query.isNotEmpty) {
       return query[0];
@@ -48,8 +18,8 @@ class ActionDAO {
     return null;
   }
 
-  List<ActionTemplate> getAll() {
-    return listListActions.expand((e) => e.listActions).toList();
+  List<ActionTemplate> getAllActions() {
+    return getAll().expand((e) => e.listActions).toList();
   }
 
   bool isOnlyFreeOrPreparation(String id) {
@@ -90,11 +60,11 @@ class ActionDAO {
   }
 
   List<ListAction> getListWorks() {
-    return listListActions.where((e) => e.isWork == true).toList();
+    return getAll().where((e) => e.isWork == true).toList();
   }
 
   List<ActionTemplate> getActionsByGroupName(String typeId) {
-    return listListActions.where((e) => e.name == typeId).first.listActions;
+    return getAll().where((e) => e.name == typeId).first.listActions;
   }
 
   List<ActionTemplate> getBasics() {
@@ -118,6 +88,6 @@ class ActionDAO {
   }
 
   ListAction getListActionByGroupName(String groupName) {
-    return listListActions.where((e) => e.name == groupName).first;
+    return getAll().where((e) => e.name == groupName).first;
   }
 }

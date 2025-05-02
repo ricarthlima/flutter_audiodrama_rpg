@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/open_popup.dart';
-import 'package:flutter_rpg_audiodrama/ui/settings/view/settings_provider.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/list_actions_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/list_action.dart';
+import '../../_core/open_popup.dart';
 import '../../_core/widgets/loading_widget.dart';
+import '../../settings/view/settings_provider.dart';
+import '../view/sheet_view_model.dart';
+import '../widgets/list_actions_widget.dart';
 import '../widgets/sheet_not_found_widget.dart';
 
 Future<dynamic> showSheetWorksDialog(BuildContext context) {
@@ -127,10 +126,16 @@ class _SheetWorksDialogState extends State<SheetWorksDialog> {
             runSpacing: 32,
             children: (!settingsProvider.showingOnlyMyWorks && !widget.isPopup)
                 ? List.generate(
-                    ActionDAO.instance.getListWorks().length,
+                    context
+                        .read<SheetViewModel>()
+                        .actionRepo
+                        .getListWorks()
+                        .length,
                     (index) {
-                      ListAction currentListWork =
-                          ActionDAO.instance.getListWorks()[index];
+                      ListAction currentListWork = context
+                          .read<SheetViewModel>()
+                          .actionRepo
+                          .getListWorks()[index];
                       return ListActionsWidget(
                         name: currentListWork.name,
                         listActions: currentListWork.listActions,
@@ -145,8 +150,10 @@ class _SheetWorksDialogState extends State<SheetWorksDialog> {
                       String key = sheetViewModel.getWorkIds()[index];
                       return ListActionsWidget(
                         name: key,
-                        listActions:
-                            ActionDAO.instance.getActionsByGroupName(key),
+                        listActions: context
+                            .read<SheetViewModel>()
+                            .actionRepo
+                            .getActionsByGroupName(key),
                         isEditing: sheetViewModel.isEditing,
                         isWork: true,
                       );

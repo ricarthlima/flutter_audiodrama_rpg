@@ -1,13 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
 import 'package:provider/provider.dart';
+
+import '../../../domain/models/action_template.dart';
+import '../../../domain/models/roll_log.dart';
+import '../../_core/dimensions.dart';
+import '../../_core/fonts.dart';
+import '../view/sheet_view_model.dart';
 
 Future<dynamic> showRollDialog({
   required BuildContext context,
@@ -82,8 +82,10 @@ class _RollRowWidgetState extends State<RollRowWidget> {
         spacing: 16,
         children: [
           Text(
-            ActionDAO.instance
-                .getAll()
+            context
+                .read<SheetViewModel>()
+                .actionRepo
+                .getAllActions()
                 .where((e) => e.id == widget.rollLog.idAction)
                 .first
                 .name,
@@ -113,7 +115,9 @@ class _RollRowWidgetState extends State<RollRowWidget> {
                           child: Image.asset(
                             (!isShowingHighlighted)
                                 ? "assets/images/d20-1.png"
-                                : (ActionDAO.instance
+                                : (context
+                                            .read<SheetViewModel>()
+                                            .actionRepo
                                             .getActionById(
                                                 widget.rollLog.idAction)!
                                             .isResisted &&
@@ -121,7 +125,9 @@ class _RollRowWidgetState extends State<RollRowWidget> {
                                     ? (widget.rollLog.rolls[index] >= 10)
                                         ? "assets/images/d20-2.png"
                                         : "assets/images/d20-1.png"
-                                    : (ActionDAO.instance
+                                    : (context
+                                                .read<SheetViewModel>()
+                                                .actionRepo
                                                 .getActionById(
                                                     widget.rollLog.idAction)!
                                                 .isResisted &&
@@ -164,12 +170,16 @@ class _RollRowWidgetState extends State<RollRowWidget> {
               },
             ),
           ),
-          if (ActionDAO.instance
+          if (context
+              .read<SheetViewModel>()
+              .actionRepo
               .getActionById(widget.rollLog.idAction)!
               .isResisted)
             AnimatedOpacity(
               duration: Duration(milliseconds: 750),
-              opacity: (ActionDAO.instance
+              opacity: (context
+                          .read<SheetViewModel>()
+                          .actionRepo
                           .getActionById(widget.rollLog.idAction)!
                           .isResisted &&
                       isShowingHighlighted)
@@ -208,8 +218,10 @@ class _RollRowWidgetState extends State<RollRowWidget> {
               ),
             ),
           Text(
-            viewModel.getHelperText(
-                ActionDAO.instance.getActionById(widget.rollLog.idAction)!),
+            viewModel.getHelperText(context
+                .read<SheetViewModel>()
+                .actionRepo
+                .getActionById(widget.rollLog.idAction)!),
             textAlign: TextAlign.center,
           ),
         ],
@@ -218,8 +230,10 @@ class _RollRowWidgetState extends State<RollRowWidget> {
   }
 
   int _calculateAmountSuccess() {
-    ActionTemplate action =
-        ActionDAO.instance.getActionById(widget.rollLog.idAction)!;
+    ActionTemplate action = context
+        .read<SheetViewModel>()
+        .actionRepo
+        .getActionById(widget.rollLog.idAction)!;
 
     if (action.isResisted) {
       if (widget.rollLog.isGettingLower) {

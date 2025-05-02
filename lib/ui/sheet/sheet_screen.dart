@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/daos/action_dao.dart';
 import '../../domain/models/action_template.dart';
 import '../_core/app_colors.dart';
 import '../_core/components/image_dialog.dart';
@@ -52,10 +51,13 @@ class _SheetScreenState extends State<SheetScreen> {
           HardwareKeyboard.instance.addHandler(_keyListener);
           if (value != null) {
             if (!mounted) return;
-            ActionTemplate actionTemplate =
-                ActionDAO.instance.getAll().firstWhere(
-                      (e) => e.name.toLowerCase() == value.toLowerCase(),
-                    );
+            ActionTemplate actionTemplate = context
+                .read<SheetViewModel>()
+                .actionRepo
+                .getAllActions()
+                .firstWhere(
+                  (e) => e.name.toLowerCase() == value.toLowerCase(),
+                );
 
             SheetInteract.rollAction(context: context, action: actionTemplate);
           }
@@ -96,8 +98,12 @@ class _SheetScreenState extends State<SheetScreen> {
               children: [
                 GenericHeader(title: "Rolagem rápida"),
                 TextFieldDropdown(
-                  listOptions:
-                      ActionDAO.instance.getAll().map((e) => e.name).toList(),
+                  listOptions: context
+                      .read<SheetViewModel>()
+                      .actionRepo
+                      .getAllActions()
+                      .map((e) => e.name)
+                      .toList(),
                   autofocus: true,
                   decoration: InputDecoration(
                     label: Text("Busque uma ação"),

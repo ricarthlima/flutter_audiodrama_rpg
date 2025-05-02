@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
+import 'package:provider/provider.dart';
+
+import '../view/sheet_view_model.dart';
 
 class RollLogWidget extends StatefulWidget {
   final RollLog rollLog;
@@ -17,8 +19,10 @@ class RollLogWidget extends StatefulWidget {
 class _RollLogWidgetState extends State<RollLogWidget> {
   @override
   Widget build(BuildContext context) {
-    ActionTemplate? action =
-        ActionDAO.instance.getActionById(widget.rollLog.idAction);
+    ActionTemplate? action = context
+        .read<SheetViewModel>()
+        .actionRepo
+        .getActionById(widget.rollLog.idAction);
 
     if (action != null) {
       return Container(
@@ -50,14 +54,18 @@ class _RollLogWidgetState extends State<RollLogWidget> {
               ),
               dense: true,
               tilePadding: EdgeInsets.zero,
-              initiallyExpanded: ActionDAO.instance
+              initiallyExpanded: context
+                  .read<SheetViewModel>()
+                  .actionRepo
                   .isOnlyFreeOrPreparation(widget.rollLog.idAction),
               children: [
                 Text(action.description),
               ],
             ),
             Visibility(
-              visible: !ActionDAO.instance
+              visible: !context
+                  .read<SheetViewModel>()
+                  .actionRepo
                   .isOnlyFreeOrPreparation(widget.rollLog.idAction),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

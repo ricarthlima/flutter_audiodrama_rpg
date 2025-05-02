@@ -4,14 +4,17 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories/action_repository.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories/condition_repository.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories/item_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '_core/providers/audio_provider.dart';
 import '_core/providers/user_provider.dart';
-import 'data/daos/action_dao.dart';
-import 'data/daos/condition_dao.dart';
-import 'data/daos/item_dao.dart';
+import 'data/repositories_local/action_repository_local.dart';
+import 'data/repositories_local/condition_repository_local.dart';
+import 'data/repositories_local/item_repository_local.dart';
 import 'firebase_options.dart';
 import 'router.dart';
 import 'ui/_core/theme.dart';
@@ -30,8 +33,7 @@ void main() async {
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform.copyWith(
-      databaseURL:
-          "https://flutter-rpg-audiodrama-default-rtdb.firebaseio.com/",
+      databaseURL: dotenv.env["FIREBASE_URL"],
     ),
   );
 
@@ -40,9 +42,14 @@ void main() async {
     anonKey: dotenv.env["SUPABASE_ANON_KEY"]!,
   );
 
-  await ActionDAO.instance.initialize();
-  await ItemDAO.instance.initialize();
-  await ConditionDAO.instance.initialize();
+  ActionRepository actionRepo = ActionRepositoryLocal();
+  await actionRepo.onInitialize();
+
+  ItemRepository itemRepo = ItemRepositoryLocal();
+  await itemRepo.onInitialize();
+
+  ConditionRepository conditionRepo = ConditionRepositoryLocal();
+  await conditionRepo.onInitialize();
 
   SettingsProvider settingsProvider = SettingsProvider();
   await settingsProvider.loadSettings();
@@ -51,8 +58,16 @@ void main() async {
   await audioProvider.onInitialize();
 
   HomeViewModel homeVM = HomeViewModel();
-  SheetViewModel sheetVM = SheetViewModel(id: "", username: "");
-  ShoppingViewModel shoppingVM = ShoppingViewModel(sheetVM);
+  SheetViewModel sheetVM = SheetViewModel(
+    id: "",
+    username: "",
+    actionRepo: actionRepo,
+    conditionRepo: conditionRepo,
+  );
+  ShoppingViewModel shoppingVM = ShoppingViewModel(
+    sheetVM: sheetVM,
+    itemRepo: itemRepo,
+  );
   StatisticsViewModel statisticsVM = StatisticsViewModel();
   CampaignViewModel campaignVM = CampaignViewModel();
   CampaignVisualNovelViewModel campaignVisualVM =

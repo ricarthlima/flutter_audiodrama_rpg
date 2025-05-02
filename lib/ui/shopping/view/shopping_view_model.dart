@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories/item_repository.dart';
 
-import '../../../data/daos/item_dao.dart';
 import '../../../domain/models/item.dart';
 import '../../../domain/models/item_sheet.dart';
 import '../../_core/helpers.dart';
@@ -8,7 +8,18 @@ import '../../sheet/view/sheet_view_model.dart';
 
 class ShoppingViewModel extends ChangeNotifier {
   SheetViewModel sheetVM;
-  ShoppingViewModel(this.sheetVM);
+  final ItemRepository itemRepo;
+  ShoppingViewModel({required this.sheetVM, required this.itemRepo})
+      : listSellerItems = itemRepo.listItems;
+
+  List<Item> listSellerItems = [];
+  List<ItemSheet> listInventoryItems = [];
+
+  TextEditingController searchInventoryController = TextEditingController();
+  TextEditingController searchSellerController = TextEditingController();
+
+  List<String> listFilteredCategories = [];
+  List<String> listFilteredCategoriesSeller = [];
 
   bool _isBuying = false;
   bool get isBuying => _isBuying;
@@ -72,7 +83,7 @@ class ShoppingViewModel extends ChangeNotifier {
   }
 
   sellItem({required String itemId}) {
-    Item item = ItemDAO.instance.getItemById(itemId)!;
+    Item item = itemRepo.getItemById(itemId)!;
     _listSheetItems.where((e) => e.itemId == itemId).first.amount--;
     if (_listSheetItems.where((e) => e.itemId == itemId).first.amount <= 0) {
       _listSheetItems.removeWhere((e) => e.itemId == itemId);
@@ -101,7 +112,7 @@ class ShoppingViewModel extends ChangeNotifier {
   }
 
   useItem({required String itemId}) {
-    Item item = ItemDAO.instance.getItemById(itemId)!;
+    Item item = itemRepo.getItemById(itemId)!;
 
     int index = _listSheetItems.indexWhere(
       (ItemSheet itemSheet) => itemSheet.itemId == itemId,
@@ -174,15 +185,6 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Item> listSellerItems = ItemDAO.instance.getItems;
-  List<ItemSheet> listInventoryItems = [];
-
-  TextEditingController searchInventoryController = TextEditingController();
-  TextEditingController searchSellerController = TextEditingController();
-
-  List<String> listFilteredCategories = [];
-  List<String> listFilteredCategoriesSeller = [];
-
   toggleCategory(String category, bool isSeller) {
     if (!isSeller) {
       if (listFilteredCategories.contains(category)) {
@@ -211,7 +213,7 @@ class ShoppingViewModel extends ChangeNotifier {
       if (search != "") {
         listInventoryItems = listInventoryItems.where(
           (ItemSheet itemSheet) {
-            Item item = ItemDAO.instance.getItemById(itemSheet.itemId)!;
+            Item item = itemRepo.getItemById(itemSheet.itemId)!;
             return removeDiacritics(item.name).toLowerCase().contains(search);
           },
         ).toList();
@@ -220,7 +222,7 @@ class ShoppingViewModel extends ChangeNotifier {
       if (listFilteredCategories.isNotEmpty) {
         listInventoryItems.retainWhere(
           (itemSheet) {
-            Item item = ItemDAO.instance.getItemById(itemSheet.itemId)!;
+            Item item = itemRepo.getItemById(itemSheet.itemId)!;
 
             for (String category in item.listCategories) {
               if (listFilteredCategories.contains(category)) {
@@ -239,7 +241,7 @@ class ShoppingViewModel extends ChangeNotifier {
   onSearchOnSeller() {
     String search = removeDiacritics(searchSellerController.text).toLowerCase();
 
-    listSellerItems = ItemDAO.instance.getItems.map((e) => e).toList();
+    listSellerItems = itemRepo.listItems.map((e) => e).toList();
 
     if (listFilteredCategoriesSeller.isNotEmpty || search != "") {
       if (search != "") {
@@ -266,3 +268,5 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+class requried {}

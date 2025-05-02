@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/daos/action_dao.dart';
 import '../../../domain/models/action_template.dart';
 import '../../../domain/models/roll_log.dart';
 import '../../_core/dimensions.dart';
@@ -111,7 +110,10 @@ abstract class SheetInteract {
       newActionValue = 4;
     }
 
-    if (ActionDAO.instance.isOnlyFreeOrPreparation(action.id)) {
+    if (context
+        .read<SheetViewModel>()
+        .actionRepo
+        .isOnlyFreeOrPreparation(action.id)) {
       rolls.add(Random().nextInt(20) + 1);
     } else {
       if (newActionValue == 0 || newActionValue == 4) {
@@ -139,10 +141,14 @@ abstract class SheetInteract {
 
   static Future<void> _showRolls(
       {required BuildContext context, required RollLog roll}) async {
-    ActionTemplate? action = ActionDAO.instance.getActionById(roll.idAction);
+    ActionTemplate? action =
+        context.read<SheetViewModel>().actionRepo.getActionById(roll.idAction);
 
-    if (!ActionDAO.instance.isOnlyFreeOrPreparation(roll.idAction) ||
-        ActionDAO.instance.isLuckAction(roll.idAction)) {
+    if (!context
+            .read<SheetViewModel>()
+            .actionRepo
+            .isOnlyFreeOrPreparation(roll.idAction) ||
+        context.read<SheetViewModel>().actionRepo.isLuckAction(roll.idAction)) {
       return showRollDialog(context: context, rollLog: roll);
     } else {
       if (action != null) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/daos/action_dao.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
@@ -98,8 +97,10 @@ class BioWidget extends StatelessWidget {
                       sheetViewModel.getActionsValuesWithWorks().map(
                         (e) {
                           return _ActionLoreWidget(
-                            action:
-                                ActionDAO.instance.getActionById(e.actionId)!,
+                            action: context
+                                .read<SheetViewModel>()
+                                .actionRepo
+                                .getActionById(e.actionId)!,
                           );
                         },
                       ).toList(),
