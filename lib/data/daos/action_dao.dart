@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/list_action.dart';
+import 'package:logger/logger.dart';
 
 class ActionDAO {
   ActionDAO._();
@@ -33,7 +34,7 @@ class ActionDAO {
       );
     }
 
-    print("${getAll().length} ações carregadas");
+    Logger().i("${getAll().length} ações carregadas");
   }
 
   ActionTemplate? getActionById(String id) {

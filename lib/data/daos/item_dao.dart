@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/utils/i18n_categories.dart';
+import 'package:logger/logger.dart';
 
 import '../../domain/models/item.dart';
 
@@ -29,7 +30,7 @@ class ItemDAO {
         .toList();
 
     int total = _listItems.map((e) => e.price).toList().reduce((v, e) => v + e);
-    print(
+    Logger().i(
         "${_listItems.length} itens carregados, custando um total de: $total");
 
     for (Item item in _listItems) {
@@ -48,7 +49,7 @@ class ItemDAO {
       },
     );
 
-    print(_listCategories);
+    Logger().i(_listCategories);
   }
 
   List<Item> get getItems {

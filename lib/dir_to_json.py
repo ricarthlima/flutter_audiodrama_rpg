@@ -22,4 +22,4 @@ if __name__ == '__main__':
     output_path = os.path.join(root_path, 'estrutura.json')
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(tree, f, ensure_ascii=False, indent=2)
-    print(f"JSON gerado como '{output_path}'")
+    Logger().i(f"JSON gerado como '{output_path}'")

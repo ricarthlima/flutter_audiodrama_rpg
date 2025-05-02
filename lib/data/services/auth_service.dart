@@ -8,6 +8,7 @@ import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../local/local_data_manager.dart';
@@ -39,7 +40,7 @@ class AuthService {
       // Salvar no SharedPreferences
       await LocalDataManager.instance.saveImageB64(base64Image);
     } else {
-      print('Erro ao baixar a imagem: ${response.statusCode}');
+      Logger().i('Erro ao baixar a imagem: ${response.statusCode}');
     }
 
     String uid = FirebaseAuth.instance.currentUser!.uid;
