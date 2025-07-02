@@ -166,6 +166,52 @@
             "isWork": false
         }
     ],
+    "resisted": [
+        {
+            "id": "c1a0c265-833d-4886-86bc-a43397fcab11",
+            "name": "Resistir (Físico)",
+            "description": "Apenas reação: trata do quanto você conseguiu resistir a uma força imposta contra você como um empurrão, um agarrão ou um esmagamento.",
+            "isFree": false,
+            "isReaction": true,
+            "isResisted": true,
+            "isPreparation": false,
+            "enabled": true,
+            "isWork": false
+        },
+        {
+            "id": "f8160ef8-2e0c-47af-a5ed-f0cbdeb9f9df",
+            "name": "Resistir (Fisiológico)",
+            "description": "Apenas reação: trata de resistir a intoxicações, infecções, envenenamento e coisas do tipo.",
+            "isFree": false,
+            "isReaction": true,
+            "isResisted": true,
+            "isPreparation": false,
+            "enabled": true,
+            "isWork": false
+        },
+        {
+            "id": "b3f2ede2-dffa-435f-93a5-c491d0a2bc3e",
+            "name": "Resistir (Reflexos)",
+            "description": "Apenas reação: trata de reagir a ações rápidas contra você: como desviar, notar que está sendo roubado ou perceber algo instantâneo no ambiente.",
+            "isFree": false,
+            "isReaction": true,
+            "isResisted": true,
+            "isPreparation": false,
+            "enabled": true,
+            "isWork": false
+        },
+        {
+            "id": "c84230a1-7315-44f6-b678-5b1eb7096a6e",
+            "name": "Resistir (Mental)",
+            "description": "Trata de resistir a tentativas de manipulação, intimidação, provocações ou ataques mentais que possam causar confusão, medo ou desespero.",
+            "isFree": false,
+            "isReaction": true,
+            "isResisted": true,
+            "isPreparation": false,
+            "enabled": true,
+            "isWork": false
+        }
+    ],
     "strength": [
         {
             "id": "f14d7b24-4058-4813-ba3f-eeb746319eb5",
@@ -187,28 +233,6 @@
             "isResisted": true,
             "isPreparation": false,
             "isCollective": true,
-            "enabled": true,
-            "isWork": false
-        },
-        {
-            "id": "c1a0c265-833d-4886-86bc-a43397fcab11",
-            "name": "Resistir (Físico)",
-            "description": "Apenas reação: trata do quanto você conseguiu resistir a uma força imposta contra você como um empurrão, um agarrão ou um esmagamento.",
-            "isFree": false,
-            "isReaction": true,
-            "isResisted": true,
-            "isPreparation": false,
-            "enabled": true,
-            "isWork": false
-        },
-        {
-            "id": "f8160ef8-2e0c-47af-a5ed-f0cbdeb9f9df",
-            "name": "Resistir (Fisiológico)",
-            "description": "Apenas reação: trata de resistir a intoxicações, infecções, envenenamento e coisas do tipo.",
-            "isFree": false,
-            "isReaction": true,
-            "isResisted": true,
-            "isPreparation": false,
             "enabled": true,
             "isWork": false
         },
@@ -255,17 +279,6 @@
             "isReaction": false,
             "isResisted": false,
             "isPreparation": true,
-            "enabled": true,
-            "isWork": false
-        },
-        {
-            "id": "b3f2ede2-dffa-435f-93a5-c491d0a2bc3e",
-            "name": "Resistir (Reflexos)",
-            "description": "Apenas reação: trata de reagir a ações rápidas contra você: como desviar, notar que está sendo roubado ou perceber algo instantâneo no ambiente.",
-            "isFree": false,
-            "isReaction": true,
-            "isResisted": true,
-            "isPreparation": false,
             "enabled": true,
             "isWork": false
         },
@@ -571,17 +584,6 @@
         }
     ],
     "social": [
-        {
-            "id": "c84230a1-7315-44f6-b678-5b1eb7096a6e",
-            "name": "Resistir (Mental)",
-            "description": "Trata de resistir a tentativas de manipulação, intimidação, provocações ou ataques mentais que possam causar confusão, medo ou desespero.",
-            "isFree": false,
-            "isReaction": true,
-            "isResisted": true,
-            "isPreparation": false,
-            "enabled": true,
-            "isWork": false
-        },
         {
             "id": "1376d876-98ea-4120-9e28-98a8e35e1789",
             "name": "Fingir",

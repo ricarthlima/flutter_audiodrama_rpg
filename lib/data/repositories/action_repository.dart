@@ -71,6 +71,10 @@ abstract class ActionRepository {
     return getListActionByGroupName("basic").listActions;
   }
 
+  List<ActionTemplate> getResisted() {
+    return getListActionByGroupName("resisted").listActions;
+  }
+
   List<ActionTemplate> getStrength() {
     return getListActionByGroupName("strength").listActions;
   }

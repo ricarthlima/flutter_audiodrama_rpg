@@ -12,19 +12,32 @@ class SheetActionsColumnsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<SheetViewModel>(context);
     return SingleChildScrollView(
-      child: SizedBox(
-        width: width(context),
-        child: Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.start,
-          runAlignment: WrapAlignment.center,
-          runSpacing: 32,
+      scrollDirection: Axis.horizontal,
+      child: IntrinsicHeight(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 24,
           children: [
-            ListActionsWidget(
-              name: "Ações Básicas",
-              isEditing: viewModel.isEditing,
-              listActions:
-                  context.read<SheetViewModel>().actionRepo.getBasics(),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 16,
+              children: [
+                Expanded(
+                  child: ListActionsWidget(
+                    name: "Ações Básicas",
+                    isEditing: viewModel.isEditing,
+                    listActions:
+                        context.read<SheetViewModel>().actionRepo.getBasics(),
+                  ),
+                ),
+                ListActionsWidget(
+                  name: "Ações Resistidas",
+                  isEditing: viewModel.isEditing,
+                  listActions:
+                      context.read<SheetViewModel>().actionRepo.getResisted(),
+                ),
+              ],
             ),
             ListActionsWidget(
               name: "Ações de Força",
