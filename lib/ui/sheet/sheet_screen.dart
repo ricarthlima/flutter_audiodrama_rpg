@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/models/action_template.dart';
@@ -14,9 +13,9 @@ import '../_core/widgets/loading_widget.dart';
 import '../_core/widgets/named_widget.dart';
 import '../_core/widgets/text_field_dropdown.dart';
 import '../campaign/widgets/group_notifications.dart';
+import '../settings/view/settings_provider.dart';
 import 'components/sheet_app_bar.dart';
 import 'components/sheet_drawer.dart';
-import 'components/sheet_floating_action_button.dart';
 import 'view/sheet_interact.dart';
 import 'view/sheet_view_model.dart';
 import 'widgets/sheet_actions_columns_widget.dart';
@@ -131,9 +130,9 @@ class _SheetScreenState extends State<SheetScreen> {
   Widget build(BuildContext context) {
     final sheetVM = Provider.of<SheetViewModel>(context, listen: false);
     return Scaffold(
-      floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton:
-          (sheetVM.isWindowed) ? null : getSheetFloatingActionButton(context),
+      // floatingActionButtonLocation: ExpandableFab.location,
+      // floatingActionButton:
+      //     (sheetVM.isWindowed) ? null : getSheetFloatingActionButton(context),
       appBar: (sheetVM.isWindowed) ? null : getSheetAppBar(context),
       extendBodyBehindAppBar: true,
       endDrawer: getSheetDrawer(context),
@@ -157,6 +156,10 @@ class _SheetScreenState extends State<SheetScreen> {
     final sheetVM = Provider.of<SheetViewModel>(context);
 
     sheetVM.nameController.text = sheetVM.sheet!.characterName;
+
+    ScrollController rowScroll = ScrollController();
+
+    final themeProvider = Provider.of<SettingsProvider>(context);
 
     return Stack(
       children: [
@@ -197,16 +200,17 @@ class _SheetScreenState extends State<SheetScreen> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 16,
                       children: [
                         if (!isVertical(context))
                           AnimatedContainer(
-                            width: 120,
+                            width: 135,
                             duration: Duration(milliseconds: 750),
                             child: (sheetVM.sheet!.imageUrl != null)
                                 ? SizedBox(
-                                    height: 150,
-                                    width: 120,
+                                    height: 167,
+                                    width: 135,
                                     child: Stack(
                                       children: [
                                         InkWell(
@@ -220,8 +224,8 @@ class _SheetScreenState extends State<SheetScreen> {
                                           child: Image.network(
                                             sheetVM.sheet!.imageUrl!,
                                             fit: BoxFit.cover,
-                                            height: 150,
-                                            width: 120,
+                                            height: 167,
+                                            width: 135,
                                           ),
                                         ),
                                         Align(
@@ -432,11 +436,12 @@ class _SheetScreenState extends State<SheetScreen> {
                     SheetSubtitleRowWidget(),
                   ],
                 ),
-              Divider(
-                thickness: 2,
-                height: 48,
+              SizedBox(),
+              Flexible(
+                child: SheetActionsColumnsWidget(
+                  scrollController: rowScroll,
+                ),
               ),
-              Flexible(child: SheetActionsColumnsWidget()),
             ],
           ),
         ),
@@ -454,6 +459,61 @@ class _SheetScreenState extends State<SheetScreen> {
           padding: const EdgeInsets.only(right: 80.0),
           child: GroupNotifications(),
         ),
+        Align(
+          alignment: Alignment(0.98, 0.97),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 4,
+            children: [
+              IconButton(
+                tooltip: "Itens",
+                onPressed: () {
+                  SheetInteract.onItemsButtonClicked(context);
+                },
+                icon: Image.asset(
+                  (themeProvider.themeMode == ThemeMode.dark)
+                      ? "assets/images/chest.png"
+                      : "assets/images/chest-i.png",
+                  width: 24,
+                  color: Color(0xffd8c2bd),
+                ),
+              ),
+              IconButton(
+                tooltip: "Caderneta",
+                onPressed: () {
+                  SheetInteract.onNotesButtonClicked(context);
+                },
+                icon: Icon(Icons.description),
+              ),
+              IconButton(
+                tooltip: "Estatísticas",
+                onPressed: () {
+                  SheetInteract.onStatisticsButtonClicked(context);
+                },
+                icon: Icon(Icons.bar_chart),
+              ),
+              IconButton(
+                onPressed: () => SheetInteract.onWorksButtonClicked(context),
+                tooltip: "Configurações",
+                icon: Icon(
+                  Icons.settings,
+                  size: 18,
+                ),
+              ),
+              OutlinedButton.icon(
+                onPressed: () {
+                  rowScroll.animateTo(
+                    rowScroll.position.maxScrollExtent,
+                    duration: Duration(milliseconds: 750),
+                    curve: Curves.ease,
+                  );
+                },
+                icon: Icon(Icons.arrow_forward),
+                label: Text("Ofícios"),
+              ),
+            ],
+          ),
+        )
       ],
     );
   }

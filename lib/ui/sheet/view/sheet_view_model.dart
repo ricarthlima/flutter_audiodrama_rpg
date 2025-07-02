@@ -14,7 +14,6 @@ import '../../../domain/exceptions/sheet_service_exceptions.dart';
 import '../../../domain/models/action_lore.dart';
 import '../../../domain/models/action_template.dart';
 import '../../../domain/models/action_value.dart';
-import '../../../domain/models/list_action.dart';
 import '../../../domain/models/roll_log.dart';
 import '../../../domain/models/sheet_model.dart';
 
@@ -328,20 +327,14 @@ class SheetViewModel extends ChangeNotifier {
     return 1;
   }
 
-  List<String> getWorkIds() {
-    List<String> result = [];
-    for (ActionValue ac in sheet!.listWorks) {
-      List<ListAction> listAllWorks = actionRepo.getListWorks();
-
-      for (ListAction la in listAllWorks) {
-        if (la.listActions.where((e) => e.id == ac.actionId).isNotEmpty) {
-          if (!result.contains(la.name)) {
-            result.add(la.name);
-          }
-        }
-      }
+  Future<void> toggleActiveWork(String id) async {
+    if (sheet!.listActiveWorks.contains(id)) {
+      sheet!.listActiveWorks.remove(id);
+    } else {
+      sheet!.listActiveWorks.add(id);
     }
-    return result;
+    await saveChanges();
+    notifyListeners();
   }
 
   void saveActionLore(

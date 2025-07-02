@@ -30,6 +30,7 @@ class Sheet {
 
   String? imageUrl;
 
+  List<String> listActiveWorks;
   List<ActionValue> listWorks;
 
   String? campaignId;
@@ -52,6 +53,7 @@ class Sheet {
     required this.notes,
     required this.listActiveConditions,
     this.imageUrl,
+    required this.listActiveWorks,
     required this.listWorks,
     this.campaignId,
     required this.listSharedIds,
@@ -74,6 +76,7 @@ class Sheet {
     String? notes,
     List<String>? listActiveConditions,
     String? imageUrl,
+    List<String>? listActiveWorks,
     List<ActionValue>? listWorks,
     String? campaignId,
     List<String>? listSharedIds,
@@ -95,6 +98,7 @@ class Sheet {
       notes: notes ?? this.notes,
       listActiveConditions: listActiveConditions ?? this.listActiveConditions,
       imageUrl: imageUrl ?? this.imageUrl,
+      listActiveWorks: listActiveWorks ?? this.listActiveWorks,
       listWorks: listWorks ?? this.listWorks,
       listSharedIds: listSharedIds ?? this.listSharedIds,
       campaignId: campaignId ?? this.campaignId,
@@ -119,6 +123,7 @@ class Sheet {
       "notes": notes,
       "listActiveConditions": listActiveConditions,
       "imageUrl": imageUrl,
+      "listActiveWorks": listActiveWorks,
       "listWorks": listWorks.map((x) => x.toMap()).toList(),
       "campaignId": campaignId,
       "listSharedIds": listSharedIds,
@@ -187,6 +192,11 @@ class Sheet {
             )
           : [],
       campaignId: map["campaignId"],
+      listActiveWorks: (map["listActiveWorks"] != null)
+          ? (map["listActiveWorks"] as List<dynamic>)
+              .map((e) => e.toString())
+              .toList()
+          : [],
       listSharedIds: (map["listSharedIds"] != null)
           ? (map["listSharedIds"] as List<dynamic>)
               .map((e) => e.toString())
@@ -226,7 +236,8 @@ class Sheet {
         other.listWorks == listWorks &&
         other.campaignId == campaignId &&
         listEquals(other.listSharedIds, listSharedIds) &&
-        other.ownerId == ownerId;
+        other.ownerId == ownerId &&
+        listEquals(other.listActiveWorks, listActiveWorks);
   }
 
   @override
@@ -247,6 +258,7 @@ class Sheet {
         listWorks.hashCode ^
         campaignId.hashCode ^
         listSharedIds.hashCode ^
-        ownerId.hashCode;
+        ownerId.hashCode ^
+        listActiveWorks.hashCode;
   }
 }

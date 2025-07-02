@@ -115,6 +115,7 @@ class SheetService {
       listWorks: [],
       listSharedIds: [],
       ownerId: uid,
+      listActiveWorks: [],
     );
 
     if (campaignId != null) {

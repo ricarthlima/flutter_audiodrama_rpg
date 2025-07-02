@@ -275,7 +275,6 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         NamedWidget(
           title: "Dados de Corpo",
           hardHeight: 32,
-          isShowRightSeparator: true,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
@@ -313,20 +312,6 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             ],
           ),
         ),
-      NamedWidget(
-        title: "Ofícios",
-        tooltip: "Clique para gerenciar seus ofícios",
-        hardHeight: 32,
-        isShowRightSeparator: true,
-        isVisible: !sheetVM.isWindowed,
-        child: InkWell(
-          onTap: () => SheetInteract.onWorksButtonClicked(context),
-          child: Icon(
-            Icons.workspace_premium_outlined,
-            size: 18,
-          ),
-        ),
-      ),
     ];
   }
 }

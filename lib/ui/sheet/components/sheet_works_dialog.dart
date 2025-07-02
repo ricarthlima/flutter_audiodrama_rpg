@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/list_action.dart';
-import '../../_core/open_popup.dart';
 import '../../_core/widgets/loading_widget.dart';
-import '../../settings/view/settings_provider.dart';
 import '../view/sheet_view_model.dart';
-import '../widgets/list_actions_widget.dart';
 import '../widgets/sheet_not_found_widget.dart';
 
 Future<dynamic> showSheetWorksDialog(BuildContext context) {
@@ -51,114 +48,49 @@ class _SheetWorksDialogState extends State<SheetWorksDialog> {
   }
 
   Scaffold _buildBody(BuildContext context) {
-    SheetViewModel sheetViewModel = Provider.of<SheetViewModel>(context);
-    SettingsProvider settingsProvider = Provider.of<SettingsProvider>(context);
+    SheetViewModel sheetVM = Provider.of<SheetViewModel>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text((widget.isPopup) ? "Meus Ofícios" : "Ofícios"),
-        actions: [
-          if (!widget.isPopup)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 16,
-                  children: [
-                    Checkbox(
-                      value: settingsProvider.showingOnlyMyWorks,
-                      onChanged: (value) {
-                        if (value != null) {
-                          settingsProvider.showingOnlyMyWorks = value;
-                        }
-                      },
-                    ),
-                    Text("Mostrar só meus ofícios")
-                  ],
+      appBar: AppBar(title: Text("Configurações da Ficha")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: [
+              Text(
+                "Ofícios",
+                style: TextStyle(
+                  fontFamily: "Bungee",
                 ),
-                if (sheetViewModel.isOwner)
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Text("•"),
-                      ),
-                      Visibility(
-                        visible: sheetViewModel.isEditing,
-                        child: Text("Saia da edição para salvar"),
-                      ),
-                      Visibility(
-                        visible: sheetViewModel.isEditing,
-                        child: SizedBox(width: 8),
-                      ),
-                      Icon(Icons.edit),
-                      Switch(
-                        value: sheetViewModel.isEditing,
+              ),
+              Column(
+                children: List.generate(
+                  sheetVM.actionRepo.getListWorks().length,
+                  (index) {
+                    ListAction work = sheetVM.actionRepo.getListWorks()[index];
+                    return SizedBox(
+                      width: 300,
+                      child: CheckboxListTile(
+                        value:
+                            sheetVM.sheet!.listActiveWorks.contains(work.name),
+                        title: Text(work.name[0].toUpperCase() +
+                            work.name.substring(1)),
+                        contentPadding: EdgeInsets.zero,
                         onChanged: (value) {
-                          sheetViewModel.toggleEditMode();
+                          sheetVM.toggleActiveWork(work.name);
                         },
                       ),
-                    ],
-                  ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text("•"),
-                ),
-                IconButton(
-                  onPressed: () {
-                    openPopup(
-                        "${sheetViewModel.username}/sheet/${sheetViewModel.id}/works");
-                    Navigator.pop(context);
+                    );
                   },
-                  icon: Icon(Icons.outbond_outlined),
                 ),
-              ],
-            ),
-          SizedBox(width: 16),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: SingleChildScrollView(
-          child: Wrap(
-            spacing: 32,
-            runSpacing: 32,
-            children: (!settingsProvider.showingOnlyMyWorks && !widget.isPopup)
-                ? List.generate(
-                    context
-                        .read<SheetViewModel>()
-                        .actionRepo
-                        .getListWorks()
-                        .length,
-                    (index) {
-                      ListAction currentListWork = context
-                          .read<SheetViewModel>()
-                          .actionRepo
-                          .getListWorks()[index];
-                      return ListActionsWidget(
-                        name: currentListWork.name,
-                        listActions: currentListWork.listActions,
-                        isEditing: sheetViewModel.isEditing,
-                        isWork: true,
-                      );
-                    },
-                  )
-                : List.generate(
-                    sheetViewModel.getWorkIds().length,
-                    (index) {
-                      String key = sheetViewModel.getWorkIds()[index];
-                      return ListActionsWidget(
-                        name: key,
-                        listActions: context
-                            .read<SheetViewModel>()
-                            .actionRepo
-                            .getActionsByGroupName(key),
-                        isEditing: sheetViewModel.isEditing,
-                        isWork: true,
-                      );
-                    },
-                  ),
+              ),
+              Divider(
+                thickness: 0.2,
+              ),
+            ],
           ),
         ),
       ),

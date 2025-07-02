@@ -16,6 +16,7 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
     type: ExpandableFabType.up,
     childrenAnimation: ExpandableFabAnimation.none,
     distance: 70,
+    pos: ExpandableFabPos.center,
     overlayStyle: ExpandableFabOverlayStyle(
       color: themeProvider.themeMode == ThemeMode.dark
           ? Colors.black.withAlpha(200)
@@ -101,21 +102,6 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
               SheetInteract.onStatisticsButtonClicked(context);
             },
             child: Icon(Icons.bar_chart),
-          ),
-        ],
-      ),
-      Row(
-        children: [
-          Text('Ofícios'),
-          SizedBox(width: 20),
-          FloatingActionButton(
-            heroTag: null,
-            tooltip: "Ofícios",
-            onPressed: () {
-              viewModel.closeFab();
-              SheetInteract.onWorksButtonClicked(context);
-            },
-            child: Icon(Icons.workspace_premium_outlined),
           ),
         ],
       ),
