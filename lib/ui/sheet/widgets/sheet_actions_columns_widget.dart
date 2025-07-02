@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/dimensions.dart';
@@ -34,6 +35,7 @@ class SheetActionsColumnsWidget extends StatelessWidget {
                 ListActionsWidget(
                   name: "Ações Resistidas",
                   isEditing: viewModel.isEditing,
+                  color: AppColors.red,
                   listActions:
                       context.read<SheetViewModel>().actionRepo.getResisted(),
                 ),

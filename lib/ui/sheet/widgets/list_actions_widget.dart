@@ -12,6 +12,7 @@ class ListActionsWidget extends StatelessWidget {
   final List<ActionTemplate> listActions;
   final bool isEditing;
   final bool isWork;
+  final Color? color;
 
   const ListActionsWidget({
     super.key,
@@ -19,6 +20,7 @@ class ListActionsWidget extends StatelessWidget {
     required this.listActions,
     required this.isEditing,
     this.isWork = false,
+    this.color,
   });
 
   @override
@@ -35,9 +37,11 @@ class ListActionsWidget extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(
           width: 2,
-          color: Theme.of(context).textTheme.bodyMedium!.color!,
+          color: (color != null)
+              ? color!
+              : Theme.of(context).textTheme.bodyMedium!.color!,
         ),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
       ),
       padding: const EdgeInsets.only(
         top: 16,
@@ -56,6 +60,7 @@ class ListActionsWidget extends StatelessWidget {
               fontSize: isVertical(context) ? 16 : getZoomFactor(context, 18),
               fontFamily: FontFamily.bungee,
               fontWeight: FontWeight.bold,
+              color: color,
             ),
           ),
           Flexible(
