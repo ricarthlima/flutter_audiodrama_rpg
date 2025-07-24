@@ -495,17 +495,18 @@ class _SheetScreenState extends State<SheetScreen> {
                   size: 18,
                 ),
               ),
-              OutlinedButton.icon(
-                onPressed: () {
-                  rowScroll.animateTo(
-                    rowScroll.position.maxScrollExtent,
-                    duration: Duration(milliseconds: 750),
-                    curve: Curves.ease,
-                  );
-                },
-                icon: Icon(Icons.arrow_forward),
-                label: Text("Ofícios"),
-              ),
+              if (sheetVM.sheet!.listWorks.isNotEmpty)
+                OutlinedButton.icon(
+                  onPressed: () {
+                    rowScroll.animateTo(
+                      rowScroll.position.maxScrollExtent,
+                      duration: Duration(milliseconds: 750),
+                      curve: Curves.ease,
+                    );
+                  },
+                  icon: Icon(Icons.arrow_forward),
+                  label: Text("Ofícios"),
+                ),
             ],
           ),
         )
