@@ -128,26 +128,21 @@ class _SheetScreenState extends State<SheetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final sheetVM = Provider.of<SheetViewModel>(context, listen: false);
+    final sheetVM = Provider.of<SheetViewModel>(context);
     return Scaffold(
-      // floatingActionButtonLocation: ExpandableFab.location,
-      // floatingActionButton:
-      //     (sheetVM.isWindowed) ? null : getSheetFloatingActionButton(context),
       appBar: (sheetVM.isWindowed) ? null : getSheetAppBar(context),
       extendBodyBehindAppBar: true,
-      endDrawer: getSheetDrawer(context),
-      body: _buildBody(),
+      endDrawer: sheetVM.isLoading ? null : getSheetDrawer(context),
+      body: _buildBody(sheetVM),
     );
   }
 
-  Widget _buildBody() {
-    final viewModel = Provider.of<SheetViewModel>(context);
-
-    return (viewModel.isLoading)
+  Widget _buildBody(SheetViewModel sheetVM) {
+    return (sheetVM.isLoading)
         ? LoadingWidget()
-        : (viewModel.isAuthorized != null && !viewModel.isAuthorized!)
+        : (sheetVM.isAuthorized != null && !sheetVM.isAuthorized!)
             ? SheetNotFoundWidget()
-            : (viewModel.isFoundSheet)
+            : (sheetVM.isFoundSheet)
                 ? _generateScreen()
                 : SheetNotFoundWidget();
   }
