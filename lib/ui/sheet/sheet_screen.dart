@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/helpers/sheet_subpages.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/models/action_template.dart';
@@ -14,8 +15,12 @@ import '../_core/widgets/named_widget.dart';
 import '../_core/widgets/text_field_dropdown.dart';
 import '../campaign/widgets/group_notifications.dart';
 import '../settings/view/settings_provider.dart';
+import '../sheet_notes/sheet_notes.dart';
+import '../shopping/shopping_screen.dart';
+import '../statistics/statistics_screen.dart';
 import 'components/sheet_app_bar.dart';
 import 'components/sheet_drawer.dart';
+import 'components/sheet_works_dialog.dart';
 import 'view/sheet_interact.dart';
 import 'view/sheet_view_model.dart';
 import 'widgets/sheet_actions_columns_widget.dart';
@@ -433,8 +438,15 @@ class _SheetScreenState extends State<SheetScreen> {
                 ),
               SizedBox(),
               Flexible(
-                child: SheetActionsColumnsWidget(
-                  scrollController: rowScroll,
+                child: IndexedStack(
+                  index: sheetVM.currentPage.index,
+                  children: [
+                    SheetActionsColumnsWidget(scrollController: rowScroll),
+                    ShoppingDialogScreen(),
+                    SheetNotesScreen(),
+                    SheetStatisticsScreen(),
+                    SheetWorksDialog(),
+                  ],
                 ),
               ),
             ],
@@ -454,60 +466,93 @@ class _SheetScreenState extends State<SheetScreen> {
           padding: const EdgeInsets.only(right: 80.0),
           child: GroupNotifications(),
         ),
-        Align(
-          alignment: Alignment(0.98, 0.97),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 4,
-            children: [
-              IconButton(
-                tooltip: "Itens",
+        if (sheetVM.sheet!.listWorks.isNotEmpty &&
+            sheetVM.currentPage == SheetSubpages.sheet)
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 16, right: 32),
+              child: TextButton.icon(
                 onPressed: () {
-                  SheetInteract.onItemsButtonClicked(context);
+                  rowScroll.animateTo(
+                    rowScroll.position.maxScrollExtent,
+                    duration: Duration(milliseconds: 750),
+                    curve: Curves.ease,
+                  );
                 },
-                icon: Image.asset(
-                  (themeProvider.themeMode == ThemeMode.dark)
-                      ? "assets/images/chest.png"
-                      : "assets/images/chest-i.png",
-                  width: 24,
-                  color: Color(0xffd8c2bd),
-                ),
-              ),
-              IconButton(
-                tooltip: "Caderneta",
-                onPressed: () {
-                  SheetInteract.onNotesButtonClicked(context);
-                },
-                icon: Icon(Icons.description),
-              ),
-              IconButton(
-                tooltip: "Estatísticas",
-                onPressed: () {
-                  SheetInteract.onStatisticsButtonClicked(context);
-                },
-                icon: Icon(Icons.bar_chart),
-              ),
-              IconButton(
-                onPressed: () => SheetInteract.onWorksButtonClicked(context),
-                tooltip: "Configurações",
                 icon: Icon(
-                  Icons.settings,
-                  size: 18,
+                  Icons.arrow_forward,
+                  color: Colors.amber,
+                ),
+                iconAlignment: IconAlignment.end,
+                label: Text(
+                  "Ofícios",
+                  style: TextStyle(
+                    color: Colors.amber,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              if (sheetVM.sheet!.listWorks.isNotEmpty)
-                OutlinedButton.icon(
-                  onPressed: () {
-                    rowScroll.animateTo(
-                      rowScroll.position.maxScrollExtent,
-                      duration: Duration(milliseconds: 750),
-                      curve: Curves.ease,
-                    );
-                  },
-                  icon: Icon(Icons.arrow_forward),
-                  label: Text("Ofícios"),
-                ),
-            ],
+            ),
+          ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Opacity(
+            opacity: 0.5,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 4,
+                children: [
+                  IconButton(
+                    tooltip: "Ficha",
+                    iconSize: 32,
+                    onPressed: () {
+                      sheetVM.currentPage = SheetSubpages.sheet;
+                    },
+                    icon: Icon(Icons.list_alt),
+                  ),
+                  IconButton(
+                    tooltip: "Itens",
+                    iconSize: 32,
+                    onPressed: () {
+                      SheetInteract.onItemsButtonClicked(context);
+                    },
+                    icon: Image.asset(
+                      (themeProvider.themeMode == ThemeMode.dark)
+                          ? "assets/images/chest.png"
+                          : "assets/images/chest-i.png",
+                      width: 32,
+                      color: Color(0xffd8c2bd),
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: "Caderneta",
+                    iconSize: 32,
+                    onPressed: () {
+                      SheetInteract.onNotesButtonClicked(context);
+                    },
+                    icon: Icon(Icons.description),
+                  ),
+                  IconButton(
+                    tooltip: "Estatísticas",
+                    iconSize: 32,
+                    onPressed: () {
+                      SheetInteract.onStatisticsButtonClicked(context);
+                    },
+                    icon: Icon(Icons.bar_chart),
+                  ),
+                  IconButton(
+                    onPressed: () =>
+                        SheetInteract.onSettingsButtonClicked(context),
+                    tooltip: "Configurações",
+                    iconSize: 32,
+                    icon: Icon(Icons.settings),
+                  ),
+                ],
+              ),
+            ),
           ),
         )
       ],

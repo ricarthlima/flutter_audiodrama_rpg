@@ -1,21 +1,17 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/helpers/sheet_subpages.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/action_template.dart';
 import '../../../domain/models/roll_log.dart';
-import '../../_core/dimensions.dart';
-import '../../sheet_notes/sheet_notes.dart';
-import '../../shopping/shopping_screen.dart';
 import '../../shopping/view/shopping_view_model.dart';
-import '../../statistics/statistics_screen.dart';
 import '../../statistics/view/statistics_view_model.dart';
 import '../components/action_dialog_tooltip.dart';
 import '../components/roll_body_dialog.dart';
 import '../components/roll_dialog.dart';
-import '../components/sheet_works_dialog.dart';
 import 'sheet_view_model.dart';
 
 abstract class SheetInteract {
@@ -37,58 +33,64 @@ abstract class SheetInteract {
     shoppingVM
         .openInventory(context.read<SheetViewModel>().sheet!.listItemSheet);
 
-    if (!isVertical(context)) {
-      await showShoppingDialog(context);
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ShoppingDialogScreen(),
-        ),
-      );
-    }
+    context.read<SheetViewModel>().currentPage = SheetSubpages.items;
+    // if (!isVertical(context)) {
+    //   await showShoppingDialog(context);
+    // } else {
+    //   await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => ShoppingDialogScreen(),
+    //     ),
+    //   );
+    // }
   }
 
   static Future<void> onNotesButtonClicked(BuildContext context) async {
-    if (!isVertical(context)) {
-      await showSheetNotesDialog(context);
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SheetNotesScreen(),
-        ),
-      );
-    }
+    context.read<SheetViewModel>().currentPage = SheetSubpages.notes;
+    // if (!isVertical(context)) {
+    //   await showSheetNotesDialog(context);
+    // } else {
+    //   await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => SheetNotesScreen(),
+    //     ),
+    //   );
+    // }
   }
 
   static onStatisticsButtonClicked(BuildContext context) async {
     context.read<StatisticsViewModel>().listCompleteRollLog =
         context.read<SheetViewModel>().sheet!.listRollLog;
 
-    if (!isVertical(context)) {
-      await showSheetStatisticsDialog(context);
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SheetStatisticsScreen(),
-        ),
-      );
-    }
+    context.read<SheetViewModel>().currentPage = SheetSubpages.statistics;
+
+    // if (!isVertical(context)) {
+    //   await showSheetStatisticsDialog(context);
+    // } else {
+    //   await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => SheetStatisticsScreen(),
+    //     ),
+    //   );
+    // }
   }
 
-  static void onWorksButtonClicked(BuildContext context) async {
-    if (!isVertical(context)) {
-      await showSheetWorksDialog(context);
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SheetWorksDialog(),
-        ),
-      );
-    }
+  static void onSettingsButtonClicked(BuildContext context) async {
+    context.read<SheetViewModel>().currentPage = SheetSubpages.settings;
+
+    // if (!isVertical(context)) {
+    //   await showSheetWorksDialog(context);
+    // } else {
+    //   await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => SheetWorksDialog(),
+    //     ),
+    //   );
+    // }
   }
 
   static Future<void> rollAction({

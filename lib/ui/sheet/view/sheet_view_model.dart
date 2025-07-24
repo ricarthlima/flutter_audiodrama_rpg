@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/data/repositories/action_repository.dart';
 import 'package:flutter_rpg_audiodrama/data/repositories/condition_repository.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/helpers/sheet_subpages.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../data/services/sheet_service.dart';
@@ -42,6 +43,14 @@ class SheetViewModel extends ChangeNotifier {
 
   // Outras fichas
   List<Sheet> listSheets = [];
+
+  // Sub páginas
+  SheetSubpages _currentPage = SheetSubpages.sheet;
+  SheetSubpages get currentPage => _currentPage;
+  set currentPage(SheetSubpages value) {
+    _currentPage = value;
+    notifyListeners();
+  }
 
   // Controladores de estado
   bool? _isAuthorized;
