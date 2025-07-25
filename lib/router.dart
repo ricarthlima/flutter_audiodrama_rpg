@@ -99,7 +99,7 @@ class AppRouter {
             username: username,
           );
 
-          return SheetWorksDialog(isPopup: true);
+          return SheetSettingsPage(isPopup: true);
         },
       ),
       GoRoute(

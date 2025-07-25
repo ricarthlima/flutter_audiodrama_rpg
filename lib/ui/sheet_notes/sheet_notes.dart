@@ -23,28 +23,25 @@ class SheetNotesScreen extends StatefulWidget {
 class _SheetNotesScreenState extends State<SheetNotesScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Caderneta")),
-      body: Container(
-        width: width(context),
-        height: height(context),
-        padding: EdgeInsets.all(16),
-        child: DefaultTabController(
-          length: 2,
-          child: Column(
-            children: [
-              TabBar(tabs: [
-                Tab(icon: Icon(Icons.edit), text: "Bio"),
-                Tab(icon: Icon(Icons.note_alt), text: "Anotações"),
+    return Container(
+      width: width(context),
+      height: height(context),
+      padding: EdgeInsets.all(16),
+      child: DefaultTabController(
+        length: 2,
+        child: Column(
+          children: [
+            TabBar(tabs: [
+              Tab(icon: Icon(Icons.edit), text: "Bio"),
+              Tab(icon: Icon(Icons.note_alt), text: "Anotações"),
+            ]),
+            Expanded(
+              child: TabBarView(children: [
+                BioWidget(),
+                NotesWidget(),
               ]),
-              Expanded(
-                child: TabBarView(children: [
-                  BioWidget(),
-                  NotesWidget(),
-                ]),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

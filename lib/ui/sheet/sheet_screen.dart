@@ -178,7 +178,7 @@ class _SheetScreenState extends State<SheetScreen> {
             blendMode: BlendMode.dstIn,
             child: Image.network(
               sheetVM.sheet!.imageUrl!,
-              height: (isVertical(context)) ? 250 : 300,
+              height: (isVertical(context)) ? 175 : 250,
               width: width(context),
               fit: BoxFit.fitWidth,
             ),
@@ -190,262 +190,65 @@ class _SheetScreenState extends State<SheetScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 16,
+            spacing: 8,
             children: [
-              if (!isVertical(context))
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  spacing: 8,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 16,
+              !isVertical(context)
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        if (!isVertical(context))
-                          AnimatedContainer(
-                            width: 135,
-                            duration: Duration(milliseconds: 750),
-                            child: (sheetVM.sheet!.imageUrl != null)
-                                ? SizedBox(
-                                    height: 167,
-                                    width: 135,
-                                    child: Stack(
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            showImageDialog(
-                                              context: context,
-                                              imageUrl:
-                                                  sheetVM.sheet!.imageUrl!,
-                                            );
-                                          },
-                                          child: Image.network(
-                                            sheetVM.sheet!.imageUrl!,
-                                            fit: BoxFit.cover,
-                                            height: 167,
-                                            width: 135,
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.bottomRight,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Icon(
-                                              Icons.delete,
-                                              size: 16,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.bottomRight,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: Tooltip(
-                                              message: "Remover imagem",
-                                              child: InkWell(
-                                                onTap: () => sheetVM
-                                                    .onRemoveImageClicked(),
-                                                child: Icon(
-                                                  Icons.delete,
-                                                  size: 14,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                : Container(
-                                    height: 150,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.redDark,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: sheetVM.isOwner
-                                          ? [
-                                              IconButton(
-                                                onPressed: () {
-                                                  SheetInteract
-                                                      .onUploadBioImageClicked(
-                                                          context);
-                                                },
-                                                icon: Icon(
-                                                  Icons.file_upload_outlined,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                              Text(
-                                                "Proporção ideal 4:5\nAté 2MB.",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 10,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ]
-                                          : [],
-                                    ),
-                                  ),
-                          ),
-                        Column(
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 8,
+                          spacing: 16,
                           children: [
-                            _getNameWidget(sheetVM),
-                            SheetSubtitleRowWidget(),
+                            if (!isVertical(context))
+                              _buildImageWidget(sheetVM: sheetVM, height: 115),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 4,
+                              children: [
+                                _getNameWidget(sheetVM),
+                                SheetSubtitleRowWidget(),
+                              ],
+                            ),
                           ],
                         ),
+                        if (width(context) > 750)
+                          _buildLeftInformations(sheetVM),
+                      ],
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 8,
+                      children: [
+                        _getNameWidget(sheetVM),
+                        SheetSubtitleRowWidget(),
                       ],
                     ),
-                    if (width(context) > 750)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          AnimatedSwitcher(
-                            duration: Duration(seconds: 1),
-                            child: (!sheetVM.isEditing)
-                                ? Text(
-                                    getBaseLevel(sheetVM.sheet!.baseLevel),
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontFamily: FontFamily.sourceSerif4,
-                                    ),
-                                  )
-                                : DropdownButton<int>(
-                                    value: sheetVM.sheet!.baseLevel,
-                                    items: [
-                                      DropdownMenuItem(
-                                        value: 0,
-                                        child: Text(getBaseLevel(0)),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: 1,
-                                        child: Text(getBaseLevel(1)),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: 2,
-                                        child: Text(getBaseLevel(2)),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: 3,
-                                        child: Text(getBaseLevel(3)),
-                                      ),
-                                    ],
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        setState(() {
-                                          sheetVM.sheet!.baseLevel = value;
-                                        });
-                                      }
-                                    },
-                                  ),
-                          ),
-                          SizedBox(height: 16),
-                          Row(
-                            spacing: 32,
-                            children: [
-                              NamedWidget(
-                                title: "Aptidões",
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      sheetVM
-                                          .getActionsValuesWithWorks()
-                                          .where(
-                                            (e) => e.value == 2,
-                                          )
-                                          .length
-                                          .toString(),
-                                      style: TextStyle(
-                                        fontSize: 64,
-                                        fontFamily: FontFamily.bungee,
-                                      ),
-                                    ),
-                                    Text(
-                                      "/${sheetVM.getAptidaoMaxByLevel()}",
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        fontFamily: FontFamily.sourceSerif4,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              NamedWidget(
-                                title: "Treinamentos",
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      sheetVM
-                                          .getActionsValuesWithWorks()
-                                          .where(
-                                            (e) => e.value == 3,
-                                          )
-                                          .length
-                                          .toString(),
-                                      style: TextStyle(
-                                        fontSize: 64,
-                                        fontFamily: FontFamily.bungee,
-                                      ),
-                                    ),
-                                    Text(
-                                      "/${sheetVM.getTreinamentoMaxByLevel()}",
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        fontFamily: FontFamily.sourceSerif4,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          if (sheetVM.getPropositoMinusAversao() > 0)
-                            Text(
-                              "Faltam ${sheetVM.getPropositoMinusAversao()} aversões",
-                              style: TextStyle(
-                                color: AppColors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                        ],
-                      ),
-                  ],
-                ),
-              if (isVertical(context))
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+              Flexible(
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 8,
                   children: [
-                    _getNameWidget(sheetVM),
-                    SheetSubtitleRowWidget(),
-                  ],
-                ),
-              SizedBox(),
-              Flexible(
-                child: IndexedStack(
-                  index: sheetVM.currentPage.index,
-                  children: [
-                    SheetActionsColumnsWidget(scrollController: rowScroll),
-                    ShoppingDialogScreen(),
-                    SheetNotesScreen(),
-                    SheetStatisticsScreen(),
-                    SheetWorksDialog(),
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: IndexedStack(
+                          index: sheetVM.currentPage.index,
+                          children: [
+                            SheetActionsColumnsWidget(
+                                scrollController: rowScroll),
+                            ShoppingDialogScreen(),
+                            SheetNotesScreen(),
+                            SheetStatisticsScreen(),
+                            SheetSettingsPage(),
+                          ],
+                        ),
+                      ),
+                    ),
+                    _buildSubpageRouter(sheetVM, themeProvider),
                   ],
                 ),
               ),
@@ -495,71 +298,299 @@ class _SheetScreenState extends State<SheetScreen> {
               ),
             ),
           ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Opacity(
-            opacity: 0.5,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 4,
-                children: [
-                  IconButton(
-                    tooltip: "Ficha",
-                    iconSize: 32,
-                    onPressed: () {
-                      sheetVM.currentPage = SheetSubpages.sheet;
-                    },
-                    icon: Icon(Icons.list_alt),
-                  ),
-                  IconButton(
-                    tooltip: "Itens",
-                    iconSize: 32,
-                    onPressed: () {
-                      SheetInteract.onItemsButtonClicked(context);
-                    },
-                    icon: Image.asset(
-                      (themeProvider.themeMode == ThemeMode.dark)
-                          ? "assets/images/chest.png"
-                          : "assets/images/chest-i.png",
-                      width: 32,
-                      color: Color(0xffd8c2bd),
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: "Caderneta",
-                    iconSize: 32,
-                    onPressed: () {
-                      SheetInteract.onNotesButtonClicked(context);
-                    },
-                    icon: Icon(Icons.description),
-                  ),
-                  IconButton(
-                    tooltip: "Estatísticas",
-                    iconSize: 32,
-                    onPressed: () {
-                      SheetInteract.onStatisticsButtonClicked(context);
-                    },
-                    icon: Icon(Icons.bar_chart),
-                  ),
-                  IconButton(
-                    onPressed: () =>
-                        SheetInteract.onSettingsButtonClicked(context),
-                    tooltip: "Configurações",
-                    iconSize: 32,
-                    icon: Icon(Icons.settings),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        )
       ],
     );
   }
 
+  Widget _buildSubpageRouter(
+    SheetViewModel sheetVM,
+    SettingsProvider themeProvider,
+  ) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      spacing: 4,
+      children: [
+        Opacity(
+          opacity: (sheetVM.currentPage == SheetSubpages.sheet) ? 1 : 0.5,
+          child: IconButton(
+            tooltip: "Ficha",
+            iconSize: 32,
+            onPressed: () {
+              sheetVM.currentPage = SheetSubpages.sheet;
+            },
+            icon: Icon(Icons.list_alt),
+          ),
+        ),
+        Opacity(
+          opacity: (sheetVM.currentPage == SheetSubpages.items) ? 1 : 0.5,
+          child: IconButton(
+            tooltip: "Itens",
+            iconSize: 32,
+            onPressed: () {
+              SheetInteract.onItemsButtonClicked(context);
+            },
+            icon: Image.asset(
+              (themeProvider.themeMode == ThemeMode.dark)
+                  ? "assets/images/chest.png"
+                  : "assets/images/chest-i.png",
+              width: 32,
+              color: Color(0xffd8c2bd),
+            ),
+          ),
+        ),
+        Opacity(
+          opacity: (sheetVM.currentPage == SheetSubpages.notes) ? 1 : 0.5,
+          child: IconButton(
+            tooltip: "Caderneta",
+            iconSize: 32,
+            onPressed: () {
+              SheetInteract.onNotesButtonClicked(context);
+            },
+            icon: Icon(Icons.description),
+          ),
+        ),
+        Opacity(
+          opacity: (sheetVM.currentPage == SheetSubpages.statistics) ? 1 : 0.5,
+          child: IconButton(
+            tooltip: "Estatísticas",
+            iconSize: 32,
+            onPressed: () {
+              SheetInteract.onStatisticsButtonClicked(context);
+            },
+            icon: Icon(Icons.bar_chart),
+          ),
+        ),
+        Opacity(
+          opacity: (sheetVM.currentPage == SheetSubpages.settings) ? 1 : 0.5,
+          child: IconButton(
+            onPressed: () => SheetInteract.onSettingsButtonClicked(context),
+            tooltip: "Configurações",
+            iconSize: 32,
+            icon: Icon(Icons.settings),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLeftInformations(SheetViewModel sheetVM) {
+    double trainFontSize = 42;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      spacing: 8,
+      children: [
+        AnimatedSwitcher(
+          duration: Duration(seconds: 1),
+          child: (!sheetVM.isEditing)
+              ? Text(
+                  getBaseLevel(sheetVM.sheet!.baseLevel),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: FontFamily.sourceSerif4,
+                  ),
+                )
+              : DropdownButton<int>(
+                  value: sheetVM.sheet!.baseLevel,
+                  items: [
+                    DropdownMenuItem(
+                      value: 0,
+                      child: Text(getBaseLevel(0)),
+                    ),
+                    DropdownMenuItem(
+                      value: 1,
+                      child: Text(getBaseLevel(1)),
+                    ),
+                    DropdownMenuItem(
+                      value: 2,
+                      child: Text(getBaseLevel(2)),
+                    ),
+                    DropdownMenuItem(
+                      value: 3,
+                      child: Text(getBaseLevel(3)),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        sheetVM.sheet!.baseLevel = value;
+                      });
+                    }
+                  },
+                ),
+        ),
+        Row(
+          spacing: 32,
+          children: [
+            NamedWidget(
+              title: "Aptidões",
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    sheetVM
+                        .getActionsValuesWithWorks()
+                        .where(
+                          (e) => e.value == 2,
+                        )
+                        .length
+                        .toString(),
+                    style: TextStyle(
+                      fontSize: trainFontSize,
+                      fontFamily: FontFamily.bungee,
+                    ),
+                  ),
+                  Text(
+                    "/${sheetVM.getAptidaoMaxByLevel()}",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontFamily: FontFamily.sourceSerif4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            NamedWidget(
+              title: "Treinamentos",
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    sheetVM
+                        .getActionsValuesWithWorks()
+                        .where(
+                          (e) => e.value == 3,
+                        )
+                        .length
+                        .toString(),
+                    style: TextStyle(
+                      fontSize: trainFontSize,
+                      fontFamily: FontFamily.bungee,
+                    ),
+                  ),
+                  Text(
+                    "/${sheetVM.getTreinamentoMaxByLevel()}",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontFamily: FontFamily.sourceSerif4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        if (sheetVM.getPropositoMinusAversao() > 0)
+          Text(
+            "Faltam ${sheetVM.getPropositoMinusAversao()} aversões",
+            style: TextStyle(
+              color: AppColors.red,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+      ],
+    );
+  }
+
+  AnimatedContainer _buildImageWidget({
+    required SheetViewModel sheetVM,
+    double height = 135,
+  }) {
+    double width = height * (135 / 167);
+
+    return AnimatedContainer(
+      width: width,
+      duration: Duration(milliseconds: 750),
+      child: (sheetVM.sheet!.imageUrl != null)
+          ? SizedBox(
+              height: height,
+              width: width,
+              child: Stack(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      showImageDialog(
+                        context: context,
+                        imageUrl: sheetVM.sheet!.imageUrl!,
+                      );
+                    },
+                    child: Image.network(
+                      sheetVM.sheet!.imageUrl!,
+                      fit: BoxFit.cover,
+                      height: height,
+                      width: width,
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Icon(
+                        Icons.delete,
+                        size: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Tooltip(
+                        message: "Remover imagem",
+                        child: InkWell(
+                          onTap: () => sheetVM.onRemoveImageClicked(),
+                          child: Icon(
+                            Icons.delete,
+                            size: 14,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          : Container(
+              height: height,
+              decoration: BoxDecoration(
+                color: AppColors.redDark,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: sheetVM.isOwner
+                    ? [
+                        IconButton(
+                          onPressed: () {
+                            SheetInteract.onUploadBioImageClicked(context);
+                          },
+                          icon: Icon(
+                            Icons.file_upload_outlined,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          "Proporção ideal 4:5\nAté 2MB.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ]
+                    : [],
+              ),
+            ),
+    );
+  }
+
   NamedWidget _getNameWidget(SheetViewModel viewModel) {
+    double fontSize = 32;
+
     return NamedWidget(
       title: "Nome",
       isLeft: true,
@@ -575,7 +606,7 @@ class _SheetScreenState extends State<SheetScreen> {
                   child: TextField(
                     controller: viewModel.nameController,
                     style: TextStyle(
-                      fontSize: isVertical(context) ? 18 : 48,
+                      fontSize: isVertical(context) ? 18 : fontSize,
                       fontFamily: FontFamily.sourceSerif4,
                     ),
                   ),
@@ -585,7 +616,7 @@ class _SheetScreenState extends State<SheetScreen> {
                 viewModel.sheet!.characterName,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: isVertical(context) ? 18 : 48,
+                  fontSize: isVertical(context) ? 18 : fontSize,
                   fontFamily: FontFamily.bungee,
                   color: AppColors.red,
                 ),

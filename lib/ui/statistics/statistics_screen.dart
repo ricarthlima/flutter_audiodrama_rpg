@@ -24,116 +24,112 @@ class SheetStatisticsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     StatisticsViewModel statisticsViewModel =
         Provider.of<StatisticsViewModel>(context);
-    return Scaffold(
-      appBar: AppBar(title: Text("Estatísticas")),
-      body: Container(
-        width: width(context),
-        height: height(context),
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 8,
-                children: [
-                  Text("Data inicial: "),
-                  SizedBox(
-                    width: 150,
-                    child: TextFormField(
-                      controller:
-                          statisticsViewModel.startDateEditingController,
-                      enabled: false,
-                    ),
+    return Container(
+      width: width(context),
+      height: height(context),
+      padding: EdgeInsets.all(16),
+      child: Column(
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 8,
+              children: [
+                Text("Data inicial: "),
+                SizedBox(
+                  width: 150,
+                  child: TextFormField(
+                    controller: statisticsViewModel.startDateEditingController,
+                    enabled: false,
                   ),
-                  IconButton(
-                    onPressed: () {
-                      showDateTimePickerDialog(
-                        context: context,
-                        initialDate: statisticsViewModel.filterDateStart,
-                        firstDate: statisticsViewModel.getFirstDate(),
-                      ).then(
-                        (DateTime? dateTimeResult) {
-                          if (dateTimeResult != null) {
-                            if (dateTimeResult
-                                .isAfter(statisticsViewModel.filterDateEnd)) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                      "A data inicial não pode ser depois da final"),
-                                ),
-                              );
-                            } else {
-                              statisticsViewModel.filterDateStart =
-                                  dateTimeResult;
-                            }
+                ),
+                IconButton(
+                  onPressed: () {
+                    showDateTimePickerDialog(
+                      context: context,
+                      initialDate: statisticsViewModel.filterDateStart,
+                      firstDate: statisticsViewModel.getFirstDate(),
+                    ).then(
+                      (DateTime? dateTimeResult) {
+                        if (dateTimeResult != null) {
+                          if (dateTimeResult
+                              .isAfter(statisticsViewModel.filterDateEnd)) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    "A data inicial não pode ser depois da final"),
+                              ),
+                            );
+                          } else {
+                            statisticsViewModel.filterDateStart =
+                                dateTimeResult;
                           }
-                        },
-                      );
-                    },
-                    icon: Icon(Icons.date_range),
+                        }
+                      },
+                    );
+                  },
+                  icon: Icon(Icons.date_range),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: VerticalDivider(),
+                ),
+                Text("Data final: "),
+                SizedBox(
+                  width: 150,
+                  child: TextFormField(
+                    controller: statisticsViewModel.endDateEditingController,
+                    enabled: false,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: VerticalDivider(),
-                  ),
-                  Text("Data final: "),
-                  SizedBox(
-                    width: 150,
-                    child: TextFormField(
-                      controller: statisticsViewModel.endDateEditingController,
-                      enabled: false,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      showDateTimePickerDialog(
-                        context: context,
-                        initialDate: statisticsViewModel.filterDateEnd,
-                        lastDate: DateTime.now(),
-                      ).then(
-                        (DateTime? dateTimeResult) {
-                          if (dateTimeResult != null) {
-                            statisticsViewModel.filterDateEnd = dateTimeResult;
-                          }
-                        },
-                      );
-                    },
-                    icon: Icon(Icons.date_range),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: VerticalDivider(),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      statisticsViewModel.resetDates();
-                    },
-                    child: Text("Redefinir"),
-                  ),
-                ],
-              ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    showDateTimePickerDialog(
+                      context: context,
+                      initialDate: statisticsViewModel.filterDateEnd,
+                      lastDate: DateTime.now(),
+                    ).then(
+                      (DateTime? dateTimeResult) {
+                        if (dateTimeResult != null) {
+                          statisticsViewModel.filterDateEnd = dateTimeResult;
+                        }
+                      },
+                    );
+                  },
+                  icon: Icon(Icons.date_range),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: VerticalDivider(),
+                ),
+                TextButton(
+                  onPressed: () {
+                    statisticsViewModel.resetDates();
+                  },
+                  child: Text("Redefinir"),
+                ),
+              ],
             ),
-            SizedBox(height: 16),
-            Expanded(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    flex: (!isVertical(context)) ? 10 : 6,
-                    child: RollsHorizontalBar(),
-                  ),
-                  VerticalDivider(),
-                  Flexible(
-                    flex: (!isVertical(context)) ? 2 : 6,
-                    child: RollsOrderedListWidget(),
-                  ),
-                ],
-              ),
+          ),
+          SizedBox(height: 16),
+          Expanded(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  flex: (!isVertical(context)) ? 10 : 6,
+                  child: RollsHorizontalBar(),
+                ),
+                VerticalDivider(),
+                Flexible(
+                  flex: (!isVertical(context)) ? 2 : 6,
+                  child: RollsOrderedListWidget(),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

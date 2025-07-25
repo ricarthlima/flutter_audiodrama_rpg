@@ -37,123 +37,114 @@ class _ShoppingDialogScreenState extends State<ShoppingDialogScreen> {
     final sheetVM = Provider.of<SheetViewModel>(context);
     final shoppingViewModel = Provider.of<ShoppingViewModel>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Inventário"),
-        actions: [
-          if (!shoppingViewModel.isBuying)
-            Text(
-              "\$ ${sheetVM.sheet!.money}",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          if (shoppingViewModel.isBuying)
-            SizedBox(
-              width: 150,
-              child: TextFormField(
-                controller: shoppingViewModel.getMoneyTextController(sheetVM),
-                textAlign: TextAlign.right,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.attach_money_rounded,
-                    color: shoppingViewModel.showingHaveNoMoney
-                        ? AppColors.red
-                        : null,
+    return Container(
+      height: height(context),
+      width: width(context),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              if (!shoppingViewModel.isBuying)
+                Text(
+                  "\$ ${sheetVM.sheet!.money}",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
-                  suffix: InkWell(
-                    onTap: (shoppingViewModel.isShowingMoneyFeedback == null)
-                        ? () {
-                            shoppingViewModel.onEditingMoney();
-                          }
-                        : null,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Icon(
-                        (shoppingViewModel.isShowingMoneyFeedback == null)
-                            ? Icons.save
-                            : (shoppingViewModel.isShowingMoneyFeedback!)
-                                ? Icons.check
-                                : Icons.error,
-                        size: 18,
+                ),
+              if (shoppingViewModel.isBuying)
+                SizedBox(
+                  width: 150,
+                  child: TextFormField(
+                    controller:
+                        shoppingViewModel.getMoneyTextController(sheetVM),
+                    textAlign: TextAlign.right,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.attach_money_rounded,
+                        color: shoppingViewModel.showingHaveNoMoney
+                            ? AppColors.red
+                            : null,
                       ),
+                      suffix: InkWell(
+                        onTap:
+                            (shoppingViewModel.isShowingMoneyFeedback == null)
+                                ? () {
+                                    shoppingViewModel.onEditingMoney();
+                                  }
+                                : null,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Icon(
+                            (shoppingViewModel.isShowingMoneyFeedback == null)
+                                ? Icons.save
+                                : (shoppingViewModel.isShowingMoneyFeedback!)
+                                    ? Icons.check
+                                    : Icons.error,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: shoppingViewModel.showingHaveNoMoney
+                          ? AppColors.red
+                          : null,
                     ),
                   ),
                 ),
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: shoppingViewModel.showingHaveNoMoney
-                      ? AppColors.red
-                      : null,
+              if (!isVertical(context)) SizedBox(width: 16),
+              if (!isVertical(context) && sheetVM.isOwner)
+                SizedBox(
+                  width: 150,
+                  child: SwitchListTile(
+                    title: Text("Loja"),
+                    value: shoppingViewModel.isBuying,
+                    onChanged: (_) {
+                      shoppingViewModel.toggleBuying();
+                    },
+                  ),
                 ),
-              ),
-            ),
-          if (!isVertical(context)) SizedBox(width: 16),
-          if (!isVertical(context) && sheetVM.isOwner)
-            SizedBox(
-              width: 150,
-              child: SwitchListTile(
-                title: Text("Loja"),
-                value: shoppingViewModel.isBuying,
-                onChanged: (_) {
-                  shoppingViewModel.toggleBuying();
-                },
-              ),
-            ),
-          SizedBox(width: 16),
-        ],
-      ),
-      floatingActionButton: (isVertical(context))
-          ? FloatingActionButton(
-              onPressed: () {
-                shoppingViewModel.toggleBuying();
-              },
-              child: Text("Loja"),
-            )
-          : null,
-      body: Container(
-        height: height(context),
-        width: width(context),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            (shoppingViewModel.isBuying)
-                ? !isVertical(context)
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 16,
-                        children: [
-                          Flexible(
-                            flex: 5,
-                            child: ShoppingListWidget(isSeller: false),
-                          ),
-                          Flexible(
-                            flex: 5,
-                            child: ShoppingListWidget(isSeller: true),
-                          ),
-                        ],
-                      )
-                    : Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            spacing: 32,
-                            children: [
-                              ShoppingListWidget(isSeller: false),
-                              ShoppingListWidget(isSeller: true),
-                            ],
-                          ),
+              SizedBox(width: 16),
+            ],
+          ),
+          (shoppingViewModel.isBuying)
+              ? !isVertical(context)
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 16,
+                      children: [
+                        Flexible(
+                          flex: 5,
+                          child: ShoppingListWidget(isSeller: false),
                         ),
-                      )
-                : ShoppingListWidget(isSeller: false),
-          ],
-        ),
+                        Flexible(
+                          flex: 5,
+                          child: ShoppingListWidget(isSeller: true),
+                        ),
+                      ],
+                    )
+                  : Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          spacing: 32,
+                          children: [
+                            ShoppingListWidget(isSeller: false),
+                            ShoppingListWidget(isSeller: true),
+                          ],
+                        ),
+                      ),
+                    )
+              : ShoppingListWidget(isSeller: false),
+        ],
       ),
     );
   }
