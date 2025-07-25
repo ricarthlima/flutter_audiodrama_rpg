@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import '../../../domain/models/action_template.dart';
-import '../view/sheet_view_model.dart';
 import 'action_widget.dart';
 
 class ListActionsWidget extends StatelessWidget {
@@ -25,15 +23,9 @@ class ListActionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sheetVM = Provider.of<SheetViewModel>(context);
     return Container(
-      width: (isVertical(context))
-          ? width(context)
-          : getZoomFactor(
-              context,
-              sheetVM.isWindowed ? 290 : 350,
-            ),
-      // height: height,
+      width:
+          (isVertical(context)) ? width(context) : (width(context) / 5) - (40),
       decoration: BoxDecoration(
         border: Border.all(
           width: 2,
@@ -50,7 +42,6 @@ class ListActionsWidget extends StatelessWidget {
         left: 16,
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 8,
         children: [
@@ -63,22 +54,20 @@ class ListActionsWidget extends StatelessWidget {
               color: color,
             ),
           ),
-          Flexible(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(
-                  // TODO: Ações ativadas por padrão config de campanha
-                  listActions.where((e) => e.enabled).length,
-                  (index) {
-                    ActionTemplate action =
-                        listActions.where((e) => e.enabled).toList()[index];
-                    return ActionWidget(
-                      action: action,
-                      isWork: isWork,
-                    );
-                  },
-                ),
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: List.generate(
+                // TODO: Ações ativadas por padrão config de campanha
+                listActions.where((e) => e.enabled).length,
+                (index) {
+                  ActionTemplate action =
+                      listActions.where((e) => e.enabled).toList()[index];
+                  return ActionWidget(
+                    action: action,
+                    isWork: isWork,
+                  );
+                },
               ),
             ),
           ),

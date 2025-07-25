@@ -6,18 +6,17 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/item.dart';
 import '../../../domain/models/item_sheet.dart';
+import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
+import '../../sheet/view/sheet_view_model.dart';
 import '../view/shopping_view_model.dart';
 import 'item_inventory_widget.dart';
 
 class ShoppingListWidget extends StatefulWidget {
   final bool isSeller;
 
-  const ShoppingListWidget({
-    super.key,
-    required this.isSeller,
-  });
+  const ShoppingListWidget({super.key, required this.isSeller});
 
   @override
   State<ShoppingListWidget> createState() => _ShoppingListWidgetState();
@@ -41,9 +40,76 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
     );
   }
 
+  Row _buildToggleStore(ShoppingViewModel shoppingVM, SheetViewModel sheetVM,
+      BuildContext context) {
+    return Row(
+      spacing: 16,
+      children: [
+        VerticalDivider(
+          thickness: 1,
+        ),
+        if (!shoppingVM.isBuying)
+          Text(
+            "\$ ${sheetVM.sheet!.money}",
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        if (shoppingVM.isBuying)
+          SizedBox(
+            width: 150,
+            child: TextFormField(
+              controller: shoppingVM.getMoneyTextController(sheetVM),
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                prefixIcon: Icon(
+                  Icons.attach_money_rounded,
+                  color: shoppingVM.showingHaveNoMoney ? AppColors.red : null,
+                ),
+                suffix: InkWell(
+                  onTap: (shoppingVM.isShowingMoneyFeedback == null)
+                      ? () {
+                          shoppingVM.onEditingMoney();
+                        }
+                      : null,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Icon(
+                      (shoppingVM.isShowingMoneyFeedback == null)
+                          ? Icons.save
+                          : (shoppingVM.isShowingMoneyFeedback!)
+                              ? Icons.check
+                              : Icons.error,
+                      size: 18,
+                    ),
+                  ),
+                ),
+              ),
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: shoppingVM.showingHaveNoMoney ? AppColors.red : null,
+              ),
+            ),
+          ),
+        if (!isVertical(context) && sheetVM.isOwner)
+          OutlinedButton(
+            onPressed: () {
+              shoppingVM.toggleBuying();
+            },
+            child: Text(
+              shoppingVM.isBuying ? "Fechar loja" : "Abrir loja",
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final shoppingViewModel = Provider.of<ShoppingViewModel>(context);
+    final sheetVM = Provider.of<SheetViewModel>(context);
+    final shoppingVM = Provider.of<ShoppingViewModel>(context);
 
     return Consumer<ShoppingViewModel>(builder: (context, value, child) {
       WidgetsBinding.instance.addPostFrameCallback(
@@ -53,8 +119,9 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
         },
       );
       return Column(
+        mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        spacing: 8,
         children: [
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -149,18 +216,19 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: CheckboxListTile(
-                              value: shoppingViewModel.isFree,
+                              value: shoppingVM.isFree,
                               dense: true,
                               visualDensity: VisualDensity.compact,
                               title: Text("De graça"),
                               contentPadding: EdgeInsets.zero,
                               onChanged: (value) {
-                                shoppingViewModel.isFree =
-                                    !shoppingViewModel.isFree;
+                                shoppingVM.isFree = !shoppingVM.isFree;
                               },
                             ),
                           ),
                         ),
+                      if (!widget.isSeller)
+                        _buildToggleStore(shoppingVM, sheetVM, context),
                     ],
                   ),
                 ),
@@ -169,25 +237,24 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
           ),
           TextFormField(
             controller: !widget.isSeller
-                ? shoppingViewModel.searchInventoryController
-                : shoppingViewModel.searchSellerController,
+                ? shoppingVM.searchInventoryController
+                : shoppingVM.searchSellerController,
             decoration: InputDecoration(
               label: Text("Pesquisar item"),
               suffix: InkWell(
                 onTap: () => (widget.isSeller)
-                    ? shoppingViewModel.onSearchOnSeller()
-                    : shoppingViewModel.onSearchOnInventory(),
+                    ? shoppingVM.onSearchOnSeller()
+                    : shoppingVM.onSearchOnInventory(),
                 child: Icon(Icons.search),
               ),
             ),
             onFieldSubmitted: (value) => (widget.isSeller)
-                ? shoppingViewModel.onSearchOnSeller()
-                : shoppingViewModel.onSearchOnInventory(),
+                ? shoppingVM.onSearchOnSeller()
+                : shoppingVM.onSearchOnInventory(),
             onChanged: (value) => (widget.isSeller)
-                ? shoppingViewModel.onSearchOnSeller()
-                : shoppingViewModel.onSearchOnInventory(),
+                ? shoppingVM.onSearchOnSeller()
+                : shoppingVM.onSearchOnInventory(),
           ),
-          SizedBox(height: 8),
           Wrap(
             children: context
                 .read<ShoppingViewModel>()
@@ -198,18 +265,12 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                 category: e,
                 isSeller: widget.isSeller,
                 isActive: (!widget.isSeller)
-                    ? shoppingViewModel.listFilteredCategories.contains(e)
-                    : shoppingViewModel.listFilteredCategoriesSeller
-                        .contains(e),
+                    ? shoppingVM.listFilteredCategories.contains(e)
+                    : shoppingVM.listFilteredCategoriesSeller.contains(e),
               );
             }).toList(),
           ),
-          SizedBox(height: 16),
           Container(
-            constraints: BoxConstraints(
-              maxHeight: height(context) - 290,
-              minHeight: 400,
-            ),
             padding: EdgeInsets.all(4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
@@ -218,51 +279,44 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                   color: Theme.of(context).textTheme.bodyMedium!.color!),
             ),
             child: (!widget.isSeller)
-                ? (shoppingViewModel.listInventoryItems.isEmpty)
+                ? (shoppingVM.listInventoryItems.isEmpty)
                     ? Center(child: Text("Nada por aqui"))
-                    : SizedBox(
-                        height: double.infinity,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: List.generate(
-                              shoppingViewModel.listInventoryItems.length,
-                              (index) {
-                                ItemSheet itemSheet =
-                                    shoppingViewModel.listInventoryItems[index];
-                                Item item = context
-                                    .read<ShoppingViewModel>()
-                                    .itemRepo
-                                    .getItemById(itemSheet.itemId)!;
-                                return ItemInventoryWidget(
-                                  item: item,
-                                  itemSheet: itemSheet,
-                                );
-                              },
-                            ),
+                    : SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            shoppingVM.listInventoryItems.length,
+                            (index) {
+                              ItemSheet itemSheet =
+                                  shoppingVM.listInventoryItems[index];
+                              Item item = context
+                                  .read<ShoppingViewModel>()
+                                  .itemRepo
+                                  .getItemById(itemSheet.itemId)!;
+                              return ItemInventoryWidget(
+                                item: item,
+                                itemSheet: itemSheet,
+                              );
+                            },
                           ),
                         ),
                       )
-                : SizedBox(
-                    height: double.infinity,
-                    child: (shoppingViewModel.listSellerItems.isEmpty)
-                        ? Center(child: Text("Nada por aqui"))
-                        : SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: List.generate(
-                                shoppingViewModel.listSellerItems.length,
-                                (index) {
-                                  Item item =
-                                      shoppingViewModel.listSellerItems[index];
-                                  return ItemSellerWidget(item: item);
-                                },
-                              ),
-                            ),
+                : (shoppingVM.listSellerItems.isEmpty)
+                    ? Center(child: Text("Nada por aqui"))
+                    : SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            shoppingVM.listSellerItems.length,
+                            (index) {
+                              Item item = shoppingVM.listSellerItems[index];
+                              return ItemSellerWidget(item: item);
+                            },
                           ),
-                  ),
+                        ),
+                      ),
           ),
         ],
       );

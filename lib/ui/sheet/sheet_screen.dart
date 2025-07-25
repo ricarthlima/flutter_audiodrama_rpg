@@ -36,6 +36,7 @@ class SheetScreen extends StatefulWidget {
 
 class _SheetScreenState extends State<SheetScreen> {
   late final bool Function(KeyEvent) _keyListener;
+  ScrollController rowScroll = ScrollController();
 
   @override
   void initState() {
@@ -157,8 +158,6 @@ class _SheetScreenState extends State<SheetScreen> {
 
     sheetVM.nameController.text = sheetVM.sheet!.characterName;
 
-    ScrollController rowScroll = ScrollController();
-
     final themeProvider = Provider.of<SettingsProvider>(context);
 
     return Stack(
@@ -190,7 +189,7 @@ class _SheetScreenState extends State<SheetScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
+            spacing: 16,
             children: [
               !isVertical(context)
                   ? Row(
@@ -210,7 +209,9 @@ class _SheetScreenState extends State<SheetScreen> {
                               spacing: 4,
                               children: [
                                 _getNameWidget(sheetVM),
-                                SheetSubtitleRowWidget(),
+                                SheetSubtitleRowWidget(
+                                  onWorksPressed: _rollToShowWorks,
+                                ),
                               ],
                             ),
                           ],
@@ -225,7 +226,9 @@ class _SheetScreenState extends State<SheetScreen> {
                       spacing: 8,
                       children: [
                         _getNameWidget(sheetVM),
-                        SheetSubtitleRowWidget(),
+                        SheetSubtitleRowWidget(
+                          onWorksPressed: _rollToShowWorks,
+                        ),
                       ],
                     ),
               Flexible(
@@ -234,18 +237,16 @@ class _SheetScreenState extends State<SheetScreen> {
                   spacing: 8,
                   children: [
                     Flexible(
-                      child: SingleChildScrollView(
-                        child: IndexedStack(
-                          index: sheetVM.currentPage.index,
-                          children: [
-                            SheetActionsColumnsWidget(
-                                scrollController: rowScroll),
-                            ShoppingDialogScreen(),
-                            SheetNotesScreen(),
-                            SheetStatisticsScreen(),
-                            SheetSettingsPage(),
-                          ],
-                        ),
+                      child: IndexedStack(
+                        index: sheetVM.currentPage.index,
+                        children: [
+                          SheetActionsColumnsWidget(
+                              scrollController: rowScroll),
+                          ShoppingDialogScreen(),
+                          SheetNotesScreen(),
+                          SheetStatisticsScreen(),
+                          SheetSettingsPage(),
+                        ],
                       ),
                     ),
                     _buildSubpageRouter(sheetVM, themeProvider),
@@ -269,36 +270,15 @@ class _SheetScreenState extends State<SheetScreen> {
           padding: const EdgeInsets.only(right: 80.0),
           child: GroupNotifications(),
         ),
-        if (sheetVM.sheet!.listWorks.isNotEmpty &&
-            sheetVM.currentPage == SheetSubpages.sheet)
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 16, right: 32),
-              child: TextButton.icon(
-                onPressed: () {
-                  rowScroll.animateTo(
-                    rowScroll.position.maxScrollExtent,
-                    duration: Duration(milliseconds: 750),
-                    curve: Curves.ease,
-                  );
-                },
-                icon: Icon(
-                  Icons.arrow_forward,
-                  color: Colors.amber,
-                ),
-                iconAlignment: IconAlignment.end,
-                label: Text(
-                  "Ofícios",
-                  style: TextStyle(
-                    color: Colors.amber,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
       ],
+    );
+  }
+
+  void _rollToShowWorks() {
+    rowScroll.animateTo(
+      rowScroll.position.maxScrollExtent,
+      duration: Duration(milliseconds: 750),
+      curve: Curves.ease,
     );
   }
 

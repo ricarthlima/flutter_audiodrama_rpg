@@ -11,7 +11,8 @@ import '../view/sheet_interact.dart';
 import '../view/sheet_view_model.dart';
 
 class SheetSubtitleRowWidget extends StatelessWidget {
-  const SheetSubtitleRowWidget({super.key});
+  final Function onWorksPressed;
+  const SheetSubtitleRowWidget({super.key, required this.onWorksPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -275,6 +276,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         NamedWidget(
           title: "Dados de Corpo",
           hardHeight: 32,
+          isShowRightSeparator: true,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
@@ -312,6 +314,19 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             ],
           ),
         ),
+      NamedWidget(
+        title: "Ofícios",
+        hardHeight: 32,
+        child: InkWell(
+          onTap: () {
+            onWorksPressed.call();
+          },
+          child: Icon(
+            Icons.workspace_premium_sharp,
+            size: 18,
+          ),
+        ),
+      )
     ];
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet_notes/widgets/bio_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet_notes/widgets/notes_widget.dart';
 
@@ -23,26 +22,21 @@ class SheetNotesScreen extends StatefulWidget {
 class _SheetNotesScreenState extends State<SheetNotesScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width(context),
-      height: height(context),
-      padding: EdgeInsets.all(16),
-      child: DefaultTabController(
-        length: 2,
-        child: Column(
-          children: [
-            TabBar(tabs: [
-              Tab(icon: Icon(Icons.edit), text: "Bio"),
-              Tab(icon: Icon(Icons.note_alt), text: "Anotações"),
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          TabBar(tabs: [
+            Tab(icon: Icon(Icons.edit), text: "Bio"),
+            Tab(icon: Icon(Icons.note_alt), text: "Anotações"),
+          ]),
+          Expanded(
+            child: TabBarView(children: [
+              BioWidget(),
+              NotesWidget(),
             ]),
-            Expanded(
-              child: TabBarView(children: [
-                BioWidget(),
-                NotesWidget(),
-              ]),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
