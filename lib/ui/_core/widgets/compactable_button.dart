@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import '../dimensions.dart';
 
 class CompactableButton extends StatefulWidget {
   final CompactableButtonController controller;

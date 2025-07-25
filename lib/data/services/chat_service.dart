@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_rpg_audiodrama/_core/release_mode.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_chat.dart';
+import '../../_core/release_mode.dart';
+import '../../domain/models/campaign_chat.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatService {

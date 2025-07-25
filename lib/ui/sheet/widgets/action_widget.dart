@@ -1,11 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/color_filter_inverter.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/components/wip_snackbar.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/components/action_lore_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_interact.dart';
+import '../../../domain/models/action_value.dart';
+import '../../_core/color_filter_inverter.dart';
+import '../../_core/components/wip_snackbar.dart';
+import '../../_core/dimensions.dart';
+import '../components/action_lore_dialog.dart';
+import '../view/sheet_interact.dart';
 import 'package:provider/provider.dart';
 
 import '../../settings/view/settings_provider.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
+import '../../../domain/models/app_user.dart';
+import '../../_core/widgets/generic_header.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sheet_model.dart';

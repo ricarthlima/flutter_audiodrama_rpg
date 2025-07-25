@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
+import '../_core/fonts.dart';
+import '../../data/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 import '../_core/app_colors.dart';

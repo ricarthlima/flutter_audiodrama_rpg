@@ -4,9 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories/action_repository.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories/condition_repository.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories/item_repository.dart';
+import 'data/repositories/action_repository.dart';
+import 'data/repositories/condition_repository.dart';
+import 'data/repositories/item_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

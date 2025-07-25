@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import '../../_core/providers/audio_provider.dart';
+import '../_core/dimensions.dart';
+import '../_core/fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../router.dart';

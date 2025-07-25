@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/roll_log_widget.dart';
+import '../../../domain/models/roll_log.dart';
+import '../widgets/roll_log_widget.dart';
 
 import '../../_core/fonts.dart';
 

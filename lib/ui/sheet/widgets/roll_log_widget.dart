@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
+import '../../../domain/models/roll_log.dart';
+import '../../_core/fonts.dart';
+import '../../../domain/models/action_template.dart';
 import 'package:provider/provider.dart';
 
 import '../view/sheet_view_model.dart';

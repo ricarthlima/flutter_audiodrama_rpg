@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_visual.dart';
 
 class CampaignVisualDataModel {

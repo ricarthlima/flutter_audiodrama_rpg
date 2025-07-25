@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
-import 'package:flutter_rpg_audiodrama/data/services/sheet_service.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_visual_novel_view_model.dart';
+import 'audio_provider.dart';
+import '../../data/services/sheet_service.dart';
+import '../../ui/campaign/view/campaign_view_model.dart';
+import '../../ui/campaign/view/campaign_visual_novel_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/services/auth_service.dart';

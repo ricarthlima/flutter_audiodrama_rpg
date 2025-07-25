@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/components/create_achievement.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/achievement_widget.dart';
+import '../../../domain/models/campaign_achievement.dart';
+import '../../_core/widgets/generic_header.dart';
+import '../components/create_achievement.dart';
+import '../widgets/achievement_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../view/campaign_view_model.dart';

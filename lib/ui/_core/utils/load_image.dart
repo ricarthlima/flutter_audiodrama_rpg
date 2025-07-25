@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/exceptions/general_exceptions.dart';
+import '../../../domain/exceptions/general_exceptions.dart';
 import 'package:image_picker/image_picker.dart';
 
 Future<XFile?> onLoadImageClicked({

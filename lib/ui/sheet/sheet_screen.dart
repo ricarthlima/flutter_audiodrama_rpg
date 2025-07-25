@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/helpers/sheet_subpages.dart';
+import 'helpers/sheet_subpages.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/models/action_template.dart';
@@ -309,13 +310,7 @@ class _SheetScreenState extends State<SheetScreen> {
             onPressed: () {
               SheetInteract.onItemsButtonClicked(context);
             },
-            icon: Image.asset(
-              (themeProvider.themeMode == ThemeMode.dark)
-                  ? "assets/images/chest.png"
-                  : "assets/images/chest-i.png",
-              width: 32,
-              color: Color(0xffd8c2bd),
-            ),
+            icon: Icon(MdiIcons.treasureChest),
           ),
         ),
         Opacity(

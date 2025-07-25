@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/utils/change_url.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/utils/home_tabs.dart';
+import '../../../_core/providers/user_provider.dart';
+import '../../_core/utils/change_url.dart';
+import '../utils/home_tabs.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/dimensions.dart';

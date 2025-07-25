@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet_notes/widgets/bio_widget.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet_notes/widgets/notes_widget.dart';
+import 'widgets/bio_widget.dart';
+import 'widgets/notes_widget.dart';
 
 Future<void> showSheetNotesDialog(BuildContext context) {
   return showDialog(

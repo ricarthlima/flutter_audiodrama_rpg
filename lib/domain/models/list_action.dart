@@ -1,4 +1,4 @@
-import 'package:flutter_rpg_audiodrama/domain/models/action_template.dart';
+import 'action_template.dart';
 
 class ListAction {
   String name;

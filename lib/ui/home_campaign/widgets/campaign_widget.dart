@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
-import 'package:flutter_rpg_audiodrama/router.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import '../../../domain/models/campaign.dart';
+import '../../../router.dart';
+import '../../_core/dimensions.dart';
 
 import '../../_core/components/show_snackbar.dart';
 

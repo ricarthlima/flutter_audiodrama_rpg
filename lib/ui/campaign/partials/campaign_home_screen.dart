@@ -1,16 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_visual.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/components/image_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_panel.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_filter_widget.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/components/tutorial_populate_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_visual_novel_view_model.dart';
+import '../../../_core/providers/audio_provider.dart';
+import '../../../domain/models/campaign_visual.dart';
+import '../../_core/app_colors.dart';
+import '../../_core/components/image_dialog.dart';
+import '../../_core/components/movable_expandable_panel.dart';
+import '../../_core/dimensions.dart';
+import '../../_core/fonts.dart';
+import '../../_core/widgets/generic_filter_widget.dart';
+import '../components/tutorial_populate_dialog.dart';
+import '../view/campaign_view_model.dart';
+import '../view/campaign_visual_novel_view_model.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 

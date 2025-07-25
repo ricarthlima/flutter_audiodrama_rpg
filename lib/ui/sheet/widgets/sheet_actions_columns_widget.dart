@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
+import '../../_core/app_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../view/sheet_view_model.dart';

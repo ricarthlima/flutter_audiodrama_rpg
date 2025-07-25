@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_rpg_audiodrama/data/services/campaign_visual_service.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_visual.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_vm_model.dart';
+import '../../../data/services/campaign_visual_service.dart';
+import '../../../domain/models/campaign_visual.dart';
+import '../../../domain/models/campaign_vm_model.dart';
 
 class CampaignVisualNovelViewModel extends ChangeNotifier {
   CampaignVisualDataModel data = CampaignVisualDataModel.empty();

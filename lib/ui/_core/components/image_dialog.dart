@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/open_popup.dart';
+import '../dimensions.dart';
+import '../open_popup.dart';
 
 Future<dynamic> showImageDialog({
   required BuildContext context,

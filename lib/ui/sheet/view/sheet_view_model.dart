@@ -5,9 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories/action_repository.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories/condition_repository.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/helpers/sheet_subpages.dart';
+import '../../../data/repositories/action_repository.dart';
+import '../../../data/repositories/condition_repository.dart';
+import '../helpers/sheet_subpages.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../data/services/sheet_service.dart';

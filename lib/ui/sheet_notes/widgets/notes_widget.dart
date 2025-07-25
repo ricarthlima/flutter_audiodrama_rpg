@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
+import '../../sheet/view/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
 class NotesWidget extends StatelessWidget {

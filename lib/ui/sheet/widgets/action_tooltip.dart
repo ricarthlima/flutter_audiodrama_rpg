@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
+import '../../_core/app_colors.dart';
 import '../../_core/fonts.dart';
 import '../../../domain/models/action_template.dart';
 

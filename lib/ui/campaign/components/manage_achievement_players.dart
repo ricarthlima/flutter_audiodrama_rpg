@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import '../../../data/services/auth_service.dart';
+import '../../../domain/models/app_user.dart';
+import '../../../domain/models/campaign_achievement.dart';
+import '../../_core/app_colors.dart';
+import '../../_core/fonts.dart';
+import '../view/campaign_view_model.dart';
 import 'package:provider/provider.dart';
 
 Future<void> showManageAchievementPlayersDialog({

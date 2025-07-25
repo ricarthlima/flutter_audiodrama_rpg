@@ -1,13 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/helpers/sheet_subpages.dart';
+import '../helpers/sheet_subpages.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/action_template.dart';
 import '../../../domain/models/roll_log.dart';
-import '../../shopping/view/shopping_view_model.dart';
 import '../../statistics/view/statistics_view_model.dart';
 import '../components/action_dialog_tooltip.dart';
 import '../components/roll_body_dialog.dart';
@@ -26,71 +25,23 @@ abstract class SheetInteract {
   }
 
   static onItemsButtonClicked(BuildContext context) async {
-    final shoppingVM = Provider.of<ShoppingViewModel>(
-      context,
-      listen: false,
-    );
-    shoppingVM
-        .openInventory(context.read<SheetViewModel>().sheet!.listItemSheet);
-
     context.read<SheetViewModel>().currentPage = SheetSubpages.items;
-    // if (!isVertical(context)) {
-    //   await showShoppingDialog(context);
-    // } else {
-    //   await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => ShoppingDialogScreen(),
-    //     ),
-    //   );
-    // }
   }
 
   static Future<void> onNotesButtonClicked(BuildContext context) async {
     context.read<SheetViewModel>().currentPage = SheetSubpages.notes;
-    // if (!isVertical(context)) {
-    //   await showSheetNotesDialog(context);
-    // } else {
-    //   await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => SheetNotesScreen(),
-    //     ),
-    //   );
-    // }
   }
 
   static onStatisticsButtonClicked(BuildContext context) async {
+    //TODO: Provovalmente é melhor isso estar no initState da tela
     context.read<StatisticsViewModel>().listCompleteRollLog =
         context.read<SheetViewModel>().sheet!.listRollLog;
 
     context.read<SheetViewModel>().currentPage = SheetSubpages.statistics;
-
-    // if (!isVertical(context)) {
-    //   await showSheetStatisticsDialog(context);
-    // } else {
-    //   await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => SheetStatisticsScreen(),
-    //     ),
-    //   );
-    // }
   }
 
   static void onSettingsButtonClicked(BuildContext context) async {
     context.read<SheetViewModel>().currentPage = SheetSubpages.settings;
-
-    // if (!isVertical(context)) {
-    //   await showSheetWorksDialog(context);
-    // } else {
-    //   await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => SheetWorksDialog(),
-    //     ),
-    //   );
-    // }
   }
 
   static Future<void> rollAction({

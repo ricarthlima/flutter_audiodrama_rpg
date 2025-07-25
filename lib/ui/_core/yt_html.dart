@@ -1,7 +1,8 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'dart:html' as html;
 import 'dart:ui' as ui;
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class YouTubeEmbedWebOnly extends StatelessWidget {
   const YouTubeEmbedWebOnly({super.key});

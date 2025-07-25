@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_lore.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_value.dart';
+import 'action_lore.dart';
+import 'action_value.dart';
 
-import 'package:flutter_rpg_audiodrama/domain/models/item_sheet.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
+import 'item_sheet.dart';
+import 'roll_log.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class Sheet {

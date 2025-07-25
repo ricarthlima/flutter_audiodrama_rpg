@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/helpers.dart';
-import 'package:flutter_rpg_audiodrama/ui/shopping/widgets/item_category_widget.dart';
-import 'package:flutter_rpg_audiodrama/ui/shopping/widgets/item_seller_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/item.dart';
@@ -9,9 +6,11 @@ import '../../../domain/models/item_sheet.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
+import '../../_core/helpers.dart';
 import '../../sheet/view/sheet_view_model.dart';
 import '../view/shopping_view_model.dart';
-import 'item_inventory_widget.dart';
+import 'item_category_widget.dart';
+import 'shopping_item_widget.dart';
 
 class ShoppingListWidget extends StatefulWidget {
   final bool isSeller;
@@ -32,27 +31,28 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
         _loadItems();
+        _orderItems();
+        _orderItemsMine();
       },
     );
   }
 
-  Row _buildToggleStore(ShoppingViewModel shoppingVM, SheetViewModel sheetVM,
-      BuildContext context) {
+  Row _buildToggleStore(
+    ShoppingViewModel shoppingVM,
+    SheetViewModel sheetVM,
+    BuildContext context,
+  ) {
     return Row(
       spacing: 16,
       children: [
-        VerticalDivider(
-          thickness: 1,
-        ),
         if (!shoppingVM.isBuying)
           Text(
             "\$ ${sheetVM.sheet!.money}",
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -87,7 +87,7 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                 ),
               ),
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: shoppingVM.showingHaveNoMoney ? AppColors.red : null,
               ),
@@ -111,19 +111,14 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
     final sheetVM = Provider.of<SheetViewModel>(context);
     final shoppingVM = Provider.of<ShoppingViewModel>(context);
 
-    return Consumer<ShoppingViewModel>(builder: (context, value, child) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) {
-          _orderItems();
-          _orderItemsMine();
-        },
-      );
-      return Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 8,
-        children: [
-          Row(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
+      children: [
+        SizedBox(
+          height: 42,
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             spacing: 32,
             children: [
@@ -227,100 +222,100 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                             ),
                           ),
                         ),
-                      if (!widget.isSeller)
-                        _buildToggleStore(shoppingVM, sheetVM, context),
                     ],
                   ),
                 ),
-              )
+              ),
+              if (!widget.isSeller)
+                _buildToggleStore(shoppingVM, sheetVM, context),
             ],
           ),
-          TextFormField(
-            controller: !widget.isSeller
-                ? shoppingVM.searchInventoryController
-                : shoppingVM.searchSellerController,
-            decoration: InputDecoration(
-              label: Text("Pesquisar item"),
-              suffix: InkWell(
-                onTap: () => (widget.isSeller)
-                    ? shoppingVM.onSearchOnSeller()
-                    : shoppingVM.onSearchOnInventory(),
-                child: Icon(Icons.search),
-              ),
+        ),
+        TextFormField(
+          controller: !widget.isSeller
+              ? shoppingVM.searchInventoryController
+              : shoppingVM.searchSellerController,
+          decoration: InputDecoration(
+            label: Text("Pesquisar item"),
+            suffix: InkWell(
+              onTap: () => (widget.isSeller)
+                  ? shoppingVM.onSearchOnSeller()
+                  : shoppingVM.onSearchOnInventory(),
+              child: Icon(Icons.search),
             ),
-            onFieldSubmitted: (value) => (widget.isSeller)
-                ? shoppingVM.onSearchOnSeller()
-                : shoppingVM.onSearchOnInventory(),
-            onChanged: (value) => (widget.isSeller)
-                ? shoppingVM.onSearchOnSeller()
-                : shoppingVM.onSearchOnInventory(),
           ),
-          Wrap(
-            children: context
-                .read<ShoppingViewModel>()
-                .itemRepo
-                .listCategories
-                .map((e) {
-              return ItemCategoryWidget(
-                category: e,
-                isSeller: widget.isSeller,
-                isActive: (!widget.isSeller)
-                    ? shoppingVM.listFilteredCategories.contains(e)
-                    : shoppingVM.listFilteredCategoriesSeller.contains(e),
-              );
-            }).toList(),
-          ),
-          Container(
-            padding: EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                  width: 1,
-                  color: Theme.of(context).textTheme.bodyMedium!.color!),
-            ),
-            child: (!widget.isSeller)
-                ? (shoppingVM.listInventoryItems.isEmpty)
-                    ? Center(child: Text("Nada por aqui"))
-                    : SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(
-                            shoppingVM.listInventoryItems.length,
-                            (index) {
-                              ItemSheet itemSheet =
-                                  shoppingVM.listInventoryItems[index];
-                              Item item = context
-                                  .read<ShoppingViewModel>()
-                                  .itemRepo
-                                  .getItemById(itemSheet.itemId)!;
-                              return ItemInventoryWidget(
-                                item: item,
-                                itemSheet: itemSheet,
-                              );
-                            },
-                          ),
-                        ),
-                      )
-                : (shoppingVM.listSellerItems.isEmpty)
-                    ? Center(child: Text("Nada por aqui"))
-                    : SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(
-                            shoppingVM.listSellerItems.length,
-                            (index) {
-                              Item item = shoppingVM.listSellerItems[index];
-                              return ItemSellerWidget(item: item);
-                            },
-                          ),
-                        ),
-                      ),
-          ),
-        ],
-      );
-    });
+          onFieldSubmitted: (value) => (widget.isSeller)
+              ? shoppingVM.onSearchOnSeller()
+              : shoppingVM.onSearchOnInventory(),
+          onChanged: (value) => (widget.isSeller)
+              ? shoppingVM.onSearchOnSeller()
+              : shoppingVM.onSearchOnInventory(),
+        ),
+        Wrap(
+          children: context
+              .read<ShoppingViewModel>()
+              .itemRepo
+              .listCategories
+              .map((e) {
+            return ItemCategoryWidget(
+              category: e,
+              isSeller: widget.isSeller,
+              isActive: (!widget.isSeller)
+                  ? shoppingVM.listFilteredCategories.contains(e)
+                  : shoppingVM.listFilteredCategoriesSeller.contains(e),
+            );
+          }).toList(),
+        ),
+        SizedBox(
+          height: 450 * (height(context) / 866),
+          child: DragTarget<Item>(onAcceptWithDetails: (details) {
+            if (!widget.isSeller) {
+              shoppingVM.buyItem(item: details.data);
+            }
+          }, builder: (context, candidateData, rejectedData) {
+            return Stack(
+              children: [
+                GridView.builder(
+                  shrinkWrap: false,
+                  padding: EdgeInsets.zero,
+                  physics: AlwaysScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 92,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                      childAspectRatio: 1),
+                  itemCount: (widget.isSeller)
+                      ? shoppingVM.listSellerItems.length
+                      : shoppingVM.listInventoryItems.length,
+                  itemBuilder: (context, index) {
+                    Item? item;
+                    ItemSheet? itemSheet;
+
+                    if (widget.isSeller) {
+                      item = shoppingVM.listSellerItems[index];
+                    } else {
+                      itemSheet = shoppingVM.listInventoryItems[index];
+                      item = shoppingVM.itemRepo.getItemById(itemSheet.itemId)!;
+                    }
+
+                    return ShoppingItemWidget(
+                      item: item,
+                      itemSheet: itemSheet,
+                    );
+                  },
+                ),
+                if (candidateData.isNotEmpty && !widget.isSeller)
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.white.withAlpha(30),
+                    child: Text("Comprar"),
+                  ),
+              ],
+            );
+          }),
+        ),
+      ],
+    );
   }
 
   Future<void> _loadItems() async {

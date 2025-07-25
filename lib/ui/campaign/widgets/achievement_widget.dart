@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/components/image_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/components/create_achievement.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/components/manage_achievement_players.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import '../../../domain/models/campaign_achievement.dart';
+import '../../_core/app_colors.dart';
+import '../../_core/components/image_dialog.dart';
+import '../components/create_achievement.dart';
+import '../components/manage_achievement_players.dart';
+import '../view/campaign_view_model.dart';
 import 'package:provider/provider.dart';
 
 class AchievementWidget extends StatelessWidget {

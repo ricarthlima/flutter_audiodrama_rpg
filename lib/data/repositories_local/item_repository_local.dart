@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories/item_repository.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/utils/i18n_categories.dart';
+import '../repositories/item_repository.dart';
+import '../../ui/_core/utils/i18n_categories.dart';
 import 'package:logger/logger.dart';
 
 import '../../domain/models/item.dart';
 
 class ItemRepositoryLocal extends ItemRepository {
-  static const String _filePath = 'assets/sheets/itens-0.0.5.json';
+  static const String _filePath = 'assets/sheets/itens-0.0.6.json';
 
   List<Item> _cachedItems = [];
   final List<String> _cachedCategories = [];

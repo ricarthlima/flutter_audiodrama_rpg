@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../domain/models/action_template.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
-import '../../../domain/models/action_template.dart';
 import 'action_widget.dart';
 
 class ListActionsWidget extends StatelessWidget {

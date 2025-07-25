@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/utils/download_json_file.dart';
-import 'package:flutter_rpg_audiodrama/ui/settings/settings_screen.dart';
+import '../../_core/utils/download_json_file.dart';
+import '../../settings/settings_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 

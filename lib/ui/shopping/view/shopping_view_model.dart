@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories/item_repository.dart';
+import '../../../data/repositories/item_repository.dart';
 
 import '../../../domain/models/item.dart';
 import '../../../domain/models/item_sheet.dart';
@@ -9,6 +9,7 @@ import '../../sheet/view/sheet_view_model.dart';
 class ShoppingViewModel extends ChangeNotifier {
   SheetViewModel sheetVM;
   final ItemRepository itemRepo;
+
   ShoppingViewModel({required this.sheetVM, required this.itemRepo})
       : listSellerItems = itemRepo.listItems;
 
@@ -49,7 +50,13 @@ class ShoppingViewModel extends ChangeNotifier {
     return _moneyController;
   }
 
-  buyItem({required Item item}) {
+  openInventory(List<ItemSheet> listItems) {
+    _listSheetItems = listItems;
+    isBuying = false;
+    notifyListeners();
+  }
+
+  Future<void> buyItem({required Item item}) async {
     double money = double.parse(_moneyController.text);
 
     if (money >= item.price || isFree) {
@@ -63,13 +70,17 @@ class ShoppingViewModel extends ChangeNotifier {
 
       if (!isFree) {
         money = money - item.price;
-        saveChanges(money: money);
+        await saveChanges(money: money);
+      } else {
+        await saveChanges();
       }
 
-      saveChanges();
+      onSearchOnInventory();
     } else {
       _showHaveNoMoneyFeedback();
     }
+
+    notifyListeners();
   }
 
   bool showingHaveNoMoney = false;
@@ -91,12 +102,6 @@ class ShoppingViewModel extends ChangeNotifier {
     double money = double.parse(_moneyController.text);
     money = money + item.price;
     saveChanges(money: money);
-    notifyListeners();
-  }
-
-  openInventory(List<ItemSheet> listItems) {
-    _listSheetItems = listItems;
-    isBuying = false;
     notifyListeners();
   }
 
@@ -163,7 +168,7 @@ class ShoppingViewModel extends ChangeNotifier {
     }
   }
 
-  saveChanges({double? money}) async {
+  Future<void> saveChanges({double? money}) async {
     sheetVM.sheet!.listItemSheet = _listSheetItems;
 
     if (money != null) {
@@ -268,5 +273,3 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 }
-
-class requried {}

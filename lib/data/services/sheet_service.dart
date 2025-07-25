@@ -3,12 +3,12 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_rpg_audiodrama/_core/utils/supabase_prefs.dart';
-import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
-import 'package:flutter_rpg_audiodrama/domain/exceptions/sheet_service_exceptions.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/sheet_model.dart';
+import '../../_core/utils/supabase_prefs.dart';
+import 'campaign_service.dart';
+import '../../domain/exceptions/sheet_service_exceptions.dart';
+import '../../domain/models/app_user.dart';
+import '../../domain/models/campaign_sheet.dart';
+import '../../domain/models/sheet_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 

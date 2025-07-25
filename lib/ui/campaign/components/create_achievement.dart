@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import '../../../domain/models/campaign_achievement.dart';
+import '../view/campaign_view_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 

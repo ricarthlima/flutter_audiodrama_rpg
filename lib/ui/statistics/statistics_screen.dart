@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/components/date_time_picker.dart';
-import 'package:flutter_rpg_audiodrama/ui/statistics/view/statistics_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/statistics/widgets/rolls_horizontal_bar.dart';
-import 'package:flutter_rpg_audiodrama/ui/statistics/widgets/rolls_ordered_list_widget.dart';
+import '../_core/components/date_time_picker.dart';
+import 'view/statistics_view_model.dart';
+import 'widgets/rolls_horizontal_bar.dart';
+import 'widgets/rolls_ordered_list_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../_core/dimensions.dart';

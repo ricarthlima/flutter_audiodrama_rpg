@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/action_lore.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/view/sheet_view_model.dart';
+import '../../../domain/models/action_lore.dart';
+import '../../_core/dimensions.dart';
+import '../../_core/fonts.dart';
+import '../view/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/action_template.dart';

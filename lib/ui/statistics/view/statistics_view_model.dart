@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/utils/roll_log_statistics.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
+import '../../../_core/utils/roll_log_statistics.dart';
+import '../../../domain/models/roll_log.dart';
 import 'package:intl/intl.dart';
 
 class StatisticsViewModel extends ChangeNotifier {

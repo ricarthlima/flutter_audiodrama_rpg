@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_rpg_audiodrama/_core/release_mode.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_vm_model.dart';
+import '../../_core/release_mode.dart';
+import '../../domain/models/campaign_vm_model.dart';
 import 'package:http/http.dart' as http;
 
 class CampaignVisualService {

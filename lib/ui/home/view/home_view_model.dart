@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/utils/home_tabs.dart';
+import '../../../data/services/campaign_service.dart';
+import '../../../domain/models/campaign_sheet.dart';
+import '../utils/home_tabs.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../data/services/sheet_service.dart';

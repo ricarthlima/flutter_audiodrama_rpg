@@ -1,6 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+enum ItemIconType {
+  icons,
+  materialDesignIcons,
+  fontAwesome,
+}
+
 class Item {
   final String id;
   final String name;
@@ -12,6 +18,9 @@ class Item {
   final int? maxUses;
   final List<String> listCategories;
 
+  final String? icon;
+  final ItemIconType? iconType;
+
   Item({
     required this.id,
     required this.name,
@@ -20,8 +29,10 @@ class Item {
     required this.description,
     required this.mechanic,
     required this.isFinite,
-    this.maxUses,
     required this.listCategories,
+    this.maxUses,
+    this.icon,
+    this.iconType,
   });
 
   Map<String, dynamic> toMap() {
@@ -35,6 +46,8 @@ class Item {
       'isFinite': isFinite,
       'maxUses': maxUses,
       'categories': listCategories,
+      'icon': icon,
+      'iconType': iconType?.name,
     };
   }
 
@@ -51,6 +64,10 @@ class Item {
       listCategories: (map['categories'] as List<dynamic>)
           .map((e) => e.toString())
           .toList(),
+      icon: map['icon'],
+      iconType: (map['iconType'] != null)
+          ? ItemIconType.values.where((e) => e.name == map['iconType']).first
+          : null,
     );
   }
 

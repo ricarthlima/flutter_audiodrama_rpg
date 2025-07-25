@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import '../../../domain/models/campaign_achievement.dart';
+import '../../_core/app_colors.dart';
+import '../../_core/fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../view/campaign_view_model.dart';

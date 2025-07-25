@@ -4,10 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_chat.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import '../../../_core/providers/user_provider.dart';
+import '../../../domain/models/app_user.dart';
+import '../../../domain/models/campaign_chat.dart';
+import '../../_core/fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
