@@ -627,7 +627,7 @@ class __ImageAreaWidgetState extends State<_ImageAreaWidget> {
         ),
         SizedBox(height: 16),
         SizedBox(
-          height: 600,
+          height: 300,
           child: MasonryGridView.builder(
             padding: EdgeInsets.only(bottom: 64),
             shrinkWrap: true,
@@ -861,7 +861,7 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
           ],
         ),
         SizedBox(
-          height: 500,
+          height: 300,
           child: ListView.builder(
             padding: EdgeInsets.only(bottom: 128),
             itemCount: listAudiosVisualization.length,
