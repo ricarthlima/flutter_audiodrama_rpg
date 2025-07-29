@@ -9,7 +9,6 @@
 .pub/
 build/
 coverage/
-lib/generated_plugin_registrant.dart
 .fvm/flutter_sdk
 
 # Evitar comitar pubspec.lock em pacotes (liberado para apps)

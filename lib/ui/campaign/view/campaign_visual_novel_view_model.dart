@@ -3,6 +3,11 @@ import '../../../data/services/campaign_visual_service.dart';
 import '../../../domain/models/campaign_visual.dart';
 import '../../../domain/models/campaign_vm_model.dart';
 
+enum PopulateType {
+  github,
+  server,
+}
+
 class CampaignVisualNovelViewModel extends ChangeNotifier {
   CampaignVisualDataModel data = CampaignVisualDataModel.empty();
 
@@ -41,12 +46,21 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
     await CampaignVisualService.instance.onRemoveAll(campaignId: campaignId);
   }
 
-  Future<void> onPopulate(String url) async {
-    Map<String, List<String>> mapLists =
-        await CampaignVisualService.instance.populateFromGitHub(
-      campaignId: campaignId,
-      repoUrl: url,
-    );
+  Future<void> onPopulate(
+      {required String url, required PopulateType type}) async {
+    Map<String, List<String>> mapLists = {};
+
+    switch (type) {
+      case PopulateType.github:
+        mapLists = await CampaignVisualService.instance.populateFromGitHub(
+          repoUrl: url,
+        );
+        break;
+      case PopulateType.server:
+        mapLists = await CampaignVisualService.instance.populateFromServer(
+          baseUrl: url,
+        );
+    }
 
     data.listBackgrounds = mapLists["backgrounds"]!
         .map(

@@ -190,6 +190,7 @@ class _CampaignOwnerEmpty extends StatelessWidget {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 16,
             children: [
               OutlinedButton.icon(
                 onPressed: () {
@@ -197,6 +198,13 @@ class _CampaignOwnerEmpty extends StatelessWidget {
                 },
                 icon: Icon(Icons.podcasts),
                 label: Text("Popular com GitHub"),
+              ),
+              OutlinedButton.icon(
+                onPressed: () {
+                  showTutorialServer(context);
+                },
+                icon: Icon(Icons.podcasts),
+                label: Text("Popular do servidor"),
               ),
             ],
           ),
@@ -317,21 +325,28 @@ class _ListSettings extends StatelessWidget {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-            spacing: 16,
+            spacing: 8,
             children: [
               OutlinedButton.icon(
                 onPressed: () {
                   showTutorialGitHub(context);
                 },
                 icon: Icon(Icons.podcasts),
-                label: Text("Popular com GitHub"),
+                label: Text("GitHub"),
+              ),
+              OutlinedButton.icon(
+                onPressed: () {
+                  showTutorialServer(context);
+                },
+                icon: Icon(Icons.podcasts),
+                label: Text("Servidor"),
               ),
               OutlinedButton.icon(
                 onPressed: () {
                   visualVM.onRemove();
                 },
                 icon: Icon(Icons.delete_forever),
-                label: Text("Limpar tudo"),
+                label: Text("Excluir tudo"),
               )
             ],
           ),

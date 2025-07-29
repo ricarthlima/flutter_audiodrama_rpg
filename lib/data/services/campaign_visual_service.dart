@@ -10,8 +10,50 @@ class CampaignVisualService {
   static final CampaignVisualService _instance = CampaignVisualService._();
   static CampaignVisualService get instance => _instance;
 
+  final subFolders = [
+    'ambiences',
+    'musics',
+    'backgrounds',
+    'portraits',
+    'sfxs',
+    'objects',
+    'maps',
+    'tokens',
+  ];
+
+  Future<Map<String, List<String>>> populateFromServer({
+    required String baseUrl,
+  }) async {
+    if (baseUrl.endsWith("/")) {
+      baseUrl = baseUrl.substring(0, baseUrl.length);
+    }
+    final uri = Uri.parse('$baseUrl/list.json');
+    final response = await http.get(uri);
+
+    if (response.statusCode != 200) {
+      throw Exception('Não foi possível carregar a lista de arquivos');
+    }
+
+    final List decoded = json.decode(response.body);
+    final allPaths = decoded.cast<String>();
+
+    final result = <String, List<String>>{
+      for (final folder in subFolders) folder: [],
+    };
+
+    for (final path in allPaths) {
+      for (final folder in subFolders) {
+        if (path.startsWith('$folder/')) {
+          result[folder]!.add('$baseUrl/$path');
+          break;
+        }
+      }
+    }
+
+    return result;
+  }
+
   Future<Map<String, List<String>>> populateFromGitHub({
-    required String campaignId,
     required String repoUrl,
   }) async {
     final uri = Uri.parse(repoUrl);
@@ -23,14 +65,6 @@ class CampaignVisualService {
     final repo = parts[1];
     final branch = 'main'; // ou 'master' dependendo do repositório
 
-    final subFolders = [
-      'ambiences',
-      'musics',
-      'backgrounds',
-      'portraits',
-      'sfxs',
-      'objects',
-    ];
     final result = <String, List<String>>{};
 
     for (final folder in subFolders) {
