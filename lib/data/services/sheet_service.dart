@@ -110,7 +110,7 @@ class SheetService {
       listActionLore: [],
       bio: "",
       notes: "",
-      listActiveConditions: [],
+      condition: 0,
       imageUrl: null,
       listWorks: [],
       listSharedIds: [],

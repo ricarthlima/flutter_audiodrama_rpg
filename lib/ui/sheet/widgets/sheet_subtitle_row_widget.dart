@@ -6,7 +6,6 @@ import '../../_core/fonts.dart';
 import '../../_core/stress_level.dart';
 import '../../_core/widgets/named_widget.dart';
 import '../../settings/view/settings_provider.dart';
-import '../components/conditions_dialog.dart';
 import '../view/sheet_interact.dart';
 import '../view/sheet_view_model.dart';
 
@@ -249,27 +248,53 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           ),
         ),
       NamedWidget(
-        isVisible: !sheetVM.isEditing &&
-            !sheetVM.isWindowed, //TODO: Poder mudar na janelinha
+        isVisible: !sheetVM.isEditing,
         title: "Estado",
         tooltip: "Clique para gerenciar seu estado.",
         hardHeight: 32,
         isShowRightSeparator: true,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 5.0),
-          child: InkWell(
-              onTap: sheetVM.isOwner
-                  ? () => showSheetConditionsDialog(context)
-                  : null,
-              child: Text(
-                sheetVM.getMajorCondition(),
-                style: TextStyle(
-                  fontFamily: FontFamily.bungee,
-                  color: (sheetVM.getMajorCondition() != "DESPERTO")
-                      ? AppColors.red
-                      : null,
+        child: Row(
+          children: [
+            if (sheetVM.isOwner)
+              SizedBox(
+                width: 32,
+                child: (sheetVM.sheet!.condition > 0)
+                    ? IconButton(
+                        onPressed: () {
+                          sheetVM.removeCondition();
+                        },
+                        padding: EdgeInsets.zero,
+                        icon: Icon(Icons.remove),
+                      )
+                    : Container(),
+              ),
+            SizedBox(
+              width: 110,
+              child: Center(
+                child: Text(
+                  getConditionName(sheetVM.sheet!.condition),
+                  style: TextStyle(
+                    fontFamily: FontFamily.bungee,
+                    color:
+                        (sheetVM.sheet!.condition > 0) ? AppColors.red : null,
+                  ),
                 ),
-              )),
+              ),
+            ),
+            if (sheetVM.isOwner)
+              SizedBox(
+                width: 32,
+                child: (sheetVM.sheet!.condition < 4)
+                    ? IconButton(
+                        onPressed: () {
+                          sheetVM.addCondition();
+                        },
+                        padding: EdgeInsets.zero,
+                        icon: Icon(Icons.add),
+                      )
+                    : Container(),
+              ),
+          ],
         ),
       ),
       if (!sheetVM.isEditing)
@@ -328,5 +353,22 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         ),
       )
     ];
+  }
+}
+
+String getConditionName(int condition) {
+  switch (condition) {
+    case 0:
+      return "DESPERTO";
+    case 1:
+      return "VULNERÁVEL";
+    case 2:
+      return "INCAPAZ";
+    case 3:
+      return "MORRENDO";
+    case 4:
+      return "MORTE";
+    default:
+      return "DESPERTO";
   }
 }

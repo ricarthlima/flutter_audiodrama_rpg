@@ -405,39 +405,55 @@ class SheetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool getHasCondition(String id) {
-    return sheet!.listActiveConditions.contains(id);
-  }
-
-  toggleCondition(String id) {
-    if (sheet!.listActiveConditions.contains(id)) {
-      sheet!.listActiveConditions.remove(id);
-    } else {
-      sheet!.listActiveConditions.add(id);
+  addCondition() {
+    if (sheet!.condition < 4) {
+      sheet!.condition = sheet!.condition + 1;
+      saveChanges();
     }
-    saveChanges();
     notifyListeners();
   }
 
-  String getMajorCondition() {
-    String result = "DESPERTO";
-
-    if (sheet!.listActiveConditions.isNotEmpty) {
-      sheet!.listActiveConditions.sort(
-        (a, b) {
-          int showA = conditionRepo.getConditionById(a)!.showingOrder;
-          int showB = conditionRepo.getConditionById(b)!.showingOrder;
-
-          return showA.compareTo(showB);
-        },
-      );
-
-      String idMajor = sheet!.listActiveConditions.last;
-      return conditionRepo.getConditionById(idMajor)!.name.toUpperCase();
+  removeCondition() {
+    if (sheet!.condition > 0) {
+      sheet!.condition = sheet!.condition - 1;
+      saveChanges();
     }
-
-    return result;
+    notifyListeners();
   }
+
+  // bool getHasCondition(String id) {
+  //   return sheet!.listActiveConditions.contains(id);
+  // }
+
+  // toggleCondition(String id) {
+  //   if (sheet!.listActiveConditions.contains(id)) {
+  //     sheet!.listActiveConditions.remove(id);
+  //   } else {
+  //     sheet!.listActiveConditions.add(id);
+  //   }
+  //   saveChanges();
+  //   notifyListeners();
+  // }
+
+  // String getMajorCondition() {
+  //   String result = "DESPERTO";
+
+  //   if (sheet!.listActiveConditions.isNotEmpty) {
+  //     sheet!.listActiveConditions.sort(
+  //       (a, b) {
+  //         int showA = conditionRepo.getConditionById(a)!.showingOrder;
+  //         int showB = conditionRepo.getConditionById(b)!.showingOrder;
+
+  //         return showA.compareTo(showB);
+  //       },
+  //     );
+
+  //     String idMajor = sheet!.listActiveConditions.last;
+  //     return conditionRepo.getConditionById(idMajor)!.name.toUpperCase();
+  //   }
+
+  //   return result;
+  // }
 
   onUploadBioImageClicked(XFile image) async {
     int sizeInBytes = await image.length();

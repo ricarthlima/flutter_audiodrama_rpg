@@ -26,7 +26,7 @@ class Sheet {
   String bio;
   String notes;
 
-  List<String> listActiveConditions;
+  int condition;
 
   String? imageUrl;
 
@@ -51,7 +51,7 @@ class Sheet {
     required this.listActionLore,
     required this.bio,
     required this.notes,
-    required this.listActiveConditions,
+    required this.condition,
     this.imageUrl,
     required this.listActiveWorks,
     required this.listWorks,
@@ -74,7 +74,7 @@ class Sheet {
     List<ActionLore>? listActionLore,
     String? bio,
     String? notes,
-    List<String>? listActiveConditions,
+    int? condition,
     String? imageUrl,
     List<String>? listActiveWorks,
     List<ActionValue>? listWorks,
@@ -96,7 +96,7 @@ class Sheet {
       listActionLore: listActionLore ?? this.listActionLore,
       bio: bio ?? this.bio,
       notes: notes ?? this.notes,
-      listActiveConditions: listActiveConditions ?? this.listActiveConditions,
+      condition: condition ?? this.condition,
       imageUrl: imageUrl ?? this.imageUrl,
       listActiveWorks: listActiveWorks ?? this.listActiveWorks,
       listWorks: listWorks ?? this.listWorks,
@@ -121,7 +121,7 @@ class Sheet {
       'listActionLore': listActionLore.map((x) => x.toMap()).toList(),
       "bio": bio,
       "notes": notes,
-      "listActiveConditions": listActiveConditions,
+      "condition": condition,
       "imageUrl": imageUrl,
       "listActiveWorks": listActiveWorks,
       "listWorks": listWorks.map((x) => x.toMap()).toList(),
@@ -178,11 +178,7 @@ class Sheet {
           : [],
       bio: (map["bio"] != null) ? map["bio"] : "",
       notes: (map["notes"] != null) ? map["notes"] : "",
-      listActiveConditions: (map["listActiveConditions"] != null)
-          ? (map["listActiveConditions"] as List<dynamic>)
-              .map((e) => e.toString())
-              .toList()
-          : [],
+      condition: (map["condition"] ?? 0) as int,
       imageUrl: map["imageUrl"],
       listWorks: (map["listWorks"] != null)
           ? List<ActionValue>.from(
@@ -231,7 +227,7 @@ class Sheet {
         listEquals(listActionLore, other.listActionLore) &&
         other.bio == bio &&
         other.notes == notes &&
-        other.listActiveConditions == listActiveConditions &&
+        other.condition == condition &&
         other.imageUrl == imageUrl &&
         other.listWorks == listWorks &&
         other.campaignId == campaignId &&
@@ -253,7 +249,7 @@ class Sheet {
         listActionLore.hashCode ^
         notes.hashCode ^
         bio.hashCode ^
-        listActiveConditions.hashCode ^
+        condition.hashCode ^
         imageUrl.hashCode ^
         listWorks.hashCode ^
         campaignId.hashCode ^
