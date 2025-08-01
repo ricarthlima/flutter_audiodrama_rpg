@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../_core/utils/download_json_file.dart';
-import '../../settings/settings_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -9,8 +7,6 @@ import '../../../domain/models/sheet_model.dart';
 import '../../../router.dart';
 import '../../_core/dimensions.dart';
 import '../view/sheet_view_model.dart';
-
-import 'package:badges/badges.dart' as badges;
 
 AppBar getSheetAppBar(BuildContext context) {
   final sheetVM = Provider.of<SheetViewModel>(context);
@@ -41,13 +37,6 @@ AppBar getSheetAppBar(BuildContext context) {
         ? Theme.of(context).scaffoldBackgroundColor.withAlpha(75)
         : null,
     actions: [
-      IconButton(
-        onPressed: () {
-          _downloadSheetJSON(sheetVM);
-        },
-        tooltip: "Exportar JSON",
-        icon: Icon(Icons.file_upload_outlined),
-      ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Text("•"),
@@ -75,85 +64,6 @@ AppBar getSheetAppBar(BuildContext context) {
             }
           },
         ),
-      if (sheetVM.sheet!.ownerId == FirebaseAuth.instance.currentUser!.uid)
-        Row(
-          children: [
-            Visibility(
-              visible: !isVertical(context),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text("•"),
-              ),
-            ),
-            Visibility(
-              visible: sheetVM.isEditing,
-              child: Text("Saia da edição para salvar"),
-            ),
-            Visibility(
-              visible: sheetVM.isEditing,
-              child: SizedBox(width: 8),
-            ),
-            Icon(Icons.edit),
-            Switch(
-              value: sheetVM.isEditing,
-              onChanged: (value) {
-                sheetVM.toggleEditMode();
-              },
-            ),
-          ],
-        ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Text("•"),
-      ),
-      IconButton(
-        onPressed: () {
-          showSettingsDialog(context);
-        },
-        icon: Icon(Icons.settings),
-      ),
-      if (!isVertical(context))
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text("•"),
-        ),
-      if (!isVertical(context))
-        Builder(
-          builder: (context) => IconButton(
-            onPressed: () {
-              Scaffold.of(context).openEndDrawer();
-              sheetVM.notificationCount = 0;
-            },
-            icon: badges.Badge(
-              showBadge: sheetVM.notificationCount >
-                  0, // Esconde se não houver notificações
-              badgeContent: Text(
-                sheetVM.notificationCount.toString(),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                ),
-              ),
-              position: badges.BadgePosition.topEnd(
-                top: -10,
-                end: -12,
-              ), // Ajusta posição
-              child: Icon(Icons.chat),
-            ),
-          ),
-        ),
-      SizedBox(width: 16),
     ],
   );
-}
-
-_downloadSheetJSON(SheetViewModel sheetVM) async {
-  Sheet? sheet = await sheetVM.saveChanges();
-
-  if (sheet != null) {
-    downloadJsonFile(
-      sheet.toMapWithoutId(),
-      "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json",
-    );
-  }
 }
