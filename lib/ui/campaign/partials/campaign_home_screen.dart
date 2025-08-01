@@ -194,13 +194,6 @@ class _CampaignOwnerEmpty extends StatelessWidget {
             children: [
               OutlinedButton.icon(
                 onPressed: () {
-                  showTutorialGitHub(context);
-                },
-                icon: Icon(Icons.podcasts),
-                label: Text("Popular com GitHub"),
-              ),
-              OutlinedButton.icon(
-                onPressed: () {
                   showTutorialServer(context);
                 },
                 icon: Icon(Icons.podcasts),
@@ -327,13 +320,6 @@ class _ListSettings extends StatelessWidget {
           child: Row(
             spacing: 8,
             children: [
-              OutlinedButton.icon(
-                onPressed: () {
-                  showTutorialGitHub(context);
-                },
-                icon: Icon(Icons.podcasts),
-                label: Text("GitHub"),
-              ),
               OutlinedButton.icon(
                 onPressed: () {
                   showTutorialServer(context);
