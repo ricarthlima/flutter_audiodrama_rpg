@@ -301,7 +301,6 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         NamedWidget(
           title: "Dados de Corpo",
           hardHeight: 32,
-          isShowRightSeparator: true,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
@@ -339,19 +338,30 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             ],
           ),
         ),
-      NamedWidget(
-        title: "Ofícios",
-        hardHeight: 32,
-        child: InkWell(
-          onTap: () {
-            onWorksPressed.call();
-          },
-          child: Icon(
-            Icons.workspace_premium_sharp,
-            size: 18,
+      if (sheetVM.sheet!.listActiveWorks.isNotEmpty)
+        NamedWidget(
+          title: "",
+          titleWidget: Text(
+            "Ofícios",
+            style: TextStyle(
+              fontFamily: FontFamily.sourceSerif4,
+              fontSize: 10,
+              color: Colors.amber.withAlpha(150),
+            ),
           ),
-        ),
-      )
+          hardHeight: 32,
+          isShowLeftSeparator: true,
+          child: InkWell(
+            onTap: () {
+              onWorksPressed.call();
+            },
+            child: Icon(
+              Icons.workspace_premium_sharp,
+              color: Colors.amber,
+              size: 18,
+            ),
+          ),
+        )
     ];
   }
 }

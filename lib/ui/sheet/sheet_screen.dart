@@ -189,7 +189,7 @@ class _SheetScreenState extends State<SheetScreen> {
           ),
         Container(
           padding: (sheetVM.isWindowed) ? null : EdgeInsets.only(top: 64),
-          margin: EdgeInsets.all(16),
+          margin: EdgeInsets.only(left: 8, right: 8, top: 8),
           height: double.infinity,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
