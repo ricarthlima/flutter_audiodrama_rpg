@@ -9,6 +9,7 @@ import 'data/repositories/condition_repository.dart';
 import 'data/repositories/item_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import '_core/providers/audio_provider.dart';
 import '_core/providers/user_provider.dart';
@@ -28,6 +29,7 @@ import 'ui/statistics/view/statistics_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  setUrlStrategy(PathUrlStrategy());
 
   await dotenv.load(fileName: "dotenv");
 
