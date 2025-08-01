@@ -4,14 +4,12 @@ import '../../../domain/models/action_value.dart';
 import '../../_core/color_filter_inverter.dart';
 import '../../_core/components/wip_snackbar.dart';
 import '../../_core/dimensions.dart';
-import '../components/action_lore_dialog.dart';
 import '../view/sheet_interact.dart';
 import 'package:provider/provider.dart';
 
 import '../../settings/view/settings_provider.dart';
 import '../helpers/enum_action_train_level.dart';
 import '../../../domain/models/action_template.dart';
-import '../components/action_dialog_tooltip.dart';
 import '../view/sheet_view_model.dart';
 import 'action_tooltip.dart';
 
@@ -36,10 +34,10 @@ class _ActionWidgetState extends State<ActionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<SheetViewModel>(context, listen: false);
+    final sheetVM = Provider.of<SheetViewModel>(context, listen: false);
     final themeProvider = Provider.of<SettingsProvider>(context);
 
-    av = viewModel.getTrainLevelByAction(widget.action.id);
+    av = sheetVM.getTrainLevelByAction(widget.action.id);
 
     _trainLevel = ActionTrainLevel.values[av];
 
@@ -51,12 +49,12 @@ class _ActionWidgetState extends State<ActionWidget> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (!viewModel.isEditing)
+            if (!sheetVM.isEditing)
               ColorFiltered(
                 colorFilter: getColorFilterInverter(
                     themeProvider.themeMode == ThemeMode.dark),
                 child: Tooltip(
-                  message: viewModel.getHelperText(widget.action),
+                  message: sheetVM.getHelperText(widget.action),
                   child: Image.asset(
                     _getHelperImageByType(),
                     height: 16,
@@ -64,10 +62,10 @@ class _ActionWidgetState extends State<ActionWidget> {
                   ),
                 ),
               ),
-            if (!viewModel.isEditing) SizedBox(width: 8),
+            if (!sheetVM.isEditing) SizedBox(width: 8),
             Flexible(
               child: InkWell(
-                onTap: (!viewModel.isEditing)
+                onTap: (!sheetVM.isEditing)
                     ? () {
                         SheetInteract.rollAction(
                           context: context,
@@ -75,10 +73,10 @@ class _ActionWidgetState extends State<ActionWidget> {
                         );
                       }
                     : null,
-                onLongPress: () => showDialogTip(context, widget.action),
+                onLongPress: () => sheetVM.showActionTip(widget.action),
                 onDoubleTap: () {
-                  if (viewModel.getTrainLevelByAction(widget.action.id) != 1) {
-                    showActionLoreDialog(context, widget.action);
+                  if (sheetVM.getTrainLevelByAction(widget.action.id) != 1) {
+                    sheetVM.showActionLore(widget.action);
                   } else {
                     showSnackBar(
                       context: context,
@@ -113,7 +111,7 @@ class _ActionWidgetState extends State<ActionWidget> {
                           widget.action.isResisted,
                       child: AnimatedSwitcher(
                         duration: Duration(milliseconds: 1000),
-                        child: viewModel.isEditing
+                        child: sheetVM.isEditing
                             ? (getZoomValue(context) > getLimiarZoom())
                                 ? DropdownButton<ActionTrainLevel>(
                                     value: _trainLevel,
@@ -145,7 +143,7 @@ class _ActionWidgetState extends State<ActionWidget> {
                                         setState(() {
                                           _trainLevel = value;
                                         });
-                                        viewModel.onActionValueChanged(
+                                        sheetVM.onActionValueChanged(
                                           ac: ActionValue(
                                             actionId: widget.action.id,
                                             value: value.index,
@@ -185,7 +183,7 @@ class _ActionWidgetState extends State<ActionWidget> {
             ),
           ],
         ),
-        if (getZoomValue(context) <= getLimiarZoom() && viewModel.isEditing)
+        if (getZoomValue(context) <= getLimiarZoom() && sheetVM.isEditing)
           DropdownButton<ActionTrainLevel>(
             value: _trainLevel,
             isDense: true,
@@ -216,7 +214,7 @@ class _ActionWidgetState extends State<ActionWidget> {
                 setState(() {
                   _trainLevel = value;
                 });
-                viewModel.onActionValueChanged(
+                sheetVM.onActionValueChanged(
                   ac: ActionValue(
                     actionId: widget.action.id,
                     value: value.index,
@@ -226,7 +224,7 @@ class _ActionWidgetState extends State<ActionWidget> {
               }
             },
           ),
-        if (getZoomValue(context) <= getLimiarZoom() && viewModel.isEditing)
+        if (getZoomValue(context) <= getLimiarZoom() && sheetVM.isEditing)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: Divider(),

@@ -9,27 +9,15 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/action_template.dart';
 
-showActionLoreDialog(
-  BuildContext context,
-  ActionTemplate action,
-) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return _ActionLoreDialog(action: action);
-    },
-  );
-}
-
-class _ActionLoreDialog extends StatefulWidget {
+class ActionLoreStackDialog extends StatefulWidget {
   final ActionTemplate action;
-  const _ActionLoreDialog({required this.action});
+  const ActionLoreStackDialog({super.key, required this.action});
 
   @override
-  State<_ActionLoreDialog> createState() => _ActionLoreDialogState();
+  State<ActionLoreStackDialog> createState() => _ActionLoreStackDialogState();
 }
 
-class _ActionLoreDialogState extends State<_ActionLoreDialog> {
+class _ActionLoreStackDialogState extends State<ActionLoreStackDialog> {
   final TextEditingController _loreController = TextEditingController();
 
   @override

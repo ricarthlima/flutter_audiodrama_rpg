@@ -9,34 +9,18 @@ import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import '../view/sheet_view_model.dart';
 
-Future<dynamic> showRollDialog({
-  required BuildContext context,
-  required RollLog rollLog,
-}) async {
-  return showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        elevation: 10,
-        backgroundColor: Colors.transparent,
-        child: RollRowWidget(rollLog: rollLog),
-      );
-    },
-  );
-}
-
-class RollRowWidget extends StatefulWidget {
+class RollStackDialog extends StatefulWidget {
   final RollLog rollLog;
-  const RollRowWidget({
+  const RollStackDialog({
     super.key,
     required this.rollLog,
   });
 
   @override
-  State<RollRowWidget> createState() => _RollRowWidgetState();
+  State<RollStackDialog> createState() => _RollStackDialogState();
 }
 
-class _RollRowWidgetState extends State<RollRowWidget> {
+class _RollStackDialogState extends State<RollStackDialog> {
   int i = 0;
   List<double> listOpacity = [0, 0, 0];
   bool isShowingHighlighted = false;

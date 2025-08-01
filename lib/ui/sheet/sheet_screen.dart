@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/stack_dialog.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/action_lore_dialog.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_tip_widget.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_widget.dart';
 import 'helpers/sheet_subpages.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -271,6 +275,30 @@ class _SheetScreenState extends State<SheetScreen> {
           padding: const EdgeInsets.only(right: 80.0),
           child: GroupNotifications(),
         ),
+        if (sheetVM.currentRollLog != null)
+          StackDialog(
+            onDismiss: () {
+              sheetVM.onStackDialogDismiss();
+            },
+            child: RollStackDialog(rollLog: sheetVM.currentRollLog!),
+          ),
+        if (sheetVM.showingRollTip != null)
+          StackDialog(
+            onDismiss: () {
+              sheetVM.onStackDialogDismiss();
+            },
+            child: RollTipStackDialog(
+              action: sheetVM.showingRollTip!,
+              isEffortUsed: sheetVM.showingRollTip!.isPreparation,
+            ),
+          ),
+        if (sheetVM.showingActionLore != null)
+          StackDialog(
+            onDismiss: () {
+              sheetVM.onStackDialogDismiss();
+            },
+            child: ActionLoreStackDialog(action: sheetVM.showingActionLore!),
+          ),
       ],
     );
   }

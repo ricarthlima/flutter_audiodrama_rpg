@@ -3,7 +3,6 @@ import '../../../domain/models/action_template.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
-import '../../sheet/components/action_lore_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../sheet/view/sheet_view_model.dart';
@@ -120,13 +119,13 @@ class _ActionLoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SheetViewModel sheetViewModel = Provider.of<SheetViewModel>(context);
+    SheetViewModel sheetVM = Provider.of<SheetViewModel>(context);
     return ListTile(
-      onTap: () => showActionLoreDialog(context, action),
+      onTap: () => sheetVM.showActionLore(action),
       title: Text(
-        "(${sheetViewModel.getTrainLevelByActionName(action.id)}) ${action.name}",
+        "(${sheetVM.getTrainLevelByActionName(action.id)}) ${action.name}",
         style: TextStyle(
-          color: (!sheetViewModel.sheet!.listActionLore
+          color: (!sheetVM.sheet!.listActionLore
                   .where((e) => e.actionId == action.id)
                   .isNotEmpty)
               ? AppColors.red
@@ -134,10 +133,10 @@ class _ActionLoreWidget extends StatelessWidget {
           fontFamily: FontFamily.bungee,
         ),
       ),
-      subtitle: (sheetViewModel.sheet!.listActionLore
+      subtitle: (sheetVM.sheet!.listActionLore
               .where((e) => e.actionId == action.id)
               .isNotEmpty)
-          ? SelectableText(sheetViewModel.sheet!.listActionLore
+          ? SelectableText(sheetVM.sheet!.listActionLore
               .firstWhere((e) => e.actionId == action.id)
               .loreText)
           : null,

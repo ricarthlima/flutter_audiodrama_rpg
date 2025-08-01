@@ -8,9 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../domain/models/action_template.dart';
 import '../../../domain/models/roll_log.dart';
 import '../../statistics/view/statistics_view_model.dart';
-import '../components/action_dialog_tooltip.dart';
 import '../components/roll_body_dialog.dart';
-import '../components/roll_dialog.dart';
 import 'sheet_view_model.dart';
 
 abstract class SheetInteract {
@@ -88,30 +86,7 @@ abstract class SheetInteract {
       isGettingLower: newActionValue <= 1,
     );
 
-    _showRolls(context: context, roll: roll);
     sheetVM.onRoll(roll: roll);
-  }
-
-  static Future<void> _showRolls(
-      {required BuildContext context, required RollLog roll}) async {
-    ActionTemplate? action =
-        context.read<SheetViewModel>().actionRepo.getActionById(roll.idAction);
-
-    if (!context
-            .read<SheetViewModel>()
-            .actionRepo
-            .isOnlyFreeOrPreparation(roll.idAction) ||
-        context.read<SheetViewModel>().actionRepo.isLuckAction(roll.idAction)) {
-      return showRollDialog(context: context, rollLog: roll);
-    } else {
-      if (action != null) {
-        return showDialogTip(
-          context,
-          action,
-          isEffortUsed: action.isPreparation,
-        );
-      }
-    }
   }
 
   static Future<void> onUploadBioImageClicked(BuildContext context) async {

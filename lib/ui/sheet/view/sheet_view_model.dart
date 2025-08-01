@@ -40,6 +40,10 @@ class SheetViewModel extends ChangeNotifier {
   // Atributos locais
   int modGlobalTrain = 0;
   bool isKeepingGlobalModifier = false;
+  RollLog? currentRollLog;
+  ActionTemplate? showingRollTip;
+  ActionTemplate? showingActionTip;
+  ActionTemplate? showingActionLore;
 
   // Outras fichas
   List<Sheet> listSheets = [];
@@ -557,5 +561,32 @@ class SheetViewModel extends ChangeNotifier {
       }
       saveChanges();
     }
+
+    if (!actionRepo.isOnlyFreeOrPreparation(roll.idAction) ||
+        actionRepo.isLuckAction(roll.idAction)) {
+      currentRollLog = roll;
+    } else {
+      showingRollTip = action;
+    }
+
+    notifyListeners();
+  }
+
+  showActionTip(ActionTemplate action) {
+    showingActionTip = action;
+    notifyListeners();
+  }
+
+  showActionLore(ActionTemplate action) {
+    showingActionLore = action;
+    notifyListeners();
+  }
+
+  onStackDialogDismiss() {
+    currentRollLog = null;
+    showingRollTip = null;
+    showingActionTip = null;
+    showingActionLore = null;
+    notifyListeners();
   }
 }
