@@ -41,37 +41,35 @@ class ListActionsWidget extends StatelessWidget {
         right: 16,
         left: 16,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 8,
-        children: [
-          Text(
-            name,
-            style: TextStyle(
-              fontSize: isVertical(context) ? 16 : getZoomFactor(context, 18),
-              fontFamily: FontFamily.bungee,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: List.generate(
-                // TODO: Ações ativadas por padrão config de campanha
-                listActions.where((e) => e.enabled).length,
-                (index) {
-                  ActionTemplate action =
-                      listActions.where((e) => e.enabled).toList()[index];
-                  return ActionWidget(
-                    action: action,
-                    isWork: isWork,
-                  );
-                },
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 8,
+          children: [
+            Text(
+              name,
+              style: TextStyle(
+                fontSize: isVertical(context) ? 16 : getZoomFactor(context, 18),
+                fontFamily: FontFamily.bungee,
+                fontWeight: FontWeight.bold,
+                color: color,
               ),
             ),
-          ),
-        ],
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: // TODO: Ações ativadas por padrão config de campanha
+                  listActions.where((e) => e.enabled).length,
+              itemBuilder: (context, index) {
+                ActionTemplate action =
+                    listActions.where((e) => e.enabled).toList()[index];
+                return ActionWidget(
+                  action: action,
+                  isWork: isWork,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

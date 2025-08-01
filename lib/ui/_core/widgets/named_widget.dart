@@ -14,6 +14,8 @@ class NamedWidget extends StatelessWidget {
   final bool isShowRightSeparator;
   final bool isShowLeftSeparator;
 
+  final EdgeInsets? padding;
+
   const NamedWidget({
     super.key,
     required this.title,
@@ -25,6 +27,7 @@ class NamedWidget extends StatelessWidget {
     this.tooltip = "",
     this.isShowLeftSeparator = false,
     this.isShowRightSeparator = false,
+    this.padding,
   });
 
   @override
@@ -35,15 +38,15 @@ class NamedWidget extends StatelessWidget {
         message: tooltip,
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          spacing: 8,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (isShowLeftSeparator)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: padding ?? EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text("•"),
               ),
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: (isLeft)
                   ? CrossAxisAlignment.start
                   : CrossAxisAlignment.center,

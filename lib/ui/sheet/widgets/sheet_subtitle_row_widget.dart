@@ -15,12 +15,13 @@ class SheetSubtitleRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 16,
-        children: _getListWidget(context),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(
+        _getListWidget(context).length,
+        (index) {
+          return _getListWidget(context)[index];
+        },
       ),
     );
   }
@@ -33,26 +34,19 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         title: "Estresse",
         tooltip: "Nível de estresse atual",
         hardHeight: 32,
-        isShowRightSeparator: true,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Visibility(
-              visible: sheetVM.isEditing || sheetVM.isWindowed,
-              child: SizedBox(
-                width: 32,
-                child: (sheetVM.sheet!.stressLevel > 0)
-                    ? IconButton(
-                        onPressed: () {
-                          sheetVM.changeStressLevel(isAdding: false);
-                        },
-                        padding: EdgeInsets.zero,
-                        icon: Icon(Icons.remove),
-                      )
-                    : Container(),
-              ),
+            IconButton(
+              onPressed: (sheetVM.sheet!.stressLevel > 0)
+                  ? () {
+                      sheetVM.changeStressLevel(isAdding: false);
+                    }
+                  : null,
+              padding: EdgeInsets.zero,
+              icon: Icon(Icons.remove),
             ),
             SizedBox(
               width: 100,
@@ -64,20 +58,14 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                 ),
               ),
             ),
-            Visibility(
-              visible: sheetVM.isEditing || sheetVM.isWindowed,
-              child: SizedBox(
-                width: 32,
-                child: (sheetVM.sheet!.stressLevel < StressLevel.total - 1)
-                    ? IconButton(
-                        onPressed: () {
-                          sheetVM.changeStressLevel();
-                        },
-                        padding: EdgeInsets.zero,
-                        icon: Icon(Icons.add),
-                      )
-                    : Container(),
-              ),
+            IconButton(
+              onPressed: (sheetVM.sheet!.stressLevel < StressLevel.total - 1)
+                  ? () {
+                      sheetVM.changeStressLevel();
+                    }
+                  : null,
+              padding: EdgeInsets.zero,
+              icon: Icon(Icons.add),
             ),
           ],
         ),
@@ -86,60 +74,51 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         title: "Esforço",
         tooltip: "Carga de esforço acumulada",
         hardHeight: 32,
-        isShowRightSeparator: true,
+        isShowLeftSeparator: true,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Visibility(
-              visible: sheetVM.isEditing || sheetVM.isWindowed,
-              child: SizedBox(
-                width: 32,
-                child: (sheetVM.sheet!.effortPoints > -1)
-                    ? IconButton(
-                        onPressed: () {
-                          sheetVM.changeEffortPoints(
-                            isAdding: false,
-                          );
-                        },
-                        padding: EdgeInsets.zero,
-                        icon: Icon(Icons.remove),
-                      )
-                    : Container(),
+            IconButton(
+              onPressed: (sheetVM.sheet!.effortPoints > -1)
+                  ? () {
+                      sheetVM.changeEffortPoints(
+                        isAdding: false,
+                      );
+                    }
+                  : null,
+              padding: EdgeInsets.zero,
+              icon: Icon(Icons.remove),
+            ),
+            SizedBox(
+              width: 100,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: List.generate(
+                  3,
+                  (index) {
+                    return Opacity(
+                      opacity: (index <= sheetVM.sheet!.effortPoints) ? 1 : 0.5,
+                      child: Image.asset(
+                        (themeProvider.themeMode == ThemeMode.dark)
+                            ? "assets/images/brain.png"
+                            : "assets/images/brain-i.png",
+                        width: 16,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-            Row(
-              spacing: 8,
-              children: List.generate(
-                3,
-                (index) {
-                  return Opacity(
-                    opacity: (index <= sheetVM.sheet!.effortPoints) ? 1 : 0.5,
-                    child: Image.asset(
-                      (themeProvider.themeMode == ThemeMode.dark)
-                          ? "assets/images/brain.png"
-                          : "assets/images/brain-i.png",
-                      width: 16,
-                    ),
-                  );
-                },
-              ),
-            ),
-            Visibility(
-              visible: sheetVM.isEditing || sheetVM.isWindowed,
-              child: SizedBox(
-                width: 32,
-                child: (sheetVM.sheet!.effortPoints < 3)
-                    ? IconButton(
-                        onPressed: () {
-                          sheetVM.changeEffortPoints();
-                        },
-                        padding: EdgeInsets.zero,
-                        icon: Icon(Icons.add),
-                      )
-                    : Container(),
-              ),
+            IconButton(
+              onPressed: (sheetVM.sheet!.effortPoints < 3)
+                  ? () {
+                      sheetVM.changeEffortPoints();
+                    }
+                  : null,
+              padding: EdgeInsets.zero,
+              icon: Icon(Icons.add),
             ),
           ],
         ),
@@ -148,25 +127,22 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         isVisible: !sheetVM.isEditing,
         title: "Mod. Global",
         tooltip: "Modificador global de treinamento",
+        isShowLeftSeparator: true,
         hardHeight: 32,
-        isShowRightSeparator: true,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (sheetVM.isOwner)
-              SizedBox(
-                width: 32,
-                child: (sheetVM.modGlobalTrain > -4)
-                    ? IconButton(
-                        onPressed: () {
-                          sheetVM.changeModGlobal(isAdding: false);
-                        },
-                        padding: EdgeInsets.zero,
-                        icon: Icon(Icons.remove),
-                      )
-                    : Container(),
+              IconButton(
+                onPressed: (sheetVM.modGlobalTrain > -4)
+                    ? () {
+                        sheetVM.changeModGlobal(isAdding: false);
+                      }
+                    : null,
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.remove),
               ),
             Tooltip(
               message: "Clique para manter o modificador",
@@ -192,81 +168,34 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               ),
             ),
             if (sheetVM.isOwner)
-              SizedBox(
-                width: 32,
-                child: (sheetVM.modGlobalTrain < 4)
-                    ? IconButton(
-                        onPressed: () {
-                          sheetVM.changeModGlobal();
-                        },
-                        padding: EdgeInsets.zero,
-                        icon: Icon(Icons.add),
-                      )
-                    : Container(),
+              IconButton(
+                onPressed: (sheetVM.modGlobalTrain < 4)
+                    ? () {
+                        sheetVM.changeModGlobal();
+                      }
+                    : null,
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.add),
               ),
           ],
         ),
       ),
-      if (!sheetVM.isEditing)
-        NamedWidget(
-          title: "Descansos",
-          hardHeight: 32,
-          isShowRightSeparator: true,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 8,
-            children: [
-              Tooltip(
-                message: "Descanso curto",
-                child: InkWell(
-                  onTap: sheetVM.isOwner
-                      ? () {
-                          sheetVM.changeEffortPoints(isAdding: false);
-                        }
-                      : null,
-                  child: Icon(
-                    Icons.fastfood_outlined,
-                    size: 18,
-                  ),
-                ),
-              ),
-              Tooltip(
-                message: "Descanso longo",
-                child: InkWell(
-                  onTap: sheetVM.isOwner
-                      ? () {
-                          sheetVM.changeStressLevel(isAdding: false);
-                        }
-                      : null,
-                  child: Icon(
-                    Icons.bed,
-                    size: 18,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
       NamedWidget(
         isVisible: !sheetVM.isEditing,
         title: "Estado",
-        tooltip: "Clique para gerenciar seu estado.",
+        isShowLeftSeparator: true,
         hardHeight: 32,
-        isShowRightSeparator: true,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (sheetVM.isOwner)
-              SizedBox(
-                width: 32,
-                child: (sheetVM.sheet!.condition > 0)
-                    ? IconButton(
-                        onPressed: () {
-                          sheetVM.removeCondition();
-                        },
-                        padding: EdgeInsets.zero,
-                        icon: Icon(Icons.remove),
-                      )
-                    : Container(),
+              IconButton(
+                onPressed: (sheetVM.sheet!.condition > 0)
+                    ? () {
+                        sheetVM.removeCondition();
+                      }
+                    : null,
+                icon: Icon(Icons.remove),
               ),
             SizedBox(
               width: 110,
@@ -282,86 +211,127 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               ),
             ),
             if (sheetVM.isOwner)
-              SizedBox(
-                width: 32,
-                child: (sheetVM.sheet!.condition < 4)
-                    ? IconButton(
-                        onPressed: () {
-                          sheetVM.addCondition();
-                        },
-                        padding: EdgeInsets.zero,
-                        icon: Icon(Icons.add),
-                      )
-                    : Container(),
-              ),
+              IconButton(
+                onPressed: (sheetVM.sheet!.condition < 4)
+                    ? () {
+                        sheetVM.addCondition();
+                      }
+                    : null,
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.add),
+              )
           ],
         ),
       ),
-      if (!sheetVM.isEditing)
-        NamedWidget(
-          title: "Dados de Corpo",
-          hardHeight: 32,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 8,
-            children: [
-              Tooltip(
-                message: "Leve",
-                child: InkWell(
-                  onTap: () {
-                    SheetInteract.onRollBodyDice(
-                      context: context,
-                      isSerious: false,
-                    );
-                  },
-                  child: Icon(
-                    Icons.personal_injury_outlined,
-                    size: 18,
-                  ),
+      NamedWidget(
+        isVisible: !sheetVM.isEditing,
+        title: "Descansos",
+        hardHeight: 32,
+        isShowLeftSeparator: true,
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 8,
+          children: [
+            Tooltip(
+              message: "Descanso curto",
+              child: InkWell(
+                onTap: sheetVM.isOwner
+                    ? () {
+                        sheetVM.changeEffortPoints(isAdding: false);
+                      }
+                    : null,
+                child: Icon(
+                  Icons.fastfood_outlined,
+                  size: 18,
                 ),
               ),
-              Tooltip(
-                message: "Grave",
-                child: InkWell(
-                  onTap: () {
-                    SheetInteract.onRollBodyDice(
-                      context: context,
-                      isSerious: true,
-                    );
-                  },
-                  child: Icon(
-                    Icons.dangerous_outlined,
-                    size: 18,
-                  ),
+            ),
+            Tooltip(
+              message: "Descanso longo",
+              child: InkWell(
+                onTap: sheetVM.isOwner
+                    ? () {
+                        sheetVM.changeStressLevel(isAdding: false);
+                      }
+                    : null,
+                child: Icon(
+                  Icons.bed,
+                  size: 18,
                 ),
               ),
-            ],
+            ),
+          ],
+        ),
+      ),
+      NamedWidget(
+        isVisible: !sheetVM.isEditing,
+        hardHeight: 32,
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        title: "Dados de Corpo",
+        isShowLeftSeparator: true,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 8,
+          children: [
+            Tooltip(
+              message: "Leve",
+              child: InkWell(
+                onTap: () {
+                  SheetInteract.onRollBodyDice(
+                    context: context,
+                    isSerious: false,
+                  );
+                },
+                child: Icon(
+                  Icons.personal_injury_outlined,
+                  size: 18,
+                ),
+              ),
+            ),
+            Tooltip(
+              message: "Grave",
+              child: InkWell(
+                onTap: () {
+                  SheetInteract.onRollBodyDice(
+                    context: context,
+                    isSerious: true,
+                  );
+                },
+                child: Icon(
+                  Icons.dangerous_outlined,
+                  size: 18,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      NamedWidget(
+        isVisible: sheetVM.sheet!.listActiveWorks.isNotEmpty,
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        isShowLeftSeparator: true,
+        title: "",
+        hardHeight: 32,
+        titleWidget: Text(
+          "Ofícios",
+          style: TextStyle(
+            fontFamily: FontFamily.sourceSerif4,
+            fontSize: 10,
+            color: Colors.amber.withAlpha(150),
           ),
         ),
-      if (sheetVM.sheet!.listActiveWorks.isNotEmpty)
-        NamedWidget(
-          title: "",
-          titleWidget: Text(
-            "Ofícios",
-            style: TextStyle(
-              fontFamily: FontFamily.sourceSerif4,
-              fontSize: 10,
-              color: Colors.amber.withAlpha(150),
-            ),
+        child: InkWell(
+          onTap: () {
+            onWorksPressed.call();
+          },
+          child: Icon(
+            Icons.workspace_premium_sharp,
+            color: Colors.amber,
+            size: 18,
           ),
-          hardHeight: 32,
-          isShowLeftSeparator: true,
-          child: InkWell(
-            onTap: () {
-              onWorksPressed.call();
-            },
-            child: Icon(
-              Icons.workspace_premium_sharp,
-              color: Colors.amber,
-              size: 18,
-            ),
-          ),
-        )
+        ),
+      )
     ];
   }
 }

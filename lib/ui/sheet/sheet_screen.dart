@@ -186,59 +186,45 @@ class _SheetScreenState extends State<SheetScreen> {
             blendMode: BlendMode.dstIn,
             child: Image.network(
               sheetVM.sheet!.imageUrl!,
-              height: (isVertical(context)) ? 175 : 250,
+              height: 160,
               width: width(context),
               fit: BoxFit.fitWidth,
             ),
           ),
         Container(
           padding: EdgeInsets.all(16),
-          height: double.infinity,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 16,
             children: [
-              !isVertical(context)
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 16,
-                          children: [
-                            if (!isVertical(context))
-                              _buildImageWidget(sheetVM: sheetVM, height: 115),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: 4,
-                              children: [
-                                _getNameWidget(sheetVM),
-                                SheetSubtitleRowWidget(
-                                  onWorksPressed: _rollToShowWorks,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        if (width(context) > 750)
-                          _buildLeftInformations(sheetVM),
-                      ],
-                    )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 8,
-                      children: [
-                        _getNameWidget(sheetVM),
-                        SheetSubtitleRowWidget(
-                          onWorksPressed: _rollToShowWorks,
-                        ),
-                      ],
-                    ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 16,
+                    children: [
+                      if (!isVertical(context))
+                        _buildImageWidget(sheetVM: sheetVM, height: 115),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 4,
+                        children: [
+                          _getNameWidget(sheetVM),
+                          SheetSubtitleRowWidget(
+                            onWorksPressed: _rollToShowWorks,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  if (width(context) > 750) _buildLeftInformations(sheetVM),
+                ],
+              ),
               Flexible(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
