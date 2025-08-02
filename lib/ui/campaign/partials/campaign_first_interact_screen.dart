@@ -43,9 +43,9 @@ class _CampaignFirstInteractScreenState
             blendMode: BlendMode.dstIn,
             child: Image.network(
               campaignVM.campaign!.imageBannerUrl!,
-              height: 400,
+              height: height(context),
               width: width(context),
-              fit: BoxFit.fitWidth,
+              fit: BoxFit.cover,
             ),
           ),
         SizedBox(
@@ -56,7 +56,7 @@ class _CampaignFirstInteractScreenState
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  campaignVM.campaign!.name ?? "",
+                  campaignVM.campaign!.name ?? "Sem nome",
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: isVertical(context) ? 18 : 48,
@@ -65,7 +65,10 @@ class _CampaignFirstInteractScreenState
                   ),
                 ),
                 Text(
-                  campaignVM.campaign!.description ?? "...",
+                  campaignVM.campaign!.description == null ||
+                          campaignVM.campaign!.description == ""
+                      ? "Clique para entrar na campanha"
+                      : campaignVM.campaign!.description!,
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 32),

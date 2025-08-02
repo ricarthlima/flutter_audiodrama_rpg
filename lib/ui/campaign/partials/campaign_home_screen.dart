@@ -87,7 +87,7 @@ class _CampaignHomeGuest extends StatelessWidget {
                           child: Image.network(
                             visualVM.data.backgroundActive!.url,
                             key: ValueKey(visualVM.data.backgroundActive!.url),
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fitWidth,
                             width: width(context),
                             height: height(context),
                           ),
