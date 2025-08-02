@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/app_colors.dart';
@@ -11,17 +12,31 @@ import '../view/sheet_view_model.dart';
 
 class SheetSubtitleRowWidget extends StatelessWidget {
   final Function onWorksPressed;
-  const SheetSubtitleRowWidget({super.key, required this.onWorksPressed});
+  SheetSubtitleRowWidget({super.key, required this.onWorksPressed});
 
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(
-        _getListWidget(context).length,
-        (index) {
-          return _getListWidget(context)[index];
-        },
+    return Scrollbar(
+      controller: _scrollController,
+      thumbVisibility: isVertical(context),
+      child: Padding(
+        padding: EdgeInsets.only(bottom: isVertical(context) ? 16 : 0),
+        child: SizedBox(
+          width: (isVertical(context)) ? width(context) - 32 : null,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(
+                _getListWidget(context).length,
+                (index) {
+                  return _getListWidget(context)[index];
+                },
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

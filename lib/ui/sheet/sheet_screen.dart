@@ -6,9 +6,7 @@ import 'package:flutter_rpg_audiodrama/ui/sheet/components/action_lore_dialog.da
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_tip_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_widget.dart';
 import 'package:go_router/go_router.dart';
-import '../../domain/models/sheet_model.dart';
 import '../../router.dart';
-import '../_core/utils/download_json_file.dart';
 import 'helpers/sheet_subpages.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -230,7 +228,7 @@ class _SheetScreenState extends State<SheetScreen> {
                       ),
                     ],
                   ),
-                  if (width(context) > 750) _buildLeftInformations(sheetVM),
+                  if (width(context) > 750) _buildRightInformations(sheetVM),
                 ],
               ),
               Flexible(
@@ -243,7 +241,8 @@ class _SheetScreenState extends State<SheetScreen> {
                         index: sheetVM.currentPage.index,
                         children: [
                           SheetActionsColumnsWidget(
-                              scrollController: rowScroll),
+                            scrollController: rowScroll,
+                          ),
                           ShoppingDialogScreen(),
                           SheetNotesScreen(),
                           SheetStatisticsScreen(),
@@ -312,149 +311,145 @@ class _SheetScreenState extends State<SheetScreen> {
     SheetViewModel sheetVM,
     SettingsProvider themeProvider,
   ) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          spacing: 4,
-          children: [
-            Opacity(
-              opacity: (sheetVM.currentPage == SheetSubpages.sheet) ? 1 : 0.5,
-              child: IconButton(
-                tooltip: "Ficha",
-                iconSize: 32,
-                onPressed: () {
-                  sheetVM.currentPage = SheetSubpages.sheet;
-                },
-                icon: Icon(Icons.list_alt),
-              ),
-            ),
-            Opacity(
-              opacity: (sheetVM.currentPage == SheetSubpages.items) ? 1 : 0.5,
-              child: IconButton(
-                tooltip: "Itens",
-                iconSize: 32,
-                onPressed: () {
-                  SheetInteract.onItemsButtonClicked(context);
-                },
-                icon: Icon(MdiIcons.treasureChest),
-              ),
-            ),
-            Opacity(
-              opacity: (sheetVM.currentPage == SheetSubpages.notes) ? 1 : 0.5,
-              child: IconButton(
-                tooltip: "Caderneta",
-                iconSize: 32,
-                onPressed: () {
-                  SheetInteract.onNotesButtonClicked(context);
-                },
-                icon: Icon(Icons.description),
-              ),
-            ),
-            Opacity(
-              opacity:
-                  (sheetVM.currentPage == SheetSubpages.statistics) ? 1 : 0.5,
-              child: IconButton(
-                tooltip: "Estatísticas",
-                iconSize: 32,
-                onPressed: () {
-                  SheetInteract.onStatisticsButtonClicked(context);
-                },
-                icon: Icon(Icons.bar_chart),
-              ),
-            ),
-            Opacity(
-              opacity:
-                  (sheetVM.currentPage == SheetSubpages.settings) ? 1 : 0.5,
-              child: IconButton(
-                onPressed: () => SheetInteract.onSettingsButtonClicked(context),
-                tooltip: "Configurações",
-                iconSize: 32,
-                icon: Icon(Icons.settings),
-              ),
-            ),
-          ],
-        ),
-        Column(
-          children: [
-            Builder(
-              builder: (context) => IconButton(
-                onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
-                  sheetVM.notificationCount = 0;
-                },
-                tooltip: "Histórico de Rolagens",
-                iconSize: 32,
-                icon: badges.Badge(
-                  showBadge: sheetVM.notificationCount >
-                      0, // Esconde se não houver notificações
-                  badgeContent: Text(
-                    sheetVM.notificationCount.toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                  ),
-                  position: badges.BadgePosition.topEnd(
-                    top: -10,
-                    end: -12,
-                  ), // Ajusta posição
-                  child: Icon(Icons.chat),
-                ),
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                _downloadSheetJSON(sheetVM);
-              },
-              iconSize: 32,
-              tooltip: "Exportar JSON",
-              icon: Icon(Icons.file_upload_outlined),
-            ),
-            if (sheetVM.sheet!.ownerId ==
-                FirebaseAuth.instance.currentUser!.uid)
-              Tooltip(
-                message: "Editar",
-                child: Transform.scale(
-                  scale: 0.6,
-                  child: Switch(
-                    value: sheetVM.isEditing,
-                    thumbIcon: WidgetStateProperty.resolveWith(
-                      (states) {
-                        if (states.contains(WidgetState.selected)) {
-                          return Icon(Icons.save);
-                        }
-                        return Icon(Icons.edit);
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            spacing: 4,
+            children: [
+              if (sheetVM.sheet!.ownerId ==
+                  FirebaseAuth.instance.currentUser!.uid)
+                Tooltip(
+                  message: "Editar",
+                  child: Transform.scale(
+                    scale: 0.6,
+                    child: Switch(
+                      value: sheetVM.isEditing,
+                      thumbIcon: WidgetStateProperty.resolveWith(
+                        (states) {
+                          if (states.contains(WidgetState.selected)) {
+                            return Icon(Icons.save);
+                          }
+                          return Icon(Icons.edit);
+                        },
+                      ),
+                      padding: EdgeInsets.zero,
+                      onChanged: (value) {
+                        sheetVM.toggleEditMode();
                       },
                     ),
-                    padding: EdgeInsets.zero,
-                    onChanged: (value) {
-                      sheetVM.toggleEditMode();
-                    },
                   ),
                 ),
+              Opacity(
+                opacity: (sheetVM.currentPage == SheetSubpages.sheet) ? 1 : 0.5,
+                child: IconButton(
+                  tooltip: "Ficha",
+                  iconSize: 32,
+                  onPressed: () {
+                    sheetVM.currentPage = SheetSubpages.sheet;
+                  },
+                  icon: Icon(Icons.list_alt),
+                ),
               ),
-            if (!sheetVM.isWindowed)
-              IconButton(
-                tooltip: "Voltar",
-                onPressed: () {
-                  if (context.canPop()) {
-                    context.pop();
-                  } else {
-                    AppRouter().goHome(context: context);
-                  }
-                },
-                icon: Icon(Icons.home),
+              Opacity(
+                opacity: (sheetVM.currentPage == SheetSubpages.items) ? 1 : 0.5,
+                child: IconButton(
+                  tooltip: "Itens",
+                  iconSize: 32,
+                  onPressed: () {
+                    SheetInteract.onItemsButtonClicked(context);
+                  },
+                  icon: Icon(MdiIcons.treasureChest),
+                ),
               ),
-            SizedBox(height: 8)
-          ],
-        )
-      ],
+              if (!isVertical(context))
+                Opacity(
+                  opacity:
+                      (sheetVM.currentPage == SheetSubpages.notes) ? 1 : 0.5,
+                  child: IconButton(
+                    tooltip: "Caderneta",
+                    iconSize: 32,
+                    onPressed: () {
+                      SheetInteract.onNotesButtonClicked(context);
+                    },
+                    icon: Icon(Icons.description),
+                  ),
+                ),
+              if (!isVertical(context))
+                Opacity(
+                  opacity: (sheetVM.currentPage == SheetSubpages.statistics)
+                      ? 1
+                      : 0.5,
+                  child: IconButton(
+                    tooltip: "Estatísticas",
+                    iconSize: 32,
+                    onPressed: () {
+                      SheetInteract.onStatisticsButtonClicked(context);
+                    },
+                    icon: Icon(Icons.bar_chart),
+                  ),
+                ),
+              Opacity(
+                opacity:
+                    (sheetVM.currentPage == SheetSubpages.settings) ? 1 : 0.5,
+                child: IconButton(
+                  onPressed: () =>
+                      SheetInteract.onSettingsButtonClicked(context),
+                  tooltip: "Configurações",
+                  iconSize: 32,
+                  icon: Icon(Icons.settings),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 32),
+          Builder(
+            builder: (context) => IconButton(
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+                sheetVM.notificationCount = 0;
+              },
+              tooltip: "Histórico de Rolagens",
+              iconSize: 32,
+              icon: badges.Badge(
+                showBadge: sheetVM.notificationCount >
+                    0, // Esconde se não houver notificações
+                badgeContent: Text(
+                  sheetVM.notificationCount.toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+                position: badges.BadgePosition.topEnd(
+                  top: -10,
+                  end: -12,
+                ), // Ajusta posição
+                child: Icon(Icons.chat),
+              ),
+            ),
+          ),
+          if (!sheetVM.isWindowed)
+            IconButton(
+              tooltip: "Voltar",
+              iconSize: 32,
+              onPressed: () {
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  AppRouter().goHome(context: context);
+                }
+              },
+              icon: Icon(Icons.home),
+            ),
+        ],
+      ),
     );
   }
 
-  Widget _buildLeftInformations(SheetViewModel sheetVM) {
+  Widget _buildRightInformations(SheetViewModel sheetVM) {
     double trainFontSize = 42;
 
     return Column(
@@ -703,17 +698,6 @@ class _SheetScreenState extends State<SheetScreen> {
                 ),
               ),
       ),
-    );
-  }
-}
-
-_downloadSheetJSON(SheetViewModel sheetVM) async {
-  Sheet? sheet = await sheetVM.saveChanges();
-
-  if (sheet != null) {
-    downloadJsonFile(
-      sheet.toMapWithoutId(),
-      "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json",
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../_core/utils/download_sheet_json.dart';
 import '../../../domain/models/list_action.dart';
 import '../../_core/widgets/loading_widget.dart';
 import '../view/sheet_view_model.dart';
@@ -54,8 +55,28 @@ class _SheetSettingsPageState extends State<SheetSettingsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 8,
+        spacing: 16,
         children: [
+          SizedBox(height: 8),
+          Text(
+            "Configurações",
+            style: TextStyle(fontFamily: "Bungee", fontSize: 32),
+          ),
+          Text(
+            "Opções de Ficha",
+            style: TextStyle(
+              fontFamily: "Bungee",
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.download),
+            contentPadding: EdgeInsets.zero,
+            title: Text("Baixar a ficha como JSON"),
+            onTap: () {
+              downloadSheetJSON(sheetVM);
+            },
+          ),
+          Divider(thickness: 0.2),
           Text(
             "Ofícios",
             style: TextStyle(

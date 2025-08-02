@@ -27,8 +27,9 @@ class ListActionsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     SheetViewModel sheetVM = Provider.of<SheetViewModel>(context);
     return Container(
-      width:
-          (isVertical(context)) ? width(context) : (width(context) / 5) - (30),
+      width: (isVertical(context))
+          ? width(context) - 100
+          : (width(context) / 5) - (30),
       decoration: BoxDecoration(
         border: Border.all(
           width: 2,

@@ -9,6 +9,9 @@ class MovableExpandableScreen extends StatefulWidget {
   final Function? onPopup;
   final Function? onExit;
 
+  final double? width;
+  final double? height;
+
   const MovableExpandableScreen({
     super.key,
     required this.child,
@@ -18,6 +21,8 @@ class MovableExpandableScreen extends StatefulWidget {
     this.maxScale = 3.0,
     this.onPopup,
     this.onExit,
+    this.width,
+    this.height,
   });
 
   @override
@@ -51,8 +56,8 @@ class _MovableExpandableScreenState extends State<MovableExpandableScreen> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final baseWidth = screenSize.width * 0.8;
-    final baseHeight = screenSize.height * 0.8;
+    final baseWidth = widget.width ?? screenSize.width * 0.8;
+    final baseHeight = widget.height ?? screenSize.height * 0.8;
 
     return Positioned(
       left: position.dx,
