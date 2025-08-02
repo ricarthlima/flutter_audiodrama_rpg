@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_fullscreen/flutter_fullscreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'data/repositories/action_repository.dart';
 import 'data/repositories/condition_repository.dart';
@@ -29,6 +30,9 @@ import 'ui/statistics/view/statistics_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await FullScreen.ensureInitialized();
+
   setUrlStrategy(PathUrlStrategy());
 
   await dotenv.load(fileName: "dotenv");

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_fullscreen/flutter_fullscreen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/services/chat_service.dart';
@@ -175,6 +176,21 @@ class CampaignDrawer extends StatelessWidget {
               spacing: 8,
               children: [
                 Divider(thickness: 0.25),
+                CompactableButton(
+                  controller: CompactableButtonController(
+                    isCompressed: campaignVM.isDrawerClosed,
+                    isSelected: false,
+                  ),
+                  title: (!FullScreen.isFullScreen)
+                      ? "Tela cheia"
+                      : "Sair de tela cheia",
+                  leadingIcon: (!FullScreen.isFullScreen)
+                      ? Icons.fullscreen
+                      : Icons.fullscreen_exit,
+                  onPressed: () {
+                    FullScreen.setFullScreen(!FullScreen.isFullScreen);
+                  },
+                ),
                 CompactableButton(
                   controller: CompactableButtonController(
                     isCompressed: campaignVM.isDrawerClosed,

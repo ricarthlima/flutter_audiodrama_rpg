@@ -61,57 +61,63 @@ class _CampaignHomeGuest extends StatelessWidget {
   Widget build(BuildContext context) {
     CampaignVisualNovelViewModel visualVM =
         Provider.of<CampaignVisualNovelViewModel>(context);
-    return SizedBox(
-      width: width(context),
-      height: height(context),
-      child: Stack(
-        children: <Widget>[
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: AnimatedSwitcher(
-                  duration: Duration(
-                      milliseconds: visualVM
-                          .data.transitionBackgroundDurationInMilliseconds),
-                  child: (visualVM.data.backgroundActive == null)
-                      ? Container(
-                          key: ValueKey('empty'),
-                          color: Colors.black,
-                        )
-                      : InteractiveViewer(
-                          transformationController: (!visualVM.data.allowPan &&
-                                  !visualVM.data.allowZoom)
-                              ? TransformationController(Matrix4.identity())
-                              : null,
-                          panEnabled: visualVM.data.allowPan,
-                          scaleEnabled: visualVM.data.allowZoom,
-                          child: Image.network(
-                            visualVM.data.backgroundActive!.url,
-                            key: ValueKey(visualVM.data.backgroundActive!.url),
-                            fit: BoxFit.fitWidth,
-                            width: width(context),
-                            height: height(context),
-                          ),
+    return InteractiveViewer(
+      transformationController:
+          (!visualVM.data.allowPan && !visualVM.data.allowZoom)
+              ? TransformationController(Matrix4.identity())
+              : null,
+      panEnabled: visualVM.data.allowPan,
+      scaleEnabled: visualVM.data.allowZoom,
+      maxScale: 10,
+      child: Center(
+        child: AspectRatio(
+          aspectRatio: 16 / 9,
+          child: SizedBox(
+            width: width(context),
+            child: Stack(
+              children: <Widget>[
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: AnimatedSwitcher(
+                        duration: Duration(
+                            milliseconds: visualVM.data
+                                .transitionBackgroundDurationInMilliseconds),
+                        child: (visualVM.data.backgroundActive == null)
+                            ? Container(
+                                key: ValueKey('empty'),
+                                color: Colors.black,
+                              )
+                            : Image.network(
+                                visualVM.data.backgroundActive!.url,
+                                key: ValueKey(
+                                    visualVM.data.backgroundActive!.url),
+                                fit: BoxFit.fitWidth,
+                                width: width(context),
+                                height: height(context),
+                              ),
+                      ),
+                    ),
+                    if (!isPreview)
+                      Align(
+                        alignment: Alignment.center,
+                        child: Stack(
+                          children: visualVM.data.listObjects
+                              .where((e) => e.isEnable)
+                              .map(
+                                (e) => MovableExpandablePanel(
+                                  key: ValueKey(e.url),
+                                  headerTitle: e.name,
+                                  child: Image.network(e.url),
+                                ),
+                              )
+                              .toList(),
                         ),
-                ),
-              ),
-              if (!isPreview)
-                Align(
-                  alignment: Alignment.center,
-                  child: Stack(
-                    children: visualVM.data.listObjects
-                        .where((e) => e.isEnable)
-                        .map(
-                          (e) => MovableExpandablePanel(
-                            key: ValueKey(e.url),
-                            headerTitle: e.name,
-                            child: Image.network(e.url),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
-            ] +
-            _generateListStack(context, visualVM),
+                      ),
+                  ] +
+                  _generateListStack(context, visualVM),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -121,8 +127,10 @@ class _CampaignHomeGuest extends StatelessWidget {
     CampaignVisualNovelViewModel visualVM,
   ) {
     List<Widget> result = [];
-
     List<Widget> leftList = [];
+
+    double verticalScale = (isVertical(context)) ? 0.2 : 1;
+
     for (int i = 0; i < visualVM.data.listLeftActive.length; i++) {
       CampaignVisual cm = visualVM.data.listLeftActive[i];
       leftList.add(
@@ -137,7 +145,7 @@ class _CampaignHomeGuest extends StatelessWidget {
             ),
             child: Image.network(
               cm.url,
-              width: visualVM.data.visualScale * sizeFactor,
+              width: visualVM.data.visualScale * sizeFactor * verticalScale,
             ),
           ),
         ),
@@ -161,7 +169,7 @@ class _CampaignHomeGuest extends StatelessWidget {
               flipX: true,
               child: Image.network(
                 cm.url,
-                width: visualVM.data.visualScale * sizeFactor,
+                width: visualVM.data.visualScale * sizeFactor * verticalScale,
               ),
             ),
           ),
