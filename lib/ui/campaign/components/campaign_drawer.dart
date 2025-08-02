@@ -170,7 +170,6 @@ class CampaignDrawer extends StatelessWidget {
                 ),
               ],
             ),
-            //TODO: RollLog
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: 8,

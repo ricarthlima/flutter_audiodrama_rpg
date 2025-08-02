@@ -71,7 +71,8 @@ class _CampaignHomeGuest extends StatelessWidget {
       maxScale: 10,
       child: Center(
         child: AspectRatio(
-          aspectRatio: 16 / 9,
+          aspectRatio:
+              (isVertical(context)) ? 16 / 9 : width(context) / height(context),
           child: SizedBox(
             width: width(context),
             child: Stack(
