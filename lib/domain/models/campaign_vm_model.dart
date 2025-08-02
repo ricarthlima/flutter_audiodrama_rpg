@@ -22,6 +22,9 @@ class CampaignVisualDataModel {
   double distanceFactor = 0.60;
   int transitionBackgroundDurationInMilliseconds = 1000;
 
+  bool allowZoom = false;
+  bool allowPan = false;
+
   CampaignVisualDataModel({
     required this.listPortraits,
     required this.listBackgrounds,
@@ -35,6 +38,8 @@ class CampaignVisualDataModel {
     required this.visualScale,
     required this.distanceFactor,
     required this.listObjects,
+    this.allowPan = false,
+    this.allowZoom = false,
   });
 
   CampaignVisualDataModel copyWith({
@@ -50,6 +55,8 @@ class CampaignVisualDataModel {
     double? distanceFactor,
     int? transitionBackgroundDurationInMilliseconds,
     List<CampaignVisual>? listObjects,
+    bool? allowPan,
+    bool? allowZoom,
   }) {
     return CampaignVisualDataModel(
       listPortraits: listPortraits ?? this.listPortraits,
@@ -66,6 +73,8 @@ class CampaignVisualDataModel {
           transitionBackgroundDurationInMilliseconds ??
               this.transitionBackgroundDurationInMilliseconds,
       listObjects: listObjects ?? this.listObjects,
+      allowPan: allowPan ?? this.allowPan,
+      allowZoom: allowZoom ?? this.allowZoom,
     );
   }
 
@@ -82,6 +91,8 @@ class CampaignVisualDataModel {
       'visualScale': visualScale,
       'distanceFactor': distanceFactor,
       'listObjects': listObjects.map((x) => x.toMap()).toList(),
+      'allowPan': allowPan,
+      'allowZoom': allowZoom,
     };
   }
 
@@ -139,6 +150,8 @@ class CampaignVisualDataModel {
               ),
             )
           : [],
+      allowPan: map['allowPan'] ?? false,
+      allowZoom: map['allowZoom'] ?? false,
     );
   }
 
@@ -150,7 +163,7 @@ class CampaignVisualDataModel {
 
   @override
   String toString() {
-    return 'CampaignVmModel(listPortraits: $listPortraits, listBackgrounds: $listBackgrounds, listAmbiences: $listAmbiences, listMusics: $listMusics, listSfxs: $listSfxs, listLeftActive: $listLeftActive, listRightActive: $listRightActive, backgroundActive: $backgroundActive, visualScale: $visualScale, distanceFactor: $distanceFactor)';
+    return 'CampaignVmModel(listPortraits: $listPortraits, listBackgrounds: $listBackgrounds, listAmbiences: $listAmbiences, listMusics: $listMusics, listSfxs: $listSfxs, listLeftActive: $listLeftActive, listRightActive: $listRightActive, backgroundActive: $backgroundActive, visualScale: $visualScale, distanceFactor: $distanceFactor, allowPan: $allowPan, allowZoom: $allowZoom)';
   }
 
   @override
@@ -166,7 +179,9 @@ class CampaignVisualDataModel {
         listEquals(other.listRightActive, listRightActive) &&
         other.backgroundActive == backgroundActive &&
         other.visualScale == visualScale &&
-        other.distanceFactor == distanceFactor;
+        other.distanceFactor == distanceFactor &&
+        other.allowPan == allowPan &&
+        other.allowZoom == allowZoom;
   }
 
   @override
@@ -180,6 +195,8 @@ class CampaignVisualDataModel {
         listRightActive.hashCode ^
         backgroundActive.hashCode ^
         visualScale.hashCode ^
-        distanceFactor.hashCode;
+        distanceFactor.hashCode ^
+        allowPan.hashCode ^
+        allowZoom.hashCode;
   }
 }

@@ -77,12 +77,20 @@ class _CampaignHomeGuest extends StatelessWidget {
                           key: ValueKey('empty'),
                           color: Colors.black,
                         )
-                      : Image.network(
-                          visualVM.data.backgroundActive!.url,
-                          key: ValueKey(visualVM.data.backgroundActive!.url),
-                          fit: BoxFit.cover,
-                          width: width(context),
-                          height: height(context),
+                      : InteractiveViewer(
+                          transformationController: (!visualVM.data.allowPan &&
+                                  !visualVM.data.allowZoom)
+                              ? TransformationController(Matrix4.identity())
+                              : null,
+                          panEnabled: visualVM.data.allowPan,
+                          scaleEnabled: visualVM.data.allowZoom,
+                          child: Image.network(
+                            visualVM.data.backgroundActive!.url,
+                            key: ValueKey(visualVM.data.backgroundActive!.url),
+                            fit: BoxFit.cover,
+                            width: width(context),
+                            height: height(context),
+                          ),
                         ),
                 ),
               ),
@@ -251,23 +259,77 @@ class _CampaignHomeOwner extends StatelessWidget {
                       child: _ListCharactersVisual(),
                     ),
                     VerticalDivider(),
-                    Container(
-                      height: 300,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 2,
-                          color: Theme.of(context).textTheme.bodyMedium!.color!,
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          height: 270,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 2,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .color!,
+                            ),
+                            borderRadius: BorderRadius.circular(4),
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                          ),
+                          child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: _CampaignHomeGuest(
+                              sizeFactor: 300 / height(context),
+                              isPreview: true,
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(4),
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                      ),
-                      child: AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: _CampaignHomeGuest(
-                          sizeFactor: 300 / height(context),
-                          isPreview: true,
-                        ),
-                      ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 8,
+                          children: [
+                            IntrinsicWidth(
+                              child: CheckboxListTile(
+                                value: visualVM.data.allowPan,
+                                dense: true,
+                                contentPadding: EdgeInsets.zero,
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                title: Text("Mover"),
+                                onChanged: (value) {
+                                  visualVM.togglePan();
+                                },
+                              ),
+                            ),
+                            IntrinsicWidth(
+                              child: CheckboxListTile(
+                                value: visualVM.data.allowZoom,
+                                dense: true,
+                                contentPadding: EdgeInsets.zero,
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                title: Text("Zoom"),
+                                onChanged: (value) {
+                                  visualVM.toggleZoom();
+                                },
+                              ),
+                            ),
+                            IntrinsicWidth(
+                              child: CheckboxListTile(
+                                value: visualVM.isClearZoomAndPan,
+                                dense: true,
+                                contentPadding: EdgeInsets.zero,
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                title: Text("Limpar ao mudar"),
+                                onChanged: (value) {
+                                  visualVM.isClearZoomAndPan =
+                                      !visualVM.isClearZoomAndPan;
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
                     ),
                     VerticalDivider(),
                     Flexible(

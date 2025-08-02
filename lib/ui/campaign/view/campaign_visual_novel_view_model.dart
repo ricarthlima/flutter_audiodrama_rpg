@@ -28,6 +28,13 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isClearZoomAndPan = true;
+  bool get isClearZoomAndPan => _isClearZoomAndPan;
+  set isClearZoomAndPan(bool value) {
+    _isClearZoomAndPan = value;
+    notifyListeners();
+  }
+
   onInitialize() {
     // TODO: Criar serviço
     // TODO: Carregar todos
@@ -40,6 +47,7 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
       campaignId: campaignId,
       data: data,
     );
+    notifyListeners();
   }
 
   Future<void> onRemove() async {
@@ -194,6 +202,11 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
       data.listRightActive.clear();
     }
 
+    if (_isClearZoomAndPan) {
+      data.allowPan = false;
+      data.allowZoom = false;
+    }
+
     onSave();
     notifyListeners();
   }
@@ -214,6 +227,18 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
         data.listObjects.isEmpty &&
         data.listAmbiences.isEmpty &&
         data.listSfxs.isEmpty;
+  }
+
+  togglePan() {
+    data.allowPan = !data.allowPan;
+    notifyListeners();
+    onSave();
+  }
+
+  toggleZoom() {
+    data.allowZoom = !data.allowZoom;
+    notifyListeners();
+    onSave();
   }
 }
 
