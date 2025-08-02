@@ -23,11 +23,11 @@ class CampaignDrawer extends StatelessWidget {
     final campaignVM = Provider.of<CampaignViewModel>(context);
 
     return MouseRegion(
-      // onEnter: (event) {
-      //   if (event.delta.dx > 0) {
-      //     campaignVM.isDrawerClosed = false;
-      //   }
-      // },
+      onEnter: (event) {
+        if (event.delta.dx > 0) {
+          campaignVM.isDrawerClosed = false;
+        }
+      },
       onExit: (_) => campaignVM.isDrawerClosed = true,
       child: AnimatedContainer(
         color: Theme.of(context).scaffoldBackgroundColor.withAlpha(
@@ -47,6 +47,25 @@ class CampaignDrawer extends StatelessWidget {
             Column(
               spacing: 8,
               children: [
+                if (!campaignVM.isDrawerClosed)
+                  InkWell(
+                    onTap: () {
+                      campaignVM.isDrawerClosed = true;
+                    },
+                    child: Container(
+                      color: AppColors.red,
+                      child: Center(
+                        child: Text(
+                          "FECHAR",
+                          style: TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "BUNGEE",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 if (campaignVM.isDrawerClosed)
                   IconButton(
                     onPressed: () {
