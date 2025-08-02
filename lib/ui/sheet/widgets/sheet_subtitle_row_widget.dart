@@ -125,63 +125,6 @@ class SheetSubtitleRowWidget extends StatelessWidget {
       ),
       NamedWidget(
         isVisible: !sheetVM.isEditing,
-        title: "Mod. Global",
-        tooltip: "Modificador global de treinamento",
-        isShowLeftSeparator: true,
-        hardHeight: 32,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (sheetVM.isOwner)
-              IconButton(
-                onPressed: (sheetVM.modGlobalTrain > -4)
-                    ? () {
-                        sheetVM.changeModGlobal(isAdding: false);
-                      }
-                    : null,
-                padding: EdgeInsets.zero,
-                icon: Icon(Icons.remove),
-              ),
-            Tooltip(
-              message: "Clique para manter o modificador",
-              child: SizedBox(
-                width: 42,
-                child: InkWell(
-                  onTap: sheetVM.isOwner
-                      ? () {
-                          sheetVM.toggleKeepingGlobalModifier();
-                        }
-                      : null,
-                  child: Text(
-                    sheetVM.modGlobalTrain.toString(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: FontFamily.bungee,
-                      color: (sheetVM.isKeepingGlobalModifier)
-                          ? AppColors.red
-                          : null,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            if (sheetVM.isOwner)
-              IconButton(
-                onPressed: (sheetVM.modGlobalTrain < 4)
-                    ? () {
-                        sheetVM.changeModGlobal();
-                      }
-                    : null,
-                padding: EdgeInsets.zero,
-                icon: Icon(Icons.add),
-              ),
-          ],
-        ),
-      ),
-      NamedWidget(
-        isVisible: !sheetVM.isEditing,
         title: "Estado",
         isShowLeftSeparator: true,
         hardHeight: 32,

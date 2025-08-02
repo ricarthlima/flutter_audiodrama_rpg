@@ -53,8 +53,8 @@ class _SheetScreenState extends State<SheetScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final viewModel = Provider.of<SheetViewModel>(context, listen: false);
-      viewModel.refresh();
+      final sheetVM = Provider.of<SheetViewModel>(context, listen: false);
+      sheetVM.refresh();
     });
     _keyListener = _handleKey;
     HardwareKeyboard.instance.addHandler(_keyListener);
@@ -75,7 +75,15 @@ class _SheetScreenState extends State<SheetScreen> {
                   (e) => e.name.toLowerCase() == value.toLowerCase(),
                 );
 
-            SheetInteract.rollAction(context: context, action: actionTemplate);
+            String groupId = context
+                .read<SheetViewModel>()
+                .groupByAction(actionTemplate.id)!;
+
+            SheetInteract.rollAction(
+              context: context,
+              action: actionTemplate,
+              groupId: groupId,
+            );
           }
         },
       );

@@ -15,12 +15,14 @@ import 'action_tooltip.dart';
 
 class ActionWidget extends StatefulWidget {
   final ActionTemplate action;
+  final String groupId;
   final bool isWork;
 
   const ActionWidget({
     super.key,
     required this.action,
     required this.isWork,
+    required this.groupId,
   });
 
   @override
@@ -70,6 +72,7 @@ class _ActionWidgetState extends State<ActionWidget> {
                         SheetInteract.rollAction(
                           context: context,
                           action: widget.action,
+                          groupId: widget.groupId,
                         );
                       }
                     : null,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/models/group_action.dart';
 import '../../_core/app_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -34,50 +35,43 @@ class SheetActionsColumnsWidget extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ListActionsWidget(
-                          name: "Ações Básicas",
+                          name: "Básicas",
                           isEditing: sheetVM.isEditing,
-                          listActions: context
-                              .read<SheetViewModel>()
-                              .actionRepo
-                              .getBasics(),
+                          groupAction:
+                              sheetVM.mapGroupAction[GroupActionIds.basic]!,
                         ),
                       ),
                       ListActionsWidget(
-                        name: "Ações Resistidas",
+                        name: "Resistidas",
                         isEditing: sheetVM.isEditing,
                         color: AppColors.red,
-                        listActions: context
-                            .read<SheetViewModel>()
-                            .actionRepo
-                            .getResisted(),
+                        groupAction:
+                            sheetVM.mapGroupAction[GroupActionIds.resisted]!,
                       ),
                     ],
                   ),
                   ListActionsWidget(
-                    name: "Ações de Força",
+                    name: "Força",
                     isEditing: sheetVM.isEditing,
-                    listActions:
-                        context.read<SheetViewModel>().actionRepo.getStrength(),
+                    groupAction:
+                        sheetVM.mapGroupAction[GroupActionIds.strength]!,
                   ),
                   ListActionsWidget(
-                    name: "Ações de Agilidade",
+                    name: "Agilidade",
                     isEditing: sheetVM.isEditing,
-                    listActions:
-                        context.read<SheetViewModel>().actionRepo.getAgility(),
+                    groupAction:
+                        sheetVM.mapGroupAction[GroupActionIds.agility]!,
                   ),
                   ListActionsWidget(
-                    name: "Ações de Intelecto",
+                    name: "Intelecto",
                     isEditing: sheetVM.isEditing,
-                    listActions: context
-                        .read<SheetViewModel>()
-                        .actionRepo
-                        .getIntellect(),
+                    groupAction:
+                        sheetVM.mapGroupAction[GroupActionIds.intellect]!,
                   ),
                   ListActionsWidget(
-                    name: "Ações Sociais",
+                    name: "Sociais",
                     isEditing: sheetVM.isEditing,
-                    listActions:
-                        context.read<SheetViewModel>().actionRepo.getSocial(),
+                    groupAction: sheetVM.mapGroupAction[GroupActionIds.social]!,
                   ),
                 ] +
                 List.generate(
@@ -85,14 +79,10 @@ class SheetActionsColumnsWidget extends StatelessWidget {
                   (index) {
                     String key = sheetVM.sheet!.listActiveWorks[index];
                     return ListActionsWidget(
-                      name: "(Ofício) $key",
+                      name: key,
                       color: Colors.amber,
-                      listActions: context
-                          .read<SheetViewModel>()
-                          .actionRepo
-                          .getActionsByGroupName(key),
+                      groupAction: sheetVM.mapGroupAction[key]!,
                       isEditing: sheetVM.isEditing,
-                      isWork: true,
                     );
                   },
                 ),

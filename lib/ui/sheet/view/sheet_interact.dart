@@ -45,13 +45,14 @@ abstract class SheetInteract {
   static Future<void> rollAction({
     required BuildContext context,
     required ActionTemplate action,
+    required String groupId,
   }) async {
     SheetViewModel sheetVM = context.read<SheetViewModel>();
 
     List<int> rolls = [];
 
-    int newActionValue =
-        sheetVM.getTrainLevelByAction(action.id) + (sheetVM.modGlobalTrain);
+    int newActionValue = sheetVM.getTrainLevelByAction(action.id) +
+        (sheetVM.modValueGroup(groupId));
 
     if (newActionValue < 0) {
       newActionValue = 0;
@@ -86,7 +87,7 @@ abstract class SheetInteract {
       isGettingLower: newActionValue <= 1,
     );
 
-    sheetVM.onRoll(roll: roll);
+    sheetVM.onRoll(roll: roll, groupId: groupId);
   }
 
   static Future<void> onUploadBioImageClicked(BuildContext context) async {

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/models/group_action.dart';
 import '../../../data/repositories/action_repository.dart';
 import '../../../data/repositories/condition_repository.dart';
 import '../helpers/sheet_subpages.dart';
@@ -38,8 +39,6 @@ class SheetViewModel extends ChangeNotifier {
   Sheet? sheet;
 
   // Atributos locais
-  int modGlobalTrain = 0;
-  bool isKeepingGlobalModifier = false;
   RollLog? currentRollLog;
   ActionTemplate? showingRollTip;
   ActionTemplate? showingActionTip;
@@ -114,6 +113,7 @@ class SheetViewModel extends ChangeNotifier {
         nameController.text = sheetModel.characterName;
         sheet = sheetModel;
         isFoundSheet = true;
+        _loadActionGroup();
       }
 
       listSheets = await SheetService().getSheetsByUser();
@@ -230,21 +230,6 @@ class SheetViewModel extends ChangeNotifier {
         return 15;
     }
     return -1;
-  }
-
-  void changeModGlobal({bool isAdding = true}) {
-    if (isAdding) {
-      modGlobalTrain++;
-    } else {
-      modGlobalTrain--;
-    }
-
-    notifyListeners();
-  }
-
-  void toggleKeepingGlobalModifier() {
-    isKeepingGlobalModifier = !isKeepingGlobalModifier;
-    notifyListeners();
   }
 
   String getHelperText(ActionTemplate action) {
@@ -540,15 +525,15 @@ class SheetViewModel extends ChangeNotifier {
     return sheet!.ownerId == FirebaseAuth.instance.currentUser!.uid;
   }
 
-  Future<void> onRoll({required RollLog roll}) async {
+  Future<void> onRoll({required RollLog roll, required String groupId}) async {
     ActionTemplate? action = actionRepo.getActionById(roll.idAction);
 
     sheet!.listRollLog.add(roll);
     await saveChanges();
     notificationCount++;
 
-    if (!isKeepingGlobalModifier) {
-      modGlobalTrain = 0;
+    if (!mapGroupAction[groupId]!.holdMod) {
+      mapGroupAction[groupId]!.mod = 0;
     }
 
     notifyListeners();
@@ -588,5 +573,102 @@ class SheetViewModel extends ChangeNotifier {
     showingActionTip = null;
     showingActionLore = null;
     notifyListeners();
+  }
+
+  Map<String, GroupAction> mapGroupAction = {
+    GroupActionIds.basic: GroupAction(
+      id: GroupActionIds.basic,
+      mod: 0,
+      holdMod: false,
+      listActions: [],
+    ),
+    GroupActionIds.resisted: GroupAction(
+      id: GroupActionIds.resisted,
+      mod: 0,
+      holdMod: false,
+      listActions: [],
+    ),
+    GroupActionIds.strength: GroupAction(
+      id: GroupActionIds.strength,
+      mod: 0,
+      holdMod: false,
+      listActions: [],
+    ),
+    GroupActionIds.agility: GroupAction(
+      id: GroupActionIds.agility,
+      mod: 0,
+      holdMod: false,
+      listActions: [],
+    ),
+    GroupActionIds.intellect: GroupAction(
+      id: GroupActionIds.intellect,
+      mod: 0,
+      holdMod: false,
+      listActions: [],
+    ),
+    GroupActionIds.social: GroupAction(
+      id: GroupActionIds.social,
+      mod: 0,
+      holdMod: false,
+      listActions: [],
+    ),
+  };
+
+  _loadActionGroup() {
+    mapGroupAction[GroupActionIds.basic]!.listActions = actionRepo.getBasics();
+    mapGroupAction[GroupActionIds.resisted]!.listActions =
+        actionRepo.getResisted();
+    mapGroupAction[GroupActionIds.strength]!.listActions =
+        actionRepo.getStrength();
+    mapGroupAction[GroupActionIds.agility]!.listActions =
+        actionRepo.getAgility();
+    mapGroupAction[GroupActionIds.intellect]!.listActions =
+        actionRepo.getIntellect();
+    mapGroupAction[GroupActionIds.social]!.listActions = actionRepo.getSocial();
+
+    for (String key in sheet!.listActiveWorks) {
+      if (mapGroupAction[key] == null) {
+        mapGroupAction[key] = GroupAction(
+          id: key,
+          mod: 0,
+          holdMod: false,
+          listActions: actionRepo.getActionsByGroupName(key),
+          isWork: true,
+        );
+      }
+    }
+  }
+
+  changeModGroup({required String id, required bool isAdding}) {
+    if (isAdding) {
+      mapGroupAction[id]!.mod++;
+    } else {
+      mapGroupAction[id]!.mod--;
+    }
+    notifyListeners();
+  }
+
+  toggleModHold({required String id}) {
+    mapGroupAction[id]!.holdMod = !mapGroupAction[id]!.holdMod;
+    notifyListeners();
+  }
+
+  int modValueGroup(String id) {
+    return mapGroupAction[id]!.mod;
+  }
+
+  bool modHoldGroup(String id) {
+    return mapGroupAction[id]!.holdMod;
+  }
+
+  String? groupByAction(String actionId) {
+    for (String key in mapGroupAction.keys) {
+      final query =
+          mapGroupAction[key]!.listActions.where((e) => e.id == actionId);
+      if (query.isEmpty) {
+        return key;
+      }
+    }
+    return null;
   }
 }
