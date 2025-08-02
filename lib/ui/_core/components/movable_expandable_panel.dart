@@ -71,7 +71,7 @@ class _MovableExpandablePanelState extends State<MovableExpandablePanel> {
                 },
                 child: Container(
                   width: expanded ? contentWidth * scaleFactor : null,
-                  height: 32,
+                  height: 36,
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
                     color: expanded
@@ -80,7 +80,7 @@ class _MovableExpandablePanelState extends State<MovableExpandablePanel> {
                             .scaffoldBackgroundColor
                             .withAlpha(50),
                     borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(10),
+                      top: Radius.circular(8),
                     ),
                   ),
                   child: Row(
@@ -89,8 +89,10 @@ class _MovableExpandablePanelState extends State<MovableExpandablePanel> {
                       Text(
                         widget.headerTitle,
                         style: const TextStyle(
+                          fontSize: 14,
                           color: Colors.white,
-                          fontSize: 12,
+                          fontFamily: "Bungee",
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       IconButton(

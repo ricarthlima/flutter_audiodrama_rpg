@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class MovableExpandableScreen extends StatefulWidget {
@@ -55,9 +57,9 @@ class _MovableExpandableScreenState extends State<MovableExpandableScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final baseWidth = widget.width ?? screenSize.width * 0.8;
-    final baseHeight = widget.height ?? screenSize.height * 0.8;
+    Size screenSize = MediaQuery.of(context).size;
+    double baseWidth = max(600, widget.width ?? screenSize.width);
+    double baseHeight = widget.height ?? screenSize.height;
 
     return Positioned(
       left: position.dx,
@@ -68,102 +70,92 @@ class _MovableExpandableScreenState extends State<MovableExpandableScreen> {
             position += details.delta;
           });
         },
-        child: Stack(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Corpo escalado (dentro do if)
-            if (expanded)
-              Padding(
-                padding: const EdgeInsets.only(top: 32),
-                child: Transform.scale(
-                  scale: scale,
-                  alignment: Alignment.topLeft,
-                  child: Material(
-                    elevation: 12,
-                    borderRadius: const BorderRadius.vertical(
-                      bottom: Radius.circular(10),
-                    ),
-                    color: Colors.transparent,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: screenSize.width * 0.9,
-                        maxHeight: screenSize.height * 0.9,
-                      ),
-                      child: SizedBox(
-                        width: baseWidth,
-                        height: baseHeight,
-                        child: widget.child,
-                      ),
+            Container(
+              height: 36,
+              width: expanded ? baseWidth * scale : null,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                color: expanded
+                    ? Theme.of(context).scaffoldBackgroundColor
+                    : Theme.of(context).scaffoldBackgroundColor.withAlpha(60),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(8),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontFamily: "Bungee",
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () => setState(() => expanded = !expanded),
+                        icon: Icon(
+                          expanded ? Icons.expand_less : Icons.expand_more,
+                          color: Colors.white,
+                        ),
+                      ),
+                      if (expanded)
+                        IconButton(
+                          onPressed: _decreaseScale,
+                          icon: const Icon(Icons.zoom_out, color: Colors.white),
+                        ),
+                      if (expanded)
+                        IconButton(
+                          onPressed: _increaseScale,
+                          icon: const Icon(Icons.zoom_in, color: Colors.white),
+                        ),
+                      if (expanded)
+                        if (widget.onPopup != null)
+                          IconButton(
+                            onPressed: () {
+                              widget.onPopup!();
+                            },
+                            icon: const Icon(
+                              Icons.outbond_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                      if (expanded)
+                        if (widget.onExit != null)
+                          IconButton(
+                            onPressed: () {
+                              widget.onExit!();
+                            },
+                            icon: const Icon(Icons.close, color: Colors.white),
+                          ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            // Corpo escalado (dentro do if)
+            if (expanded)
+              Transform.scale(
+                scale: scale,
+                alignment: Alignment.topLeft,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: baseWidth,
+                    maxHeight: baseHeight,
+                  ),
+                  child: widget.child,
                 ),
               ),
 
             // Header fixo no canto superior esquerdo
-            Material(
-              elevation: 12,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(10),
-              ),
-              color: Colors.transparent,
-              child: Container(
-                height: 32,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                decoration: BoxDecoration(
-                  color: expanded
-                      ? Theme.of(context).scaffoldBackgroundColor
-                      : Theme.of(context).scaffoldBackgroundColor.withAlpha(60),
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(10),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(widget.title,
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.white)),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      iconSize: 16,
-                      onPressed: () => setState(() => expanded = !expanded),
-                      icon: Icon(
-                        expanded ? Icons.expand_less : Icons.expand_more,
-                        color: Colors.white,
-                      ),
-                    ),
-                    IconButton(
-                      iconSize: 16,
-                      onPressed: _increaseScale,
-                      icon: const Icon(Icons.zoom_in, color: Colors.white),
-                    ),
-                    IconButton(
-                      iconSize: 16,
-                      onPressed: _decreaseScale,
-                      icon: const Icon(Icons.zoom_out, color: Colors.white),
-                    ),
-                    if (widget.onPopup != null)
-                      IconButton(
-                        onPressed: () {
-                          widget.onPopup!();
-                        },
-                        iconSize: 16,
-                        icon: const Icon(
-                          Icons.outbond_outlined,
-                          color: Colors.white,
-                        ),
-                      ),
-                    if (widget.onExit != null)
-                      IconButton(
-                        onPressed: () {
-                          widget.onExit!();
-                        },
-                        iconSize: 16,
-                        icon: const Icon(Icons.close, color: Colors.white),
-                      ),
-                  ],
-                ),
-              ),
-            ),
           ],
         ),
       ),
