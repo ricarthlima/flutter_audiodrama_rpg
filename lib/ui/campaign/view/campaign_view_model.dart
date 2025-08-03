@@ -310,6 +310,14 @@ class CampaignViewModel extends ChangeNotifier {
   }
 
   int countChatMessages = 0;
+
+  Future<void> deleteCampaign() async {
+    CampaignService.instance.deleteCampaign(campaign!.id);
+  }
+
+  Future<void> exitCampaign() async {
+    //TODO: Sair da campanha
+  }
 }
 
 class SheetAppUser {

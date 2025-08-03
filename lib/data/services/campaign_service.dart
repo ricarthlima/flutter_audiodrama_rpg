@@ -328,4 +328,26 @@ class CampaignService {
     }
     return null;
   }
+
+  Future<void> deleteCampaign(String campaignId) async {
+    // TODO: Isso COM CERTEZA devia ser Firebase Function
+
+    await FirebaseFirestore.instance
+        .collection("${releaseCollection}campaigns")
+        .doc(campaignId)
+        .delete();
+
+    final queryCS = await FirebaseFirestore.instance
+        .collection("${releaseCollection}campaign-sheet")
+        .where('campaignId', isEqualTo: campaignId)
+        .get();
+
+    for (var doc in queryCS.docs) {
+      CampaignSheet cs = CampaignSheet.fromMap(doc.data());
+      await FirebaseFirestore.instance
+          .collection("${releaseCollection}campaign-sheet")
+          .doc(cs.sheetId)
+          .delete();
+    }
+  }
 }

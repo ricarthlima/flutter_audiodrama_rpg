@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../domain/models/campaign.dart';
 import '../../_core/providers/user_provider.dart';
 import 'components/join_campaign_dialog.dart';
@@ -16,7 +17,7 @@ class HomeCampaignScreen extends StatelessWidget {
     UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(0),
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -34,7 +35,7 @@ class HomeCampaignScreen extends StatelessWidget {
                         showCreateCampaignDialog(context: context);
                       },
                       tooltip: "Criar campanha",
-                      icon: Icon(Icons.add),
+                      icon: FaIcon(FontAwesomeIcons.plus),
                     ),
                   ),
                   if (userProvider.listCampaigns.isEmpty)
@@ -79,7 +80,7 @@ class HomeCampaignScreen extends StatelessWidget {
                     iconButton: IconButton(
                       onPressed: () => showJoinCampaignDialog(context: context),
                       tooltip: "Juntar-se a campanha",
-                      icon: Icon(Icons.login),
+                      icon: FaIcon(FontAwesomeIcons.doorOpen),
                     ),
                   ),
                   if (userProvider.listCampaignsInvited.isEmpty)

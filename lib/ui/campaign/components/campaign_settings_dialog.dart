@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
+import 'package:go_router/go_router.dart';
 import '../../_core/fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +28,8 @@ class _CampaignSettingsDialog extends StatefulWidget {
 }
 
 class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
@@ -33,127 +37,179 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
       color: Theme.of(context).scaffoldBackgroundColor,
       width: 600,
       height: 600,
-      child: Stack(
-        children: [
-          if (campaignVM.campaign!.imageBannerUrl != null)
-            Align(
-              alignment: Alignment.topCenter,
-              child: ShaderMask(
-                shaderCallback: (bounds) {
-                  return LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withAlpha(175),
-                      Colors.transparent,
-                    ],
-                  ).createShader(bounds);
-                },
-                blendMode: BlendMode.dstIn,
-                child: Image.network(
-                  campaignVM.campaign!.imageBannerUrl!,
-                  height: (isVertical(context)) ? 250 : 300,
-                  width: width(context),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          Padding(
-            padding: const EdgeInsets.all(32),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: (isLoading)
+          ? Center(child: CircularProgressIndicator())
+          : Stack(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _getNameWidget(campaignVM),
-                    _getDescriptionWidget(campaignVM),
-                  ],
-                ),
-                Column(
-                  spacing: 8,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          "Código de entrada",
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 10),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              campaignVM.campaign!.enterCode,
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontFamily: FontFamily.bungee,
-                                fontSize: 24,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                Clipboard.setData(
-                                  ClipboardData(
-                                      text: campaignVM.campaign!.enterCode),
-                                );
-                              },
-                              tooltip: "Copiar",
-                              icon: Icon(Icons.copy),
-                            ),
+                if (campaignVM.campaign!.imageBannerUrl != null)
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: ShaderMask(
+                      shaderCallback: (bounds) {
+                        return LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withAlpha(175),
+                            Colors.transparent,
                           ],
-                        ),
-                        Divider(thickness: 0.25),
-                      ],
+                        ).createShader(bounds);
+                      },
+                      blendMode: BlendMode.dstIn,
+                      child: Image.network(
+                        campaignVM.campaign!.imageBannerUrl!,
+                        height: (isVertical(context)) ? 250 : 300,
+                        width: width(context),
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                    if (campaignVM.isOwner)
-                      Row(
+                  ),
+                Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _getNameWidget(campaignVM),
+                          _getDescriptionWidget(campaignVM),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         spacing: 8,
                         children: [
-                          Text("Imagem de fundo:"),
-                          SizedBox(),
-                          ElevatedButton.icon(
-                            onPressed: () => _onUploadImagePressed(campaignVM),
-                            label: Text("Alterar imagem"),
-                            icon: Icon(Icons.image_outlined),
-                          ),
-                          if (campaignVM.campaign!.imageBannerUrl != null)
-                            ElevatedButton.icon(
-                              onPressed: () => campaignVM.onRemoveImage(),
-                              label: Text("Remover imagem"),
-                              icon: Icon(
-                                Icons.remove,
-                                color: AppColors.red,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                "Código de entrada",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 10),
                               ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    campaignVM.campaign!.enterCode,
+                                    textAlign: TextAlign.start,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontFamily: FontFamily.bungee,
+                                      fontSize: 24,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      Clipboard.setData(
+                                        ClipboardData(
+                                            text:
+                                                campaignVM.campaign!.enterCode),
+                                      );
+                                    },
+                                    tooltip: "Copiar",
+                                    icon: Icon(Icons.copy),
+                                  ),
+                                ],
+                              ),
+                              if (campaignVM.isOwner) Divider(thickness: 0.25),
+                            ],
+                          ),
+                          if (campaignVM.isOwner)
+                            Row(
+                              spacing: 8,
+                              children: [
+                                Text("Imagem de fundo:"),
+                                SizedBox(),
+                                ElevatedButton.icon(
+                                  onPressed: () =>
+                                      _onUploadImagePressed(campaignVM),
+                                  label: Text("Alterar imagem"),
+                                  icon: Icon(Icons.image_outlined),
+                                ),
+                                if (campaignVM.campaign!.imageBannerUrl != null)
+                                  ElevatedButton.icon(
+                                    onPressed: () => campaignVM.onRemoveImage(),
+                                    label: Text("Remover imagem"),
+                                    icon: Icon(
+                                      Icons.remove,
+                                      color: AppColors.red,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          Divider(
+                            thickness: 0.25,
+                          ),
+                          Text(
+                            "Área de Perigo",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: "Bungee",
+                              color: AppColors.red,
+                            ),
+                          ),
+                          if (campaignVM.isOwner)
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                showRemoveDialog(
+                                        context: context,
+                                        message:
+                                            "Deseja remover '${campaignVM.campaign!.name}'?")
+                                    .then((result) {
+                                  if (result != null && result) {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    campaignVM.deleteCampaign().then(
+                                      (value) {
+                                        if (context.mounted) {
+                                          context.go("/campaigns");
+                                        }
+                                      },
+                                    );
+                                  }
+                                });
+                              },
+                              icon: Icon(Icons.delete),
+                              label: isLoading
+                                  ? CircularProgressIndicator()
+                                  : Text("Remover campanha"),
+                            ),
+                          if (!campaignVM.isOwner)
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                campaignVM.exitCampaign();
+                              },
+                              icon: Icon(Icons.logout),
+                              label: Text("Sair da campanha"),
                             ),
                         ],
-                      )
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
+                if (campaignVM.isOwner)
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: SwitchListTile(
+                        dense: true,
+                        contentPadding: EdgeInsets.zero,
+                        thumbIcon: WidgetStatePropertyAll(Icon(Icons.edit)),
+                        value: campaignVM.isEditing,
+                        onChanged: (value) {
+                          campaignVM.isEditing = !campaignVM.isEditing;
+                        },
+                      ),
+                    ),
+                  ),
               ],
             ),
-          ),
-          if (campaignVM.isOwner)
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: SwitchListTile(
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  thumbIcon: WidgetStatePropertyAll(Icon(Icons.edit)),
-                  value: campaignVM.isEditing,
-                  onChanged: (value) {
-                    campaignVM.isEditing = !campaignVM.isEditing;
-                  },
-                ),
-              ),
-            ),
-        ],
-      ),
     );
   }
 

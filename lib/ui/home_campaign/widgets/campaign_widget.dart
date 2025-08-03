@@ -17,8 +17,8 @@ class CampaignWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(right: 16, bottom: 16),
-      width: getZoomFactorVertical(context, 350),
-      height: getZoomFactorVertical(context, 350),
+      width: getZoomFactorVertical(context, 400),
+      height: getZoomFactorVertical(context, 250),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
@@ -39,8 +39,8 @@ class CampaignWidget extends StatelessWidget {
                     child: Image.network(
                       campaign.imageBannerUrl!,
                       fit: BoxFit.cover,
-                      width: getZoomFactorVertical(context, 350),
-                      height: getZoomFactorVertical(context, 350),
+                      width: getZoomFactorVertical(context, 400),
+                      height: getZoomFactorVertical(context, 250),
                     ),
                   )
                 : Container(),
@@ -49,19 +49,20 @@ class CampaignWidget extends StatelessWidget {
             alignment: Alignment.bottomLeft,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.black.withAlpha(150),
+                color: Colors.black.withAlpha(175),
               ),
               padding: const EdgeInsets.all(8),
               child: SizedBox(
-                height: 70,
+                height: 50,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
                       campaign.name ?? "",
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
