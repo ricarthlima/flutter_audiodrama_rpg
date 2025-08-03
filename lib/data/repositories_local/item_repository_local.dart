@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import '../repositories/item_repository.dart';
 import '../../ui/_core/utils/i18n_categories.dart';
-import 'package:logger/logger.dart';
 
 import '../../domain/models/item.dart';
 
@@ -22,10 +21,10 @@ class ItemRepositoryLocal extends ItemRepository {
         .map((e) => Item.fromMap(e))
         .toList();
 
-    int total =
-        _cachedItems.map((e) => e.price).toList().reduce((v, e) => v + e);
-    Logger().i(
-        "${_cachedItems.length} itens carregados, custando um total de: $total");
+    // int total =
+    //     _cachedItems.map((e) => e.price).toList().reduce((v, e) => v + e);
+    // Logger().i(
+    //     "${_cachedItems.length} itens carregados, custando um total de: $total");
 
     for (Item item in _cachedItems) {
       for (String category in item.listCategories) {
@@ -43,7 +42,7 @@ class ItemRepositoryLocal extends ItemRepository {
       },
     );
 
-    Logger().i(_cachedCategories);
+    // Logger().i(_cachedCategories);
   }
 
   @override

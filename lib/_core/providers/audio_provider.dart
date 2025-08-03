@@ -68,6 +68,9 @@ class AudioProvider extends ChangeNotifier {
     await _mscPlayer.stop();
     await _ambPlayer.stop();
     await _sfxPlayer.stop();
+    await _dice01Player.stop();
+    await _dice02Player.stop();
+    await _dice03Player.stop();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     globalLocalVolume =
@@ -87,6 +90,13 @@ class AudioProvider extends ChangeNotifier {
     await _dice01Player.setLoopMode(LoopMode.off);
     await _dice02Player.setLoopMode(LoopMode.off);
     await _dice03Player.setLoopMode(LoopMode.off);
+
+    int num = Random().nextInt(20);
+    await _dice01Player.setAsset("sounds/rolls/roll-$num.ogg");
+    num = Random().nextInt(20);
+    await _dice02Player.setAsset("sounds/rolls/roll-$num.ogg");
+    num = Random().nextInt(20);
+    await _dice03Player.setAsset("sounds/rolls/roll-$num.ogg");
   }
 
   void onDispose() {
@@ -96,6 +106,9 @@ class AudioProvider extends ChangeNotifier {
     _mscPlayer.stop();
     _ambPlayer.stop();
     _sfxPlayer.stop();
+    _dice01Player.stop();
+    _dice02Player.stop();
+    _dice03Player.stop();
   }
 
   Future<void> changeMusicVolume(double campaignVolume) async {
@@ -372,15 +385,18 @@ class AudioProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> playDice() async {
+  Future<void> playDice(int index) async {
     int num = Random().nextInt(20);
-    if (!_dice01Player.playing) {
+    if (index == 0) {
+      await _dice01Player.stop();
       await _dice01Player.setAsset("sounds/rolls/roll-$num.ogg");
       await _dice01Player.play();
-    } else if (!_dice02Player.playing) {
+    } else if (index == 1) {
+      await _dice02Player.stop();
       await _dice02Player.setAsset("sounds/rolls/roll-$num.ogg");
       await _dice02Player.play();
-    } else if (!_dice03Player.playing) {
+    } else if (index == 2) {
+      await _dice03Player.stop();
       await _dice03Player.setAsset("sounds/rolls/roll-$num.ogg");
       await _dice03Player.play();
     }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:logger/logger.dart';
 
 import '../../domain/models/condition.dart';
 import '../repositories/condition_repository.dart';
@@ -20,7 +19,7 @@ class ConditionRepositoryLocal extends ConditionRepository {
         .map((e) => Condition.fromMap(e))
         .toList();
 
-    Logger().i("${_cachedConditions.length} estados carregados");
+    // Logger().i("${_cachedConditions.length} estados carregados");
   }
 
   @override

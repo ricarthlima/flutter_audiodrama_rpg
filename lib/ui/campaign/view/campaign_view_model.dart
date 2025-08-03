@@ -28,6 +28,7 @@ class CampaignViewModel extends ChangeNotifier {
 
   hasInteractedDisable() {
     _hasInteracted = false;
+    campaign = null;
   }
 
   Campaign? campaign;
@@ -35,7 +36,7 @@ class CampaignViewModel extends ChangeNotifier {
 
   StreamSubscription? sheetsSub;
 
-  forceUpdateCampaign(Campaign campaign) async {
+  Future<void> forceUpdateCampaign(Campaign campaign) async {
     isLoading = true;
 
     if (sheetsSub != null) {

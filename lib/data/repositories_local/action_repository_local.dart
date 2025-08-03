@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:logger/logger.dart';
 
 import '../../domain/models/action_template.dart';
 import '../../domain/models/list_action.dart';
@@ -31,7 +30,7 @@ class ActionRepositoryLocal extends ActionRepository {
       );
     }
 
-    Logger().i("${getAllActions().length} ações carregadas");
+    // Logger().i("${getAllActions().length} ações carregadas");
   }
 
   @override

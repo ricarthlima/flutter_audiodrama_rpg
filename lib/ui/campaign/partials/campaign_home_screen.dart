@@ -1,5 +1,11 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/data/services/campaign_roll_service.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_roll.dart';
 import '../../../_core/providers/audio_provider.dart';
 import '../../../domain/models/campaign_visual.dart';
 import '../../_core/app_colors.dart';
@@ -52,10 +58,50 @@ class _CampaignHomeScreenState extends State<CampaignHomeScreen> {
   }
 }
 
-class _CampaignHomeGuest extends StatelessWidget {
+class _CampaignHomeGuest extends StatefulWidget {
   final double sizeFactor;
   final bool isPreview;
   const _CampaignHomeGuest({this.sizeFactor = 1.0, this.isPreview = false});
+
+  @override
+  State<_CampaignHomeGuest> createState() => _CampaignHomeGuestState();
+}
+
+class _CampaignHomeGuestState extends State<_CampaignHomeGuest> {
+  StreamSubscription? rollStreamSub;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      CampaignViewModel campaignVM = context.read<CampaignViewModel>();
+      AudioProvider audioProvider = context.read<AudioProvider>();
+      CampaignRollService.instance
+          .listen(campaignId: campaignVM.campaign!.id)
+          .listen(
+        (QuerySnapshot<Map<String, dynamic>> event) {
+          if (event.docChanges.isNotEmpty &&
+              event.docChanges.length == 1 &&
+              event.docChanges.first.doc.data() != null) {
+            CampaignRoll roll =
+                CampaignRoll.fromMap(event.docChanges.first.doc.data()!);
+
+            if (roll.userId != FirebaseAuth.instance.currentUser!.uid) {
+              for (int i = 0; i < roll.rollLog.rolls.length; i++) {
+                audioProvider.playDice(i);
+              }
+            }
+          }
+        },
+      );
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    rollStreamSub?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +144,7 @@ class _CampaignHomeGuest extends StatelessWidget {
                               ),
                       ),
                     ),
-                    if (!isPreview)
+                    if (!widget.isPreview)
                       Align(
                         alignment: Alignment.center,
                         child: Stack(
@@ -142,11 +188,12 @@ class _CampaignHomeGuest extends StatelessWidget {
               left: visualVM.data.visualScale *
                   i *
                   visualVM.data.distanceFactor *
-                  sizeFactor,
+                  widget.sizeFactor,
             ),
             child: Image.network(
               cm.url,
-              width: visualVM.data.visualScale * sizeFactor * verticalScale,
+              width:
+                  visualVM.data.visualScale * widget.sizeFactor * verticalScale,
             ),
           ),
         ),
@@ -164,13 +211,15 @@ class _CampaignHomeGuest extends StatelessWidget {
               right: visualVM.data.visualScale *
                   i *
                   visualVM.data.distanceFactor *
-                  sizeFactor,
+                  widget.sizeFactor,
             ),
             child: Transform.flip(
               flipX: true,
               child: Image.network(
                 cm.url,
-                width: visualVM.data.visualScale * sizeFactor * verticalScale,
+                width: visualVM.data.visualScale *
+                    widget.sizeFactor *
+                    verticalScale,
               ),
             ),
           ),

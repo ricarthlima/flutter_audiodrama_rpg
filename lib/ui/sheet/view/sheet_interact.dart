@@ -1,7 +1,12 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
+import 'package:flutter_rpg_audiodrama/data/services/campaign_roll_service.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_roll.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import 'package:uuid/uuid.dart';
 import '../helpers/sheet_subpages.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -49,6 +54,8 @@ abstract class SheetInteract {
     required String groupId,
   }) async {
     SheetViewModel sheetVM = context.read<SheetViewModel>();
+    CampaignViewModel campaignVM = context.read<CampaignViewModel>();
+
     AudioProvider audioProvider = Provider.of<AudioProvider>(
       context,
       listen: false,
@@ -96,7 +103,20 @@ abstract class SheetInteract {
 
     for (int i = 0; i < rolls.length; i++) {
       await Future.delayed(Duration(milliseconds: 500));
-      audioProvider.playDice();
+      audioProvider.playDice(i);
+    }
+
+    if (campaignVM.campaign != null) {
+      CampaignRollService.instance.registerRoll(
+        campaignRoll: CampaignRoll(
+          id: Uuid().v8(),
+          userId: FirebaseAuth.instance.currentUser!.uid,
+          campaignId: campaignVM.campaign!.id,
+          sheetId: sheetVM.sheet!.id,
+          createdAt: DateTime.now(),
+          rollLog: roll,
+        ),
+      );
     }
   }
 
