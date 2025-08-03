@@ -92,11 +92,11 @@ class AudioProvider extends ChangeNotifier {
     await _dice03Player.setLoopMode(LoopMode.off);
 
     int num = Random().nextInt(20);
-    await _dice01Player.setAsset("sounds/rolls/roll-$num.ogg");
+    await _dice01Player.setAsset("assets/sounds/rolls/roll-$num.ogg");
     num = Random().nextInt(20);
-    await _dice02Player.setAsset("sounds/rolls/roll-$num.ogg");
+    await _dice02Player.setAsset("assets/sounds/rolls/roll-$num.ogg");
     num = Random().nextInt(20);
-    await _dice03Player.setAsset("sounds/rolls/roll-$num.ogg");
+    await _dice03Player.setAsset("assets/sounds/rolls/roll-$num.ogg");
   }
 
   void onDispose() {
@@ -389,15 +389,15 @@ class AudioProvider extends ChangeNotifier {
     int num = Random().nextInt(20);
     if (index == 0) {
       await _dice01Player.stop();
-      await _dice01Player.setAsset("sounds/rolls/roll-$num.ogg");
+      await _dice01Player.setAsset("assets/sounds/rolls/roll-$num.ogg");
       await _dice01Player.play();
     } else if (index == 1) {
       await _dice02Player.stop();
-      await _dice02Player.setAsset("sounds/rolls/roll-$num.ogg");
+      await _dice02Player.setAsset("assets/sounds/rolls/roll-$num.ogg");
       await _dice02Player.play();
     } else if (index == 2) {
       await _dice03Player.stop();
-      await _dice03Player.setAsset("sounds/rolls/roll-$num.ogg");
+      await _dice03Player.setAsset("assets/sounds/rolls/roll-$num.ogg");
       await _dice03Player.play();
     }
   }
