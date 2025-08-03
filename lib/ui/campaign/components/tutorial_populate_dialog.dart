@@ -9,7 +9,9 @@ showTutorialServer(BuildContext context) {
   showDialog(
     context: context,
     builder: (context) {
-      TextEditingController controller = TextEditingController();
+      TextEditingController controller = TextEditingController(
+        text: context.read<CampaignVisualNovelViewModel>().data.baseUrl,
+      );
       bool isLoading = false;
       return StatefulBuilder(builder: (context, setState) {
         return Dialog(
@@ -55,7 +57,7 @@ showTutorialServer(BuildContext context) {
                 TextFormField(
                   controller: controller,
                   decoration: InputDecoration(
-                    label: Text("Servidor:Porta"),
+                    label: Text("Servidor"),
                   ),
                 ),
                 ElevatedButton(

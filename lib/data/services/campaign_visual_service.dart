@@ -25,7 +25,7 @@ class CampaignVisualService {
     required String baseUrl,
   }) async {
     if (baseUrl.endsWith("/")) {
-      baseUrl = baseUrl.substring(0, baseUrl.length);
+      baseUrl = baseUrl.substring(0, baseUrl.length - 1);
     }
     final uri = Uri.parse('$baseUrl/list.json');
     final response = await http.get(uri);

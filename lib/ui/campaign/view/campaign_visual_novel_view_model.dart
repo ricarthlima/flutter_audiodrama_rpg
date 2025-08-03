@@ -70,6 +70,8 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
         );
     }
 
+    data.baseUrl = url;
+
     data.listBackgrounds = mapLists["backgrounds"]!
         .map(
           (e) => CampaignVisual.fromUrl(

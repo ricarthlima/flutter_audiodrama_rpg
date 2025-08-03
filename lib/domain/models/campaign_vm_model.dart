@@ -7,6 +7,8 @@ import 'package:flutter_rpg_audiodrama/domain/models/campaign_visual.dart';
 class CampaignVisualDataModel {
   CampaignVisualDataModel.empty();
 
+  String baseUrl = "";
+
   List<CampaignVisual> listPortraits = [];
   List<CampaignVisual> listBackgrounds = [];
   List<CampaignVisual> listAmbiences = [];
@@ -26,6 +28,7 @@ class CampaignVisualDataModel {
   bool allowPan = false;
 
   CampaignVisualDataModel({
+    required this.baseUrl,
     required this.listPortraits,
     required this.listBackgrounds,
     required this.listAmbiences,
@@ -43,6 +46,7 @@ class CampaignVisualDataModel {
   });
 
   CampaignVisualDataModel copyWith({
+    String? baseUrl,
     List<CampaignVisual>? listPortraits,
     List<CampaignVisual>? listBackgrounds,
     List<CampaignVisual>? listAmbiences,
@@ -59,6 +63,7 @@ class CampaignVisualDataModel {
     bool? allowZoom,
   }) {
     return CampaignVisualDataModel(
+      baseUrl: baseUrl ?? this.baseUrl,
       listPortraits: listPortraits ?? this.listPortraits,
       listBackgrounds: listBackgrounds ?? this.listBackgrounds,
       listAmbiences: listAmbiences ?? this.listAmbiences,
@@ -80,6 +85,7 @@ class CampaignVisualDataModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'baseUrl': baseUrl,
       'listPortraits': listPortraits.map((x) => x.toMap()).toList(),
       'listBackgrounds': listBackgrounds.map((x) => x.toMap()).toList(),
       'listAmbiences': listAmbiences.map((x) => x.toMap()).toList(),
@@ -98,6 +104,7 @@ class CampaignVisualDataModel {
 
   factory CampaignVisualDataModel.fromMap(Map<String, dynamic> map) {
     return CampaignVisualDataModel(
+      baseUrl: map['baseUrl'] ?? "",
       listPortraits: List<CampaignVisual>.from(
         (map['listPortraits'] as List<dynamic>).map(
           (x) => CampaignVisual.fromMap(x as Map<String, dynamic>),
@@ -163,14 +170,15 @@ class CampaignVisualDataModel {
 
   @override
   String toString() {
-    return 'CampaignVmModel(listPortraits: $listPortraits, listBackgrounds: $listBackgrounds, listAmbiences: $listAmbiences, listMusics: $listMusics, listSfxs: $listSfxs, listLeftActive: $listLeftActive, listRightActive: $listRightActive, backgroundActive: $backgroundActive, visualScale: $visualScale, distanceFactor: $distanceFactor, allowPan: $allowPan, allowZoom: $allowZoom)';
+    return 'CampaignVmModel(baseUrl: $baseUrl, listPortraits: $listPortraits, listBackgrounds: $listBackgrounds, listAmbiences: $listAmbiences, listMusics: $listMusics, listSfxs: $listSfxs, listLeftActive: $listLeftActive, listRightActive: $listRightActive, backgroundActive: $backgroundActive, visualScale: $visualScale, distanceFactor: $distanceFactor, allowPan: $allowPan, allowZoom: $allowZoom)';
   }
 
   @override
   bool operator ==(covariant CampaignVisualDataModel other) {
     if (identical(this, other)) return true;
 
-    return listEquals(other.listPortraits, listPortraits) &&
+    return baseUrl == other.baseUrl &&
+        listEquals(other.listPortraits, listPortraits) &&
         listEquals(other.listBackgrounds, listBackgrounds) &&
         listEquals(other.listAmbiences, listAmbiences) &&
         listEquals(other.listMusics, listMusics) &&
@@ -186,7 +194,8 @@ class CampaignVisualDataModel {
 
   @override
   int get hashCode {
-    return listPortraits.hashCode ^
+    return baseUrl.hashCode ^
+        listPortraits.hashCode ^
         listBackgrounds.hashCode ^
         listAmbiences.hashCode ^
         listMusics.hashCode ^
