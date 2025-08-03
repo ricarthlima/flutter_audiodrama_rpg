@@ -30,94 +30,71 @@ import 'ui/statistics/view/statistics_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await FullScreen.ensureInitialized();
+
   configureUrlStrategy();
 
   await dotenv.load(fileName: "dotenv");
 
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform.copyWith(
-        databaseURL: dotenv.env["FIREBASE_URL"],
-      ),
-    );
-  }
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform.copyWith(
+      databaseURL: dotenv.env["FIREBASE_URL"],
+    ),
+  );
 
   await Supabase.initialize(
     url: dotenv.env["SUPABASE_URL"]!,
     anonKey: dotenv.env["SUPABASE_ANON_KEY"]!,
   );
 
-  runApp(const AppLoader()); // ← aqui começa a separar o que pode usar Firebase
-}
+  ActionRepository actionRepo = ActionRepositoryLocal();
+  await actionRepo.onInitialize();
 
-class AppLoader extends StatelessWidget {
-  const AppLoader({super.key});
+  ItemRepository itemRepo = ItemRepositoryLocal();
+  await itemRepo.onInitialize();
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _createProviders(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const MaterialApp(
-            home: Scaffold(body: Center(child: CircularProgressIndicator())),
-          );
-        }
+  ConditionRepository conditionRepo = ConditionRepositoryLocal();
+  await conditionRepo.onInitialize();
 
-        final providers = snapshot.data as List<ChangeNotifierProvider>;
+  SettingsProvider settingsProvider = SettingsProvider();
+  await settingsProvider.loadSettings();
 
-        return MultiProvider(
-          providers: providers,
-          child: const MainApp(),
-        );
-      },
-    );
-  }
+  AudioProvider audioProvider = AudioProvider();
+  await audioProvider.onInitialize();
 
-  Future<List<ChangeNotifierProvider>> _createProviders() async {
-    final actionRepo = ActionRepositoryLocal();
-    await actionRepo.onInitialize();
+  HomeViewModel homeVM = HomeViewModel();
+  SheetViewModel sheetVM = SheetViewModel(
+    id: "",
+    username: "",
+    actionRepo: actionRepo,
+    conditionRepo: conditionRepo,
+  );
+  ShoppingViewModel shoppingVM = ShoppingViewModel(
+    sheetVM: sheetVM,
+    itemRepo: itemRepo,
+  );
+  StatisticsViewModel statisticsVM = StatisticsViewModel();
+  CampaignViewModel campaignVM = CampaignViewModel();
+  CampaignVisualNovelViewModel campaignVisualVM =
+      CampaignVisualNovelViewModel(campaignId: "");
 
-    final itemRepo = ItemRepositoryLocal();
-    await itemRepo.onInitialize();
-
-    final conditionRepo = ConditionRepositoryLocal();
-    await conditionRepo.onInitialize();
-
-    final settingsProvider = SettingsProvider();
-    await settingsProvider.loadSettings();
-
-    final audioProvider = AudioProvider();
-    await audioProvider.onInitialize();
-
-    final homeVM = HomeViewModel();
-    final sheetVM = SheetViewModel(
-      id: "",
-      username: "",
-      actionRepo: actionRepo,
-      conditionRepo: conditionRepo,
-    );
-    final shoppingVM = ShoppingViewModel(
-      sheetVM: sheetVM,
-      itemRepo: itemRepo,
-    );
-    final statisticsVM = StatisticsViewModel();
-    final campaignVM = CampaignViewModel();
-    final campaignVisualVM = CampaignVisualNovelViewModel(campaignId: "");
-
-    return [
-      ChangeNotifierProvider(create: (_) => UserProvider()),
-      ChangeNotifierProvider(create: (_) => settingsProvider),
-      ChangeNotifierProvider(create: (_) => homeVM),
-      ChangeNotifierProvider(create: (_) => sheetVM),
-      ChangeNotifierProvider(create: (_) => shoppingVM),
-      ChangeNotifierProvider(create: (_) => statisticsVM),
-      ChangeNotifierProvider(create: (_) => campaignVM),
-      ChangeNotifierProvider(create: (_) => campaignVisualVM),
-      ChangeNotifierProvider(create: (_) => audioProvider),
-    ];
-  }
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => settingsProvider),
+        ChangeNotifierProvider(create: (_) => homeVM),
+        ChangeNotifierProvider(create: (_) => sheetVM),
+        ChangeNotifierProvider(create: (_) => shoppingVM),
+        ChangeNotifierProvider(create: (_) => statisticsVM),
+        ChangeNotifierProvider(create: (_) => campaignVM),
+        ChangeNotifierProvider(create: (_) => campaignVisualVM),
+        ChangeNotifierProvider(create: (_) => audioProvider),
+      ],
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
