@@ -167,8 +167,8 @@ class Sheet {
               ),
             )
           : [],
-      money: (map["money"] ?? 0) as double,
-      weight: (map["weight"] ?? 0) as double,
+      money: (map["money"] ?? 0 as num).toDouble(),
+      weight: (map["weight"] ?? 0 as num).toDouble(),
       listActionLore: map['listActionLore'] != null
           ? List<ActionLore>.from(
               (map['listActionLore'] as List<dynamic>).map<ActionLore>(

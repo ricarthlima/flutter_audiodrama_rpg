@@ -104,12 +104,16 @@ class _HomeScreenState extends State<HomeScreen> {
           alignment: Alignment.bottomCenter,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "dev - $versionDev | rules - $versionBook",
-              style: TextStyle(
-                fontSize: 11,
-              ),
-            ),
+            child: FutureBuilder(
+                future: versionDev,
+                builder: (context, snapshot) {
+                  return Text(
+                    snapshot.data ?? "",
+                    style: TextStyle(
+                      fontSize: 11,
+                    ),
+                  );
+                }),
           ),
         )
       ],

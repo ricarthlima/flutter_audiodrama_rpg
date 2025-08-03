@@ -218,7 +218,7 @@
       "description": "Estrutura portátil para abrigo ao ar livre, protegendo contra vento e chuva.",
       "mechanic": "Diminui em 5 a DT para Resistir (Fisiológico) contra o frio.",
       "isFinite": false,
-      "weight": 5,
+      "weight": 5.0,
       "categories": [
         "survival",
         "camping"
@@ -233,7 +233,7 @@
       "description": "Estrutura portátil para abrigo ao ar livre, protegendo contra vento e chuva.",
       "mechanic": "Diminui em 5 a DT para Resistir (Fisiológico) contra o frio.",
       "isFinite": false,
-      "weight": 5,
+      "weight": 5.0,
       "categories": [
         "survival",
         "camping"
@@ -248,7 +248,7 @@
       "description": "Dispositivo portátil para manter a temperatura confortável em ambientes frios.",
       "mechanic": "Se usado dentro de uma barraca, para os testes de Resistir (Fisiológico) contra o frio.",
       "isFinite": false,
-      "weight": 6,
+      "weight": 6.0,
       "categories": [
         "survival",
         "camping"
@@ -263,7 +263,7 @@
       "description": "Cobertura acolchoada para dormir confortavelmente ao ar livre.",
       "mechanic": "Garante um sono sem penalidades se usado em um local seguro e confortável.",
       "isFinite": false,
-      "weight": 2,
+      "weight": 2.0,
       "categories": [
         "survival",
         "camping"
@@ -294,7 +294,7 @@
       "mechanic": "Diminui em 5 a DT para Socorrer.",
       "isFinite": true,
       "maxUses": 5,
-      "weight": 5,
+      "weight": 5.0,
       "categories": [
         "medic",
         "survival"
@@ -325,7 +325,7 @@
       "description": "Fonte de luz portátil para iluminar áreas externas à noite.",
       "mechanic": "Fornece uma fonte de luz confiável. Usa um combustível para 2 horas",
       "isFinite": false,
-      "weight": 5,
+      "weight": 5.0,
       "categories": [
         "tool",
         "camping"
@@ -357,7 +357,7 @@
       "mechanic": "Adicione ao lampião para abastecê-lo",
       "isFinite": true,
       "maxUses": 10,
-      "weight": 2,
+      "weight": 2.0,
       "categories": [
         "tool",
         "camping"
@@ -372,7 +372,7 @@
       "description": "Pequeno fogão portátil para cozinhar alimentos em acampamentos.",
       "mechanic": "Permite cozinhar.",
       "isFinite": false,
-      "weight": 2,
+      "weight": 2.0,
       "categories": [
         "food",
         "camping"
@@ -402,7 +402,7 @@
       "description": "Utensílio essencial para cozinhar alimentos ao ar livre.",
       "mechanic": "Permite cozinhar.",
       "isFinite": false,
-      "weight": 3,
+      "weight": 3.0,
       "categories": [
         "food",
         "camping"
@@ -417,7 +417,7 @@
       "description": "Recipiente para armazenar e transportar água de forma prática.",
       "mechanic": "Armazena até 1 litro de água.",
       "isFinite": false,
-      "weight": 1,
+      "weight": 1.0,
       "categories": [
         "tool",
         "survival"
@@ -507,7 +507,7 @@
       "mechanic": "Alimento suficiente para uma pessoa em todas as refeições do dia.",
       "isFinite": true,
       "maxUses": 4,
-      "weight": 4,
+      "weight": 4.0,
       "categories": [
         "food",
         "survival"
@@ -583,7 +583,7 @@
       "description": "Proteção contra chuvas intensas durante atividades externas.",
       "mechanic": "Pode facilitar diversos tipos de testes em situações na chuva.",
       "isFinite": false,
-      "weight": 1,
+      "weight": 1.0,
       "categories": [
         "survival",
         "camping"
@@ -628,7 +628,7 @@
       "description": "Versão aprimorada para enxergar em condições de pouca luz.",
       "mechanic": "Permite enxergar contraste até 2km de distância.",
       "isFinite": false,
-      "weight": 3,
+      "weight": 3.0,
       "categories": [
         "tool",
         "exploration"

@@ -219,17 +219,27 @@ class _RollStackDialogState extends State<RollStackDialog> {
         .actionRepo
         .getActionById(widget.rollLog.idAction)!;
 
+    int amount = 0;
+
     if (action.isResisted) {
       if (widget.rollLog.isGettingLower) {
         int roll = widget.rollLog.rolls
             .reduce((current, next) => (current) < next ? current : next);
-        if (roll >= 10) return 1;
+        if (roll >= 10) {
+          amount = 1;
+        }
       } else {
         List<int> rolls = widget.rollLog.rolls.where((e) => e >= 10).toList();
-        return rolls.length;
+        amount = rolls.length;
       }
     }
 
-    return 0;
+    // Críticos
+    int naturalOne = widget.rollLog.rolls.where((e) => e == 1).length;
+    int naturalTwenty = widget.rollLog.rolls.where((e) => e == 20).length;
+
+    amount = (amount - naturalOne) + naturalTwenty;
+
+    return max(0, amount);
   }
 }

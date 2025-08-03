@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../domain/models/app_user.dart';
 import '../../router.dart';
@@ -15,23 +16,30 @@ import '../preferences/local_data_manager.dart';
 
 class AuthService {
   Future<void> signInWithGoogle(BuildContext context) async {
-    // Create a new provider
     GoogleAuthProvider googleProvider = GoogleAuthProvider();
 
     googleProvider.addScope('https://www.googleapis.com/auth/userinfo.profile');
     googleProvider.addScope('https://www.googleapis.com/auth/userinfo.email');
     googleProvider.setCustomParameters({'login_hint': 'user@example.com'});
 
+    UserCredential? userCredential;
     // Once signed in, return the UserCredential
-    UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithPopup(googleProvider);
+
+    if (kIsWeb) {
+      userCredential =
+          await FirebaseAuth.instance.signInWithPopup(googleProvider);
+    } else {
+      userCredential =
+          await FirebaseAuth.instance.signInWithProvider(googleProvider);
+    }
+
+    String? base64Image;
 
     final response = await http.get(
       Uri.parse(
         userCredential.user!.photoURL!,
       ),
     );
-    String? base64Image;
 
     if (response.statusCode == 200) {
       // Codificar os bytes da imagem em base64

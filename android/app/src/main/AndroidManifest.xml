@@ -2,7 +2,7 @@
     <application
         android:label="ADRPG"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <meta-data
             android:name="com.google.android.gms.auth.api.signin.v2.DEFAULT_SIGN_IN"
             android:value="true" />

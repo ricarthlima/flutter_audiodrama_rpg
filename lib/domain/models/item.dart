@@ -55,7 +55,7 @@ class Item {
     return Item(
       id: map['id'] as String,
       name: map['name'] as String,
-      weight: map['weight'] as double,
+      weight: (map['weight'] as num).toDouble(),
       price: map['price'] as int,
       description: map['description'] as String,
       mechanic: map['mechanic'] as String,

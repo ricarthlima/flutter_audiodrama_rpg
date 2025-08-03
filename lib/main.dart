@@ -1,8 +1,9 @@
 import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_fullscreen/flutter_fullscreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import '_core/url_strategy/url_strategy.dart';
@@ -31,21 +32,31 @@ import 'ui/statistics/view/statistics_view_model.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
   await FullScreen.ensureInitialized();
 
   configureUrlStrategy();
 
-  await dotenv.load(fileName: "dotenv");
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform.copyWith(
+        databaseURL: const String.fromEnvironment("FIREBASE_URL"),
+      ),
+    );
+  } else {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform.copyWith(
-      databaseURL: dotenv.env["FIREBASE_URL"],
-    ),
-  );
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+  }
 
   await Supabase.initialize(
-    url: dotenv.env["SUPABASE_URL"]!,
-    anonKey: dotenv.env["SUPABASE_ANON_KEY"]!,
+    url: const String.fromEnvironment("SUPABASE_URL"),
+    anonKey: const String.fromEnvironment("SUPABASE_ANON_KEY"),
   );
 
   ActionRepository actionRepo = ActionRepositoryLocal();
