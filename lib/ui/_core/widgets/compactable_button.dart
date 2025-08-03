@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../dimensions.dart';
 
 class CompactableButton extends StatefulWidget {
   final CompactableButtonController controller;
@@ -58,8 +57,7 @@ class _CompactableButtonState extends State<CompactableButton> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: SizedBox(
-                  width: ((isVertical(context)) ? 0 : 32) +
-                      (value * ((isVertical(context)) ? 275 : 243)),
+                  width: 275,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,

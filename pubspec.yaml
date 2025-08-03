@@ -53,6 +53,7 @@ flutter:
     - assets/sheets/
     - assets/images/
     - assets/lotties/
+    - sounds/rolls/
   fonts:
     - family: Bungee
       fonts:

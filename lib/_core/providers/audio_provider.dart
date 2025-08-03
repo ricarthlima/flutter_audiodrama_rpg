@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,10 @@ class AudioProvider extends ChangeNotifier {
   final AudioPlayer _mscPlayer = AudioPlayer();
   final AudioPlayer _ambPlayer = AudioPlayer();
   final AudioPlayer _sfxPlayer = AudioPlayer();
+
+  final AudioPlayer _dice01Player = AudioPlayer();
+  final AudioPlayer _dice02Player = AudioPlayer();
+  final AudioPlayer _dice03Player = AudioPlayer();
 
   double globalLocalVolume = 1;
   double mscLocalVolume = 1;
@@ -78,6 +83,10 @@ class AudioProvider extends ChangeNotifier {
     await _mscPlayer.setLoopMode(LoopMode.one);
     await _ambPlayer.setLoopMode(LoopMode.one);
     await _sfxPlayer.setLoopMode(LoopMode.off);
+
+    await _dice01Player.setLoopMode(LoopMode.off);
+    await _dice02Player.setLoopMode(LoopMode.off);
+    await _dice03Player.setLoopMode(LoopMode.off);
   }
 
   void onDispose() {
@@ -279,6 +288,21 @@ class AudioProvider extends ChangeNotifier {
         newVolume: volume,
         player: _sfxPlayer,
       );
+      _changeRelativeVolume(
+        oldVolume: sfxLocalVolume,
+        newVolume: volume,
+        player: _dice01Player,
+      );
+      _changeRelativeVolume(
+        oldVolume: sfxLocalVolume,
+        newVolume: volume,
+        player: _dice02Player,
+      );
+      _changeRelativeVolume(
+        oldVolume: sfxLocalVolume,
+        newVolume: volume,
+        player: _dice03Player,
+      );
       sfxLocalVolume = volume;
       await saveLocalVolume(sfxLV: volume);
     }
@@ -345,6 +369,20 @@ class AudioProvider extends ChangeNotifier {
         _currentSfxUrl = null;
         await _sfxPlayer.stop();
         break;
+    }
+  }
+
+  Future<void> playDice() async {
+    int num = Random().nextInt(20);
+    if (!_dice01Player.playing) {
+      await _dice01Player.setAsset("sounds/rolls/roll-$num.ogg");
+      await _dice01Player.play();
+    } else if (!_dice02Player.playing) {
+      await _dice02Player.setAsset("sounds/rolls/roll-$num.ogg");
+      await _dice02Player.play();
+    } else if (!_dice03Player.playing) {
+      await _dice03Player.setAsset("sounds/rolls/roll-$num.ogg");
+      await _dice03Player.play();
     }
   }
 }

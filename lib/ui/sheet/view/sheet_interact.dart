@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import '../helpers/sheet_subpages.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -48,6 +49,10 @@ abstract class SheetInteract {
     required String groupId,
   }) async {
     SheetViewModel sheetVM = context.read<SheetViewModel>();
+    AudioProvider audioProvider = Provider.of<AudioProvider>(
+      context,
+      listen: false,
+    );
 
     List<int> rolls = [];
 
@@ -88,6 +93,11 @@ abstract class SheetInteract {
     );
 
     sheetVM.onRoll(roll: roll, groupId: groupId);
+
+    for (int i = 0; i < rolls.length; i++) {
+      await Future.delayed(Duration(milliseconds: 500));
+      audioProvider.playDice();
+    }
   }
 
   static Future<void> onUploadBioImageClicked(BuildContext context) async {

@@ -74,7 +74,10 @@ class CampaignDrawer extends StatelessWidget {
                     },
                     tooltip: "Expandir",
                     padding: EdgeInsets.zero,
-                    icon: Icon(Icons.menu),
+                    icon: Icon(
+                      Icons.menu,
+                      color: Colors.white,
+                    ),
                   ),
                 if (!campaignVM.isDrawerClosed)
                   Column(
