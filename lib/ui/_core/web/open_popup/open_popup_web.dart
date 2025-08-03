@@ -14,3 +14,7 @@ void openPopup(String subdomain, {String? name}) {
 openUrl(String url) {
   html.window.open(url, "");
 }
+
+void changeURL(String novaURL) {
+  html.window.history.pushState(null, '', "#/$novaURL");
+}

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../dimensions.dart';
-import '../open_popup.dart';
+import '../web/open_popup/open_popup.dart';
 
 Future<dynamic> showImageDialog({
   required BuildContext context,

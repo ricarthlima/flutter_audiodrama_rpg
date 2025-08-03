@@ -1,0 +1,2 @@
+E:/_repos/rpg/flutter_rpg_audiodrama/android/app/.cxx/Debug/sop11z14/x86/CMakeFiles/edit_cache.dir
+E:/_repos/rpg/flutter_rpg_audiodrama/android/app/.cxx/Debug/sop11z14/x86/CMakeFiles/rebuild_cache.dir

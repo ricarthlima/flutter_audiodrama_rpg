@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../_core/providers/user_provider.dart';
-import '../../_core/utils/change_url.dart';
+import '../../_core/web/open_popup/open_popup.dart';
 import '../utils/home_tabs.dart';
 import 'package:provider/provider.dart';
 

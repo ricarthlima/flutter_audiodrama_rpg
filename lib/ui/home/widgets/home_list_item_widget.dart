@@ -4,7 +4,7 @@ import '../../../domain/models/app_user.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/helpers.dart';
-import '../../_core/utils/download_json_file.dart';
+import '../../_core/web/download_json/download_json.dart';
 import '../components/move_sheet_to_campaign_dialog.dart';
 import 'package:provider/provider.dart';
 import '../../../domain/models/sheet_model.dart';

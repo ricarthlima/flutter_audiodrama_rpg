@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_fullscreen/flutter_fullscreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import '_core/url_strategy/url_strategy.dart';
 import 'data/repositories/action_repository.dart';
 import 'data/repositories/condition_repository.dart';
 import 'data/repositories/item_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import '_core/providers/audio_provider.dart';
 import '_core/providers/user_provider.dart';
@@ -30,71 +30,94 @@ import 'ui/statistics/view/statistics_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await FullScreen.ensureInitialized();
-
-  setUrlStrategy(PathUrlStrategy());
+  configureUrlStrategy();
 
   await dotenv.load(fileName: "dotenv");
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform.copyWith(
-      databaseURL: dotenv.env["FIREBASE_URL"],
-    ),
-  );
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform.copyWith(
+        databaseURL: dotenv.env["FIREBASE_URL"],
+      ),
+    );
+  }
 
   await Supabase.initialize(
     url: dotenv.env["SUPABASE_URL"]!,
     anonKey: dotenv.env["SUPABASE_ANON_KEY"]!,
   );
 
-  ActionRepository actionRepo = ActionRepositoryLocal();
-  await actionRepo.onInitialize();
+  runApp(const AppLoader()); // ← aqui começa a separar o que pode usar Firebase
+}
 
-  ItemRepository itemRepo = ItemRepositoryLocal();
-  await itemRepo.onInitialize();
+class AppLoader extends StatelessWidget {
+  const AppLoader({super.key});
 
-  ConditionRepository conditionRepo = ConditionRepositoryLocal();
-  await conditionRepo.onInitialize();
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _createProviders(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const MaterialApp(
+            home: Scaffold(body: Center(child: CircularProgressIndicator())),
+          );
+        }
 
-  SettingsProvider settingsProvider = SettingsProvider();
-  await settingsProvider.loadSettings();
+        final providers = snapshot.data as List<ChangeNotifierProvider>;
 
-  AudioProvider audioProvider = AudioProvider();
-  await audioProvider.onInitialize();
+        return MultiProvider(
+          providers: providers,
+          child: const MainApp(),
+        );
+      },
+    );
+  }
 
-  HomeViewModel homeVM = HomeViewModel();
-  SheetViewModel sheetVM = SheetViewModel(
-    id: "",
-    username: "",
-    actionRepo: actionRepo,
-    conditionRepo: conditionRepo,
-  );
-  ShoppingViewModel shoppingVM = ShoppingViewModel(
-    sheetVM: sheetVM,
-    itemRepo: itemRepo,
-  );
-  StatisticsViewModel statisticsVM = StatisticsViewModel();
-  CampaignViewModel campaignVM = CampaignViewModel();
-  CampaignVisualNovelViewModel campaignVisualVM =
-      CampaignVisualNovelViewModel(campaignId: "");
+  Future<List<ChangeNotifierProvider>> _createProviders() async {
+    final actionRepo = ActionRepositoryLocal();
+    await actionRepo.onInitialize();
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => settingsProvider),
-        ChangeNotifierProvider(create: (_) => homeVM),
-        ChangeNotifierProvider(create: (_) => sheetVM),
-        ChangeNotifierProvider(create: (_) => shoppingVM),
-        ChangeNotifierProvider(create: (_) => statisticsVM),
-        ChangeNotifierProvider(create: (_) => campaignVM),
-        ChangeNotifierProvider(create: (_) => campaignVisualVM),
-        ChangeNotifierProvider(create: (_) => audioProvider),
-      ],
-      child: const MainApp(),
-    ),
-  );
+    final itemRepo = ItemRepositoryLocal();
+    await itemRepo.onInitialize();
+
+    final conditionRepo = ConditionRepositoryLocal();
+    await conditionRepo.onInitialize();
+
+    final settingsProvider = SettingsProvider();
+    await settingsProvider.loadSettings();
+
+    final audioProvider = AudioProvider();
+    await audioProvider.onInitialize();
+
+    final homeVM = HomeViewModel();
+    final sheetVM = SheetViewModel(
+      id: "",
+      username: "",
+      actionRepo: actionRepo,
+      conditionRepo: conditionRepo,
+    );
+    final shoppingVM = ShoppingViewModel(
+      sheetVM: sheetVM,
+      itemRepo: itemRepo,
+    );
+    final statisticsVM = StatisticsViewModel();
+    final campaignVM = CampaignViewModel();
+    final campaignVisualVM = CampaignVisualNovelViewModel(campaignId: "");
+
+    return [
+      ChangeNotifierProvider(create: (_) => UserProvider()),
+      ChangeNotifierProvider(create: (_) => settingsProvider),
+      ChangeNotifierProvider(create: (_) => homeVM),
+      ChangeNotifierProvider(create: (_) => sheetVM),
+      ChangeNotifierProvider(create: (_) => shoppingVM),
+      ChangeNotifierProvider(create: (_) => statisticsVM),
+      ChangeNotifierProvider(create: (_) => campaignVM),
+      ChangeNotifierProvider(create: (_) => campaignVisualVM),
+      ChangeNotifierProvider(create: (_) => audioProvider),
+    ];
+  }
 }
 
 class MainApp extends StatelessWidget {

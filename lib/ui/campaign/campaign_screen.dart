@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../data/services/chat_service.dart';
 import '../_core/components/movable_expandable_screen.dart';
-import '../_core/open_popup.dart';
 import '../../_core/providers/user_provider.dart';
+import '../_core/web/open_popup/open_popup.dart';
 import 'components/campaign_drawer.dart';
 import 'partials/achievements_widget.dart';
 import 'partials/campaign_first_interact_screen.dart';
