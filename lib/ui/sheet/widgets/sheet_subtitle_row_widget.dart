@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/condition_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../../_core/app_colors.dart';
 import '../../_core/fonts.dart';
 import '../../_core/stress_level.dart';
 import '../../_core/widgets/named_widget.dart';
@@ -48,7 +48,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
       NamedWidget(
         title: "Estresse",
         tooltip: "Nível de estresse atual",
-        hardHeight: 32,
+        hardHeight: 42,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +88,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
       NamedWidget(
         title: "Esforço",
         tooltip: "Carga de esforço acumulada",
-        hardHeight: 32,
+        hardHeight: 42,
         isShowLeftSeparator: true,
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -142,9 +142,10 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         isVisible: !sheetVM.isEditing,
         title: "Estado",
         isShowLeftSeparator: true,
-        hardHeight: 32,
+        hardHeight: 42,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (sheetVM.isOwner)
               IconButton(
@@ -158,14 +159,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             SizedBox(
               width: 110,
               child: Center(
-                child: Text(
-                  getConditionName(sheetVM.sheet!.condition),
-                  style: TextStyle(
-                    fontFamily: FontFamily.bungee,
-                    color:
-                        (sheetVM.sheet!.condition > 0) ? AppColors.red : null,
-                  ),
-                ),
+                child: Condition(condition: sheetVM.sheet!.condition),
               ),
             ),
             if (sheetVM.isOwner)
@@ -184,7 +178,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
       NamedWidget(
         isVisible: !sheetVM.isEditing,
         title: "Descansos",
-        hardHeight: 32,
+        hardHeight: 42,
         isShowLeftSeparator: true,
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Row(
@@ -224,7 +218,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
       ),
       NamedWidget(
         isVisible: !sheetVM.isEditing,
-        hardHeight: 32,
+        hardHeight: 42,
         padding: EdgeInsets.symmetric(horizontal: 16),
         title: "Dados de Corpo",
         isShowLeftSeparator: true,
@@ -270,7 +264,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16),
         isShowLeftSeparator: true,
         title: "",
-        hardHeight: 32,
+        hardHeight: 42,
         titleWidget: Text(
           "Ofícios",
           style: TextStyle(
@@ -291,22 +285,5 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         ),
       )
     ];
-  }
-}
-
-String getConditionName(int condition) {
-  switch (condition) {
-    case 0:
-      return "DESPERTO";
-    case 1:
-      return "VULNERÁVEL";
-    case 2:
-      return "INCAPAZ";
-    case 3:
-      return "MORRENDO";
-    case 4:
-      return "MORTE";
-    default:
-      return "DESPERTO";
   }
 }
