@@ -50,6 +50,7 @@ class HomeDrawer extends StatelessWidget {
                   onPressed: () {
                     homeViewModel.currentPage = HomeTabs.sheets;
                     changeURL(HomeTabs.sheets.name);
+                    homeViewModel.isDrawerClosed = true;
                   },
                 ),
                 CompactableButton(
@@ -62,6 +63,7 @@ class HomeDrawer extends StatelessWidget {
                   onPressed: () {
                     homeViewModel.currentPage = HomeTabs.campaigns;
                     changeURL(HomeTabs.campaigns.name);
+                    homeViewModel.isDrawerClosed = true;
                   },
                 ),
               ],
