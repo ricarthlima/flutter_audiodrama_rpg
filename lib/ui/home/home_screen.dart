@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/data/services/news_service.dart';
+import 'package:flutter_rpg_audiodrama/ui/home/components/news_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/providers/user_provider.dart';
@@ -34,6 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
       if (widget.page != null) {
         homeViewModel.currentPage = widget.page!;
       }
+
+      verifyNews();
     });
   }
 
@@ -118,5 +122,12 @@ class _HomeScreenState extends State<HomeScreen> {
         )
       ],
     );
+  }
+
+  void verifyNews() async {
+    NewsModel? news = await NewsService.instance.getNews();
+    if (mounted && news != null) {
+      showNewsDialog(context, news);
+    }
   }
 }

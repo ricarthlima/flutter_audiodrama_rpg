@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/settings/components/add_news_dialog.dart';
 import '../../_core/providers/audio_provider.dart';
 import '../_core/dimensions.dart';
 import '../_core/fonts.dart';
@@ -130,6 +131,14 @@ class SettingsScreen extends StatelessWidget {
                   height: 32,
                   thickness: 0.5,
                 ),
+                if (FirebaseAuth.instance.currentUser?.email ==
+                    "ricarth.lima@gmail.com")
+                  ElevatedButton(
+                    onPressed: () {
+                      showAddNewsDialog(context);
+                    },
+                    child: Text("Escrever notas de atualização"),
+                  ),
                 ListTile(
                   onTap: () {
                     FirebaseAuth.instance.signOut().then(
