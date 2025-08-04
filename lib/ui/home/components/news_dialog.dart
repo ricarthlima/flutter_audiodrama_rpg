@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/news_service.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/text_markdown.dart';
+import 'package:intl/intl.dart';
 
 showNewsDialog(BuildContext context, NewsModel news) {
   showDialog(
@@ -26,6 +28,7 @@ class _NewsDialogState extends State<_NewsDialog> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.black,
       width: 500,
       height: 600,
       padding: EdgeInsets.all(16),
@@ -42,10 +45,11 @@ class _NewsDialogState extends State<_NewsDialog> {
                   style: TextStyle(
                     fontSize: 24,
                     fontFamily: "Bungee",
+                    color: AppColors.red,
                   ),
                 ),
                 Text(
-                  "versão ${widget.news.version}",
+                  "versão ${widget.news.version} - ${DateFormat('dd/MM/yyyy - HH:mm', 'pt_BR').format(widget.news.createdAt)}",
                   style: TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
                 ),
                 Divider(thickness: 0.25),
@@ -54,7 +58,13 @@ class _NewsDialogState extends State<_NewsDialog> {
                     controller: scrollController,
                     child: SingleChildScrollView(
                       controller: scrollController,
-                      child: TextMarkdown(widget.news.description),
+                      child: TextMarkdown(
+                        widget.news.description,
+                        regularStyle: TextStyle(
+                          fontFamily: "SourceSerif4",
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ),
