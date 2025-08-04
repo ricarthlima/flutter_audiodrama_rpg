@@ -49,9 +49,9 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    // await SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.portraitUp,
+    // ]);
   }
 
   await Supabase.initialize(
