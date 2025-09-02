@@ -38,7 +38,9 @@ import 'widgets/sheet_not_found_widget.dart';
 import 'widgets/sheet_subtitle_row_widget.dart';
 
 class SheetScreen extends StatefulWidget {
-  const SheetScreen({super.key});
+  final String id;
+  final String username;
+  const SheetScreen({super.key, required this.id, required this.username});
 
   @override
   State<SheetScreen> createState() => _SheetScreenState();
@@ -53,6 +55,7 @@ class _SheetScreenState extends State<SheetScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final sheetVM = Provider.of<SheetViewModel>(context, listen: false);
+      sheetVM.updateCredentials(id: widget.id, username: widget.username);
       sheetVM.refresh();
     });
     _keyListener = _handleKey;

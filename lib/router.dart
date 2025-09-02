@@ -78,17 +78,7 @@ class AppRouter {
           String id = state.pathParameters["sheetId"] ?? "";
           String username = state.pathParameters["username"] ?? "";
 
-          WidgetsBinding.instance.addPersistentFrameCallback((_) {
-            Provider.of<SheetViewModel>(context, listen: false)
-                .updateCredentials(
-              id: id,
-              username: username,
-            );
-          });
-
-          return SheetScreen(
-            key: UniqueKey(),
-          );
+          return SheetScreen(key: UniqueKey(), id: id, username: username);
         },
       ),
       GoRoute(
@@ -97,10 +87,10 @@ class AppRouter {
           String id = state.pathParameters["sheetId"] ?? "";
           String username = state.pathParameters["username"] ?? "";
 
-          Provider.of<SheetViewModel>(context, listen: false).updateCredentials(
-            id: id,
-            username: username,
-          );
+          Provider.of<SheetViewModel>(
+            context,
+            listen: false,
+          ).updateCredentials(id: id, username: username);
 
           return SheetSettingsPage(isPopup: true);
         },
@@ -112,9 +102,9 @@ class AppRouter {
 
           return FutureBuilder(
             future: context.read<UserProvider>().initializeCampaign(
-                  context: context,
-                  campaignId: id,
-                ),
+              context: context,
+              campaignId: id,
+            ),
             builder: (context, snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
                 return ScaffoldCenterCPI();
@@ -127,7 +117,7 @@ class AppRouter {
     ],
   );
 
-  static disposeListeners(context) {
+  static void disposeListeners(context) {
     UserProvider userProvider = Provider.of<UserProvider>(
       context,
       listen: false,
@@ -147,7 +137,7 @@ class AppRouter {
     campaignVM.hasInteractedDisable();
   }
 
-  goHome({required BuildContext context, HomeTabs? subPage}) {
+  void goHome({required BuildContext context, HomeTabs? subPage}) {
     if (subPage != null) {
       GoRouter.of(context).go("/${subPage.name}");
     } else {
@@ -155,11 +145,11 @@ class AppRouter {
     }
   }
 
-  goAuth({required BuildContext context}) {
+  void goAuth({required BuildContext context}) {
     GoRouter.of(context).go(AppRouter.auth);
   }
 
-  goSheet({
+  Future<void> goSheet({
     required BuildContext context,
     required String username,
     required Sheet sheet,
@@ -172,7 +162,7 @@ class AppRouter {
     }
   }
 
-  goCampaign({
+  void goCampaign({
     required BuildContext context,
     required String campaignId,
     CampaignTabs? subPage,
