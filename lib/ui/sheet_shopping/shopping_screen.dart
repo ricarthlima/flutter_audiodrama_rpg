@@ -3,7 +3,7 @@ import 'view/shopping_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../_core/dimensions.dart';
-import '../sheet/view/sheet_view_model.dart';
+import '../sheet/providers/sheet_view_model.dart';
 import 'widgets/shopping_list_widget.dart';
 
 class SheetShoppingDialogScreen extends StatefulWidget {

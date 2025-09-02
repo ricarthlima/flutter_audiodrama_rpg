@@ -25,7 +25,7 @@ import 'ui/campaign/view/campaign_view_model.dart';
 import 'ui/campaign/view/campaign_visual_novel_view_model.dart';
 import 'ui/home/view/home_view_model.dart';
 import 'ui/settings/view/settings_provider.dart';
-import 'ui/sheet/view/sheet_view_model.dart';
+import 'ui/sheet/providers/sheet_view_model.dart';
 import 'ui/sheet_shopping/view/shopping_view_model.dart';
 import 'ui/sheet_statistics/view/statistics_view_model.dart';
 

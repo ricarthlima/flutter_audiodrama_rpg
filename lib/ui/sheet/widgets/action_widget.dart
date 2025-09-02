@@ -6,13 +6,13 @@ import '../../../domain/models/action_value.dart';
 import '../../_core/color_filter_inverter.dart';
 import '../../_core/components/wip_snackbar.dart';
 import '../../_core/dimensions.dart';
-import '../view/sheet_interact.dart';
+import '../providers/sheet_interact.dart';
 import 'package:provider/provider.dart';
 
 import '../../settings/view/settings_provider.dart';
 import '../helpers/enum_action_train_level.dart';
 import '../../../domain/models/action_template.dart';
-import '../view/sheet_view_model.dart';
+import '../providers/sheet_view_model.dart';
 import 'action_tooltip.dart';
 
 class ActionWidget extends StatefulWidget {

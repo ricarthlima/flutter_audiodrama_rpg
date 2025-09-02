@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:provider/provider.dart';
 
 import '../../../_core/utils/download_sheet_json.dart';
 import '../../../domain/models/list_action.dart';
 import '../../_core/widgets/loading_widget.dart';
-import '../view/sheet_view_model.dart';
+import '../providers/sheet_view_model.dart';
 import '../widgets/sheet_not_found_widget.dart';
 
 class SheetSettingsScreen extends StatefulWidget {
@@ -22,24 +24,25 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
     super.initState();
     if (widget.isPopup) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final viewModel = Provider.of<SheetViewModel>(context, listen: false);
-        viewModel.refresh();
+        final sheetVM = Provider.of<SheetViewModel>(context, listen: false);
+        sheetVM.refresh();
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    SheetViewModel sheetViewModel = Provider.of<SheetViewModel>(context);
-    return (sheetViewModel.isLoading)
+    SheetViewModel sheetVM = Provider.of<SheetViewModel>(context);
+    return (sheetVM.isLoading)
         ? LoadingWidget()
-        : (sheetViewModel.isFoundSheet)
+        : (sheetVM.isFoundSheet)
         ? _buildBody(context)
         : SheetNotFoundWidget();
   }
 
   Widget _buildBody(BuildContext context) {
     SheetViewModel sheetVM = Provider.of<SheetViewModel>(context);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return SizedBox(
       width: (isVertical(context) ? null : width(context) / 2),
@@ -53,7 +56,7 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: listItems(sheetVM),
+              children: listItems(sheetVM, userProvider),
             ),
           ),
         ],
@@ -61,10 +64,13 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
     );
   }
 
-  List<Widget> listItems(SheetViewModel sheetVM) {
+  List<Widget> listItems(SheetViewModel sheetVM, UserProvider userProvider) {
+    Campaign? campaign = userProvider.getCampaignBySheet(sheetVM.sheet!.id);
+
     return [
       _SettingItem(
         title: "Opções de Ficha",
+        subtitle: "Configurações gerais sobre a ficha",
         child: ListTile(
           leading: Icon(Icons.download),
           contentPadding: EdgeInsets.zero,
@@ -76,6 +82,7 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
       ),
       _SettingItem(
         title: "Ofícios",
+        subtitle: "Ative e desative ofícios",
         child: Column(
           children: List.generate(sheetVM.actionRepo.getListWorks().length, (
             index,
@@ -84,7 +91,17 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
             return SizedBox(
               width: 300,
               child: CheckboxListTile(
-                value: sheetVM.sheet!.listActiveWorks.contains(work.name),
+                enabled:
+                    campaign == null ||
+                    campaign.campaignSheetSettings.listActiveWorkIds.contains(
+                      work.name,
+                    ),
+                value: (campaign != null)
+                    ? campaign.campaignSheetSettings.listActiveWorkIds.contains(
+                            work.name,
+                          ) &&
+                          sheetVM.sheet!.listActiveWorks.contains(work.name)
+                    : sheetVM.sheet!.listActiveWorks.contains(work.name),
                 title: Text(
                   work.name[0].toUpperCase() + work.name.substring(1),
                 ),
@@ -97,14 +114,20 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
           }),
         ),
       ),
+      _SettingItem(
+        title: "Módulos",
+        subtitle: "Ative e desative módulos de regras opcionais",
+        child: Column(),
+      ),
     ];
   }
 }
 
 class _SettingItem extends StatelessWidget {
   final String title;
+  final String? subtitle;
   final Widget child;
-  const _SettingItem({required this.title, required this.child});
+  const _SettingItem({required this.title, this.subtitle, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +137,22 @@ class _SettingItem extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       spacing: 8,
       children: [
-        Text(title, style: TextStyle(fontFamily: "Bungee")),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(title, style: TextStyle(fontFamily: "Bungee")),
+            if (subtitle != null)
+              Opacity(
+                opacity: 0.5,
+                child: Text(
+                  subtitle!,
+                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: 10),
+                ),
+              ),
+          ],
+        ),
         child,
         SizedBox(
           width: (isVertical(context) ? null : width(context) / 2),

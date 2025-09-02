@@ -15,7 +15,7 @@ import 'ui/home/home_screen.dart';
 import 'ui/home/utils/home_tabs.dart';
 import 'ui/sheet/screens/sheet_settings_page.dart';
 import 'ui/sheet/sheet_screen.dart';
-import 'ui/sheet/view/sheet_view_model.dart';
+import 'ui/sheet/providers/sheet_view_model.dart';
 
 class AppRouter {
   static const String home = "/";
@@ -23,11 +23,12 @@ class AppRouter {
   static const String sheet = "/sheet";
 
   static final GoRouter router = GoRouter(
-    redirect: (context, state) {
+    redirect: (context, state) async {
       bool loggedIn = FirebaseAuth.instance.currentUser != null;
       if (!loggedIn) {
         return auth;
       }
+      await Provider.of<UserProvider>(context, listen: false).onInitialize();
       return null;
     },
     routes: [

@@ -25,18 +25,18 @@ Future<bool?> showRemoveItemDialog({
   );
 }
 
-Future<bool?> showRemoveDialog(
-    {required BuildContext context, required String message}) {
+Future<bool?> showRemoveDialog({
+  required BuildContext context,
+  required String message,
+  String labelConfirmationButton = "REMOVER",
+}) {
   return showDialog(
     context: context,
     builder: (context) {
       return Dialog(
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(
-              width: 4,
-              color: AppColors.red,
-            ),
+            border: Border.all(width: 4, color: AppColors.red),
             color: Colors.black,
           ),
           padding: EdgeInsets.all(16),
@@ -58,18 +58,12 @@ Future<bool?> showRemoveDialog(
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               Text(
                 "Essa ação é irreversível",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 12),
               ),
               Divider(color: Colors.white),
               Row(
@@ -90,7 +84,7 @@ Future<bool?> showRemoveDialog(
                       Navigator.pop(context, true);
                     },
                     child: Text(
-                      "REMOVER",
+                      labelConfirmationButton,
                       style: TextStyle(
                         fontSize: 18,
                         fontFamily: FontFamily.bungee,
@@ -99,7 +93,7 @@ Future<bool?> showRemoveDialog(
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/_core/helpers/has_commom_element.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/exhaust_level.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/condition_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../../_core/providers/user_provider.dart';
 import '../../_core/fonts.dart';
 import '../../_core/stress_level.dart';
 import '../../_core/widgets/named_widget.dart';
 import '../../settings/view/settings_provider.dart';
-import '../view/sheet_interact.dart';
-import '../view/sheet_view_model.dart';
+import '../providers/sheet_interact.dart';
+import '../providers/sheet_view_model.dart';
 
 class SheetSubtitleRowWidget extends StatelessWidget {
   final Function onWorksPressed;
@@ -42,6 +44,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
   List<Widget> _getListWidget(BuildContext context) {
     final sheetVM = Provider.of<SheetViewModel>(context);
     final themeProvider = Provider.of<SettingsProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     return [
       NamedWidget(
         title: "Nível de Exaustão",
@@ -280,7 +283,17 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         ),
       ),
       NamedWidget(
-        isVisible: sheetVM.sheet!.listActiveWorks.isNotEmpty,
+        isVisible:
+            (sheetVM.sheet!.listActiveWorks.isNotEmpty &&
+                userProvider.getCampaignBySheet(sheetVM.sheet!.id) == null) ||
+            (userProvider.getCampaignBySheet(sheetVM.sheet!.id) != null &&
+                hasCommonElement(
+                  sheetVM.sheet!.listActiveWorks,
+                  userProvider
+                      .getCampaignBySheet(sheetVM.sheet!.id)!
+                      .campaignSheetSettings
+                      .listActiveWorkIds,
+                )),
         padding: EdgeInsets.symmetric(horizontal: 16),
         isShowLeftSeparator: true,
         title: "",

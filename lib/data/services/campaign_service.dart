@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet_settings.dart';
 import '../../_core/helpers/generate_access_key.dart';
 import '../../_core/providers/audio_provider.dart';
 import '../../domain/models/campaign.dart';
@@ -48,6 +49,10 @@ class CampaignService {
       listAchievements: [],
       visualData: CampaignVisualDataModel.empty(),
       audioCampaign: AudioCampaign(),
+      campaignSheetSettings: CampaignSheetSettings(
+        listActiveWorkIds: [],
+        listModuleIds: [],
+      ),
     );
 
     if (fileImage != null) {

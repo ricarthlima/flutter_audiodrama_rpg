@@ -7,7 +7,7 @@ import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import '../../_core/helpers.dart';
-import '../../sheet/view/sheet_view_model.dart';
+import '../../sheet/providers/sheet_view_model.dart';
 import '../view/shopping_view_model.dart';
 import 'item_category_widget.dart';
 import 'shopping_item_widget.dart';

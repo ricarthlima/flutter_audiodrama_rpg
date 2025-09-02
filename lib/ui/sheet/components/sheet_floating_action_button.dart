@@ -4,8 +4,8 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:provider/provider.dart';
 
 import '../../settings/view/settings_provider.dart';
-import '../view/sheet_interact.dart';
-import '../view/sheet_view_model.dart';
+import '../providers/sheet_interact.dart';
+import '../providers/sheet_view_model.dart';
 
 Widget? getSheetFloatingActionButton(BuildContext context) {
   final themeProvider = Provider.of<SettingsProvider>(context);
@@ -36,14 +36,12 @@ Widget? getSheetFloatingActionButton(BuildContext context) {
               },
               tooltip: "Histórico",
               child: badges.Badge(
-                showBadge: viewModel.notificationCount >
+                showBadge:
+                    viewModel.notificationCount >
                     0, // Esconde se não houver notificações
                 badgeContent: Text(
                   viewModel.notificationCount.toString(),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
                 position: badges.BadgePosition.topEnd(
                   top: -10,

@@ -6,7 +6,7 @@ import '../../_core/fonts.dart';
 import '../../../domain/models/action_template.dart';
 import 'package:provider/provider.dart';
 
-import '../view/sheet_view_model.dart';
+import '../providers/sheet_view_model.dart';
 
 class RollLogWidget extends StatefulWidget {
   final RollLog rollLog;
@@ -38,12 +38,7 @@ class _RollLogWidgetState extends State<RollLogWidget> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              action.name,
-              style: TextStyle(
-                fontFamily: FontFamily.bungee,
-              ),
-            ),
+            Text(action.name, style: TextStyle(fontFamily: FontFamily.bungee)),
             ExpansionTile(
               title: Text(
                 "Descrição",
@@ -58,9 +53,7 @@ class _RollLogWidgetState extends State<RollLogWidget> {
                   .read<SheetViewModel>()
                   .actionRepo
                   .isOnlyFreeOrPreparation(widget.rollLog.idAction),
-              children: [
-                Text(action.description),
-              ],
+              children: [Text(action.description)],
             ),
             Visibility(
               visible: !context
@@ -119,8 +112,8 @@ class _DiceRoll extends StatelessWidget {
         fontSize: !isCondition ? 16 : 24,
         color: (isCondition)
             ? (isGettingLower)
-                ? Colors.red[900]
-                : Colors.green[900]
+                  ? Colors.red[900]
+                  : Colors.green[900]
             : Theme.of(context).textTheme.bodyMedium!.color!,
         // fontWeight: FontWeight.bold,
         fontFamily: FontFamily.bungee,

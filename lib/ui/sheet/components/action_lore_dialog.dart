@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../domain/models/action_lore.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
-import '../view/sheet_view_model.dart';
+import '../providers/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/action_template.dart';
@@ -40,10 +40,7 @@ class _ActionLoreStackDialogState extends State<ActionLoreStackDialog> {
       child: Container(
         width: min(600, width(context)),
         decoration: BoxDecoration(
-          border: Border.all(
-            width: 4,
-            color: Colors.white,
-          ),
+          border: Border.all(width: 4, color: Colors.white),
           borderRadius: BorderRadius.zero,
         ),
         padding: EdgeInsets.all(16),
@@ -55,15 +52,9 @@ class _ActionLoreStackDialogState extends State<ActionLoreStackDialog> {
             Text(
               "Você possui ${sheetViewModel.getTrainLevelByActionName(widget.action.id)} em '${widget.action.name}'.\nPor quê?",
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: FontFamily.bungee,
-                fontSize: 18,
-              ),
+              style: TextStyle(fontFamily: FontFamily.bungee, fontSize: 18),
             ),
-            TextFormField(
-              controller: _loreController,
-              maxLines: 10,
-            ),
+            TextFormField(controller: _loreController, maxLines: 10),
             ElevatedButton(
               onPressed: () {
                 sheetViewModel.saveActionLore(

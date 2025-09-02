@@ -7,7 +7,7 @@ import '../../../domain/models/roll_log.dart';
 import '../../_core/constants/roll_type.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
-import '../view/sheet_view_model.dart';
+import '../providers/sheet_view_model.dart';
 
 class RollStackDialog extends StatefulWidget {
   final RollLog rollLog;

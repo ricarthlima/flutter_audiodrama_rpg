@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../domain/models/sheet_model.dart';
 import '../../../router.dart';
 import '../../_core/dimensions.dart';
-import '../view/sheet_view_model.dart';
+import '../providers/sheet_view_model.dart';
 
 AppBar getSheetAppBar(BuildContext context) {
   final sheetVM = Provider.of<SheetViewModel>(context);
@@ -14,10 +14,7 @@ AppBar getSheetAppBar(BuildContext context) {
   if (sheetVM.isLoading ||
       (sheetVM.isAuthorized != null && !sheetVM.isAuthorized!) ||
       !sheetVM.isFoundSheet) {
-    return AppBar(
-      toolbarHeight: 64,
-      actions: [Container()],
-    );
+    return AppBar(toolbarHeight: 64, actions: [Container()]);
   }
 
   return AppBar(
@@ -48,10 +45,7 @@ AppBar getSheetAppBar(BuildContext context) {
           value: sheetVM.listSheets.where((e) => e.id == sheetVM.id).first,
           items: sheetVM.listSheets
               .map(
-                (e) => DropdownMenuItem(
-                  value: e,
-                  child: Text(e.characterName),
-                ),
+                (e) => DropdownMenuItem(value: e, child: Text(e.characterName)),
               )
               .toList(),
           onChanged: (Sheet? sheet) {

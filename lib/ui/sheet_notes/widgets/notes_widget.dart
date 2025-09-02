@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../sheet/view/sheet_view_model.dart';
+import '../../sheet/providers/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
 class NotesWidget extends StatelessWidget {
@@ -16,10 +16,7 @@ class NotesWidget extends StatelessWidget {
         children: [
           Text(
             "Anote aqui o que quiser",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           if (sheetViewModel.isOwner)
             Expanded(
@@ -32,8 +29,9 @@ class NotesWidget extends StatelessWidget {
           if (!sheetViewModel.isOwner)
             Expanded(
               child: SingleChildScrollView(
-                child:
-                    SelectableText(sheetViewModel.notesTextController().text),
+                child: SelectableText(
+                  sheetViewModel.notesTextController().text,
+                ),
               ),
             ),
           if (sheetViewModel.isOwner)
@@ -47,17 +45,14 @@ class NotesWidget extends StatelessWidget {
                       child: Text("Salvar"),
                     )
                   : (sheetViewModel.isSavingNotes!)
-                      ? Center(
-                          child: SizedBox(
-                            width: 32,
-                            height: 32,
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
-                      : Icon(
-                          Icons.check,
-                          size: 32,
-                        ),
+                  ? Center(
+                      child: SizedBox(
+                        width: 32,
+                        height: 32,
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : Icon(Icons.check, size: 32),
             ),
         ],
       ),

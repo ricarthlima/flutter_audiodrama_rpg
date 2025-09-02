@@ -2,8 +2,10 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+
 import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet_settings.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_vm_model.dart';
 
 class Campaign {
@@ -24,6 +26,8 @@ class Campaign {
 
   AudioCampaign audioCampaign;
 
+  CampaignSheetSettings campaignSheetSettings;
+
   Campaign({
     required this.id,
     required this.listIdOwners,
@@ -38,6 +42,7 @@ class Campaign {
     required this.listAchievements,
     required this.visualData,
     required this.audioCampaign,
+    required this.campaignSheetSettings,
   });
 
   Campaign copyWith({
@@ -54,6 +59,7 @@ class Campaign {
     List<CampaignAchievement>? listAchievements,
     CampaignVisualDataModel? visualData,
     AudioCampaign? audioCampaign,
+    CampaignSheetSettings? campaignSheetSettings,
   }) {
     return Campaign(
       id: id ?? this.id,
@@ -69,6 +75,8 @@ class Campaign {
       listAchievements: listAchievements ?? this.listAchievements,
       visualData: visualData ?? this.visualData,
       audioCampaign: audioCampaign ?? this.audioCampaign,
+      campaignSheetSettings:
+          campaignSheetSettings ?? this.campaignSheetSettings,
     );
   }
 
@@ -87,6 +95,7 @@ class Campaign {
       'listAchievements': listAchievements.map((e) => e.toMap()).toList(),
       'visualData': visualData.toMap(),
       'audioCampaign': audioCampaign.toMap(),
+      'campaignSheetSettings': campaignSheetSettings.toMap(),
     };
   }
 
@@ -102,8 +111,9 @@ class Campaign {
       imageBannerUrl: map['imageBannerUrl'] != null
           ? map['imageBannerUrl'] as String
           : null,
-      description:
-          map['description'] != null ? map['description'] as String : null,
+      description: map['description'] != null
+          ? map['description'] as String
+          : null,
       nextSession: map['nextSession'] != null
           ? DateTime.parse(map['nextSession'])
           : null,
@@ -111,8 +121,9 @@ class Campaign {
           ? List<CampaignAchievement>.from(
               (map['listAchievements'] as List<dynamic>)
                   .map<CampaignAchievement>(
-                (x) => CampaignAchievement.fromMap(x as Map<String, dynamic>),
-              ),
+                    (x) =>
+                        CampaignAchievement.fromMap(x as Map<String, dynamic>),
+                  ),
             )
           : [],
       visualData: (map['visualData'] != null)
@@ -121,6 +132,9 @@ class Campaign {
       audioCampaign: (map['audioCampaign'] != null)
           ? AudioCampaign.fromMap(map["audioCampaign"])
           : AudioCampaign(),
+      campaignSheetSettings: (map['campaignSheetSettings'] != null)
+          ? CampaignSheetSettings.fromMap(map['campaignSheetSettings'])
+          : CampaignSheetSettings(listActiveWorkIds: [], listModuleIds: []),
     );
   }
 
@@ -131,14 +145,15 @@ class Campaign {
 
   @override
   String toString() {
-    return 'Campaign(id: $id, listIdOwners: $listIdOwners, listIdPlayers: $listIdPlayers, enterCode: $enterCode, createdAt: $createdAt, updatedAt: $updatedAt, name: $name, imageBannerUrl: $imageBannerUrl, description: $description, nextSession: $nextSession)';
+    return 'Campaign(id: $id, listIdOwners: $listIdOwners, listIdPlayers: $listIdPlayers, enterCode: $enterCode, createdAt: $createdAt, updatedAt: $updatedAt, name: $name, imageBannerUrl: $imageBannerUrl, description: $description, nextSession: $nextSession, listAchievements: $listAchievements, audioCampaign: $audioCampaign)';
   }
 
   @override
-  bool operator ==(covariant Campaign other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other.id == id &&
+    return other is Campaign &&
+        other.id == id &&
         listEquals(other.listIdOwners, listIdOwners) &&
         listEquals(other.listIdPlayers, listIdPlayers) &&
         other.enterCode == enterCode &&
@@ -148,8 +163,8 @@ class Campaign {
         other.imageBannerUrl == imageBannerUrl &&
         other.description == description &&
         other.nextSession == nextSession &&
-        other.listAchievements == listAchievements &&
-        other.visualData == visualData;
+        listEquals(other.listAchievements, listAchievements) &&
+        other.audioCampaign == audioCampaign;
   }
 
   @override
@@ -165,6 +180,6 @@ class Campaign {
         description.hashCode ^
         nextSession.hashCode ^
         listAchievements.hashCode ^
-        visualData.hashCode;
+        audioCampaign.hashCode;
   }
 }

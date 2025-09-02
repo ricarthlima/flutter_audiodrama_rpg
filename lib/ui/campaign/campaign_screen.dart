@@ -11,7 +11,7 @@ import 'partials/sheets_widget.dart';
 import 'view/campaign_view_model.dart';
 import 'widgets/group_notifications.dart';
 import '../sheet/sheet_screen.dart';
-import '../sheet/view/sheet_view_model.dart';
+import '../sheet/providers/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
 import 'partials/chat_widget.dart';

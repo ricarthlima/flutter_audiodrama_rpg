@@ -4,7 +4,7 @@ import '../../../data/repositories/item_repository.dart';
 import '../../../domain/models/item.dart';
 import '../../../domain/models/item_sheet.dart';
 import '../../_core/helpers.dart';
-import '../../sheet/view/sheet_view_model.dart';
+import '../../sheet/providers/sheet_view_model.dart';
 
 class ShoppingViewModel extends ChangeNotifier {
   SheetViewModel sheetVM;

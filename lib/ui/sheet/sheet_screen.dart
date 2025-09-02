@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/stack_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/action_lore_dialog.dart';
@@ -31,8 +33,8 @@ import '../sheet_shopping/shopping_screen.dart';
 import '../sheet_statistics/sheet_statistics_screen.dart';
 import 'components/sheet_drawer.dart';
 import 'screens/sheet_settings_page.dart';
-import 'view/sheet_interact.dart';
-import 'view/sheet_view_model.dart';
+import 'providers/sheet_interact.dart';
+import 'providers/sheet_view_model.dart';
 import 'screens/sheet_action_screen.dart';
 import 'widgets/sheet_not_found_widget.dart';
 import 'widgets/sheet_subtitle_row_widget.dart';
@@ -169,6 +171,7 @@ class _SheetScreenState extends State<SheetScreen> {
 
   Widget _generateScreen() {
     final sheetVM = Provider.of<SheetViewModel>(context);
+    final userProvider = Provider.of<UserProvider>(context);
 
     sheetVM.nameController.text = sheetVM.sheet!.characterName;
 
@@ -216,7 +219,7 @@ class _SheetScreenState extends State<SheetScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: 4,
                         children: [
-                          _getNameWidget(sheetVM),
+                          _getNameWidget(sheetVM, userProvider),
                           SheetSubtitleRowWidget(
                             onWorksPressed: _rollToShowWorks,
                           ),
@@ -630,7 +633,10 @@ class _SheetScreenState extends State<SheetScreen> {
     );
   }
 
-  NamedWidget _getNameWidget(SheetViewModel viewModel) {
+  NamedWidget _getNameWidget(
+    SheetViewModel sheetVM,
+    UserProvider userProvider,
+  ) {
     double fontSize = 32;
 
     return NamedWidget(
@@ -638,7 +644,7 @@ class _SheetScreenState extends State<SheetScreen> {
       isLeft: true,
       child: AnimatedSwitcher(
         duration: Duration(seconds: 1),
-        child: (viewModel.isEditing)
+        child: (sheetVM.isEditing)
             ? ConstrainedBox(
                 constraints: BoxConstraints(
                   maxWidth: width(context) * 0.8,
@@ -646,7 +652,7 @@ class _SheetScreenState extends State<SheetScreen> {
                 ),
                 child: IntrinsicWidth(
                   child: TextField(
-                    controller: viewModel.nameController,
+                    controller: sheetVM.nameController,
                     style: TextStyle(
                       fontSize: isVertical(context) ? 18 : fontSize,
                       fontFamily: FontFamily.sourceSerif4,
@@ -654,14 +660,28 @@ class _SheetScreenState extends State<SheetScreen> {
                   ),
                 ),
               )
-            : Text(
-                viewModel.sheet!.characterName,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: isVertical(context) ? 18 : fontSize,
-                  fontFamily: FontFamily.bungee,
-                  color: AppColors.red,
-                ),
+            : Builder(
+                builder: (context) {
+                  Campaign? campaign = userProvider.getCampaignBySheet(
+                    sheetVM.sheet!.id,
+                  );
+
+                  String adding = "";
+
+                  if (campaign != null) {
+                    adding = " (${campaign.name})";
+                  }
+
+                  return Text(
+                    sheetVM.sheet!.characterName + adding,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: isVertical(context) ? 18 : fontSize,
+                      fontFamily: FontFamily.bungee,
+                      color: AppColors.red,
+                    ),
+                  );
+                },
               ),
       ),
     );

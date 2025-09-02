@@ -5,7 +5,7 @@ import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../../sheet/view/sheet_view_model.dart';
+import '../../sheet/providers/sheet_view_model.dart';
 
 class BioWidget extends StatelessWidget {
   const BioWidget({super.key});
@@ -26,10 +26,7 @@ class BioWidget extends StatelessWidget {
               children: [
                 Text(
                   "Quais segredos estão guardados no seu passado?",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 if (sheetViewModel.isOwner)
                   Expanded(
@@ -59,17 +56,14 @@ class BioWidget extends StatelessWidget {
                             child: Text("Salvar"),
                           )
                         : (sheetViewModel.isSavingBio!)
-                            ? Center(
-                                child: SizedBox(
-                                  width: 32,
-                                  height: 32,
-                                  child: CircularProgressIndicator(),
-                                ),
-                              )
-                            : Icon(
-                                Icons.check,
-                                size: 32,
-                              ),
+                        ? Center(
+                            child: SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : Icon(Icons.check, size: 32),
                   ),
               ],
             ),
@@ -83,7 +77,8 @@ class BioWidget extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
+                  children:
+                      <Widget>[
                         ListTile(
                           leading: Icon(Icons.arrow_back_ios_new_outlined),
                           title: Text("Transferir para o texto"),
@@ -93,16 +88,14 @@ class BioWidget extends StatelessWidget {
                         ),
                         Divider(),
                       ] +
-                      sheetViewModel.getActionsValuesWithWorks().map(
-                        (e) {
-                          return _ActionLoreWidget(
-                            action: context
-                                .read<SheetViewModel>()
-                                .actionRepo
-                                .getActionById(e.actionId)!,
-                          );
-                        },
-                      ).toList(),
+                      sheetViewModel.getActionsValuesWithWorks().map((e) {
+                        return _ActionLoreWidget(
+                          action: context
+                              .read<SheetViewModel>()
+                              .actionRepo
+                              .getActionById(e.actionId)!,
+                        );
+                      }).toList(),
                 ),
               ),
             ),
@@ -125,7 +118,8 @@ class _ActionLoreWidget extends StatelessWidget {
       title: Text(
         "(${sheetVM.getTrainLevelByActionName(action.id)}) ${action.name}",
         style: TextStyle(
-          color: (!sheetVM.sheet!.listActionLore
+          color:
+              (!sheetVM.sheet!.listActionLore
                   .where((e) => e.actionId == action.id)
                   .isNotEmpty)
               ? AppColors.red
@@ -133,12 +127,15 @@ class _ActionLoreWidget extends StatelessWidget {
           fontFamily: FontFamily.bungee,
         ),
       ),
-      subtitle: (sheetVM.sheet!.listActionLore
+      subtitle:
+          (sheetVM.sheet!.listActionLore
               .where((e) => e.actionId == action.id)
               .isNotEmpty)
-          ? SelectableText(sheetVM.sheet!.listActionLore
-              .firstWhere((e) => e.actionId == action.id)
-              .loreText)
+          ? SelectableText(
+              sheetVM.sheet!.listActionLore
+                  .firstWhere((e) => e.actionId == action.id)
+                  .loreText,
+            )
           : null,
     );
   }

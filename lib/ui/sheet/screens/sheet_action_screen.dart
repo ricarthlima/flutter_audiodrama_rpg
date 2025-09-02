@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/models/group_action.dart';
 import '../../_core/app_colors.dart';
 import 'package:provider/provider.dart';
 
-import '../view/sheet_view_model.dart';
+import '../providers/sheet_view_model.dart';
 import '../widgets/list_actions_widget.dart';
 
 class SheetActionsScreen extends StatelessWidget {
@@ -14,8 +16,9 @@ class SheetActionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sheetVM = Provider.of<SheetViewModel>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     return (isVertical(context))
-        ? PageView(children: _buildActionsColumns(sheetVM))
+        ? PageView(children: _buildActionsColumns(sheetVM, userProvider))
         : Scrollbar(
             controller: scrollController,
             thumbVisibility: true,
@@ -28,14 +31,17 @@ class SheetActionsScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   spacing: 8,
-                  children: _buildActionsColumns(sheetVM),
+                  children: _buildActionsColumns(sheetVM, userProvider),
                 ),
               ),
             ),
           );
   }
 
-  List<Widget> _buildActionsColumns(SheetViewModel sheetVM) {
+  List<Widget> _buildActionsColumns(
+    SheetViewModel sheetVM,
+    UserProvider userProvider,
+  ) {
     return [
           Column(
             mainAxisSize: MainAxisSize.min,
@@ -86,7 +92,15 @@ class SheetActionsScreen extends StatelessWidget {
           ),
         ] +
         List.generate(sheetVM.sheet!.listActiveWorks.length, (index) {
+          Campaign? campaign = userProvider.getCampaignBySheet(
+            sheetVM.sheet!.id,
+          );
           String key = sheetVM.sheet!.listActiveWorks[index];
+
+          if (campaign != null &&
+              !campaign.campaignSheetSettings.listActiveWorkIds.contains(key)) {
+            return SizedBox();
+          }
           return ListActionsWidget(
             name: key,
             color: Colors.amber,

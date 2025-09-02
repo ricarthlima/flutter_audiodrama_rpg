@@ -317,6 +317,16 @@ class CampaignViewModel extends ChangeNotifier {
   Future<void> exitCampaign() async {
     //TODO: Sair da campanha
   }
+
+  void toggleActiveWork(String workId) {
+    if (campaign!.campaignSheetSettings.listActiveWorkIds.contains(workId)) {
+      campaign!.campaignSheetSettings.listActiveWorkIds.remove(workId);
+    } else {
+      campaign!.campaignSheetSettings.listActiveWorkIds.add(workId);
+    }
+    notifyListeners();
+    onSave();
+  }
 }
 
 class SheetAppUser {
