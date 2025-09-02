@@ -7,23 +7,14 @@ import 'package:provider/provider.dart';
 
 import '../_core/dimensions.dart';
 
-Future<void> showSheetStatisticsDialog(BuildContext context) {
-  return showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) {
-      return Dialog(child: SheetStatisticsScreen());
-    },
-  );
-}
-
 class SheetStatisticsScreen extends StatelessWidget {
   const SheetStatisticsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    StatisticsViewModel statisticsViewModel =
-        Provider.of<StatisticsViewModel>(context);
+    StatisticsViewModel statisticsViewModel = Provider.of<StatisticsViewModel>(
+      context,
+    );
     return Column(
       children: [
         SingleChildScrollView(
@@ -46,23 +37,23 @@ class SheetStatisticsScreen extends StatelessWidget {
                     context: context,
                     initialDate: statisticsViewModel.filterDateStart,
                     firstDate: statisticsViewModel.getFirstDate(),
-                  ).then(
-                    (DateTime? dateTimeResult) {
-                      if (dateTimeResult != null) {
-                        if (dateTimeResult
-                            .isAfter(statisticsViewModel.filterDateEnd)) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  "A data inicial não pode ser depois da final"),
+                  ).then((DateTime? dateTimeResult) {
+                    if (dateTimeResult != null) {
+                      if (dateTimeResult.isAfter(
+                        statisticsViewModel.filterDateEnd,
+                      )) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              "A data inicial não pode ser depois da final",
                             ),
-                          );
-                        } else {
-                          statisticsViewModel.filterDateStart = dateTimeResult;
-                        }
+                          ),
+                        );
+                      } else {
+                        statisticsViewModel.filterDateStart = dateTimeResult;
                       }
-                    },
-                  );
+                    }
+                  });
                 },
                 icon: Icon(Icons.date_range),
               ),
@@ -84,13 +75,11 @@ class SheetStatisticsScreen extends StatelessWidget {
                     context: context,
                     initialDate: statisticsViewModel.filterDateEnd,
                     lastDate: DateTime.now(),
-                  ).then(
-                    (DateTime? dateTimeResult) {
-                      if (dateTimeResult != null) {
-                        statisticsViewModel.filterDateEnd = dateTimeResult;
-                      }
-                    },
-                  );
+                  ).then((DateTime? dateTimeResult) {
+                    if (dateTimeResult != null) {
+                      statisticsViewModel.filterDateEnd = dateTimeResult;
+                    }
+                  });
                 },
                 icon: Icon(Icons.date_range),
               ),

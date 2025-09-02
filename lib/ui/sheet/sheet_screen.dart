@@ -27,13 +27,13 @@ import '../_core/widgets/text_field_dropdown.dart';
 import '../campaign/widgets/group_notifications.dart';
 import '../settings/view/settings_provider.dart';
 import '../sheet_notes/sheet_notes.dart';
-import '../shopping/shopping_screen.dart';
-import '../statistics/statistics_screen.dart';
+import '../sheet_shopping/shopping_screen.dart';
+import '../sheet_statistics/sheet_statistics_screen.dart';
 import 'components/sheet_drawer.dart';
-import 'components/sheet_works_dialog.dart';
+import 'screens/sheet_settings_page.dart';
 import 'view/sheet_interact.dart';
 import 'view/sheet_view_model.dart';
-import 'widgets/sheet_actions_columns_widget.dart';
+import 'screens/sheet_action_screen.dart';
 import 'widgets/sheet_not_found_widget.dart';
 import 'widgets/sheet_subtitle_row_widget.dart';
 
@@ -236,13 +236,11 @@ class _SheetScreenState extends State<SheetScreen> {
                       child: IndexedStack(
                         index: sheetVM.currentPage.index,
                         children: [
-                          SheetActionsColumnsWidget(
-                            scrollController: rowScroll,
-                          ),
-                          ShoppingDialogScreen(),
+                          SheetActionsScreen(scrollController: rowScroll),
+                          SheetShoppingDialogScreen(),
                           SheetNotesScreen(),
                           SheetStatisticsScreen(),
-                          SheetSettingsPage(),
+                          SheetSettingsScreen(),
                         ],
                       ),
                     ),

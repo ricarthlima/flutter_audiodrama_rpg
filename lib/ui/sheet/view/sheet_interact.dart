@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/action_template.dart';
 import '../../../domain/models/roll_log.dart';
-import '../../statistics/view/statistics_view_model.dart';
+import '../../sheet_statistics/view/statistics_view_model.dart';
 import '../components/roll_body_dialog.dart';
 import 'sheet_view_model.dart';
 

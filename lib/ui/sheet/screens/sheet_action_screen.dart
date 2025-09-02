@@ -5,11 +5,11 @@ import '../../_core/app_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../view/sheet_view_model.dart';
-import 'list_actions_widget.dart';
+import '../widgets/list_actions_widget.dart';
 
-class SheetActionsColumnsWidget extends StatelessWidget {
+class SheetActionsScreen extends StatelessWidget {
   final ScrollController? scrollController;
-  const SheetActionsColumnsWidget({super.key, this.scrollController});
+  const SheetActionsScreen({super.key, this.scrollController});
 
   @override
   Widget build(BuildContext context) {
