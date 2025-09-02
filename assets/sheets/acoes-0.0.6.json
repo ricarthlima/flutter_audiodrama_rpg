@@ -61,7 +61,7 @@
             "description": "Determina quão longe você conseguiu correr nesse turno. É importante frisar que o deslocamento, seja corrida, escalada ou salto, é narrativo em Audiodrama RPG. Isso quer dizer que pessoa narradora e pessoas  jogadoras irão determinar o quanto o personagem conseguiu se deslocar com a rolagem que teve, respeitando os mínimos e os máximos plausíveis. Por poder ser uma ação livre, você pode simplesmente não rolar dados e usar a distância pré-determinada. Caso decida usar o teste resistido, considere uma DT10 contra o mundo para determinar o sucesso. Se você estiver usando um tradicional *grid* de 1,5 metros, recomendo a tabela no **Apêndice B** como guia.",
             "isFree": true,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": true,
             "isWork": false
@@ -72,7 +72,7 @@
             "description": "Determina quão alto você conseguiu escalar nesse turno.",
             "isFree": true,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": false,
             "isWork": false
@@ -83,7 +83,7 @@
             "description": "Determina quão longe você conseguiu nadar nesse turno.",
             "isFree": true,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": true,
             "isWork": false
@@ -94,7 +94,7 @@
             "description": "Determina quão longe ou (exclusivo) alto você conseguiu saltar nesse turno.",
             "isFree": true,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": false,
             "isWork": false
@@ -230,7 +230,7 @@
             "description": "Trata da sua efetividade em uma luta de corpo a corpo.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "isCollective": true,
             "enabled": true,
@@ -288,7 +288,7 @@
             "description": "Trata da sua capacidade atirar com uma arma de pontaria em algo ou em alguém.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": true,
             "isWork": false
@@ -299,7 +299,7 @@
             "description": "Trata-se de encontrar abrigo contra algo que se aproxima — seja um objeto lançado com Lançar, um projétil disparado com Atirar, ou até mesmo uma avalanche, um desmoronamento, ondas do mar, entre outros.",
             "isFree": false,
             "isReaction": true,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": true,
             "isWork": false
@@ -310,7 +310,7 @@
             "description": "Ao usar esta ação, você se torna a cobertura de algo ou alguém que deseja proteger. O alvo da proteção também deve rolar “Proteger-se”, e o resultado da defesa será a soma dos sucessos de ambos. No entanto, “Proteger” o expõe ao perigo — se não gastar outra ação para “Proteger-se” após usá-la, todos os sucessos do atacante serão aplicados contra você.",
             "isFree": false,
             "isReaction": true,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "isCollective": true,
             "enabled": true,
@@ -322,7 +322,7 @@
             "description": "Diz quão efetiva foi sua tentativa de subtrair algo de alguém ou de um local sem chamar atenção.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": true,
             "isWork": false
@@ -333,7 +333,7 @@
             "description": "Trata de seguir alguém sem chamar atenção.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": true,
             "isWork": false
@@ -590,7 +590,7 @@
             "description": "Trata da sua capacidade de simular emoções, intenções ou papéis para enganar ou despistar outros.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": false,
             "isWork": false
@@ -601,7 +601,7 @@
             "description": "Trata da sua habilidade de criar falsidades convincentes sem levantar suspeitas.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": true,
             "isWork": false
@@ -612,7 +612,7 @@
             "description": "Trata de persuadir ou forçar alguém a fazer algo utilizando ameaça, força ou presença intimidadora.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": true,
             "isWork": false
@@ -623,7 +623,7 @@
             "description": "Trata da sua habilidade em negociar termos mais favoráveis em trocas, acordos ou disputas comerciais.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": true,
             "isWork": false
@@ -634,7 +634,7 @@
             "description": "Trata de se comunicar de forma sedutora ou romântica para criar conexão emocional ou interesse.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": true,
             "isWork": false
@@ -645,7 +645,7 @@
             "description": "Trata de sugerir ou comunicar algo indiretamente, utilizando linguagem corporal, insinuações ou sugestões sutis.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": false,
             "isWork": false
@@ -656,7 +656,7 @@
             "description": "Trata de convencer alguém a seguir sua ideia ou proposta por meio de argumentos racionais, ou emocionais.",
             "isFree": false,
             "isReaction": true,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": true,
             "isWork": false
@@ -667,7 +667,7 @@
             "description": "Trata da sua capacidade de extrair informações de alguém, seja por técnicas de questionamento ou manipulação.",
             "isFree": false,
             "isReaction": true,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "enabled": true,
             "isWork": false
@@ -780,7 +780,7 @@
             "description": "Apenas para quem estiver no leme. Equivalente a uma luta corpo-a-corpo, porém com embarcações. Em situações onde os barcos se colidam, os capitães deverão fazer Testes Resistidos uns contra os outros de Lutar (Embarcação), a embarcação de quem tiver menos sucesso, sofrerá o maior dano.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "isCollective": false,
             "enabled": true,
@@ -987,7 +987,7 @@
             "description": "Apenas com acesso à rede. Trata-se de ativamente defender um sistema contra invasões e expulsar invasores.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "isCollective": false,
             "enabled": true,
@@ -999,7 +999,7 @@
             "description": "Semelhante ao Hackear, trata-se de invadir (e se manter dentro de) um sistema que está sendo ativamente defendido.",
             "isFree": false,
             "isReaction": false,
-            "isResisted": true,
+            "isResisted": false,
             "isPreparation": false,
             "isCollective": false,
             "enabled": true,

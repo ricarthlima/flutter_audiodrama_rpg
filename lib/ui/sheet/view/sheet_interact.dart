@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_roll_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_roll.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:uuid/uuid.dart';
 import '../helpers/sheet_subpages.dart';
@@ -52,6 +53,7 @@ abstract class SheetInteract {
     required BuildContext context,
     required ActionTemplate action,
     required String groupId,
+    required RollType rollType,
   }) async {
     SheetViewModel sheetVM = context.read<SheetViewModel>();
     CampaignViewModel campaignVM = context.read<CampaignViewModel>();
@@ -97,6 +99,7 @@ abstract class SheetInteract {
       idAction: action.id,
       dateTime: DateTime.now(),
       isGettingLower: newActionValue <= 1,
+      rollType: rollType,
     );
 
     sheetVM.onRoll(roll: roll, groupId: groupId);

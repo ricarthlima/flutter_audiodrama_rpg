@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/stack_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/action_lore_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_tip_widget.dart';
@@ -81,6 +82,7 @@ class _SheetScreenState extends State<SheetScreen> {
               context: context,
               action: actionTemplate,
               groupId: groupId,
+              rollType: RollType.difficult,
             );
           }
         },
@@ -104,7 +106,7 @@ class _SheetScreenState extends State<SheetScreen> {
         return Dialog(
           child: Container(
             width: 600,
-            height: 250,
+            height: 300,
             padding: EdgeInsets.all(32),
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -137,7 +139,7 @@ class _SheetScreenState extends State<SheetScreen> {
                 Opacity(
                   opacity: 0.5,
                   child: Text(
-                    "Pressione 'Enter' para rolar",
+                    "Pressione 'Enter' para rolar como Teste de Dificuldade.\nPressione 'Shift+Enter' para rolar como Teste Resistido.",
                     textAlign: TextAlign.right,
                   ),
                 ),

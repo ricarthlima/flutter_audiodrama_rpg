@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/constants/helper_image_path.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import '../../../domain/models/action_value.dart';
 import '../../_core/color_filter_inverter.dart';
 import '../../_core/components/wip_snackbar.dart';
@@ -50,21 +52,127 @@ class _ActionWidgetState extends State<ActionWidget> {
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
+          spacing: 8,
           children: [
-            if (!sheetVM.isEditing)
-              ColorFiltered(
-                colorFilter: getColorFilterInverter(
-                    themeProvider.themeMode == ThemeMode.dark),
-                child: Tooltip(
-                  message: sheetVM.getHelperText(widget.action),
-                  child: Image.asset(
-                    _getHelperImageByType(),
-                    height: 16,
-                    filterQuality: FilterQuality.none,
+            if (!sheetVM.isEditing && isFreeOrPreparation != null)
+              InkWell(
+                onTap: (!sheetVM.isEditing)
+                    ? () {
+                        SheetInteract.rollAction(
+                          context: context,
+                          action: widget.action,
+                          groupId: widget.groupId,
+                          rollType: widget.action.isPreparation
+                              ? RollType.prepared
+                              : RollType.free,
+                        );
+                      }
+                    : null,
+                child: ColorFiltered(
+                  colorFilter: getColorFilterInverter(
+                      themeProvider.themeMode == ThemeMode.dark),
+                  child: Tooltip(
+                    message: sheetVM.getHelperText(
+                      widget.action,
+                      widget.action.isPreparation
+                          ? RollType.prepared
+                          : RollType.free,
+                    ),
+                    child: Image.asset(
+                      isFreeOrPreparation!,
+                      height: 16,
+                      filterQuality: FilterQuality.none,
+                    ),
                   ),
                 ),
               ),
-            if (!sheetVM.isEditing) SizedBox(width: 8),
+            if (!sheetVM.isEditing &&
+                isFreeOrPreparation == null &&
+                widget.action.isResisted)
+              InkWell(
+                onTap: (!sheetVM.isEditing)
+                    ? () {
+                        SheetInteract.rollAction(
+                            context: context,
+                            action: widget.action,
+                            groupId: widget.groupId,
+                            rollType: RollType.resisted);
+                      }
+                    : null,
+                child: ColorFiltered(
+                  colorFilter: getColorFilterInverter(
+                      themeProvider.themeMode == ThemeMode.dark),
+                  child: Tooltip(
+                    message: sheetVM.getHelperText(
+                      widget.action,
+                      RollType.resisted,
+                    ),
+                    child: Image.asset(
+                      HelperImagePath.sword,
+                      height: 16,
+                      filterQuality: FilterQuality.none,
+                    ),
+                  ),
+                ),
+              ),
+            if (!sheetVM.isEditing &&
+                isFreeOrPreparation == null &&
+                !widget.action.isResisted)
+              Row(
+                spacing: 4,
+                children: [
+                  InkWell(
+                    onTap: (!sheetVM.isEditing)
+                        ? () {
+                            SheetInteract.rollAction(
+                              context: context,
+                              action: widget.action,
+                              groupId: widget.groupId,
+                              rollType: RollType.difficult,
+                            );
+                          }
+                        : null,
+                    child: ColorFiltered(
+                      colorFilter: getColorFilterInverter(
+                          themeProvider.themeMode == ThemeMode.dark),
+                      child: Tooltip(
+                        message: sheetVM.getHelperText(
+                            widget.action, RollType.difficult),
+                        child: Image.asset(
+                          HelperImagePath.dice,
+                          height: 16,
+                          filterQuality: FilterQuality.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: (!sheetVM.isEditing)
+                        ? () {
+                            SheetInteract.rollAction(
+                              context: context,
+                              action: widget.action,
+                              groupId: widget.groupId,
+                              rollType: RollType.resisted,
+                            );
+                          }
+                        : null,
+                    child: ColorFiltered(
+                      colorFilter: getColorFilterInverter(
+                          themeProvider.themeMode == ThemeMode.dark),
+                      child: Tooltip(
+                        message: sheetVM.getHelperText(
+                            widget.action, RollType.resisted),
+                        child: Image.asset(
+                          HelperImagePath.sword,
+                          height: 16,
+                          filterQuality: FilterQuality.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             Flexible(
               child: InkWell(
                 onTap: (!sheetVM.isEditing)
@@ -73,6 +181,9 @@ class _ActionWidgetState extends State<ActionWidget> {
                           context: context,
                           action: widget.action,
                           groupId: widget.groupId,
+                          rollType: (widget.action.isResisted)
+                              ? RollType.resisted
+                              : RollType.difficult,
                         );
                       }
                     : null,
@@ -278,17 +389,10 @@ class _ActionWidgetState extends State<ActionWidget> {
     _overlayEntry = null;
   }
 
-  String _getHelperImageByType() {
-    String result = "assets/images/";
-    if (widget.action.isFree || widget.action.isPreparation) {
-      result += "free.png";
-    } else {
-      if (widget.action.isResisted) {
-        result += "swords.png";
-      } else {
-        result += "dice.png";
-      }
-    }
-    return result;
+  String? get isFreeOrPreparation {
+    if (widget.action.isFree) return HelperImagePath.free;
+    if (widget.action.isPreparation) return HelperImagePath.sandclock;
+
+    return null;
   }
 }

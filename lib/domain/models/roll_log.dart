@@ -1,17 +1,21 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
+import '../../ui/_core/constants/roll_type.dart';
+
 class RollLog {
   List<int> rolls;
   String idAction;
   DateTime dateTime;
   bool isGettingLower;
+  RollType rollType;
 
   RollLog({
     required this.rolls,
     required this.idAction,
     required this.dateTime,
     required this.isGettingLower,
+    required this.rollType,
   });
 
   RollLog copyWith({
@@ -19,12 +23,14 @@ class RollLog {
     String? idAction,
     DateTime? dateTime,
     bool? isGettingLower,
+    RollType? rollType,
   }) {
     return RollLog(
       rolls: rolls ?? this.rolls,
       idAction: idAction ?? this.idAction,
       dateTime: dateTime ?? this.dateTime,
       isGettingLower: isGettingLower ?? this.isGettingLower,
+      rollType: rollType ?? this.rollType,
     );
   }
 
@@ -34,16 +40,19 @@ class RollLog {
       'idAction': idAction,
       'dateTime': dateTime.millisecondsSinceEpoch,
       'isGettingLower': isGettingLower,
+      'rollType': rollType.name,
     };
   }
 
   factory RollLog.fromMap(Map<String, dynamic> map) {
     return RollLog(
-      rolls: List<int>.from((map['rolls'] as List<dynamic>)),
-      idAction: map['idAction'] as String,
-      dateTime: DateTime.fromMillisecondsSinceEpoch(map['dateTime'] as int),
-      isGettingLower: map['isGettingLower'] as bool,
-    );
+        rolls: List<int>.from((map['rolls'] as List<dynamic>)),
+        idAction: map['idAction'] as String,
+        dateTime: DateTime.fromMillisecondsSinceEpoch(map['dateTime'] as int),
+        isGettingLower: map['isGettingLower'] as bool,
+        rollType: map['rollType'] != null
+            ? RollType.values.where((e) => e.name == map['rollType']).first
+            : RollType.difficult);
   }
 
   String toJson() => json.encode(toMap());

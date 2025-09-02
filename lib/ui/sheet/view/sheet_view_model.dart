@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/models/group_action.dart';
 import '../../../data/repositories/action_repository.dart';
 import '../../../data/repositories/condition_repository.dart';
@@ -232,7 +233,7 @@ class SheetViewModel extends ChangeNotifier {
     return -1;
   }
 
-  String getHelperText(ActionTemplate action) {
+  String getHelperText(ActionTemplate action, RollType rollType) {
     int trainingLevel = sheet!.listActionValue
         .firstWhere(
           (ActionValue actionValue) => actionValue.actionId == action.id,
@@ -240,12 +241,12 @@ class SheetViewModel extends ChangeNotifier {
         )
         .value;
 
-    if (action.isFree) {
-      return "Ação Livre: a ação acontece instantaneamente.";
-    } else if (action.isPreparation) {
-      return "Ação de Preparação: uma ação livre que exige Esforço.";
-    } else {
-      if (action.isResisted) {
+    switch (rollType) {
+      case RollType.free:
+        return "Ação Livre: a ação acontece instantaneamente.";
+      case RollType.prepared:
+        return "Ação de Preparação: uma ação livre que exige Esforço.";
+      case RollType.resisted:
         String result =
             "Teste Resistido: conte os sucessos DT10 baseado no seu treinamento.";
         if (trainingLevel <= 1) {
@@ -253,7 +254,7 @@ class SheetViewModel extends ChangeNotifier {
               "\nComo seu treinamento é '${getTrainingLevel(trainingLevel)}', apenas o menor dado será considerado para o teste contra a DT10.";
         }
         return result;
-      } else {
+      case RollType.difficult:
         String result =
             "Teste de Dificuldade: pegue um número baseado no seu treinamento.";
         if (trainingLevel <= 1) {
@@ -264,7 +265,6 @@ class SheetViewModel extends ChangeNotifier {
               "\nComo seu treinamento é '${getTrainingLevel(trainingLevel)}', pegue o maior dado.";
         }
         return result;
-      }
     }
   }
 

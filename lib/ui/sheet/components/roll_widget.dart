@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/action_template.dart';
 import '../../../domain/models/roll_log.dart';
+import '../../_core/constants/roll_type.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import '../view/sheet_view_model.dart';
@@ -53,7 +53,7 @@ class _RollStackDialogState extends State<RollStackDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<SheetViewModel>(context);
+    final sheetVM = Provider.of<SheetViewModel>(context);
 
     return Container(
       padding: EdgeInsets.all(16),
@@ -99,22 +99,14 @@ class _RollStackDialogState extends State<RollStackDialog> {
                           child: Image.asset(
                             (!isShowingHighlighted)
                                 ? "assets/images/d20-1.png"
-                                : (context
-                                            .read<SheetViewModel>()
-                                            .actionRepo
-                                            .getActionById(
-                                                widget.rollLog.idAction)!
-                                            .isResisted &&
+                                : (widget.rollLog.rollType ==
+                                            RollType.resisted &&
                                         !widget.rollLog.isGettingLower)
                                     ? (widget.rollLog.rolls[index] >= 10)
                                         ? "assets/images/d20-2.png"
                                         : "assets/images/d20-1.png"
-                                    : (context
-                                                .read<SheetViewModel>()
-                                                .actionRepo
-                                                .getActionById(
-                                                    widget.rollLog.idAction)!
-                                                .isResisted &&
+                                    : (widget.rollLog.rollType ==
+                                                RollType.resisted &&
                                             widget.rollLog.isGettingLower)
                                         ? (widget.rollLog.rolls.reduce(min) ==
                                                     widget
@@ -154,18 +146,10 @@ class _RollStackDialogState extends State<RollStackDialog> {
               },
             ),
           ),
-          if (context
-              .read<SheetViewModel>()
-              .actionRepo
-              .getActionById(widget.rollLog.idAction)!
-              .isResisted)
+          if (widget.rollLog.rollType == RollType.resisted)
             AnimatedOpacity(
               duration: Duration(milliseconds: 750),
-              opacity: (context
-                          .read<SheetViewModel>()
-                          .actionRepo
-                          .getActionById(widget.rollLog.idAction)!
-                          .isResisted &&
+              opacity: (widget.rollLog.rollType == RollType.resisted &&
                       isShowingHighlighted)
                   ? 1
                   : 0,
@@ -202,10 +186,13 @@ class _RollStackDialogState extends State<RollStackDialog> {
               ),
             ),
           Text(
-            viewModel.getHelperText(context
-                .read<SheetViewModel>()
-                .actionRepo
-                .getActionById(widget.rollLog.idAction)!),
+            sheetVM.getHelperText(
+              context
+                  .read<SheetViewModel>()
+                  .actionRepo
+                  .getActionById(widget.rollLog.idAction)!,
+              widget.rollLog.rollType,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -214,14 +201,9 @@ class _RollStackDialogState extends State<RollStackDialog> {
   }
 
   int _calculateAmountSuccess() {
-    ActionTemplate action = context
-        .read<SheetViewModel>()
-        .actionRepo
-        .getActionById(widget.rollLog.idAction)!;
-
     int amount = 0;
 
-    if (action.isResisted) {
+    if (widget.rollLog.rollType == RollType.resisted) {
       if (widget.rollLog.isGettingLower) {
         int roll = widget.rollLog.rolls
             .reduce((current, next) => (current) < next ? current : next);
