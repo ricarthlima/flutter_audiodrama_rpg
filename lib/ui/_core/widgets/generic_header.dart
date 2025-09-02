@@ -8,6 +8,7 @@ class GenericHeader extends StatelessWidget {
   final List<Widget>? actions;
   final Widget? iconButton;
   final bool dense;
+  final bool showDivider;
 
   const GenericHeader({
     super.key,
@@ -17,6 +18,7 @@ class GenericHeader extends StatelessWidget {
     this.iconButton,
     this.dense = false,
     this.actions,
+    this.showDivider = true,
   });
 
   @override
@@ -34,26 +36,16 @@ class GenericHeader extends StatelessWidget {
                 fontFamily: FontFamily.bungee,
               ),
             ),
-            Row(
-              children: [
-                if (actions != null)
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: actions!,
-                  ),
-                if (iconButton != null) iconButton!,
-                if (iconButton == null && actions == null)
-                  Opacity(
-                    opacity: 0,
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.remove_red_eye_outlined,
-                      ),
-                    ),
-                  ),
-              ],
-            )
+            SizedBox(
+              height: 38,
+              child: Row(
+                children: [
+                  if (actions != null)
+                    Row(mainAxisSize: MainAxisSize.min, children: actions!),
+                  if (iconButton != null) iconButton!,
+                ],
+              ),
+            ),
           ],
         ),
         if (subtitle != null)
@@ -62,14 +54,11 @@ class GenericHeader extends StatelessWidget {
             child: Text(
               subtitle!,
               textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: 12,
-                fontStyle: FontStyle.italic,
-              ),
+              style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
             ),
           ),
         if (subtitleWidget != null) subtitleWidget!,
-        if (!dense)
+        if (!dense && showDivider)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Divider(thickness: 0.1),

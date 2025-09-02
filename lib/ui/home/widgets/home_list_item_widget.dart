@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../domain/models/app_user.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart';
-import '../../_core/helpers.dart';
 import '../../_core/web/download_json/download_json.dart';
 import '../components/move_sheet_to_campaign_dialog.dart';
 import 'package:provider/provider.dart';
@@ -40,10 +39,7 @@ class HomeListItemWidget extends StatelessWidget {
         child: (sheet.imageUrl != null)
             ? InkWell(
                 onTap: () {
-                  showImageDialog(
-                    context: context,
-                    imageUrl: sheet.imageUrl!,
-                  );
+                  showImageDialog(context: context, imageUrl: sheet.imageUrl!);
                 },
                 child: Container(
                   decoration: isVertical(context)
@@ -66,10 +62,7 @@ class HomeListItemWidget extends StatelessWidget {
                   ),
                 ),
               )
-            : Icon(
-                Icons.feed,
-                size: isVertical(context) ? 26 : 40,
-              ),
+            : Icon(Icons.feed, size: isVertical(context) ? 26 : 40),
       ),
       title: Text(
         sheet.characterName,
@@ -83,8 +76,10 @@ class HomeListItemWidget extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () {
-              downloadJsonFile(sheet.toMapWithoutId(),
-                  "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json");
+              downloadJsonFile(
+                sheet.toMapWithoutId(),
+                "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json",
+              );
             },
             tooltip: "Exportar",
             icon: Icon(Icons.file_download_outlined),
@@ -133,17 +128,16 @@ class HomeListItemWidget extends StatelessWidget {
                         );
                       },
                       tooltip: "Remover",
-                      icon: Icon(
-                        Icons.delete,
-                        color: AppColors.red,
-                      ),
+                      icon: Icon(Icons.delete, color: AppColors.red),
                     ),
                   ],
                 )
               : IconButton(
                   onPressed: () {
-                    String? campaignId =
-                        context.read<CampaignViewModel>().campaign?.id;
+                    String? campaignId = context
+                        .read<CampaignViewModel>()
+                        .campaign
+                        ?.id;
                     homeVM.onDuplicateSheetToMe(
                       campaignId: campaignId,
                       sheet: sheet,
@@ -163,29 +157,22 @@ class HomeListItemWidget extends StatelessWidget {
           children: [
             if (isShowingByCampaign && appUser != null)
               Text(appUser!.username!),
+
             // if (appUser != null) Divider(thickness: 0.2),
-            Row(
-              spacing: 4,
-              children: [
-                Text(
-                  "Experiência:",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(getBaseLevel(sheet.baseLevel)),
-              ],
-            ),
-            // if (!isShowingByCampaign)
-            //   Row(
-            //     spacing: 4,
-            //     children: [
-            //       Text(
-            //         "Na campanha:",
-            //         style: TextStyle(fontWeight: FontWeight.bold),
-            //       ),
-            //       Text(
-            //           homeSheetVM.getWorldName(context: context, sheet: sheet)),
-            //     ],
-            //   ),
+            if (!isShowingByCampaign)
+              Builder(
+                builder: (context) {
+                  String? campanha = HomeInteract.getWorldName(
+                    context: context,
+                    sheet: sheet,
+                  );
+                  return Text(
+                    (campanha != null)
+                        ? "Na campanha: $campanha"
+                        : "Sem campanha",
+                  );
+                },
+              ),
           ],
         ),
       ),

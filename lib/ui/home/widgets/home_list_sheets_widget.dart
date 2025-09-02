@@ -24,7 +24,7 @@ class HomeListSheetsWidget extends StatefulWidget {
     required this.username,
     this.title,
     this.subtitle,
-    this.showAdding = false,
+    this.showAdding = true,
   });
 
   @override
@@ -33,6 +33,7 @@ class HomeListSheetsWidget extends StatefulWidget {
 
 class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
   List<Sheet> listSheetsVisualization = [];
+  bool isExpanded = false;
 
   @override
   void initState() {
@@ -62,33 +63,50 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
             title: widget.title!,
             subtitle: widget.subtitle,
             actions: [
-              IconButton(
-                onPressed: () {
-                  _importFromJson(context);
-                },
-                tooltip: "Importar personagem",
-                icon: Icon(Icons.file_download_outlined),
-              ),
+              if (widget.showAdding)
+                IconButton(
+                  onPressed: () {
+                    _importFromJson(context);
+                  },
+                  tooltip: "Importar personagem",
+                  icon: Icon(Icons.file_download_outlined),
+                ),
+              if (widget.showAdding)
+                IconButton(
+                  onPressed: () {
+                    HomeInteract.onCreateCharacterClicked(context);
+                  },
+                  tooltip: "Criar personagem",
+                  icon: Icon(Icons.add),
+                ),
             ],
             iconButton: IconButton(
               onPressed: () {
-                HomeInteract.onCreateCharacterClicked(context);
+                setState(() {
+                  isExpanded = !isExpanded;
+                });
               },
-              tooltip: "Criar personagem",
-              icon: Icon(Icons.add),
+              icon: Icon((!isExpanded) ? Icons.expand_more : Icons.expand_less),
             ),
+            showDivider: false,
           ),
           if (widget.listSheets.isEmpty)
-            Center(
-              child: Text(
-                "Nada por aqui ainda, vamos criar?",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontFamily: FontFamily.sourceSerif4,
+            Expanded(
+              child: Center(
+                child: Opacity(
+                  opacity: 0.25,
+                  child: Text(
+                    "Nada por aqui ainda,\nvamos criar?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: FontFamily.sourceSerif4,
+                    ),
+                  ),
                 ),
               ),
             ),
-          if (widget.listSheets.isNotEmpty)
+          if (widget.listSheets.isNotEmpty && isExpanded)
             Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: GenericFilterWidget<Sheet>(
@@ -129,8 +147,9 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
                 enableSearch: true,
                 onFiltered: (listFiltered) {
                   setState(() {
-                    listSheetsVisualization =
-                        listFiltered.map((e) => e).toList();
+                    listSheetsVisualization = listFiltered
+                        .map((e) => e)
+                        .toList();
                   });
                 },
               ),
@@ -138,15 +157,14 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
           if (widget.listSheets.isNotEmpty)
             Expanded(
               child: ListView(
-                children: List.generate(
-                  listSheetsVisualization.length,
-                  (index) {
-                    return HomeListItemWidget(
-                      sheet: listSheetsVisualization[index],
-                      username: widget.username,
-                    );
-                  },
-                ),
+                children: List.generate(listSheetsVisualization.length, (
+                  index,
+                ) {
+                  return HomeListItemWidget(
+                    sheet: listSheetsVisualization[index],
+                    username: widget.username,
+                  );
+                }),
               ),
             ),
         ],

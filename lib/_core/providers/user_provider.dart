@@ -35,6 +35,8 @@ class UserProvider extends ChangeNotifier {
 
   AppUser currentAppUser = AppUser(email: "", username: "", id: "");
 
+  bool finishedLoading = false;
+
   Future<void> onInitialize() async {
     await onInitializeUser();
 
@@ -45,6 +47,8 @@ class UserProvider extends ChangeNotifier {
     await onInitializeOtherCampaigns();
 
     await onInitializeCampaignSheets();
+
+    finishedLoading = true;
 
     notifyListeners();
   }
@@ -227,5 +231,19 @@ class UserProvider extends ChangeNotifier {
       await _streamCurrentCampaign!.cancel();
       _streamCurrentCampaign = null;
     }
+  }
+
+  List<Sheet> get listSheetsInCampaigns {
+    if (!finishedLoading) return [];
+    return listSheets.where((sheet) {
+      return getCampaignBySheet(sheet.id) != null;
+    }).toList();
+  }
+
+  List<Sheet> get listSheetsOutCampaigns {
+    if (!finishedLoading) return [];
+    return listSheets.where((sheet) {
+      return getCampaignBySheet(sheet.id) == null;
+    }).toList();
   }
 }

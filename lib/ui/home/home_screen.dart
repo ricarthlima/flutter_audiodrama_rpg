@@ -7,12 +7,11 @@ import '../../_core/providers/user_provider.dart';
 import '../../_core/version.dart';
 import '../_core/dimensions.dart';
 import '../home_campaign/home_campaign_screen.dart';
+import '../home_sheet/home_sheet_screen.dart';
 import 'components/home_app_bar.dart';
 import 'utils/home_tabs.dart';
-import 'view/home_interact.dart';
 import 'view/home_view_model.dart';
 import 'widgets/home_drawer.dart';
-import 'widgets/home_list_sheets_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final HomeTabs? page;
@@ -28,8 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      HomeViewModel homeViewModel =
-          Provider.of<HomeViewModel>(context, listen: false);
+      HomeViewModel homeViewModel = Provider.of<HomeViewModel>(
+        context,
+        listen: false,
+      );
 
       Provider.of<UserProvider>(context, listen: false).onInitialize();
 
@@ -56,11 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               HomeDrawer(),
               if (!isVertical(context))
-                VerticalDivider(
-                  thickness: 0.1,
-                  indent: 0,
-                  endIndent: 0,
-                ),
+                VerticalDivider(thickness: 0.1, indent: 0, endIndent: 0),
             ],
           ),
         ],
@@ -78,7 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildBody(BuildContext context) {
     final homeViewModel = Provider.of<HomeViewModel>(context);
-    final userProvider = Provider.of<UserProvider>(context);
 
     return Stack(
       children: [
@@ -88,18 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
             index: HomeTabs.values.indexOf(homeViewModel.currentPage),
             children: [
               // Personagens
-              HomeListSheetsWidget(
-                title: "Meus Personagens",
-                subtitle: "(Não inclusos em campanhas)",
-                listSheets: userProvider.listSheets
-                    .where((e) =>
-                        HomeInteract.getWorldName(context: context, sheet: e) ==
-                        null)
-                    .toList(),
-                username: userProvider.currentAppUser.username!,
-              ),
+              HomeSheetScreen(),
+
               // Campanhas
               HomeCampaignScreen(),
+
+              // Configurações
               Center(child: Text("Ainda não implementado")),
             ],
           ),
@@ -109,17 +99,16 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: FutureBuilder(
-                future: versionDev,
-                builder: (context, snapshot) {
-                  return Text(
-                    snapshot.data ?? "",
-                    style: TextStyle(
-                      fontSize: 11,
-                    ),
-                  );
-                }),
+              future: versionDev,
+              builder: (context, snapshot) {
+                return Text(
+                  snapshot.data ?? "",
+                  style: TextStyle(fontSize: 11),
+                );
+              },
+            ),
           ),
-        )
+        ),
       ],
     );
   }
