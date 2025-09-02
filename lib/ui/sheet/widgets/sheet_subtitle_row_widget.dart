@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/constants/exhaust_level.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/condition_widget.dart';
 import 'package:provider/provider.dart';
@@ -28,12 +29,9 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: List.generate(
-                _getListWidget(context).length,
-                (index) {
-                  return _getListWidget(context)[index];
-                },
-              ),
+              children: List.generate(_getListWidget(context).length, (index) {
+                return _getListWidget(context)[index];
+              }),
             ),
           ),
         ),
@@ -46,18 +44,17 @@ class SheetSubtitleRowWidget extends StatelessWidget {
     final themeProvider = Provider.of<SettingsProvider>(context);
     return [
       NamedWidget(
-        title: "Estresse",
-        tooltip: "Nível de estresse atual",
-        hardHeight: 42,
+        title: "Nível de Exaustão",
+        hardHeight: 50,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             IconButton(
-              onPressed: (sheetVM.sheet!.stressLevel > 0)
+              onPressed: (sheetVM.sheet!.exhaustPoints > 0)
                   ? () {
-                      sheetVM.changeStressLevel(isAdding: false);
+                      sheetVM.changeExhaustPoints(isAdding: false);
                     }
                   : null,
               padding: EdgeInsets.zero,
@@ -65,18 +62,43 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             ),
             SizedBox(
               width: 100,
-              child: Text(
-                StressLevel().getByStressLevel(sheetVM.sheet!.stressLevel),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: FontFamily.bungee,
-                ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8,
+                children: [
+                  Text(
+                    ExhaustLevel.getByExhaustLevel(
+                      sheetVM.sheet!.exhaustPoints,
+                    ),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: FontFamily.bungee,
+                      fontSize: 10,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: List.generate(3, (index) {
+                      return Opacity(
+                        opacity: (index < sheetVM.sheet!.exhaustPoints % 4)
+                            ? 1
+                            : 0.5,
+                        child: Image.asset(
+                          (themeProvider.themeMode == ThemeMode.dark)
+                              ? "assets/images/muscle.png"
+                              : "assets/images/muscle-i.png",
+                          width: 16,
+                        ),
+                      );
+                    }),
+                  ),
+                ],
               ),
             ),
             IconButton(
-              onPressed: (sheetVM.sheet!.stressLevel < StressLevel.total - 1)
+              onPressed: (sheetVM.sheet!.exhaustPoints < 15)
                   ? () {
-                      sheetVM.changeStressLevel();
+                      sheetVM.changeExhaustPoints();
                     }
                   : null,
               padding: EdgeInsets.zero,
@@ -86,21 +108,18 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         ),
       ),
       NamedWidget(
-        title: "Esforço",
-        tooltip: "Carga de esforço acumulada",
-        hardHeight: 42,
+        title: "Nível de Estresse",
         isShowLeftSeparator: true,
+        hardHeight: 50,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             IconButton(
-              onPressed: (sheetVM.sheet!.effortPoints > -1)
+              onPressed: (sheetVM.sheet!.stressPoints > 0)
                   ? () {
-                      sheetVM.changeEffortPoints(
-                        isAdding: false,
-                      );
+                      sheetVM.changeStressPoints(isAdding: false);
                     }
                   : null,
               padding: EdgeInsets.zero,
@@ -108,28 +127,41 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             ),
             SizedBox(
               width: 100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(
-                  3,
-                  (index) {
-                    return Opacity(
-                      opacity: (index <= sheetVM.sheet!.effortPoints) ? 1 : 0.5,
-                      child: Image.asset(
-                        (themeProvider.themeMode == ThemeMode.dark)
-                            ? "assets/images/brain.png"
-                            : "assets/images/brain-i.png",
-                        width: 16,
-                      ),
-                    );
-                  },
-                ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8,
+                children: [
+                  Text(
+                    StressLevel.getByStressLevel(sheetVM.sheet!.stressPoints),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: FontFamily.bungee,
+                      fontSize: 10,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: List.generate(3, (index) {
+                      return Opacity(
+                        opacity: (index < sheetVM.sheet!.stressPoints % 4)
+                            ? 1
+                            : 0.5,
+                        child: Image.asset(
+                          (themeProvider.themeMode == ThemeMode.dark)
+                              ? "assets/images/brain.png"
+                              : "assets/images/brain-i.png",
+                          width: 16,
+                        ),
+                      );
+                    }),
+                  ),
+                ],
               ),
             ),
             IconButton(
-              onPressed: (sheetVM.sheet!.effortPoints < 3)
+              onPressed: (sheetVM.sheet!.stressPoints < 15)
                   ? () {
-                      sheetVM.changeEffortPoints();
+                      sheetVM.changeStressPoints();
                     }
                   : null,
               padding: EdgeInsets.zero,
@@ -142,7 +174,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         isVisible: !sheetVM.isEditing,
         title: "Estado",
         isShowLeftSeparator: true,
-        hardHeight: 42,
+        hardHeight: 50,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -171,14 +203,14 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                     : null,
                 padding: EdgeInsets.zero,
                 icon: Icon(Icons.add),
-              )
+              ),
           ],
         ),
       ),
       NamedWidget(
         isVisible: !sheetVM.isEditing,
         title: "Descansos",
-        hardHeight: 42,
+        hardHeight: 50,
         isShowLeftSeparator: true,
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Row(
@@ -190,13 +222,10 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               child: InkWell(
                 onTap: sheetVM.isOwner
                     ? () {
-                        sheetVM.changeEffortPoints(isAdding: false);
+                        sheetVM.restShort();
                       }
                     : null,
-                child: Icon(
-                  Icons.fastfood_outlined,
-                  size: 18,
-                ),
+                child: Icon(Icons.fastfood_outlined, size: 18),
               ),
             ),
             Tooltip(
@@ -204,13 +233,10 @@ class SheetSubtitleRowWidget extends StatelessWidget {
               child: InkWell(
                 onTap: sheetVM.isOwner
                     ? () {
-                        sheetVM.changeStressLevel(isAdding: false);
+                        sheetVM.restLong();
                       }
                     : null,
-                child: Icon(
-                  Icons.bed,
-                  size: 18,
-                ),
+                child: Icon(Icons.bed, size: 18),
               ),
             ),
           ],
@@ -218,7 +244,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
       ),
       NamedWidget(
         isVisible: !sheetVM.isEditing,
-        hardHeight: 42,
+        hardHeight: 50,
         padding: EdgeInsets.symmetric(horizontal: 16),
         title: "Dados de Corpo",
         isShowLeftSeparator: true,
@@ -235,10 +261,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                     isSerious: false,
                   );
                 },
-                child: Icon(
-                  Icons.personal_injury_outlined,
-                  size: 18,
-                ),
+                child: Icon(Icons.personal_injury_outlined, size: 18),
               ),
             ),
             Tooltip(
@@ -250,10 +273,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                     isSerious: true,
                   );
                 },
-                child: Icon(
-                  Icons.dangerous_outlined,
-                  size: 18,
-                ),
+                child: Icon(Icons.dangerous_outlined, size: 18),
               ),
             ),
           ],
@@ -264,7 +284,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16),
         isShowLeftSeparator: true,
         title: "",
-        hardHeight: 42,
+        hardHeight: 50,
         titleWidget: Text(
           "Ofícios",
           style: TextStyle(
@@ -283,7 +303,15 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             size: 18,
           ),
         ),
-      )
+      ),
     ];
   }
+}
+
+int fInverse(int y) {
+  int r = y % 4;
+  if (r == 3) {
+    return -1;
+  }
+  return r;
 }

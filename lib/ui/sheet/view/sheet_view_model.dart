@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+// import 'package:flutter/scheduler.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/models/group_action.dart';
@@ -61,7 +62,7 @@ class SheetViewModel extends ChangeNotifier {
   bool? _isAuthorized;
   bool? get isAuthorized => _isAuthorized;
   bool _isLoading = true;
-  get isLoading => _isLoading;
+  bool get isLoading => _isLoading;
   bool isFoundSheet = false;
   bool isEditing = false;
   int _notificationCount = 0;
@@ -79,24 +80,24 @@ class SheetViewModel extends ChangeNotifier {
   bool? isSavingNotes;
   final TextEditingController _notesTextController = TextEditingController();
 
-  updateCredentials({String? id, String? username}) {
+  void updateCredentials({String? id, String? username}) {
     this.id = id ?? this.id;
     this.username = username ?? this.username;
     isEditing = false;
-    _safeNotify();
+    notifyListeners();
   }
 
-  void _safeNotify() {
-    final phase = SchedulerBinding.instance.schedulerPhase;
-    if (phase == SchedulerPhase.idle ||
-        phase == SchedulerPhase.postFrameCallbacks) {
-      notifyListeners();
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) => notifyListeners());
-    }
-  }
+  // void _safeNotify() {
+  //   final phase = SchedulerBinding.instance.schedulerPhase;
+  //   if (phase == SchedulerPhase.idle ||
+  //       phase == SchedulerPhase.postFrameCallbacks) {
+  //     notifyListeners();
+  //   } else {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) => notifyListeners());
+  //   }
+  // }
 
-  closeFab() {
+  void closeFab() {
     final state = fabKey.currentState;
     if (state != null) {
       state.toggle();
@@ -167,7 +168,7 @@ class SheetViewModel extends ChangeNotifier {
     return sheet;
   }
 
-  onActionValueChanged({required ActionValue ac, required bool isWork}) {
+  void onActionValueChanged({required ActionValue ac, required bool isWork}) {
     if (sheet == null) return;
 
     if (!isWork) {
@@ -186,34 +187,52 @@ class SheetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  changeStressLevel({bool isAdding = true}) {
+  void changeStressPoints({bool isAdding = true}) {
     if (sheet == null) return;
 
     if (isAdding) {
-      sheet!.stressLevel = min(sheet!.stressLevel + 1, 3);
+      sheet!.stressPoints = min(sheet!.stressPoints + 1, 15);
     } else {
-      sheet!.stressLevel = max(sheet!.stressLevel - 1, 0);
+      sheet!.stressPoints = max(sheet!.stressPoints - 1, 0);
     }
-    notifyListeners();
 
-    if (isWindowed) {
-      saveChanges();
-    }
+    scheduleSave();
   }
 
-  changeEffortPoints({bool isAdding = true}) {
+  void changeExhaustPoints({bool isAdding = true}) {
     if (sheet == null) return;
 
     if (isAdding) {
-      sheet!.effortPoints = min(sheet!.effortPoints + 1, 2);
+      sheet!.exhaustPoints = min(sheet!.exhaustPoints + 1, 15);
     } else {
-      sheet!.effortPoints = max(sheet!.effortPoints - 1, -1);
+      sheet!.exhaustPoints = max(sheet!.exhaustPoints - 1, 0);
     }
+
+    scheduleSave();
+  }
+
+  Timer? schSaveTimer;
+
+  void scheduleSave() {
     notifyListeners();
 
-    if (isWindowed) {
-      saveChanges();
+    if (schSaveTimer != null) {
+      schSaveTimer!.cancel();
+      schSaveTimer = null;
     }
+    schSaveTimer = Timer(Duration(seconds: 2), () {
+      saveChanges();
+    });
+  }
+
+  void restShort() {
+    sheet!.stressPoints = max(0, sheet!.stressPoints - 3);
+    sheet!.exhaustPoints = max(0, sheet!.exhaustPoints - 3);
+  }
+
+  void restLong() {
+    sheet!.stressPoints = max(0, sheet!.stressPoints - 6);
+    sheet!.exhaustPoints = 0;
   }
 
   int getAptidaoMaxByLevel() {
@@ -297,26 +316,30 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   int getPropositoMinusAversao() {
-    int totalProposito =
-        getActionsValuesWithWorks().where((e) => e.value == 4).length;
-    int totalAversao =
-        getActionsValuesWithWorks().where((e) => e.value == 0).length;
+    int totalProposito = getActionsValuesWithWorks()
+        .where((e) => e.value == 4)
+        .length;
+    int totalAversao = getActionsValuesWithWorks()
+        .where((e) => e.value == 0)
+        .length;
 
     return (totalProposito * 3) - totalAversao;
   }
 
   String getTrainLevelByActionName(String actionId) {
-    return getTrainingLevel(getActionsValuesWithWorks()
-        .firstWhere((e) => e.actionId == actionId,
-            orElse: () => ActionValue(actionId: actionId, value: 1))
-        .value);
+    return getTrainingLevel(
+      getActionsValuesWithWorks()
+          .firstWhere(
+            (e) => e.actionId == actionId,
+            orElse: () => ActionValue(actionId: actionId, value: 1),
+          )
+          .value,
+    );
   }
 
   int getTrainLevelByAction(String actionId) {
     List<ActionValue> listFromBaseActions = sheet!.listActionValue
-        .where(
-          (e) => e.actionId == actionId,
-        )
+        .where((e) => e.actionId == actionId)
         .toList();
 
     if (listFromBaseActions.isNotEmpty) {
@@ -324,9 +347,7 @@ class SheetViewModel extends ChangeNotifier {
     }
 
     List<ActionValue> listFromWorks = sheet!.listWorks
-        .where(
-          (e) => e.actionId == actionId,
-        )
+        .where((e) => e.actionId == actionId)
         .toList();
 
     if (listFromWorks.isNotEmpty) {
@@ -342,22 +363,25 @@ class SheetViewModel extends ChangeNotifier {
     } else {
       sheet!.listActiveWorks.add(id);
     }
-    await saveChanges();
-    notifyListeners();
+
+    scheduleSave();
   }
 
-  void saveActionLore(
-      {required String actionId, required String loreText}) async {
+  void saveActionLore({
+    required String actionId,
+    required String loreText,
+  }) async {
     if (sheet!.listActionLore.where((e) => e.actionId == actionId).isNotEmpty) {
-      int index =
-          sheet!.listActionLore.indexWhere((e) => e.actionId == actionId);
+      int index = sheet!.listActionLore.indexWhere(
+        (e) => e.actionId == actionId,
+      );
       sheet!.listActionLore[index].loreText = loreText;
     } else {
-      sheet!.listActionLore
-          .add(ActionLore(actionId: actionId, loreText: loreText));
+      sheet!.listActionLore.add(
+        ActionLore(actionId: actionId, loreText: loreText),
+      );
     }
-    saveChanges();
-    notifyListeners();
+    scheduleSave();
   }
 
   TextEditingController notesTextController() {
@@ -405,20 +429,18 @@ class SheetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  addCondition() {
+  void addCondition() {
     if (sheet!.condition < 4) {
       sheet!.condition = sheet!.condition + 1;
-      saveChanges();
+      scheduleSave();
     }
-    notifyListeners();
   }
 
-  removeCondition() {
+  void removeCondition() {
     if (sheet!.condition > 0) {
       sheet!.condition = sheet!.condition - 1;
-      saveChanges();
+      scheduleSave();
     }
-    notifyListeners();
   }
 
   // bool getHasCondition(String id) {
@@ -455,7 +477,7 @@ class SheetViewModel extends ChangeNotifier {
   //   return result;
   // }
 
-  onUploadBioImageClicked(XFile image) async {
+  Future<void> onUploadBioImageClicked(XFile image) async {
     int sizeInBytes = await image.length();
 
     if (sizeInBytes >= 2000000) {
@@ -477,12 +499,11 @@ class SheetViewModel extends ChangeNotifier {
 
       sheet!.imageUrl = path;
 
-      notifyListeners();
-      saveChanges();
+      scheduleSave();
     }
   }
 
-  onRemoveImageClicked() async {
+  Future<void> onRemoveImageClicked() async {
     if (sheet!.imageUrl == null) return;
 
     String fileName = sheet!.imageUrl!.split("/").last;
@@ -490,13 +511,13 @@ class SheetViewModel extends ChangeNotifier {
     await sheetService.deleteBioImage(fileName);
     sheet!.imageUrl = null;
 
-    notifyListeners();
-    saveChanges();
+    scheduleSave();
   }
 
   List<ActionValue> getActionsValuesWithWorks() {
     // TODO: A enebalcencia da action devia ser por campanha
-    List<ActionValue> listAC = sheet!.listActionValue.map((e) => e).toList() +
+    List<ActionValue> listAC =
+        sheet!.listActionValue.map((e) => e).toList() +
         sheet!.listWorks.map((e) => e).toList();
 
     List<String> listAllEnabled = actionRepo
@@ -540,22 +561,14 @@ class SheetViewModel extends ChangeNotifier {
     ActionTemplate? action = actionRepo.getActionById(roll.idAction);
 
     sheet!.listRollLog.add(roll);
-    await saveChanges();
     notificationCount++;
 
     if (!mapGroupAction[groupId]!.holdMod) {
       mapGroupAction[groupId]!.mod = 0;
     }
 
-    notifyListeners();
-
     if (action != null && action.isPreparation) {
-      sheet!.effortPoints++;
-      if (sheet!.effortPoints >= 2) {
-        sheet!.effortPoints = -1;
-        changeStressLevel(isAdding: true);
-      }
-      saveChanges();
+      sheet!.stressPoints++;
     }
 
     if (!actionRepo.isOnlyFreeOrPreparation(roll.idAction) ||
@@ -565,20 +578,20 @@ class SheetViewModel extends ChangeNotifier {
       showingRollTip = action;
     }
 
-    notifyListeners();
+    scheduleSave();
   }
 
-  showActionTip(ActionTemplate action) {
+  void showActionTip(ActionTemplate action) {
     showingActionTip = action;
     notifyListeners();
   }
 
-  showActionLore(ActionTemplate action) {
+  void showActionLore(ActionTemplate action) {
     showingActionLore = action;
     notifyListeners();
   }
 
-  onStackDialogDismiss() {
+  void onStackDialogDismiss() {
     currentRollLog = null;
     showingRollTip = null;
     showingActionTip = null;
@@ -625,16 +638,16 @@ class SheetViewModel extends ChangeNotifier {
     ),
   };
 
-  _loadActionGroup() {
+  void _loadActionGroup() {
     mapGroupAction[GroupActionIds.basic]!.listActions = actionRepo.getBasics();
-    mapGroupAction[GroupActionIds.resisted]!.listActions =
-        actionRepo.getResisted();
-    mapGroupAction[GroupActionIds.strength]!.listActions =
-        actionRepo.getStrength();
-    mapGroupAction[GroupActionIds.agility]!.listActions =
-        actionRepo.getAgility();
-    mapGroupAction[GroupActionIds.intellect]!.listActions =
-        actionRepo.getIntellect();
+    mapGroupAction[GroupActionIds.resisted]!.listActions = actionRepo
+        .getResisted();
+    mapGroupAction[GroupActionIds.strength]!.listActions = actionRepo
+        .getStrength();
+    mapGroupAction[GroupActionIds.agility]!.listActions = actionRepo
+        .getAgility();
+    mapGroupAction[GroupActionIds.intellect]!.listActions = actionRepo
+        .getIntellect();
     mapGroupAction[GroupActionIds.social]!.listActions = actionRepo.getSocial();
 
     for (String key in sheet!.listActiveWorks) {
@@ -650,7 +663,7 @@ class SheetViewModel extends ChangeNotifier {
     }
   }
 
-  changeModGroup({required String id, required bool isAdding}) {
+  void changeModGroup({required String id, required bool isAdding}) {
     if (isAdding) {
       mapGroupAction[id]!.mod++;
     } else {
@@ -659,7 +672,7 @@ class SheetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  toggleModHold({required String id}) {
+  void toggleModHold({required String id}) {
     mapGroupAction[id]!.holdMod = !mapGroupAction[id]!.holdMod;
     notifyListeners();
   }
@@ -674,8 +687,9 @@ class SheetViewModel extends ChangeNotifier {
 
   String? groupByAction(String actionId) {
     for (String key in mapGroupAction.keys) {
-      final query =
-          mapGroupAction[key]!.listActions.where((e) => e.id == actionId);
+      final query = mapGroupAction[key]!.listActions.where(
+        (e) => e.id == actionId,
+      );
       if (query.isEmpty) {
         return key;
       }

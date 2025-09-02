@@ -64,32 +64,28 @@ class _SheetScreenState extends State<SheetScreen> {
 
   bool _handleKey(KeyEvent event) {
     if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.keyQ) {
-      showSearchDialog().then(
-        (value) {
-          HardwareKeyboard.instance.addHandler(_keyListener);
-          if (value != null) {
-            if (!mounted) return;
-            ActionTemplate actionTemplate = context
-                .read<SheetViewModel>()
-                .actionRepo
-                .getAllActions()
-                .firstWhere(
-                  (e) => e.name.toLowerCase() == value.toLowerCase(),
-                );
+      showSearchDialog().then((value) {
+        HardwareKeyboard.instance.addHandler(_keyListener);
+        if (value != null) {
+          if (!mounted) return;
+          ActionTemplate actionTemplate = context
+              .read<SheetViewModel>()
+              .actionRepo
+              .getAllActions()
+              .firstWhere((e) => e.name.toLowerCase() == value.toLowerCase());
 
-            String groupId = context
-                .read<SheetViewModel>()
-                .groupByAction(actionTemplate.id)!;
+          String groupId = context.read<SheetViewModel>().groupByAction(
+            actionTemplate.id,
+          )!;
 
-            SheetInteract.rollAction(
-              context: context,
-              action: actionTemplate,
-              groupId: groupId,
-              rollType: RollType.difficult,
-            );
-          }
-        },
-      );
+          SheetInteract.rollAction(
+            context: context,
+            action: actionTemplate,
+            groupId: groupId,
+            rollType: RollType.difficult,
+          );
+        }
+      });
       HardwareKeyboard.instance.removeHandler(_keyListener);
     }
     return false;
@@ -132,9 +128,7 @@ class _SheetScreenState extends State<SheetScreen> {
                       .map((e) => e.name)
                       .toList(),
                   autofocus: true,
-                  decoration: InputDecoration(
-                    label: Text("Busque uma ação"),
-                  ),
+                  decoration: InputDecoration(label: Text("Busque uma ação")),
                   onSubmit: (value) {
                     Navigator.pop(context, value);
                   },
@@ -167,10 +161,10 @@ class _SheetScreenState extends State<SheetScreen> {
     return (sheetVM.isLoading)
         ? LoadingWidget()
         : (sheetVM.isAuthorized != null && !sheetVM.isAuthorized!)
-            ? SheetNotFoundWidget()
-            : (sheetVM.isFoundSheet)
-                ? _generateScreen()
-                : SheetNotFoundWidget();
+        ? SheetNotFoundWidget()
+        : (sheetVM.isFoundSheet)
+        ? _generateScreen()
+        : SheetNotFoundWidget();
   }
 
   Widget _generateScreen() {
@@ -188,10 +182,7 @@ class _SheetScreenState extends State<SheetScreen> {
               return LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black.withAlpha(175),
-                  Colors.transparent,
-                ],
+                colors: [Colors.black.withAlpha(175), Colors.transparent],
               ).createShader(bounds);
             },
             blendMode: BlendMode.dstIn,
@@ -219,7 +210,7 @@ class _SheetScreenState extends State<SheetScreen> {
                     spacing: 16,
                     children: [
                       if (!isVertical(context))
-                        _buildImageWidget(sheetVM: sheetVM, height: 115),
+                        _buildImageWidget(sheetVM: sheetVM, height: 135),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,14 +323,12 @@ class _SheetScreenState extends State<SheetScreen> {
                     scale: 0.6,
                     child: Switch(
                       value: sheetVM.isEditing,
-                      thumbIcon: WidgetStateProperty.resolveWith(
-                        (states) {
-                          if (states.contains(WidgetState.selected)) {
-                            return Icon(Icons.save);
-                          }
-                          return Icon(Icons.edit);
-                        },
-                      ),
+                      thumbIcon: WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.selected)) {
+                          return Icon(Icons.save);
+                        }
+                        return Icon(Icons.edit);
+                      }),
                       padding: EdgeInsets.zero,
                       onChanged: (value) {
                         sheetVM.toggleEditMode();
@@ -371,8 +360,9 @@ class _SheetScreenState extends State<SheetScreen> {
               ),
               if (!isVertical(context))
                 Opacity(
-                  opacity:
-                      (sheetVM.currentPage == SheetSubpages.notes) ? 1 : 0.5,
+                  opacity: (sheetVM.currentPage == SheetSubpages.notes)
+                      ? 1
+                      : 0.5,
                   child: IconButton(
                     tooltip: "Caderneta",
                     iconSize: 32,
@@ -397,8 +387,9 @@ class _SheetScreenState extends State<SheetScreen> {
                   ),
                 ),
               Opacity(
-                opacity:
-                    (sheetVM.currentPage == SheetSubpages.settings) ? 1 : 0.5,
+                opacity: (sheetVM.currentPage == SheetSubpages.settings)
+                    ? 1
+                    : 0.5,
                 child: IconButton(
                   onPressed: () =>
                       SheetInteract.onSettingsButtonClicked(context),
@@ -419,14 +410,12 @@ class _SheetScreenState extends State<SheetScreen> {
               tooltip: "Histórico de Rolagens",
               iconSize: 32,
               icon: badges.Badge(
-                showBadge: sheetVM.notificationCount >
+                showBadge:
+                    sheetVM.notificationCount >
                     0, // Esconde se não houver notificações
                 badgeContent: Text(
                   sheetVM.notificationCount.toString(),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
                 position: badges.BadgePosition.topEnd(
                   top: -10,
@@ -474,22 +463,10 @@ class _SheetScreenState extends State<SheetScreen> {
               : DropdownButton<int>(
                   value: sheetVM.sheet!.baseLevel,
                   items: [
-                    DropdownMenuItem(
-                      value: 0,
-                      child: Text(getBaseLevel(0)),
-                    ),
-                    DropdownMenuItem(
-                      value: 1,
-                      child: Text(getBaseLevel(1)),
-                    ),
-                    DropdownMenuItem(
-                      value: 2,
-                      child: Text(getBaseLevel(2)),
-                    ),
-                    DropdownMenuItem(
-                      value: 3,
-                      child: Text(getBaseLevel(3)),
-                    ),
+                    DropdownMenuItem(value: 0, child: Text(getBaseLevel(0))),
+                    DropdownMenuItem(value: 1, child: Text(getBaseLevel(1))),
+                    DropdownMenuItem(value: 2, child: Text(getBaseLevel(2))),
+                    DropdownMenuItem(value: 3, child: Text(getBaseLevel(3))),
                   ],
                   onChanged: (value) {
                     if (value != null) {
@@ -511,9 +488,7 @@ class _SheetScreenState extends State<SheetScreen> {
                   Text(
                     sheetVM
                         .getActionsValuesWithWorks()
-                        .where(
-                          (e) => e.value == 2,
-                        )
+                        .where((e) => e.value == 2)
                         .length
                         .toString(),
                     style: TextStyle(
@@ -539,9 +514,7 @@ class _SheetScreenState extends State<SheetScreen> {
                   Text(
                     sheetVM
                         .getActionsValuesWithWorks()
-                        .where(
-                          (e) => e.value == 3,
-                        )
+                        .where((e) => e.value == 3)
                         .length
                         .toString(),
                     style: TextStyle(
@@ -564,10 +537,7 @@ class _SheetScreenState extends State<SheetScreen> {
         if (sheetVM.getPropositoMinusAversao() > 0)
           Text(
             "Faltam ${sheetVM.getPropositoMinusAversao()} aversões",
-            style: TextStyle(
-              color: AppColors.red,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: AppColors.red, fontWeight: FontWeight.bold),
           ),
       ],
     );
@@ -606,11 +576,7 @@ class _SheetScreenState extends State<SheetScreen> {
                     alignment: Alignment.bottomRight,
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: Icon(
-                        Icons.delete,
-                        size: 16,
-                        color: Colors.black,
-                      ),
+                      child: Icon(Icons.delete, size: 16, color: Colors.black),
                     ),
                   ),
                   Align(
@@ -629,7 +595,7 @@ class _SheetScreenState extends State<SheetScreen> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             )
@@ -657,10 +623,7 @@ class _SheetScreenState extends State<SheetScreen> {
                         Text(
                           "Proporção ideal 4:5\nAté 2MB.",
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.white,
-                          ),
+                          style: TextStyle(fontSize: 10, color: Colors.white),
                         ),
                       ]
                     : [],

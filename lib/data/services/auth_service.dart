@@ -9,7 +9,6 @@ import '../../domain/models/app_user.dart';
 import '../../router.dart';
 import '../../_core/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../preferences/local_data_manager.dart';
@@ -26,20 +25,18 @@ class AuthService {
     // Once signed in, return the UserCredential
 
     if (kIsWeb) {
-      userCredential =
-          await FirebaseAuth.instance.signInWithPopup(googleProvider);
+      userCredential = await FirebaseAuth.instance.signInWithPopup(
+        googleProvider,
+      );
     } else {
-      userCredential =
-          await FirebaseAuth.instance.signInWithProvider(googleProvider);
+      userCredential = await FirebaseAuth.instance.signInWithProvider(
+        googleProvider,
+      );
     }
 
     String? base64Image;
 
-    final response = await http.get(
-      Uri.parse(
-        userCredential.user!.photoURL!,
-      ),
-    );
+    final response = await http.get(Uri.parse(userCredential.user!.photoURL!));
 
     if (response.statusCode == 200) {
       // Codificar os bytes da imagem em base64
@@ -47,18 +44,12 @@ class AuthService {
 
       // Salvar no SharedPreferences
       await LocalDataManager.instance.saveImageB64(base64Image);
-    } else {
-      Logger().i('Erro ao baixar a imagem: ${response.statusCode}');
     }
 
     String uid = FirebaseAuth.instance.currentUser!.uid;
     String email = FirebaseAuth.instance.currentUser!.email!;
 
-    AppUser appUser = AppUser(
-      id: uid,
-      email: email,
-      imageB64: base64Image,
-    );
+    AppUser appUser = AppUser(id: uid, email: email, imageB64: base64Image);
 
     await registerUser(appUser);
 
@@ -96,8 +87,11 @@ class AuthService {
 
   Future<AppUser?> getCurrentUserInfos() async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    DocumentSnapshot<Map<String, dynamic>> docs =
-        await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    DocumentSnapshot<Map<String, dynamic>> docs = await FirebaseFirestore
+        .instance
+        .collection("users")
+        .doc(uid)
+        .get();
 
     if (docs.data() != null) {
       return AppUser.fromMap(docs.data()!);
@@ -107,8 +101,11 @@ class AuthService {
   }
 
   Future<AppUser?> getUserInfosById({required String userId}) async {
-    DocumentSnapshot<Map<String, dynamic>> docs =
-        await FirebaseFirestore.instance.collection("users").doc(userId).get();
+    DocumentSnapshot<Map<String, dynamic>> docs = await FirebaseFirestore
+        .instance
+        .collection("users")
+        .doc(userId)
+        .get();
 
     if (docs.data() != null) {
       return AppUser.fromMap(docs.data()!);

@@ -63,11 +63,11 @@ class SheetService {
         .collection("sheets")
         .get();
 
-    result = snapshot.docs.map(
-      (QueryDocumentSnapshot<Map<String, dynamic>> doc) {
-        return Sheet.fromMap(doc.data());
-      },
-    ).toList();
+    result = snapshot.docs.map((
+      QueryDocumentSnapshot<Map<String, dynamic>> doc,
+    ) {
+      return Sheet.fromMap(doc.data());
+    }).toList();
 
     return result;
   }
@@ -101,8 +101,7 @@ class SheetService {
       characterName: characterName,
       listActionValue: [],
       listRollLog: [],
-      effortPoints: -1,
-      stressLevel: 0,
+      stressPoints: -1,
       baseLevel: 0,
       listItemSheet: [],
       money: 500,
@@ -116,6 +115,7 @@ class SheetService {
       listSharedIds: [],
       ownerId: uid,
       listActiveWorks: [],
+      exhaustPoints: 0,
     );
 
     if (campaignId != null) {
@@ -199,8 +199,8 @@ class SheetService {
         .doc(id)
         .get();
 
-    List<String>? listViewers =
-        await CampaignService.instance.getListPlayersIdsInWorldBySheet(id);
+    List<String>? listViewers = await CampaignService.instance
+        .getListPlayersIdsInWorldBySheet(id);
 
     if (doc.data() != null) {
       Sheet sheet = Sheet.fromMap(doc.data()!);
@@ -255,11 +255,9 @@ class SheetService {
     String bucket = SupabasePrefs.storageBucketSheet;
     String filePath = "bios/$fileName";
 
-    await _supabase.storage.from(bucket).uploadBinary(
-          filePath,
-          file,
-          fileOptions: FileOptions(upsert: true),
-        );
+    await _supabase.storage
+        .from(bucket)
+        .uploadBinary(filePath, file, fileOptions: FileOptions(upsert: true));
 
     final publicUrl = _supabase.storage.from(bucket).getPublicUrl(filePath);
 
@@ -268,8 +266,8 @@ class SheetService {
 
   // Apenas o próprio usuário
   Future<void> deleteBioImage(String fileName) {
-    return _supabase.storage
-        .from(SupabasePrefs.storageBucketSheet)
-        .remove(["bios/$fileName"]);
+    return _supabase.storage.from(SupabasePrefs.storageBucketSheet).remove([
+      "bios/$fileName",
+    ]);
   }
 }

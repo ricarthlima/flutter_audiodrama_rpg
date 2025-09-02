@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+
 import 'action_lore.dart';
 import 'action_value.dart';
-
 import 'item_sheet.dart';
 import 'roll_log.dart';
 
@@ -11,8 +11,7 @@ import 'roll_log.dart';
 class Sheet {
   String id;
   String characterName;
-  int stressLevel;
-  int effortPoints;
+  int stressPoints;
   List<ActionValue> listActionValue;
   List<RollLog> listRollLog;
   int baseLevel;
@@ -37,11 +36,12 @@ class Sheet {
   List<String> listSharedIds;
   String ownerId;
 
+  int exhaustPoints;
+
   Sheet({
     required this.id,
     required this.characterName,
-    required this.stressLevel,
-    required this.effortPoints,
+    required this.stressPoints,
     required this.listActionValue,
     required this.listRollLog,
     required this.baseLevel,
@@ -58,13 +58,14 @@ class Sheet {
     this.campaignId,
     required this.listSharedIds,
     required this.ownerId,
+    required this.exhaustPoints,
   });
 
   Sheet copyWith({
     String? id,
     String? characterName,
     int? stressLevel,
-    int? effortPoints,
+    int? stressPoints,
     List<ActionValue>? listActionValue,
     List<RollLog>? listRollLog,
     int? baseLevel,
@@ -81,12 +82,12 @@ class Sheet {
     String? campaignId,
     List<String>? listSharedIds,
     String? ownerId,
+    int? exhaustPoints,
   }) {
     return Sheet(
       id: id ?? this.id,
       characterName: characterName ?? this.characterName,
-      stressLevel: stressLevel ?? this.stressLevel,
-      effortPoints: effortPoints ?? this.effortPoints,
+      stressPoints: stressPoints ?? this.stressPoints,
       listActionValue: listActionValue ?? this.listActionValue,
       listRollLog: listRollLog ?? this.listRollLog,
       baseLevel: baseLevel ?? this.baseLevel,
@@ -103,6 +104,7 @@ class Sheet {
       listSharedIds: listSharedIds ?? this.listSharedIds,
       campaignId: campaignId ?? this.campaignId,
       ownerId: ownerId ?? this.ownerId,
+      exhaustPoints: exhaustPoints ?? this.exhaustPoints,
     );
   }
 
@@ -110,8 +112,7 @@ class Sheet {
     return <String, dynamic>{
       'id': id,
       'characterName': characterName,
-      'stressLevel': stressLevel,
-      'effortPoints': effortPoints,
+      'stressPoints': stressPoints,
       'listActionValue': listActionValue.map((x) => x.toMap()).toList(),
       'listRollLog': listRollLog.map((x) => x.toMap()).toList(),
       'baseLevel': baseLevel,
@@ -128,6 +129,7 @@ class Sheet {
       "campaignId": campaignId,
       "listSharedIds": listSharedIds,
       "ownerId": ownerId,
+      "exhaustPoints": exhaustPoints,
     };
   }
 
@@ -140,11 +142,12 @@ class Sheet {
   factory Sheet.fromMap(Map<String, dynamic> map) {
     return Sheet(
       id: map['id'] != null ? map['id'] as String : "",
-      characterName:
-          map['characterName'] != null ? map['characterName'] as String : "",
-      stressLevel: map['stressLevel'] != null ? map['stressLevel'] as int : 0,
-      effortPoints:
-          map['effortPoints'] != null ? map['effortPoints'] as int : 0,
+      characterName: map['characterName'] != null
+          ? map['characterName'] as String
+          : "",
+      stressPoints: map['stressPoints'] != null
+          ? map['stressPoints'] as int
+          : 0,
       listActionValue: map['listActionValue'] != null
           ? List<ActionValue>.from(
               (map['listActionValue'] as List<dynamic>).map<ActionValue>(
@@ -190,15 +193,16 @@ class Sheet {
       campaignId: map["campaignId"],
       listActiveWorks: (map["listActiveWorks"] != null)
           ? (map["listActiveWorks"] as List<dynamic>)
-              .map((e) => e.toString())
-              .toList()
+                .map((e) => e.toString())
+                .toList()
           : [],
       listSharedIds: (map["listSharedIds"] != null)
           ? (map["listSharedIds"] as List<dynamic>)
-              .map((e) => e.toString())
-              .toList()
+                .map((e) => e.toString())
+                .toList()
           : [],
       ownerId: (map["ownerId"] != null) ? map["ownerId"] : "",
+      exhaustPoints: (map["exhaustPoints"] ?? 0) as int,
     );
   }
 
@@ -208,18 +212,12 @@ class Sheet {
       Sheet.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() {
-    return 'Sheet(id: $id, characterName: $characterName, stressLevel: $stressLevel, effortPoints: $effortPoints, listActionValue: $listActionValue, listRollLog: $listRollLog, baseLevel: $baseLevel, listItemSheet: $listItemSheet)';
-  }
-
-  @override
   bool operator ==(covariant Sheet other) {
     if (identical(this, other)) return true;
 
     return other.id == id &&
         other.characterName == characterName &&
-        other.stressLevel == stressLevel &&
-        other.effortPoints == effortPoints &&
+        other.stressPoints == stressPoints &&
         listEquals(other.listActionValue, listActionValue) &&
         listEquals(other.listRollLog, listRollLog) &&
         other.baseLevel == baseLevel &&
@@ -233,15 +231,15 @@ class Sheet {
         other.campaignId == campaignId &&
         listEquals(other.listSharedIds, listSharedIds) &&
         other.ownerId == ownerId &&
-        listEquals(other.listActiveWorks, listActiveWorks);
+        listEquals(other.listActiveWorks, listActiveWorks) &&
+        exhaustPoints == other.exhaustPoints;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
         characterName.hashCode ^
-        stressLevel.hashCode ^
-        effortPoints.hashCode ^
+        stressPoints.hashCode ^
         listActionValue.hashCode ^
         listRollLog.hashCode ^
         baseLevel.hashCode ^
@@ -255,6 +253,12 @@ class Sheet {
         campaignId.hashCode ^
         listSharedIds.hashCode ^
         ownerId.hashCode ^
-        listActiveWorks.hashCode;
+        listActiveWorks.hashCode ^
+        exhaustPoints.hashCode;
+  }
+
+  @override
+  String toString() {
+    return 'Sheet(id: $id, characterName: $characterName, stressPoints: $stressPoints, listActionValue: $listActionValue, listRollLog: $listRollLog, baseLevel: $baseLevel, listItemSheet: $listItemSheet, money: $money, weight: $weight, listActionLore: $listActionLore, bio: $bio, notes: $notes, condition: $condition, imageUrl: $imageUrl, listActiveWorks: $listActiveWorks, listWorks: $listWorks, campaignId: $campaignId, listSharedIds: $listSharedIds, ownerId: $ownerId, exhaustPoints: $exhaustPoints)';
   }
 }

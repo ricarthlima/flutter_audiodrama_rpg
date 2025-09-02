@@ -5,8 +5,9 @@ class StressLevel {
     "Estresse",
     "Desespero",
   ];
-  String getByStressLevel(int stressLevel) {
-    return _stressLevel[stressLevel];
+
+  static String getByStressLevel(int stressPoints) {
+    return _stressLevel[stressPoints ~/ 4];
   }
 
   static int get total => _stressLevel.length;

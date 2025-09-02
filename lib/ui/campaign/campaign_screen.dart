@@ -56,12 +56,10 @@ class _CampaignScreenState extends State<CampaignScreen> {
         child: (!campaignVM.hasInteracted)
             ? CampaignFirstInteractScreen()
             : (campaignVM.isLoading)
-                ? Center(child: CircularProgressIndicator())
-                : (campaignVM.campaign != null && campaignVM.isOwnerOrInvited)
-                    ? _buildBodyWithDrawer(campaignVM)
-                    : Center(
-                        child: Text("Campanha não encontrada."),
-                      ),
+            ? Center(child: CircularProgressIndicator())
+            : (campaignVM.campaign != null && campaignVM.isOwnerOrInvited)
+            ? _buildBodyWithDrawer(campaignVM)
+            : Center(child: Text("Campanha não encontrada.")),
       ),
     );
   }
@@ -109,38 +107,37 @@ class _CampaignScreenState extends State<CampaignScreen> {
               ),
             ),
           ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: CampaignDrawer(),
-        ),
+        Align(alignment: Alignment.centerRight, child: CampaignDrawer()),
         GroupNotifications(),
         Stack(
-          children: campaignVM.listOpenSheet.map(
-            (e) {
-              return MovableExpandableScreen(
-                title: e.sheet.characterName,
-                onPopup: () {
-                  openUrl("#/${e.appUser.username!}/sheet/${e.sheet.id}");
-                },
-                onExit: () => campaignVM.closeSheetInCampaign(e.sheet),
-                child: MultiProvider(
-                  providers: [
-                    ChangeNotifierProvider(
-                      create: (context) => SheetViewModel(
-                        id: e.sheet.id,
-                        username: e.appUser.username!,
-                        isWindowed: true,
-                        actionRepo: context.read<SheetViewModel>().actionRepo,
-                        conditionRepo:
-                            context.read<SheetViewModel>().conditionRepo,
-                      ),
+          children: campaignVM.listOpenSheet.map((e) {
+            return MovableExpandableScreen(
+              title: e.sheet.characterName,
+              onPopup: () {
+                openUrl("#/${e.appUser.username!}/sheet/${e.sheet.id}");
+              },
+              onExit: () => campaignVM.closeSheetInCampaign(e.sheet),
+              child: MultiProvider(
+                providers: [
+                  ChangeNotifierProvider(
+                    create: (context) => SheetViewModel(
+                      id: e.sheet.id,
+                      username: e.appUser.username!,
+                      isWindowed: true,
+                      actionRepo: context.read<SheetViewModel>().actionRepo,
+                      conditionRepo: context
+                          .read<SheetViewModel>()
+                          .conditionRepo,
                     ),
-                  ],
-                  child: SheetScreen(),
+                  ),
+                ],
+                child: SheetScreen(
+                  id: e.sheet.id,
+                  username: e.appUser.username!,
                 ),
-              );
-            },
-          ).toList(),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );
