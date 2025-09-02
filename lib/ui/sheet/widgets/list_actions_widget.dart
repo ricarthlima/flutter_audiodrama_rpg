@@ -39,12 +39,7 @@ class ListActionsWidget extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(8),
       ),
-      padding: const EdgeInsets.only(
-        top: 16,
-        bottom: 8,
-        right: 16,
-        left: 16,
-      ),
+      padding: const EdgeInsets.only(top: 16, bottom: 16, right: 16, left: 16),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -71,20 +66,20 @@ class ListActionsWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                _ModGroup(
-                  sheetVM: sheetVM,
-                  groupAction: groupAction,
-                ),
+                _ModGroup(sheetVM: sheetVM, groupAction: groupAction),
               ],
             ),
             ListView.builder(
               shrinkWrap: true,
               itemCount: // TODO: Ações ativadas por padrão config de campanha
-                  groupAction.listActions.where((e) => e.enabled).length,
+              groupAction.listActions
+                  .where((e) => e.enabled)
+                  .length,
               itemBuilder: (context, index) {
                 ActionTemplate action = groupAction.listActions
                     .where((e) => e.enabled)
                     .toList()[index];
+
                 return ActionWidget(
                   action: action,
                   groupId: groupAction.id,
@@ -102,10 +97,7 @@ class ListActionsWidget extends StatelessWidget {
 class _ModGroup extends StatelessWidget {
   final SheetViewModel sheetVM;
   final GroupAction groupAction;
-  const _ModGroup({
-    required this.sheetVM,
-    required this.groupAction,
-  });
+  const _ModGroup({required this.sheetVM, required this.groupAction});
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +112,9 @@ class _ModGroup extends StatelessWidget {
               onTap: (sheetVM.modValueGroup(groupAction.id) > -4)
                   ? () {
                       sheetVM.changeModGroup(
-                          id: groupAction.id, isAdding: false);
+                        id: groupAction.id,
+                        isAdding: false,
+                      );
                     }
                   : null,
               child: Icon(Icons.remove),
@@ -153,7 +147,9 @@ class _ModGroup extends StatelessWidget {
               onTap: (sheetVM.modValueGroup(groupAction.id) < 4)
                   ? () {
                       sheetVM.changeModGroup(
-                          id: groupAction.id, isAdding: true);
+                        id: groupAction.id,
+                        isAdding: true,
+                      );
                     }
                   : null,
               child: Icon(Icons.add),

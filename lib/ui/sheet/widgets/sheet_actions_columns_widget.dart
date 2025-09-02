@@ -8,10 +8,7 @@ import 'list_actions_widget.dart';
 
 class SheetActionsColumnsWidget extends StatelessWidget {
   final ScrollController? scrollController;
-  const SheetActionsColumnsWidget({
-    super.key,
-    this.scrollController,
-  });
+  const SheetActionsColumnsWidget({super.key, this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +25,8 @@ class SheetActionsColumnsWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: 8,
-            children: [
+            children:
+                [
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     spacing: 16,
@@ -50,17 +48,25 @@ class SheetActionsColumnsWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  ListActionsWidget(
-                    name: "Força",
-                    isEditing: sheetVM.isEditing,
-                    groupAction:
-                        sheetVM.mapGroupAction[GroupActionIds.strength]!,
-                  ),
-                  ListActionsWidget(
-                    name: "Agilidade",
-                    isEditing: sheetVM.isEditing,
-                    groupAction:
-                        sheetVM.mapGroupAction[GroupActionIds.agility]!,
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 16,
+                    children: [
+                      ListActionsWidget(
+                        name: "Força",
+                        isEditing: sheetVM.isEditing,
+                        groupAction:
+                            sheetVM.mapGroupAction[GroupActionIds.strength]!,
+                      ),
+                      Expanded(
+                        child: ListActionsWidget(
+                          name: "Agilidade",
+                          isEditing: sheetVM.isEditing,
+                          groupAction:
+                              sheetVM.mapGroupAction[GroupActionIds.agility]!,
+                        ),
+                      ),
+                    ],
                   ),
                   ListActionsWidget(
                     name: "Intelecto",
@@ -74,18 +80,15 @@ class SheetActionsColumnsWidget extends StatelessWidget {
                     groupAction: sheetVM.mapGroupAction[GroupActionIds.social]!,
                   ),
                 ] +
-                List.generate(
-                  sheetVM.sheet!.listActiveWorks.length,
-                  (index) {
-                    String key = sheetVM.sheet!.listActiveWorks[index];
-                    return ListActionsWidget(
-                      name: key,
-                      color: Colors.amber,
-                      groupAction: sheetVM.mapGroupAction[key]!,
-                      isEditing: sheetVM.isEditing,
-                    );
-                  },
-                ),
+                List.generate(sheetVM.sheet!.listActiveWorks.length, (index) {
+                  String key = sheetVM.sheet!.listActiveWorks[index];
+                  return ListActionsWidget(
+                    name: key,
+                    color: Colors.amber,
+                    groupAction: sheetVM.mapGroupAction[key]!,
+                    isEditing: sheetVM.isEditing,
+                  );
+                }),
           ),
         ),
       ),
