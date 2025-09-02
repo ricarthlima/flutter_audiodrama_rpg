@@ -24,7 +24,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(bottom: isVertical(context) ? 16 : 0),
         child: SizedBox(
-          width: (isVertical(context)) ? width(context) : null,
+          width: (isVertical(context)) ? width(context) - 32 : null,
           child: SingleChildScrollView(
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
@@ -304,6 +304,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           ),
         ),
       ),
+      if (isVertical(context)) SizedBox(width: 124),
     ];
   }
 }
