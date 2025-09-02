@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/helpers/has_commom_element.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/exhaust_level.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/condition_widget.dart';
@@ -287,13 +286,11 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             (sheetVM.sheet!.listActiveWorks.isNotEmpty &&
                 userProvider.getCampaignBySheet(sheetVM.sheet!.id) == null) ||
             (userProvider.getCampaignBySheet(sheetVM.sheet!.id) != null &&
-                hasCommonElement(
-                  sheetVM.sheet!.listActiveWorks,
-                  userProvider
-                      .getCampaignBySheet(sheetVM.sheet!.id)!
-                      .campaignSheetSettings
-                      .listActiveWorkIds,
-                )),
+                userProvider
+                    .getCampaignBySheet(sheetVM.sheet!.id)!
+                    .campaignSheetSettings
+                    .listActiveWorkIds
+                    .isNotEmpty),
         padding: EdgeInsets.symmetric(horizontal: 16),
         isShowLeftSeparator: true,
         title: "",

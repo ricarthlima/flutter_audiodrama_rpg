@@ -652,7 +652,7 @@ class SheetViewModel extends ChangeNotifier {
         .getIntellect();
     mapGroupAction[GroupActionIds.social]!.listActions = actionRepo.getSocial();
 
-    for (String key in sheet!.listActiveWorks) {
+    for (String key in actionRepo.getListWorks().map((e) => e.name)) {
       if (mapGroupAction[key] == null) {
         mapGroupAction[key] = GroupAction(
           id: key,

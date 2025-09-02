@@ -80,45 +80,37 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
           },
         ),
       ),
-      _SettingItem(
-        title: "Ofícios",
-        subtitle: "Ative e desative ofícios",
-        child: Column(
-          children: List.generate(sheetVM.actionRepo.getListWorks().length, (
-            index,
-          ) {
-            ListAction work = sheetVM.actionRepo.getListWorks()[index];
-            return SizedBox(
-              width: 300,
-              child: CheckboxListTile(
-                enabled:
-                    campaign == null ||
-                    campaign.campaignSheetSettings.listActiveWorkIds.contains(
-                      work.name,
-                    ),
-                value: (campaign != null)
-                    ? campaign.campaignSheetSettings.listActiveWorkIds.contains(
-                            work.name,
-                          ) &&
-                          sheetVM.sheet!.listActiveWorks.contains(work.name)
-                    : sheetVM.sheet!.listActiveWorks.contains(work.name),
-                title: Text(
-                  work.name[0].toUpperCase() + work.name.substring(1),
+      if (campaign == null)
+        _SettingItem(
+          title: "Ofícios",
+          subtitle: "Ative e desative ofícios",
+          child: Column(
+            children: List.generate(sheetVM.actionRepo.getListWorks().length, (
+              index,
+            ) {
+              ListAction work = sheetVM.actionRepo.getListWorks()[index];
+              return SizedBox(
+                width: 300,
+                child: CheckboxListTile(
+                  value: sheetVM.sheet!.listActiveWorks.contains(work.name),
+                  title: Text(
+                    work.name[0].toUpperCase() + work.name.substring(1),
+                  ),
+                  contentPadding: EdgeInsets.zero,
+                  onChanged: (value) {
+                    sheetVM.toggleActiveWork(work.name);
+                  },
                 ),
-                contentPadding: EdgeInsets.zero,
-                onChanged: (value) {
-                  sheetVM.toggleActiveWork(work.name);
-                },
-              ),
-            );
-          }),
+              );
+            }),
+          ),
         ),
-      ),
-      _SettingItem(
-        title: "Módulos",
-        subtitle: "Ative e desative módulos de regras opcionais",
-        child: Column(),
-      ),
+      if (campaign == null)
+        _SettingItem(
+          title: "Módulos",
+          subtitle: "Ative e desative módulos de regras opcionais",
+          child: Column(),
+        ),
     ];
   }
 }

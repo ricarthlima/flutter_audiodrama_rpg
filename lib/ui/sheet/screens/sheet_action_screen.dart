@@ -42,71 +42,86 @@ class SheetActionsScreen extends StatelessWidget {
     SheetViewModel sheetVM,
     UserProvider userProvider,
   ) {
-    return [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 16,
-            children: [
-              Expanded(
-                child: ListActionsWidget(
-                  name: "Básicas",
-                  isEditing: sheetVM.isEditing,
-                  groupAction: sheetVM.mapGroupAction[GroupActionIds.basic]!,
-                ),
-              ),
-              ListActionsWidget(
-                name: "Resistidas",
-                isEditing: sheetVM.isEditing,
-                color: AppColors.red,
-                groupAction: sheetVM.mapGroupAction[GroupActionIds.resisted]!,
-              ),
-            ],
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 16,
-            children: [
-              ListActionsWidget(
-                name: "Força",
-                isEditing: sheetVM.isEditing,
-                groupAction: sheetVM.mapGroupAction[GroupActionIds.strength]!,
-              ),
-              Expanded(
-                child: ListActionsWidget(
-                  name: "Agilidade",
-                  isEditing: sheetVM.isEditing,
-                  groupAction: sheetVM.mapGroupAction[GroupActionIds.agility]!,
-                ),
-              ),
-            ],
-          ),
-          ListActionsWidget(
-            name: "Intelecto",
-            isEditing: sheetVM.isEditing,
-            groupAction: sheetVM.mapGroupAction[GroupActionIds.intellect]!,
-          ),
-          ListActionsWidget(
-            name: "Sociais",
-            isEditing: sheetVM.isEditing,
-            groupAction: sheetVM.mapGroupAction[GroupActionIds.social]!,
-          ),
-        ] +
-        List.generate(sheetVM.sheet!.listActiveWorks.length, (index) {
-          Campaign? campaign = userProvider.getCampaignBySheet(
-            sheetVM.sheet!.id,
-          );
-          String key = sheetVM.sheet!.listActiveWorks[index];
+    Campaign? campaign = userProvider.getCampaignBySheet(sheetVM.sheet!.id);
 
-          if (campaign != null &&
-              !campaign.campaignSheetSettings.listActiveWorkIds.contains(key)) {
-            return SizedBox();
-          }
+    List<Widget> baseActions = [
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 16,
+        children: [
+          Expanded(
+            child: ListActionsWidget(
+              name: "Básicas",
+              isEditing: sheetVM.isEditing,
+              groupAction: sheetVM.mapGroupAction[GroupActionIds.basic]!,
+            ),
+          ),
+          ListActionsWidget(
+            name: "Resistidas",
+            isEditing: sheetVM.isEditing,
+            color: AppColors.red,
+            groupAction: sheetVM.mapGroupAction[GroupActionIds.resisted]!,
+          ),
+        ],
+      ),
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 16,
+        children: [
+          ListActionsWidget(
+            name: "Força",
+            isEditing: sheetVM.isEditing,
+            groupAction: sheetVM.mapGroupAction[GroupActionIds.strength]!,
+          ),
+          Expanded(
+            child: ListActionsWidget(
+              name: "Agilidade",
+              isEditing: sheetVM.isEditing,
+              groupAction: sheetVM.mapGroupAction[GroupActionIds.agility]!,
+            ),
+          ),
+        ],
+      ),
+      ListActionsWidget(
+        name: "Intelecto",
+        isEditing: sheetVM.isEditing,
+        groupAction: sheetVM.mapGroupAction[GroupActionIds.intellect]!,
+      ),
+      ListActionsWidget(
+        name: "Sociais",
+        isEditing: sheetVM.isEditing,
+        groupAction: sheetVM.mapGroupAction[GroupActionIds.social]!,
+      ),
+    ];
+
+    List<Widget> myWorks = [];
+    List<Widget> campaignWorks = [];
+
+    if (campaign != null) {
+      campaignWorks = List.generate(
+        campaign.campaignSheetSettings.listActiveWorkIds.length,
+        (index) {
+          String workId =
+              campaign.campaignSheetSettings.listActiveWorkIds[index];
           return ListActionsWidget(
-            name: key,
+            name: workId,
             color: Colors.amber,
-            groupAction: sheetVM.mapGroupAction[key]!,
+            groupAction: sheetVM.mapGroupAction[workId]!,
             isEditing: sheetVM.isEditing,
           );
-        });
+        },
+      );
+    } else {
+      myWorks = List.generate(sheetVM.sheet!.listActiveWorks.length, (index) {
+        String key = sheetVM.sheet!.listActiveWorks[index];
+        return ListActionsWidget(
+          name: key,
+          color: Colors.amber,
+          groupAction: sheetVM.mapGroupAction[key]!,
+          isEditing: sheetVM.isEditing,
+        );
+      });
+    }
+    return baseActions + myWorks + campaignWorks;
   }
 }
