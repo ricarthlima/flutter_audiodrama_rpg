@@ -70,7 +70,8 @@ class _ActionWidgetState extends State<ActionWidget> {
                     : null,
                 child: ColorFiltered(
                   colorFilter: getColorFilterInverter(
-                      themeProvider.themeMode == ThemeMode.dark),
+                    themeProvider.themeMode == ThemeMode.dark,
+                  ),
                   child: Tooltip(
                     message: sheetVM.getHelperText(
                       widget.action,
@@ -93,15 +94,17 @@ class _ActionWidgetState extends State<ActionWidget> {
                 onTap: (!sheetVM.isEditing)
                     ? () {
                         SheetInteract.rollAction(
-                            context: context,
-                            action: widget.action,
-                            groupId: widget.groupId,
-                            rollType: RollType.resisted);
+                          context: context,
+                          action: widget.action,
+                          groupId: widget.groupId,
+                          rollType: RollType.resisted,
+                        );
                       }
                     : null,
                 child: ColorFiltered(
                   colorFilter: getColorFilterInverter(
-                      themeProvider.themeMode == ThemeMode.dark),
+                    themeProvider.themeMode == ThemeMode.dark,
+                  ),
                   child: Tooltip(
                     message: sheetVM.getHelperText(
                       widget.action,
@@ -134,10 +137,13 @@ class _ActionWidgetState extends State<ActionWidget> {
                         : null,
                     child: ColorFiltered(
                       colorFilter: getColorFilterInverter(
-                          themeProvider.themeMode == ThemeMode.dark),
+                        themeProvider.themeMode == ThemeMode.dark,
+                      ),
                       child: Tooltip(
                         message: sheetVM.getHelperText(
-                            widget.action, RollType.difficult),
+                          widget.action,
+                          RollType.difficult,
+                        ),
                         child: Image.asset(
                           HelperImagePath.dice,
                           height: 16,
@@ -159,10 +165,13 @@ class _ActionWidgetState extends State<ActionWidget> {
                         : null,
                     child: ColorFiltered(
                       colorFilter: getColorFilterInverter(
-                          themeProvider.themeMode == ThemeMode.dark),
+                        themeProvider.themeMode == ThemeMode.dark,
+                      ),
                       child: Tooltip(
                         message: sheetVM.getHelperText(
-                            widget.action, RollType.resisted),
+                          widget.action,
+                          RollType.resisted,
+                        ),
                         child: Image.asset(
                           HelperImagePath.sword,
                           height: 16,
@@ -212,14 +221,15 @@ class _ActionWidgetState extends State<ActionWidget> {
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             fontFamily: "SourceSerif4",
                           ),
                         ),
                       ),
                     ),
                     Visibility(
-                      visible: (!widget.action.isFree &&
+                      visible:
+                          (!widget.action.isFree &&
                               !widget.action.isPreparation) ||
                           widget.action.isReaction ||
                           widget.action.isResisted,
@@ -227,70 +237,67 @@ class _ActionWidgetState extends State<ActionWidget> {
                         duration: Duration(milliseconds: 1000),
                         child: sheetVM.isEditing
                             ? (getZoomValue(context) > getLimiarZoom())
-                                ? DropdownButton<ActionTrainLevel>(
-                                    value: _trainLevel,
-                                    isDense: true,
-                                    items: [
-                                      DropdownMenuItem(
-                                        value: ActionTrainLevel.aversao,
-                                        child: Text("Aversão"),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: ActionTrainLevel.semAptidao,
-                                        child: Text("Sem aptidão"),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: ActionTrainLevel.comAptidao,
-                                        child: Text("Com aptidão"),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: ActionTrainLevel.treinado,
-                                        child: Text("Com treinamento"),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: ActionTrainLevel.proposito,
-                                        child: Text("Propósito"),
-                                      ),
-                                    ],
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        setState(() {
-                                          _trainLevel = value;
-                                        });
-                                        sheetVM.onActionValueChanged(
-                                          ac: ActionValue(
-                                            actionId: widget.action.id,
-                                            value: value.index,
-                                          ),
-                                          isWork: widget.isWork,
-                                        );
-                                      }
-                                    },
-                                  )
-                                : Container()
+                                  ? DropdownButton<ActionTrainLevel>(
+                                      value: _trainLevel,
+                                      isDense: true,
+                                      items: [
+                                        DropdownMenuItem(
+                                          value: ActionTrainLevel.aversao,
+                                          child: Text("Aversão"),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: ActionTrainLevel.semAptidao,
+                                          child: Text("Sem aptidão"),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: ActionTrainLevel.comAptidao,
+                                          child: Text("Com aptidão"),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: ActionTrainLevel.treinado,
+                                          child: Text("Com treinamento"),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: ActionTrainLevel.proposito,
+                                          child: Text("Propósito"),
+                                        ),
+                                      ],
+                                      onChanged: (value) {
+                                        if (value != null) {
+                                          setState(() {
+                                            _trainLevel = value;
+                                          });
+                                          sheetVM.onActionValueChanged(
+                                            ac: ActionValue(
+                                              actionId: widget.action.id,
+                                              value: value.index,
+                                            ),
+                                            isWork: widget.isWork,
+                                          );
+                                        }
+                                      },
+                                    )
+                                  : Container()
                             : Tooltip(
                                 message: _tooltipText(av),
                                 child: Row(
-                                  children: List.generate(
-                                    5,
-                                    (index) {
-                                      return Image.asset(
-                                        (av == index)
-                                            ? "assets/images/d20-$av.png"
-                                            : (Provider.of<SettingsProvider>(
-                                                            context)
-                                                        .themeMode ==
-                                                    ThemeMode.dark)
-                                                ? "assets/images/d20.png"
-                                                : "assets/images/d20i.png",
-                                        width: (av == index) ? 14 : 10,
-                                      );
-                                    },
-                                  ),
+                                  children: List.generate(5, (index) {
+                                    return Image.asset(
+                                      (av == index)
+                                          ? "assets/images/d20-$av.png"
+                                          : (Provider.of<SettingsProvider>(
+                                                  context,
+                                                ).themeMode ==
+                                                ThemeMode.dark)
+                                          ? "assets/images/d20.png"
+                                          : "assets/images/d20i.png",
+                                      width: (av == index) ? 14 : 10,
+                                    );
+                                  }),
                                 ),
                               ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -342,7 +349,7 @@ class _ActionWidgetState extends State<ActionWidget> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: Divider(),
-          )
+          ),
       ],
     );
   }

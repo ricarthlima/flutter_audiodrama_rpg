@@ -228,11 +228,13 @@ class SheetViewModel extends ChangeNotifier {
   void restShort() {
     sheet!.stressPoints = max(0, sheet!.stressPoints - 3);
     sheet!.exhaustPoints = max(0, sheet!.exhaustPoints - 3);
+    scheduleSave();
   }
 
   void restLong() {
     sheet!.stressPoints = max(0, sheet!.stressPoints - 6);
     sheet!.exhaustPoints = 0;
+    scheduleSave();
   }
 
   int getAptidaoMaxByLevel() {
