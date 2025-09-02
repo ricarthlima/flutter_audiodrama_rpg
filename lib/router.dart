@@ -78,10 +78,13 @@ class AppRouter {
           String id = state.pathParameters["sheetId"] ?? "";
           String username = state.pathParameters["username"] ?? "";
 
-          Provider.of<SheetViewModel>(context, listen: false).updateCredentials(
-            id: id,
-            username: username,
-          );
+          WidgetsBinding.instance.addPersistentFrameCallback((_) {
+            Provider.of<SheetViewModel>(context, listen: false)
+                .updateCredentials(
+              id: id,
+              username: username,
+            );
+          });
 
           return SheetScreen(
             key: UniqueKey(),

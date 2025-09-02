@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/models/group_action.dart';
@@ -82,7 +83,17 @@ class SheetViewModel extends ChangeNotifier {
     this.id = id ?? this.id;
     this.username = username ?? this.username;
     isEditing = false;
-    notifyListeners();
+    _safeNotify();
+  }
+
+  void _safeNotify() {
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    if (phase == SchedulerPhase.idle ||
+        phase == SchedulerPhase.postFrameCallbacks) {
+      notifyListeners();
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) => notifyListeners());
+    }
   }
 
   closeFab() {
