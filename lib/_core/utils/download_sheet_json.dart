@@ -6,7 +6,7 @@ import '../../domain/models/sheet_model.dart';
 import '../../ui/_core/web/download_json/download_json.dart';
 import '../../ui/sheet/view/sheet_view_model.dart';
 
-downloadSheetJSON(SheetViewModel sheetVM) async {
+Future<void> downloadSheetJSON(SheetViewModel sheetVM) async {
   Sheet? sheet = await sheetVM.saveChanges();
 
   if (sheet != null) {

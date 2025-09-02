@@ -19,8 +19,10 @@ import '../components/roll_body_dialog.dart';
 import 'sheet_view_model.dart';
 
 abstract class SheetInteract {
-  static Future<void> onRollBodyDice(
-      {required BuildContext context, required bool isSerious}) {
+  static Future<void> onRollBodyDice({
+    required BuildContext context,
+    required bool isSerious,
+  }) {
     int roll = Random().nextInt(6) + 1;
     return showRollBodyDialog(
       context: context,
@@ -29,7 +31,7 @@ abstract class SheetInteract {
     );
   }
 
-  static onItemsButtonClicked(BuildContext context) async {
+  static Future<void> onItemsButtonClicked(BuildContext context) async {
     context.read<SheetViewModel>().currentPage = SheetSubpages.items;
   }
 
@@ -37,10 +39,12 @@ abstract class SheetInteract {
     context.read<SheetViewModel>().currentPage = SheetSubpages.notes;
   }
 
-  static onStatisticsButtonClicked(BuildContext context) async {
+  static Future<void> onStatisticsButtonClicked(BuildContext context) async {
     //TODO: Provovalmente é melhor isso estar no initState da tela
-    context.read<StatisticsViewModel>().listCompleteRollLog =
-        context.read<SheetViewModel>().sheet!.listRollLog;
+    context.read<StatisticsViewModel>().listCompleteRollLog = context
+        .read<SheetViewModel>()
+        .sheet!
+        .listRollLog;
 
     context.read<SheetViewModel>().currentPage = SheetSubpages.statistics;
   }
@@ -65,7 +69,8 @@ abstract class SheetInteract {
 
     List<int> rolls = [];
 
-    int newActionValue = sheetVM.getTrainLevelByAction(action.id) +
+    int newActionValue =
+        sheetVM.getTrainLevelByAction(action.id) +
         (sheetVM.modValueGroup(groupId));
 
     if (newActionValue < 0) {
@@ -76,10 +81,9 @@ abstract class SheetInteract {
       newActionValue = 4;
     }
 
-    if (context
-        .read<SheetViewModel>()
-        .actionRepo
-        .isOnlyFreeOrPreparation(action.id)) {
+    if (context.read<SheetViewModel>().actionRepo.isOnlyFreeOrPreparation(
+      action.id,
+    )) {
       rolls.add(Random().nextInt(20) + 1);
     } else {
       if (newActionValue == 0 || newActionValue == 4) {

@@ -3,10 +3,7 @@ import '../../../data/services/campaign_visual_service.dart';
 import '../../../domain/models/campaign_visual.dart';
 import '../../../domain/models/campaign_vm_model.dart';
 
-enum PopulateType {
-  github,
-  server,
-}
+enum PopulateType { github, server }
 
 class CampaignVisualNovelViewModel extends ChangeNotifier {
   CampaignVisualDataModel data = CampaignVisualDataModel.empty();
@@ -35,7 +32,7 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  onInitialize() {
+  void onInitialize() {
     // TODO: Criar serviço
     // TODO: Carregar todos
     // TODO: Capturar últimas informações
@@ -54,8 +51,10 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
     await CampaignVisualService.instance.onRemoveAll(campaignId: campaignId);
   }
 
-  Future<void> onPopulate(
-      {required String url, required PopulateType type}) async {
+  Future<void> onPopulate({
+    required String url,
+    required PopulateType type,
+  }) async {
     Map<String, List<String>> mapLists = {};
 
     switch (type) {
@@ -92,37 +91,27 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
 
     data.listAmbiences = mapLists["ambiences"]!
         .map(
-          (e) => CampaignVisual.fromUrl(
-            url: e,
-            type: CampaignVisualType.ambience,
-          ),
+          (e) =>
+              CampaignVisual.fromUrl(url: e, type: CampaignVisualType.ambience),
         )
         .toList();
 
     data.listMusics = mapLists["musics"]!
         .map(
-          (e) => CampaignVisual.fromUrl(
-            url: e,
-            type: CampaignVisualType.music,
-          ),
+          (e) => CampaignVisual.fromUrl(url: e, type: CampaignVisualType.music),
         )
         .toList();
 
     data.listSfxs = mapLists["sfxs"]!
         .map(
-          (e) => CampaignVisual.fromUrl(
-            url: e,
-            type: CampaignVisualType.sfx,
-          ),
+          (e) => CampaignVisual.fromUrl(url: e, type: CampaignVisualType.sfx),
         )
         .toList();
 
     data.listObjects = mapLists["objects"]!
         .map(
-          (e) => CampaignVisual.fromUrl(
-            url: e,
-            type: CampaignVisualType.objects,
-          ),
+          (e) =>
+              CampaignVisual.fromUrl(url: e, type: CampaignVisualType.objects),
         )
         .toList();
 
@@ -131,33 +120,33 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  addToLeft(CampaignVisual campaignVisual) {
+  void addToLeft(CampaignVisual campaignVisual) {
     data.listLeftActive.add(campaignVisual);
     notifyListeners();
   }
 
-  addToRight(CampaignVisual campaignVisual) {
+  void addToRight(CampaignVisual campaignVisual) {
     data.listRightActive.insert(0, campaignVisual);
     notifyListeners();
   }
 
-  clearFromLeft() {
+  void clearFromLeft() {
     data.listLeftActive.clear();
     notifyListeners();
   }
 
-  clearFromRight() {
+  void clearFromRight() {
     data.listRightActive.clear();
     notifyListeners();
   }
 
-  clearAll() {
+  void clearAll() {
     data.listLeftActive.clear();
     data.listRightActive.clear();
     data.backgroundActive = null;
   }
 
-  replaceBackground(CampaignVisual campaignVisual) {
+  void replaceBackground(CampaignVisual campaignVisual) {
     data.backgroundActive = campaignVisual;
     notifyListeners();
   }
@@ -189,7 +178,7 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  toggleBackground(CampaignVisual visualBG) {
+  void toggleBackground(CampaignVisual visualBG) {
     if (data.backgroundActive == visualBG) {
       data.backgroundActive = null;
     } else {
@@ -213,7 +202,7 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  toggleObject(CampaignVisual visualObject) {
+  void toggleObject(CampaignVisual visualObject) {
     int index = data.listObjects.indexOf(visualObject);
     visualObject.isEnable = !visualObject.isEnable;
     data.listObjects[index] = visualObject;
@@ -231,13 +220,13 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
         data.listSfxs.isEmpty;
   }
 
-  togglePan() {
+  void togglePan() {
     data.allowPan = !data.allowPan;
     notifyListeners();
     onSave();
   }
 
-  toggleZoom() {
+  void toggleZoom() {
     data.allowZoom = !data.allowZoom;
     notifyListeners();
     onSave();

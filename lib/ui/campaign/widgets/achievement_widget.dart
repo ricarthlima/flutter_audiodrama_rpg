@@ -16,7 +16,8 @@ class AchievementWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
     return Visibility(
-      visible: !achievement.isHided ||
+      visible:
+          !achievement.isHided ||
           campaignVM.isOwner ||
           isPlayerUnlockedAchievement(),
       child: Container(
@@ -145,19 +146,16 @@ class AchievementWidget extends StatelessWidget {
                                   unlockToAllUsers(context, campaignVM);
                                 }
                               : null,
-                          icon: Icon(
-                            Icons.emoji_events,
-                            color: Colors.white,
-                          ),
+                          icon: Icon(Icons.emoji_events, color: Colors.white),
                           style: ButtonStyle(
-                            backgroundColor: WidgetStateColor.resolveWith(
-                              (states) {
-                                if (states.contains(WidgetState.disabled)) {
-                                  return Colors.grey[800]!;
-                                }
-                                return Colors.green[900]!;
-                              },
-                            ),
+                            backgroundColor: WidgetStateColor.resolveWith((
+                              states,
+                            ) {
+                              if (states.contains(WidgetState.disabled)) {
+                                return Colors.grey[800]!;
+                              }
+                              return Colors.green[900]!;
+                            }),
                           ),
                           label: Tooltip(
                             message: !isUnlockedToAll(campaignVM)
@@ -213,19 +211,15 @@ class AchievementWidget extends StatelessWidget {
                               campaignVM.onRemoveAchievement(achievement);
                             },
                             onPressed: () {},
-                            icon: Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                            ),
+                            icon: Icon(Icons.delete, color: Colors.white),
                             style: ButtonStyle(
-                                backgroundColor: WidgetStatePropertyAll(
-                              AppColors.redDark,
-                            )),
+                              backgroundColor: WidgetStatePropertyAll(
+                                AppColors.redDark,
+                              ),
+                            ),
                             label: Text(
                               "Remover",
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
                         ),
@@ -266,14 +260,17 @@ class AchievementWidget extends StatelessWidget {
   }
 
   void unlockToAllUsers(
-      BuildContext context, CampaignViewModel campaignVM) async {
+    BuildContext context,
+    CampaignViewModel campaignVM,
+  ) async {
     bool? result = await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text("Liberar para todo mundo?"),
           content: Text(
-              'Essa ação notificará todas as pessoas com a conquista "${achievement.title}."'),
+            'Essa ação notificará todas as pessoas com a conquista "${achievement.title}."',
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -298,11 +295,12 @@ class AchievementWidget extends StatelessWidget {
   }
 
   bool isPlayerUnlockedAchievement() {
-    return achievement.listUsers
-        .contains(FirebaseAuth.instance.currentUser!.uid);
+    return achievement.listUsers.contains(
+      FirebaseAuth.instance.currentUser!.uid,
+    );
   }
 
-  isUnlockedToAll(CampaignViewModel campaignVM) {
+  bool isUnlockedToAll(CampaignViewModel campaignVM) {
     List<String> a = achievement.listUsers;
     List<String> b = campaignVM.campaign!.listIdPlayers;
     return Set.from(a).containsAll(b) && Set.from(b).containsAll(a);

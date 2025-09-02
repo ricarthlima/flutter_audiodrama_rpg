@@ -6,7 +6,7 @@ import '../../_core/utils/load_image.dart';
 import '../../_core/widgets/circular_progress_indicator.dart';
 import '../view/home_campaign_view_model.dart';
 
-showCreateCampaignDialog({required BuildContext context}) {
+Future showCreateCampaignDialog({required BuildContext context}) {
   return showDialog(
     barrierDismissible: false,
     context: context,
@@ -36,10 +36,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          width: 4,
-          color: AppColors.red,
-        ),
+        border: Border.all(width: 4, color: AppColors.red),
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
       padding: EdgeInsets.all(16),
@@ -103,9 +100,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
                                 },
                                 icon: const Icon(Icons.upload),
                               ),
-                              const Text(
-                                "Insira um banner. (1920x540)",
-                              ),
+                              const Text("Insira um banner. (1920x540)"),
                             ],
                           ),
                         ),
@@ -145,7 +140,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
             child: (isLoading)
                 ? const CPIElevatedButton()
                 : const Text("Crie um novo mundo!"),
-          )
+          ),
         ],
       ),
     );

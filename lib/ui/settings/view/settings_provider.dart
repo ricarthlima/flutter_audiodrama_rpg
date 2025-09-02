@@ -36,7 +36,10 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  saveSettingBool({required String key, required bool value}) async {
+  Future<void> saveSettingBool({
+    required String key,
+    required bool value,
+  }) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(key, value);
   }

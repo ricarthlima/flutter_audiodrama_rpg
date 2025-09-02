@@ -6,7 +6,7 @@ import '../../_core/app_colors.dart';
 import '../../_core/widgets/circular_progress_indicator.dart';
 import '../view/home_campaign_view_model.dart';
 
-showJoinCampaignDialog({required BuildContext context}) {
+Future showJoinCampaignDialog({required BuildContext context}) {
   return showDialog(
     barrierDismissible: false,
     context: context,
@@ -31,10 +31,7 @@ class __JoinCampaignDialogState extends State<_JoinCampaignDialog> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          width: 4,
-          color: AppColors.red,
-        ),
+        border: Border.all(width: 4, color: AppColors.red),
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
       padding: EdgeInsets.all(16),
@@ -100,17 +97,15 @@ class __JoinCampaignDialogState extends State<_JoinCampaignDialog> {
   }
 
   void _onJoinPressed() async {
-    HomeCampaignInteract.joinCampaign(joinCode: _codeController.text).then(
-      (value) {
-        if (!mounted) return;
-        Navigator.pop(context);
-      },
-    ).onError(
-      (error, stackTrace) {
-        if (!mounted) return;
-        showSnackBar(context: context, message: "Código não encontrado.");
-        Navigator.pop(context);
-      },
-    );
+    HomeCampaignInteract.joinCampaign(joinCode: _codeController.text)
+        .then((value) {
+          if (!mounted) return;
+          Navigator.pop(context);
+        })
+        .onError((error, stackTrace) {
+          if (!mounted) return;
+          showSnackBar(context: context, message: "Código não encontrado.");
+          Navigator.pop(context);
+        });
   }
 }

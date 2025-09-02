@@ -4,7 +4,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/text_markdown.dart';
 import 'package:intl/intl.dart';
 
-showNewsDialog(BuildContext context, NewsModel news) {
+void showNewsDialog(BuildContext context, NewsModel news) {
   showDialog(
     context: context,
     builder: (context) {

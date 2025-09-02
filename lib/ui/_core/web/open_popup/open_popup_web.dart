@@ -11,7 +11,7 @@ void openPopup(String subdomain, {String? name}) {
   );
 }
 
-openUrl(String url) {
+void openUrl(String url) {
   html.window.open(url, "");
 }
 

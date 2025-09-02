@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-showSnackBarWip(BuildContext context) {
+void showSnackBarWip(BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text("Ainda não implementado. Fica pra próxima versão :)"),
@@ -9,11 +9,8 @@ showSnackBarWip(BuildContext context) {
   );
 }
 
-showSnackBar({required BuildContext context, required String message}) {
+void showSnackBar({required BuildContext context, required String message}) {
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 2000),
-    ),
+    SnackBar(content: Text(message), duration: Duration(milliseconds: 2000)),
   );
 }

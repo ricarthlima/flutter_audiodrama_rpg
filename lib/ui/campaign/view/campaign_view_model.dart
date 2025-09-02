@@ -26,7 +26,7 @@ class CampaignViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  hasInteractedDisable() {
+  void hasInteractedDisable() {
     _hasInteracted = false;
     campaign = null;
   }
@@ -76,7 +76,7 @@ class CampaignViewModel extends ChangeNotifier {
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
 
-  onSave() async {
+  Future<void> onSave() async {
     if (campaign != null) {
       campaign!.name = nameController.text;
       campaign!.description = descController.text;
@@ -126,37 +126,36 @@ class CampaignViewModel extends ChangeNotifier {
     AuthService authService = AuthService();
 
     if (campaign != null) {
-      sheetsSub =
-          CampaignService.instance.getStreamCSByCampaign(campaign!.id).listen(
-        (snapshot) async {
-          listSheetAppUser = [];
+      sheetsSub = CampaignService.instance
+          .getStreamCSByCampaign(campaign!.id)
+          .listen((snapshot) async {
+            listSheetAppUser = [];
 
-          for (var doc in snapshot.docs) {
-            CampaignSheet campaignSheet = CampaignSheet.fromMap(doc.data());
-            if (isJustOthers && campaignSheet.userId == uid) continue;
+            for (var doc in snapshot.docs) {
+              CampaignSheet campaignSheet = CampaignSheet.fromMap(doc.data());
+              if (isJustOthers && campaignSheet.userId == uid) continue;
 
-            Sheet? sheet = await sheetService.getSheetByUser(
-              sheetId: campaignSheet.sheetId,
-              userId: campaignSheet.userId,
-            );
-
-            AppUser? appUser = await authService.getUserInfosById(
-              userId: campaignSheet.userId,
-            );
-
-            if (sheet != null && appUser != null) {
-              listSheetAppUser.add(
-                SheetAppUser(sheet: sheet, appUser: appUser),
+              Sheet? sheet = await sheetService.getSheetByUser(
+                sheetId: campaignSheet.sheetId,
+                userId: campaignSheet.userId,
               );
+
+              AppUser? appUser = await authService.getUserInfosById(
+                userId: campaignSheet.userId,
+              );
+
+              if (sheet != null && appUser != null) {
+                listSheetAppUser.add(
+                  SheetAppUser(sheet: sheet, appUser: appUser),
+                );
+              }
             }
-          }
-          notifyListeners();
-        },
-      );
+            notifyListeners();
+          });
     }
   }
 
-  onUpdateImage(XFile imageBytes) async {
+  Future<void> onUpdateImage(XFile imageBytes) async {
     if (campaign != null) {
       await CampaignService.instance.updateImage(
         fileImage: imageBytes,
@@ -166,7 +165,7 @@ class CampaignViewModel extends ChangeNotifier {
     }
   }
 
-  onRemoveImage() async {
+  Future<void> onRemoveImage() async {
     if (campaign != null) {
       await CampaignService.instance.removeImage(campaign: campaign!);
       campaign!.imageBannerUrl = null;
@@ -199,8 +198,10 @@ class CampaignViewModel extends ChangeNotifier {
       );
     } else {
       if (idd != null) {
-        urlImage =
-            campaign!.listAchievements.where((e) => e.id == idd).first.imageUrl;
+        urlImage = campaign!.listAchievements
+            .where((e) => e.id == idd)
+            .first
+            .imageUrl;
       }
     }
 
@@ -216,8 +217,10 @@ class CampaignViewModel extends ChangeNotifier {
     );
 
     if (campaign!.listAchievements.where((e) => e.id == idd).isNotEmpty) {
-      achievement.listUsers =
-          campaign!.listAchievements.where((e) => e.id == idd).first.listUsers;
+      achievement.listUsers = campaign!.listAchievements
+          .where((e) => e.id == idd)
+          .first
+          .listUsers;
 
       int index = campaign!.listAchievements.indexWhere((e) => e.id == idd);
       campaign!.listAchievements[index] = achievement;
@@ -245,14 +248,12 @@ class CampaignViewModel extends ChangeNotifier {
 
   Future<void> _verifyNewAchievement() async {
     if (!isOwner) {
-      List<String> listMyAch =
-          await LocalDataManager.instance.getAchievementsListIds();
+      List<String> listMyAch = await LocalDataManager.instance
+          .getAchievementsListIds();
 
       List<CampaignAchievement> listNewAch = List.from(
         campaign!.listAchievements.where(
-          (e) => e.listUsers.contains(
-            FirebaseAuth.instance.currentUser!.uid,
-          ),
+          (e) => e.listUsers.contains(FirebaseAuth.instance.currentUser!.uid),
         ),
       );
 
@@ -273,15 +274,13 @@ class CampaignViewModel extends ChangeNotifier {
 
   void unlockToAllUsers(CampaignAchievement achievement) async {
     await updateAchievement(
-      achievement.copyWith(
-        listUsers: campaign!.listIdPlayers,
-      ),
+      achievement.copyWith(listUsers: campaign!.listIdPlayers),
     );
   }
 
   List<SheetAppUser> listOpenSheet = [];
 
-  openSheetInCampaign(SheetAppUser sheetAppUser) {
+  void openSheetInCampaign(SheetAppUser sheetAppUser) {
     if (listOpenSheet
         .where((e) => e.sheet.id == sheetAppUser.sheet.id)
         .isEmpty) {
@@ -290,7 +289,7 @@ class CampaignViewModel extends ChangeNotifier {
     }
   }
 
-  closeSheetInCampaign(Sheet sheet) {
+  void closeSheetInCampaign(Sheet sheet) {
     listOpenSheet.removeWhere((element) => element.sheet.id == sheet.id);
     notifyListeners();
   }
@@ -324,8 +323,5 @@ class SheetAppUser {
   Sheet sheet;
   AppUser appUser;
 
-  SheetAppUser({
-    required this.sheet,
-    required this.appUser,
-  });
+  SheetAppUser({required this.sheet, required this.appUser});
 }

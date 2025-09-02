@@ -99,7 +99,9 @@ class CampaignService {
 
     Uint8List fileBytes = await file.readAsBytes();
 
-    await _supabase.storage.from(bucket).uploadBinary(
+    await _supabase.storage
+        .from(bucket)
+        .uploadBinary(
           filePath,
           fileBytes,
           fileOptions: FileOptions(upsert: true),
@@ -111,8 +113,10 @@ class CampaignService {
   }
 
   // Apenas o próprio usuário
-  Future<void> removeImage(
-      {required Campaign campaign, bool needToFirestore = true}) async {
+  Future<void> removeImage({
+    required Campaign campaign,
+    bool needToFirestore = true,
+  }) async {
     if (campaign.imageBannerUrl != null) {
       String oldImage = campaign.imageBannerUrl!;
       String fileName = oldImage.split("/").last;
@@ -125,9 +129,9 @@ class CampaignService {
             .set(campaign.toMap());
       }
 
-      _supabase.storage
-          .from(SupabasePrefs.storageBucketSheet)
-          .remove(["bios/$fileName"]);
+      _supabase.storage.from(SupabasePrefs.storageBucketSheet).remove([
+        "bios/$fileName",
+      ]);
     }
   }
 
@@ -166,7 +170,8 @@ class CampaignService {
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> getCampaignStreamById(
-      String id) {
+    String id,
+  ) {
     return FirebaseFirestore.instance
         .collection("${releaseCollection}campaigns")
         .doc(id)
@@ -208,7 +213,7 @@ class CampaignService {
     return result;
   }
 
-  getListMyCampaigns() async {
+  Future<List<Campaign>> getListMyCampaigns() async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
     List<Campaign> result = [];
@@ -226,7 +231,7 @@ class CampaignService {
     return result;
   }
 
-  getListInvitedCampaigns() async {
+  Future<List<Campaign>> getListInvitedCampaigns() async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
     List<Campaign> result = [];
@@ -262,9 +267,7 @@ class CampaignService {
         .snapshots();
   }
 
-  Future<void> saveCampaignSheet({
-    required CampaignSheet campaignSheet,
-  }) async {
+  Future<void> saveCampaignSheet({required CampaignSheet campaignSheet}) async {
     await FirebaseFirestore.instance
         .collection("${releaseCollection}campaign-sheet")
         .doc(campaignSheet.sheetId)
@@ -305,7 +308,8 @@ class CampaignService {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getStreamCSByCampaign(
-      String campaignId) {
+    String campaignId,
+  ) {
     return FirebaseFirestore.instance
         .collection("${releaseCollection}campaign-sheet")
         .where("campaignId", isEqualTo: campaignId)

@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/news_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-showAddNewsDialog(BuildContext context) {
+void showAddNewsDialog(BuildContext context) {
   showDialog(
     context: context,
-    builder: (context) => Dialog(
-      child: _AddNewsDialog(),
-    ),
+    builder: (context) => Dialog(child: _AddNewsDialog()),
   );
 }
 
@@ -49,24 +47,17 @@ class __AddNewsDialogState extends State<_AddNewsDialog> {
           children: [
             Text(
               "Escrever notas de atualização",
-              style: TextStyle(
-                fontSize: 24,
-                fontFamily: "Bungee",
-              ),
+              style: TextStyle(fontSize: 24, fontFamily: "Bungee"),
             ),
             TextFormField(
               controller: titleController,
               maxLength: 30,
-              decoration: InputDecoration(
-                label: Text("Título"),
-              ),
+              decoration: InputDecoration(label: Text("Título")),
             ),
             TextFormField(
               controller: descriptionController,
               maxLines: null,
-              decoration: InputDecoration(
-                label: Text("Descrição"),
-              ),
+              decoration: InputDecoration(label: Text("Descrição")),
             ),
             Text("Data: ${DateTime.now()}"),
             Text("Versão: ${info?.version}"),
@@ -84,7 +75,7 @@ class __AddNewsDialogState extends State<_AddNewsDialog> {
                       width: 24,
                       child: CircularProgressIndicator(),
                     ),
-            )
+            ),
           ],
         ),
       ),

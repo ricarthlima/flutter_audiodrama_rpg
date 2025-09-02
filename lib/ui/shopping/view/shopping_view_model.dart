@@ -11,7 +11,7 @@ class ShoppingViewModel extends ChangeNotifier {
   final ItemRepository itemRepo;
 
   ShoppingViewModel({required this.sheetVM, required this.itemRepo})
-      : listSellerItems = itemRepo.listItems;
+    : listSellerItems = itemRepo.listItems;
 
   List<Item> listSellerItems = [];
   List<ItemSheet> listInventoryItems = [];
@@ -29,7 +29,7 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  toggleBuying() {
+  void toggleBuying() {
     _isBuying = !_isBuying;
     notifyListeners();
   }
@@ -50,7 +50,7 @@ class ShoppingViewModel extends ChangeNotifier {
     return _moneyController;
   }
 
-  openInventory(List<ItemSheet> listItems) {
+  void openInventory(List<ItemSheet> listItems) {
     _listSheetItems = listItems;
     isBuying = false;
     notifyListeners();
@@ -63,9 +63,7 @@ class ShoppingViewModel extends ChangeNotifier {
       if (_listSheetItems.where((e) => e.itemId == item.id).isNotEmpty) {
         _listSheetItems.where((e) => e.itemId == item.id).first.amount++;
       } else {
-        _listSheetItems.add(
-          ItemSheet(itemId: item.id, uses: 0, amount: 1),
-        );
+        _listSheetItems.add(ItemSheet(itemId: item.id, uses: 0, amount: 1));
       }
 
       if (!isFree) {
@@ -85,7 +83,7 @@ class ShoppingViewModel extends ChangeNotifier {
 
   bool showingHaveNoMoney = false;
 
-  _showHaveNoMoneyFeedback() async {
+  Future<void> _showHaveNoMoneyFeedback() async {
     showingHaveNoMoney = true;
     notifyListeners();
     await Future.delayed(Duration(milliseconds: 1750));
@@ -93,7 +91,7 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  sellItem({required String itemId}) {
+  void sellItem({required String itemId}) {
     Item item = itemRepo.getItemById(itemId)!;
     _listSheetItems.where((e) => e.itemId == itemId).first.amount--;
     if (_listSheetItems.where((e) => e.itemId == itemId).first.amount <= 0) {
@@ -105,18 +103,17 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  reloadUses({required String itemId}) {
+  void reloadUses({required String itemId}) {
     _listSheetItems
-        .firstWhere(
-          (ItemSheet itemSheet) => itemSheet.itemId == itemId,
-        )
-        .uses = 0;
+            .firstWhere((ItemSheet itemSheet) => itemSheet.itemId == itemId)
+            .uses =
+        0;
 
     notifyListeners();
     saveChanges();
   }
 
-  useItem({required String itemId}) {
+  void useItem({required String itemId}) {
     Item item = itemRepo.getItemById(itemId)!;
 
     int index = _listSheetItems.indexWhere(
@@ -139,7 +136,7 @@ class ShoppingViewModel extends ChangeNotifier {
     saveChanges();
   }
 
-  removeItem({required String itemId}) async {
+  Future<void> removeItem({required String itemId}) async {
     _listSheetItems
         .firstWhere((ItemSheet itemSheet) => itemSheet.itemId == itemId)
         .amount--;
@@ -147,7 +144,7 @@ class ShoppingViewModel extends ChangeNotifier {
     saveChanges();
   }
 
-  removeAllFromItem({required String itemId}) async {
+  Future<void> removeAllFromItem({required String itemId}) async {
     _listSheetItems.removeWhere(
       (ItemSheet itemSheet) => itemSheet.itemId == itemId,
     );
@@ -156,7 +153,7 @@ class ShoppingViewModel extends ChangeNotifier {
     saveChanges();
   }
 
-  onEditingMoney() async {
+  Future<void> onEditingMoney() async {
     double? money = double.tryParse(_moneyController.text);
     if (money != null) {
       _showMoneyFeedback(true);
@@ -182,7 +179,7 @@ class ShoppingViewModel extends ChangeNotifier {
 
   bool? isShowingMoneyFeedback;
 
-  _showMoneyFeedback(bool isSuccess) async {
+  Future<void> _showMoneyFeedback(bool isSuccess) async {
     isShowingMoneyFeedback = isSuccess;
     notifyListeners();
     await Future.delayed(Duration(milliseconds: 1250));
@@ -190,7 +187,7 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  toggleCategory(String category, bool isSeller) {
+  void toggleCategory(String category, bool isSeller) {
     if (!isSeller) {
       if (listFilteredCategories.contains(category)) {
         listFilteredCategories.remove(category);
@@ -208,42 +205,39 @@ class ShoppingViewModel extends ChangeNotifier {
     }
   }
 
-  onSearchOnInventory() {
-    String search =
-        removeDiacritics(searchInventoryController.text).toLowerCase();
+  void onSearchOnInventory() {
+    String search = removeDiacritics(
+      searchInventoryController.text,
+    ).toLowerCase();
 
     listInventoryItems = _listSheetItems.map((e) => e).toList();
 
     if (listFilteredCategories.isNotEmpty || search != "") {
       if (search != "") {
-        listInventoryItems = listInventoryItems.where(
-          (ItemSheet itemSheet) {
-            Item item = itemRepo.getItemById(itemSheet.itemId)!;
-            return removeDiacritics(item.name).toLowerCase().contains(search);
-          },
-        ).toList();
+        listInventoryItems = listInventoryItems.where((ItemSheet itemSheet) {
+          Item item = itemRepo.getItemById(itemSheet.itemId)!;
+          return removeDiacritics(item.name).toLowerCase().contains(search);
+        }).toList();
       }
 
       if (listFilteredCategories.isNotEmpty) {
-        listInventoryItems.retainWhere(
-          (itemSheet) {
-            Item item = itemRepo.getItemById(itemSheet.itemId)!;
+        listInventoryItems.retainWhere((itemSheet) {
+          Item item = itemRepo.getItemById(itemSheet.itemId)!;
 
-            for (String category in item.listCategories) {
-              if (listFilteredCategories.contains(category)) {
-                return true;
-              }
+          for (String category in item.listCategories) {
+            if (listFilteredCategories.contains(category)) {
+              return true;
             }
-            return false;
-          },
-        );
+          }
+          return false;
+        });
       }
     }
 
     notifyListeners();
   }
 
-  onSearchOnSeller() {
+  void onSearchOnSeller() {
     String search = removeDiacritics(searchSellerController.text).toLowerCase();
 
     listSellerItems = itemRepo.listItems.map((e) => e).toList();
@@ -251,22 +245,22 @@ class ShoppingViewModel extends ChangeNotifier {
     if (listFilteredCategoriesSeller.isNotEmpty || search != "") {
       if (search != "") {
         listSellerItems = listSellerItems
-            .where((Item item) =>
-                removeDiacritics(item.name).toLowerCase().contains(search))
+            .where(
+              (Item item) =>
+                  removeDiacritics(item.name).toLowerCase().contains(search),
+            )
             .toList();
       }
 
       if (listFilteredCategoriesSeller.isNotEmpty) {
-        listSellerItems.retainWhere(
-          (item) {
-            for (String category in item.listCategories) {
-              if (listFilteredCategoriesSeller.contains(category)) {
-                return true;
-              }
+        listSellerItems.retainWhere((item) {
+          for (String category in item.listCategories) {
+            if (listFilteredCategoriesSeller.contains(category)) {
+              return true;
             }
-            return false;
-          },
-        );
+          }
+          return false;
+        });
       }
     }
 

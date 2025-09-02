@@ -37,10 +37,10 @@ class _CampaignHomeScreenState extends State<CampaignHomeScreen> {
         context,
         listen: false,
       );
-      Provider.of<UserProvider>(context, listen: false).playCampaignAudios(
-        campaignVM.campaign!,
+      Provider.of<UserProvider>(
         context,
-      );
+        listen: false,
+      ).playCampaignAudios(campaignVM.campaign!, context);
     });
 
     super.initState();
@@ -77,22 +77,21 @@ class _CampaignHomeGuestState extends State<_CampaignHomeGuest> {
       AudioProvider audioProvider = context.read<AudioProvider>();
       CampaignRollService.instance
           .listen(campaignId: campaignVM.campaign!.id)
-          .listen(
-        (QuerySnapshot<Map<String, dynamic>> event) {
-          if (event.docChanges.isNotEmpty &&
-              event.docChanges.length == 1 &&
-              event.docChanges.first.doc.data() != null) {
-            CampaignRoll roll =
-                CampaignRoll.fromMap(event.docChanges.first.doc.data()!);
+          .listen((QuerySnapshot<Map<String, dynamic>> event) {
+            if (event.docChanges.isNotEmpty &&
+                event.docChanges.length == 1 &&
+                event.docChanges.first.doc.data() != null) {
+              CampaignRoll roll = CampaignRoll.fromMap(
+                event.docChanges.first.doc.data()!,
+              );
 
-            if (roll.userId != FirebaseAuth.instance.currentUser!.uid) {
-              for (int i = 0; i < roll.rollLog.rolls.length; i++) {
-                audioProvider.playDice(i);
+              if (roll.userId != FirebaseAuth.instance.currentUser!.uid) {
+                for (int i = 0; i < roll.rollLog.rolls.length; i++) {
+                  audioProvider.playDice(i);
+                }
               }
             }
-          }
-        },
-      );
+          });
     });
     super.initState();
   }
@@ -110,25 +109,29 @@ class _CampaignHomeGuestState extends State<_CampaignHomeGuest> {
     return InteractiveViewer(
       transformationController:
           (!visualVM.data.allowPan && !visualVM.data.allowZoom)
-              ? TransformationController(Matrix4.identity())
-              : null,
+          ? TransformationController(Matrix4.identity())
+          : null,
       panEnabled: visualVM.data.allowPan,
       scaleEnabled: visualVM.data.allowZoom,
       maxScale: 10,
       child: Center(
         child: AspectRatio(
-          aspectRatio:
-              (isVertical(context)) ? 16 / 9 : width(context) / height(context),
+          aspectRatio: (isVertical(context))
+              ? 16 / 9
+              : width(context) / height(context),
           child: SizedBox(
             width: width(context),
             child: Stack(
-              children: <Widget>[
+              children:
+                  <Widget>[
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: AnimatedSwitcher(
                         duration: Duration(
-                            milliseconds: visualVM.data
-                                .transitionBackgroundDurationInMilliseconds),
+                          milliseconds: visualVM
+                              .data
+                              .transitionBackgroundDurationInMilliseconds,
+                        ),
                         child: (visualVM.data.backgroundActive == null)
                             ? Container(
                                 key: ValueKey('empty'),
@@ -137,7 +140,8 @@ class _CampaignHomeGuestState extends State<_CampaignHomeGuest> {
                             : Image.network(
                                 visualVM.data.backgroundActive!.url,
                                 key: ValueKey(
-                                    visualVM.data.backgroundActive!.url),
+                                  visualVM.data.backgroundActive!.url,
+                                ),
                                 fit: BoxFit.fitWidth,
                                 width: width(context),
                                 height: height(context),
@@ -185,7 +189,8 @@ class _CampaignHomeGuestState extends State<_CampaignHomeGuest> {
           alignment: Alignment.bottomLeft,
           child: Padding(
             padding: EdgeInsets.only(
-              left: visualVM.data.visualScale *
+              left:
+                  visualVM.data.visualScale *
                   i *
                   visualVM.data.distanceFactor *
                   widget.sizeFactor,
@@ -208,7 +213,8 @@ class _CampaignHomeGuestState extends State<_CampaignHomeGuest> {
           alignment: Alignment.bottomRight,
           child: Padding(
             padding: EdgeInsets.only(
-              right: visualVM.data.visualScale *
+              right:
+                  visualVM.data.visualScale *
                   i *
                   visualVM.data.distanceFactor *
                   widget.sizeFactor,
@@ -217,7 +223,8 @@ class _CampaignHomeGuestState extends State<_CampaignHomeGuest> {
               flipX: true,
               child: Image.network(
                 cm.url,
-                width: visualVM.data.visualScale *
+                width:
+                    visualVM.data.visualScale *
                     widget.sizeFactor *
                     verticalScale,
               ),
@@ -249,10 +256,7 @@ class _CampaignOwnerEmpty extends StatelessWidget {
         children: [
           Text(
             "Mesa de Ambientação",
-            style: TextStyle(
-              fontSize: 22,
-              fontFamily: FontFamily.bungee,
-            ),
+            style: TextStyle(fontSize: 22, fontFamily: FontFamily.bungee),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -270,7 +274,8 @@ class _CampaignOwnerEmpty extends StatelessWidget {
           Opacity(
             opacity: 0.7,
             child: Text(
-                "Utilize uma das opções acima para popular sua mesa de ambientação."),
+              "Utilize uma das opções acima para popular sua mesa de ambientação.",
+            ),
           ),
         ],
       ),
@@ -300,12 +305,7 @@ class _CampaignHomeOwner extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 8,
           children: [
-            Column(
-              children: [
-                _ListSettings(),
-                Divider(thickness: 0.1),
-              ],
-            ),
+            Column(children: [_ListSettings(), Divider(thickness: 0.1)]),
             Column(
               children: [
                 Row(
@@ -325,10 +325,9 @@ class _CampaignHomeOwner extends StatelessWidget {
                           decoration: BoxDecoration(
                             border: Border.all(
                               width: 2,
-                              color: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .color!,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium!.color!,
                             ),
                             borderRadius: BorderRadius.circular(4),
                             color: Theme.of(context).scaffoldBackgroundColor,
@@ -386,16 +385,14 @@ class _CampaignHomeOwner extends StatelessWidget {
                               ),
                             ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                     VerticalDivider(),
                     Flexible(
                       flex: 3,
                       fit: FlexFit.tight,
-                      child: _ListCharactersVisual(
-                        isRight: true,
-                      ),
+                      child: _ListCharactersVisual(isRight: true),
                     ),
                   ],
                 ),
@@ -430,10 +427,7 @@ class _ListSettings extends StatelessWidget {
       children: [
         Text(
           "Mesa de Ambientação",
-          style: TextStyle(
-            fontFamily: FontFamily.bungee,
-            fontSize: 22,
-          ),
+          style: TextStyle(fontFamily: FontFamily.bungee, fontSize: 22),
         ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -453,7 +447,7 @@ class _ListSettings extends StatelessWidget {
                 },
                 icon: Icon(Icons.delete_forever),
                 label: Text("Excluir tudo"),
-              )
+              ),
             ],
           ),
         ),
@@ -480,16 +474,12 @@ class _ListCharactersVisual extends StatelessWidget {
           Text(
             "Personagens da Esquerda",
             textAlign: TextAlign.right,
-            style: TextStyle(
-              fontFamily: FontFamily.bungee,
-            ),
+            style: TextStyle(fontFamily: FontFamily.bungee),
           ),
         if (isRight)
           Text(
             "Personagens da Direita",
-            style: TextStyle(
-              fontFamily: FontFamily.bungee,
-            ),
+            style: TextStyle(fontFamily: FontFamily.bungee),
           ),
         CheckboxListTile(
           value: (isRight) ? visualVM.isClearRight : visualVM.isClearLeft,
@@ -516,10 +506,7 @@ class _ListCharactersVisual extends StatelessWidget {
             itemCount: visualVM.data.listPortraits.length,
             itemBuilder: (context, index) {
               CampaignVisual cv = visualVM.data.listPortraits[index];
-              return _ImageVisualItem(
-                visual: cv,
-                isRight: isRight,
-              );
+              return _ImageVisualItem(visual: cv, isRight: isRight);
             },
           ),
         ),
@@ -532,10 +519,7 @@ class _ImageVisualItem extends StatelessWidget {
   final CampaignVisual visual;
   final bool isRight;
 
-  const _ImageVisualItem({
-    required this.visual,
-    required this.isRight,
-  });
+  const _ImageVisualItem({required this.visual, required this.isRight});
 
   @override
   Widget build(BuildContext context) {
@@ -555,10 +539,7 @@ class _ImageVisualItem extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            CachedNetworkImage(
-              imageUrl: visual.url,
-              width: 100,
-            ),
+            CachedNetworkImage(imageUrl: visual.url, width: 100),
             IconViewImageButton(imageUrl: visual.url),
             Align(
               alignment: Alignment.bottomCenter,
@@ -567,10 +548,7 @@ class _ImageVisualItem extends StatelessWidget {
                   return LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
-                    colors: [
-                      Colors.black.withAlpha(175),
-                      Colors.transparent,
-                    ],
+                    colors: [Colors.black.withAlpha(175), Colors.transparent],
                   ).createShader(bounds);
                 },
                 blendMode: BlendMode.dstIn,
@@ -586,10 +564,7 @@ class _ImageVisualItem extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Text(
                 visual.name,
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.white,
-                ),
+                style: TextStyle(fontSize: 10, color: Colors.white),
               ),
             ),
           ],
@@ -707,12 +682,7 @@ class __ImageAreaWidgetState extends State<_ImageAreaWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.title,
-          style: TextStyle(
-            fontFamily: FontFamily.bungee,
-          ),
-        ),
+        Text(widget.title, style: TextStyle(fontFamily: FontFamily.bungee)),
         GenericFilterWidget<CampaignVisual>(
           listValues: widget.listImages,
           listOrderers: [
@@ -851,8 +821,8 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
       tempVolume = (widget.type == AudioProviderType.music)
           ? campaignVM.campaign!.audioCampaign.musicVolume ?? 1
           : (widget.type == AudioProviderType.ambience)
-              ? campaignVM.campaign!.audioCampaign.ambienceVolume ?? 1
-              : campaignVM.campaign!.audioCampaign.sfxVolume ?? 1;
+          ? campaignVM.campaign!.audioCampaign.ambienceVolume ?? 1
+          : campaignVM.campaign!.audioCampaign.sfxVolume ?? 1;
     });
   }
 
@@ -875,12 +845,7 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.title,
-          style: TextStyle(
-            fontFamily: FontFamily.bungee,
-          ),
-        ),
+        Text(widget.title, style: TextStyle(fontFamily: FontFamily.bungee)),
         GenericFilterWidget<CampaignVisual>(
           listValues: widget.listAudios,
           listOrderers: [
@@ -955,15 +920,13 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
                     break;
                 }
 
-                AudioProviderFirestore()
-                    .setAudioCampaign(campaign: campaignVM.campaign!);
+                AudioProviderFirestore().setAudioCampaign(
+                  campaign: campaignVM.campaign!,
+                );
               },
               tooltip: "Parar",
-              icon: Icon(
-                Icons.stop,
-                color: AppColors.red,
-              ),
-            )
+              icon: Icon(Icons.stop, color: AppColors.red),
+            ),
           ],
         ),
         SizedBox(
@@ -986,8 +949,8 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
                 leading: widget.type == AudioProviderType.music
                     ? const Icon(Icons.music_note_rounded)
                     : widget.type == AudioProviderType.ambience
-                        ? Icon(Icons.landscape)
-                        : Icon(Icons.speaker),
+                    ? Icon(Icons.landscape)
+                    : Icon(Icons.speaker),
                 dense: true,
                 contentPadding: EdgeInsets.zero,
                 onTap: () {
@@ -1001,10 +964,7 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
     );
   }
 
-  bool getNeedToHighlight(
-    AudioProvider audioProvider,
-    String url,
-  ) {
+  bool getNeedToHighlight(AudioProvider audioProvider, String url) {
     if (widget.type == AudioProviderType.music &&
         audioProvider.currentMscUrl != null &&
         (audioProvider.currentMscUrl == url)) {
@@ -1025,7 +985,7 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
     return false;
   }
 
-  setAudio({
+  void setAudio({
     required CampaignViewModel campaignVM,
     required CampaignVisual audio,
   }) {

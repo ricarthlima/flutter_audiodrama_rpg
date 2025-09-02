@@ -31,13 +31,11 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        _loadItems();
-        _orderItems();
-        _orderItemsMine();
-      },
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadItems();
+      _orderItems();
+      _orderItemsMine();
+    });
   }
 
   Row _buildToggleStore(
@@ -51,10 +49,7 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
         if (!shoppingVM.isBuying)
           Text(
             "\$ ${sheetVM.sheet!.money}",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         if (shoppingVM.isBuying)
           SizedBox(
@@ -79,8 +74,8 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                       (shoppingVM.isShowingMoneyFeedback == null)
                           ? Icons.save
                           : (shoppingVM.isShowingMoneyFeedback!)
-                              ? Icons.check
-                              : Icons.error,
+                          ? Icons.check
+                          : Icons.error,
                       size: 18,
                     ),
                   ),
@@ -98,9 +93,7 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
             onPressed: () {
               shoppingVM.toggleBuying();
             },
-            child: Text(
-              shoppingVM.isBuying ? "Fechar loja" : "Abrir loja",
-            ),
+            child: Text(shoppingVM.isBuying ? "Fechar loja" : "Abrir loja"),
           ),
       ],
     );
@@ -124,10 +117,7 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
             children: [
               Text(
                 widget.isSeller ? "Comprar" : "Seus itens",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: FontFamily.bungee,
-                ),
+                style: TextStyle(fontSize: 20, fontFamily: FontFamily.bungee),
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -208,8 +198,9 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                         SizedBox(
                           width: 120,
                           child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                            ),
                             child: CheckboxListTile(
                               value: shoppingVM.isFree,
                               dense: true,
@@ -257,62 +248,69 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
               .itemRepo
               .listCategories
               .map((e) {
-            return ItemCategoryWidget(
-              category: e,
-              isSeller: widget.isSeller,
-              isActive: (!widget.isSeller)
-                  ? shoppingVM.listFilteredCategories.contains(e)
-                  : shoppingVM.listFilteredCategoriesSeller.contains(e),
-            );
-          }).toList(),
+                return ItemCategoryWidget(
+                  category: e,
+                  isSeller: widget.isSeller,
+                  isActive: (!widget.isSeller)
+                      ? shoppingVM.listFilteredCategories.contains(e)
+                      : shoppingVM.listFilteredCategoriesSeller.contains(e),
+                );
+              })
+              .toList(),
         ),
         SizedBox(
           height: 450 * (height(context) / 866),
-          child: DragTarget<Item>(onAcceptWithDetails: (details) {
-            if (!widget.isSeller) {
-              shoppingVM.buyItem(item: details.data);
-            }
-          }, builder: (context, candidateData, rejectedData) {
-            return Stack(
-              children: [
-                GridView.builder(
-                  shrinkWrap: false,
-                  padding: EdgeInsets.zero,
-                  physics: AlwaysScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          child: DragTarget<Item>(
+            onAcceptWithDetails: (details) {
+              if (!widget.isSeller) {
+                shoppingVM.buyItem(item: details.data);
+              }
+            },
+            builder: (context, candidateData, rejectedData) {
+              return Stack(
+                children: [
+                  GridView.builder(
+                    shrinkWrap: false,
+                    padding: EdgeInsets.zero,
+                    physics: AlwaysScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 92,
                       mainAxisSpacing: 8,
                       crossAxisSpacing: 8,
-                      childAspectRatio: 1),
-                  itemCount: (widget.isSeller)
-                      ? shoppingVM.listSellerItems.length
-                      : shoppingVM.listInventoryItems.length,
-                  itemBuilder: (context, index) {
-                    Item? item;
-                    ItemSheet? itemSheet;
+                      childAspectRatio: 1,
+                    ),
+                    itemCount: (widget.isSeller)
+                        ? shoppingVM.listSellerItems.length
+                        : shoppingVM.listInventoryItems.length,
+                    itemBuilder: (context, index) {
+                      Item? item;
+                      ItemSheet? itemSheet;
 
-                    if (widget.isSeller) {
-                      item = shoppingVM.listSellerItems[index];
-                    } else {
-                      itemSheet = shoppingVM.listInventoryItems[index];
-                      item = shoppingVM.itemRepo.getItemById(itemSheet.itemId)!;
-                    }
+                      if (widget.isSeller) {
+                        item = shoppingVM.listSellerItems[index];
+                      } else {
+                        itemSheet = shoppingVM.listInventoryItems[index];
+                        item = shoppingVM.itemRepo.getItemById(
+                          itemSheet.itemId,
+                        )!;
+                      }
 
-                    return ShoppingItemWidget(
-                      item: item,
-                      itemSheet: itemSheet,
-                    );
-                  },
-                ),
-                if (candidateData.isNotEmpty && !widget.isSeller)
-                  Container(
-                    alignment: Alignment.center,
-                    color: Colors.white.withAlpha(30),
-                    child: Text("Comprar"),
+                      return ShoppingItemWidget(
+                        item: item,
+                        itemSheet: itemSheet,
+                      );
+                    },
                   ),
-              ],
-            );
-          }),
+                  if (candidateData.isNotEmpty && !widget.isSeller)
+                    Container(
+                      alignment: Alignment.center,
+                      color: Colors.white.withAlpha(30),
+                      child: Text("Comprar"),
+                    ),
+                ],
+              );
+            },
+          ),
         ),
       ],
     );
@@ -326,95 +324,116 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
     _orderItemsMine();
   }
 
-  _orderItems() {
+  void _orderItems() {
     final shoppingViewModel = context.read<ShoppingViewModel>();
 
     if (isOrderedByName) {
       shoppingViewModel.listSellerItems.sort(
-        (a, b) => removeDiacritics(a.name).compareTo(
-          removeDiacritics(b.name),
-        ),
+        (a, b) => removeDiacritics(a.name).compareTo(removeDiacritics(b.name)),
       );
       if (!isAscendent) {
-        shoppingViewModel.listSellerItems =
-            shoppingViewModel.listSellerItems.reversed.toList();
+        shoppingViewModel.listSellerItems = shoppingViewModel
+            .listSellerItems
+            .reversed
+            .toList();
       }
     }
 
     if (isOrderedByPrice) {
-      shoppingViewModel.listSellerItems
-          .sort((a, b) => a.price.compareTo(b.price));
+      shoppingViewModel.listSellerItems.sort(
+        (a, b) => a.price.compareTo(b.price),
+      );
       if (!isAscendent) {
-        shoppingViewModel.listSellerItems =
-            shoppingViewModel.listSellerItems.reversed.toList();
+        shoppingViewModel.listSellerItems = shoppingViewModel
+            .listSellerItems
+            .reversed
+            .toList();
       }
     }
 
     if (isOrderedByWeight) {
-      shoppingViewModel.listSellerItems
-          .sort((a, b) => a.weight.compareTo(b.weight));
+      shoppingViewModel.listSellerItems.sort(
+        (a, b) => a.weight.compareTo(b.weight),
+      );
       if (!isAscendent) {
-        shoppingViewModel.listSellerItems =
-            shoppingViewModel.listSellerItems.reversed.toList();
+        shoppingViewModel.listSellerItems = shoppingViewModel
+            .listSellerItems
+            .reversed
+            .toList();
       }
     }
 
     setState(() {});
   }
 
-  _orderItemsMine() {
+  void _orderItemsMine() {
     final shoppingViewModel = context.read<ShoppingViewModel>();
 
     if (isOrderedByName) {
       shoppingViewModel.listInventoryItems.sort((a, b) {
-        Item itemA =
-            context.read<ShoppingViewModel>().itemRepo.getItemById(a.itemId)!;
-        Item itemB =
-            context.read<ShoppingViewModel>().itemRepo.getItemById(b.itemId)!;
-        return removeDiacritics(itemA.name).compareTo(
-          removeDiacritics(itemB.name),
-        );
+        Item itemA = context.read<ShoppingViewModel>().itemRepo.getItemById(
+          a.itemId,
+        )!;
+        Item itemB = context.read<ShoppingViewModel>().itemRepo.getItemById(
+          b.itemId,
+        )!;
+        return removeDiacritics(
+          itemA.name,
+        ).compareTo(removeDiacritics(itemB.name));
       });
       if (!isAscendent) {
-        shoppingViewModel.listInventoryItems =
-            shoppingViewModel.listInventoryItems.reversed.toList();
+        shoppingViewModel.listInventoryItems = shoppingViewModel
+            .listInventoryItems
+            .reversed
+            .toList();
       }
     }
 
     if (isOrderedByPrice) {
       shoppingViewModel.listInventoryItems.sort((a, b) {
-        Item itemA =
-            context.read<ShoppingViewModel>().itemRepo.getItemById(a.itemId)!;
-        Item itemB =
-            context.read<ShoppingViewModel>().itemRepo.getItemById(b.itemId)!;
+        Item itemA = context.read<ShoppingViewModel>().itemRepo.getItemById(
+          a.itemId,
+        )!;
+        Item itemB = context.read<ShoppingViewModel>().itemRepo.getItemById(
+          b.itemId,
+        )!;
         return itemA.price.compareTo(itemB.price);
       });
       if (!isAscendent) {
-        shoppingViewModel.listInventoryItems =
-            shoppingViewModel.listInventoryItems.reversed.toList();
+        shoppingViewModel.listInventoryItems = shoppingViewModel
+            .listInventoryItems
+            .reversed
+            .toList();
       }
     }
 
     if (isOrderedByWeight) {
       shoppingViewModel.listInventoryItems.sort((a, b) {
-        Item itemA =
-            context.read<ShoppingViewModel>().itemRepo.getItemById(a.itemId)!;
-        Item itemB =
-            context.read<ShoppingViewModel>().itemRepo.getItemById(b.itemId)!;
+        Item itemA = context.read<ShoppingViewModel>().itemRepo.getItemById(
+          a.itemId,
+        )!;
+        Item itemB = context.read<ShoppingViewModel>().itemRepo.getItemById(
+          b.itemId,
+        )!;
         return itemA.weight.compareTo(itemB.weight);
       });
       if (!isAscendent) {
-        shoppingViewModel.listInventoryItems =
-            shoppingViewModel.listInventoryItems.reversed.toList();
+        shoppingViewModel.listInventoryItems = shoppingViewModel
+            .listInventoryItems
+            .reversed
+            .toList();
       }
     }
 
     if (isOrderedByAmount) {
-      shoppingViewModel.listInventoryItems
-          .sort((a, b) => a.amount.compareTo(b.amount));
+      shoppingViewModel.listInventoryItems.sort(
+        (a, b) => a.amount.compareTo(b.amount),
+      );
       if (!isAscendent) {
-        shoppingViewModel.listInventoryItems =
-            shoppingViewModel.listInventoryItems.reversed.toList();
+        shoppingViewModel.listInventoryItems = shoppingViewModel
+            .listInventoryItems
+            .reversed
+            .toList();
       }
     }
     setState(() {});

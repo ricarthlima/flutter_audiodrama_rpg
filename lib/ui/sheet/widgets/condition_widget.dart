@@ -30,7 +30,7 @@ class _ConditionState extends State<Condition> {
     );
   }
 
-  _showTooltip() {
+  void _showTooltip() {
     if (_overlayEntry != null) return; // Evita múltiplos tooltips
 
     final renderBox = context.findRenderObject() as RenderBox;
@@ -51,7 +51,7 @@ class _ConditionState extends State<Condition> {
     Overlay.of(context).insert(_overlayEntry!);
   }
 
-  _hideTooltip() {
+  void _hideTooltip() {
     _overlayEntry?.remove();
     _overlayEntry = null;
   }
@@ -66,9 +66,7 @@ class ConditionTooltip extends StatelessWidget {
     return Container(
       width: 300,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.black,
-      ),
+      decoration: BoxDecoration(color: Colors.black),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 8,
@@ -87,10 +85,7 @@ class ConditionTooltip extends StatelessWidget {
               fontFamily: "SourceSerif4",
               color: Colors.white,
             ),
-            boldStyle: TextStyle(
-              fontFamily: "Bungee",
-              color: AppColors.red,
-            ),
+            boldStyle: TextStyle(fontFamily: "Bungee", color: AppColors.red),
           ),
         ],
       ),

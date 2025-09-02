@@ -8,7 +8,7 @@ import '../../_core/app_colors.dart';
 import '../../_core/utils/load_image.dart';
 import '../../_core/widgets/circular_progress_indicator.dart';
 
-showCreateEditAchievementDialog({
+Future showCreateEditAchievementDialog({
   required BuildContext context,
   CampaignAchievement? achievement,
 }) {
@@ -16,11 +16,7 @@ showCreateEditAchievementDialog({
     barrierDismissible: false,
     context: context,
     builder: (context) {
-      return Dialog(
-        child: _CreateAchievementDialog(
-          achievement: achievement,
-        ),
-      );
+      return Dialog(child: _CreateAchievementDialog(achievement: achievement));
     },
   );
 }
@@ -63,10 +59,7 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          width: 4,
-          color: AppColors.red,
-        ),
+        border: Border.all(width: 4, color: AppColors.red),
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
       padding: EdgeInsets.all(16),
@@ -114,7 +107,8 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
                                 SizedBox(
                                   height: 300,
                                   child: Image.network(
-                                      widget.achievement!.imageUrl!),
+                                    widget.achievement!.imageUrl!,
+                                  ),
                                 ),
                               if (image != null)
                                 FutureBuilder(
@@ -241,17 +235,19 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
             onPressed: () {
               _onCreatePressed();
             },
-            child:
-                (isLoading) ? const CPIElevatedButton() : const Text("Salvar!"),
-          )
+            child: (isLoading)
+                ? const CPIElevatedButton()
+                : const Text("Salvar!"),
+          ),
         ],
       ),
     );
   }
 
   void _onUploadImagePressed() async {
-    onLoadImageClicked(context: context, maxSizeInBytes: 1000000)
-        .then((imageBytes) {
+    onLoadImageClicked(context: context, maxSizeInBytes: 1000000).then((
+      imageBytes,
+    ) {
       setState(() {
         image = imageBytes;
       });
@@ -264,14 +260,14 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
       String description = descController.text;
 
       await context.read<CampaignViewModel>().onCreateAchievement(
-            idd: (widget.achievement != null) ? widget.achievement!.id : null,
-            name: name,
-            description: description,
-            isHide: isHide,
-            isHideDescription: isHideDescription,
-            image: image,
-            isImageHided: isImageHided,
-          );
+        idd: (widget.achievement != null) ? widget.achievement!.id : null,
+        name: name,
+        description: description,
+        isHide: isHide,
+        isHideDescription: isHideDescription,
+        image: image,
+        isImageHided: isImageHided,
+      );
 
       if (!mounted) return;
       Navigator.pop(context);
