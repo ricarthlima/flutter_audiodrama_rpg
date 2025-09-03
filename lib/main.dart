@@ -48,10 +48,6 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-
-    // await SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.portraitUp,
-    // ]);
   }
 
   await Supabase.initialize(

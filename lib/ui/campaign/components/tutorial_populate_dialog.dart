@@ -1,11 +1,27 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import '../../_core/fonts.dart';
 import '../view/campaign_visual_novel_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void showTutorialServer(BuildContext context) {
+  final ytController = YoutubePlayerController(
+    params: YoutubePlayerParams(
+      mute: false,
+      showControls: true,
+      showFullscreenButton: true,
+      loop: true,
+      interfaceLanguage: 'pt_BR',
+      strictRelatedVideos: true,
+      enableCaption: false,
+    ),
+  );
+
+  ytController.cueVideoById(videoId: 'E3GTBctILw0');
+
   showDialog(
     context: context,
     builder: (context) {
@@ -31,23 +47,37 @@ void showTutorialServer(BuildContext context) {
                       fontFamily: FontFamily.bungee,
                     ),
                   ),
-                  if (kIsWeb) SizedBox(width: 200, height: 200),
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: YoutubePlayer(
+                      controller: ytController,
+                      aspectRatio: 16 / 9,
+                    ),
+                  ),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.bodySmall,
+
                       children: [
-                        Text("Como popular?"),
-                        TextButton(
-                          onPressed: () {
-                            launchUrl(
-                              Uri.parse(
-                                'https://www.youtube.com/watch?v=MMEyqWeJ52Y',
-                              ),
-                              mode: LaunchMode.externalApplication,
-                            );
-                          },
-                          child: Text("Assista o tutorial."),
+                        TextSpan(text: "Baixe os "),
+                        TextSpan(
+                          text: "arquivos auxiliares",
+                          style: TextStyle(
+                            color: AppColors.red,
+                            decorationStyle: TextDecorationStyle.wavy,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              launchUrl(
+                                Uri.parse(
+                                  'https://github.com/ricarthlima/adrpg_tools/releases',
+                                ),
+                                mode: LaunchMode.externalApplication,
+                              );
+                            },
                         ),
+                        TextSpan(text: " antes de começar."),
                       ],
                     ),
                   ),

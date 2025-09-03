@@ -38,6 +38,7 @@ dependencies:
   flutter_fullscreen: ^1.2.0 
   flutter_native_splash: ^2.4.6
   package_info_plus: ^8.3.0
+  youtube_player_iframe: ^5.2.2
 
 dev_dependencies:
   flutter_test:
