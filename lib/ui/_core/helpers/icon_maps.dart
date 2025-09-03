@@ -50,5 +50,5 @@ final Map<String, IconData> fontAwesomeIconMap = {
   'temperature_high': FontAwesomeIcons.temperatureHigh,
   'heartbeat': FontAwesomeIcons.heartPulse,
   'fire_alt': FontAwesomeIcons.fireFlameCurved,
-  'tint': FontAwesomeIcons.tint,
+  'tint': FontAwesomeIcons.droplet,
 };

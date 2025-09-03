@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
 class GenericFilterWidget<T> extends StatefulWidget {
@@ -5,8 +7,7 @@ class GenericFilterWidget<T> extends StatefulWidget {
   final List<GenericFilterOrderer<T>> listOrderers;
   final void Function(List<T>) onFiltered;
   final bool enableSearch;
-  final String Function(T)
-      textExtractor; // Define qual atributo textual será usado no filtro
+  final String Function(T) textExtractor;
 
   const GenericFilterWidget({
     super.key,
@@ -74,9 +75,7 @@ class _GenericFilterWidgetState<T> extends State<GenericFilterWidget<T>> {
         if (widget.enableSearch)
           Expanded(
             child: TextField(
-              decoration: const InputDecoration(
-                labelText: 'Pesquisar',
-              ),
+              decoration: const InputDecoration(labelText: 'Pesquisar'),
               onChanged: (value) {
                 searchQuery = value;
                 _applyFilters();
@@ -87,9 +86,13 @@ class _GenericFilterWidgetState<T> extends State<GenericFilterWidget<T>> {
         ...widget.listOrderers.map((orderer) {
           bool isSelected = selectedOrderer == orderer;
           return IconButton(
-            icon: Icon(isSelected
-                ? (isAscending ? orderer.iconAscending : orderer.iconDescending)
-                : orderer.iconAscending),
+            icon: Icon(
+              isSelected
+                  ? (isAscending
+                        ? orderer.iconAscending
+                        : orderer.iconDescending)
+                  : orderer.iconAscending,
+            ),
             onPressed: () {
               setState(() {
                 if (selectedOrderer?.label == orderer.label) {

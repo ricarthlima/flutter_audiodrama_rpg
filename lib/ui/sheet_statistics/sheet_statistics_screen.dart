@@ -42,6 +42,7 @@ class SheetStatisticsScreen extends StatelessWidget {
                       if (dateTimeResult.isAfter(
                         statisticsViewModel.filterDateEnd,
                       )) {
+                        if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(

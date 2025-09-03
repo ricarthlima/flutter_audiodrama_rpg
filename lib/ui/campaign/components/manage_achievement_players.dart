@@ -86,10 +86,7 @@ class _ManageAchievementPlayersState extends State<_ManageAchievementPlayers> {
             children: [
               Text(
                 "Gerenciar ${widget.achievement.title}",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontFamily: FontFamily.bungee,
-                ),
+                style: TextStyle(fontSize: 24, fontFamily: FontFamily.bungee),
               ),
               Divider(),
               Row(
@@ -116,11 +113,11 @@ class _ManageAchievementPlayersState extends State<_ManageAchievementPlayers> {
                                       e.username!,
                                       style:
                                           (!listNotUnlockedOriginal.contains(e)
-                                              ? TextStyle(
-                                                  color: AppColors.red,
-                                                  fontWeight: FontWeight.bold,
-                                                )
-                                              : null),
+                                          ? TextStyle(
+                                              color: AppColors.red,
+                                              fontWeight: FontWeight.bold,
+                                            )
+                                          : null),
                                     ),
                                     trailing: IconButton(
                                       onPressed: () => _onMoveUnlocked(e),
@@ -129,7 +126,7 @@ class _ManageAchievementPlayersState extends State<_ManageAchievementPlayers> {
                                   ),
                                 )
                                 .toList(),
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -148,24 +145,25 @@ class _ManageAchievementPlayersState extends State<_ManageAchievementPlayers> {
                           ),
                           Column(
                             children: listUnlocked
-                                .map((e) => ListTile(
-                                      title: Text(
-                                        e.username!,
-                                        style:
-                                            (!listUnlockedOriginal.contains(e)
-                                                ? TextStyle(
-                                                    color: Colors.green[700],
-                                                    fontWeight: FontWeight.bold,
-                                                  )
-                                                : null),
-                                      ),
-                                      leading: IconButton(
-                                        onPressed: () => _onMoveLocked(e),
-                                        icon: Icon(Icons.arrow_back_ios),
-                                      ),
-                                    ))
+                                .map(
+                                  (e) => ListTile(
+                                    title: Text(
+                                      e.username!,
+                                      style: (!listUnlockedOriginal.contains(e)
+                                          ? TextStyle(
+                                              color: Colors.green[700],
+                                              fontWeight: FontWeight.bold,
+                                            )
+                                          : null),
+                                    ),
+                                    leading: IconButton(
+                                      onPressed: () => _onMoveLocked(e),
+                                      icon: Icon(Icons.arrow_back_ios),
+                                    ),
+                                  ),
+                                )
                                 .toList(),
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -186,7 +184,7 @@ class _ManageAchievementPlayersState extends State<_ManageAchievementPlayers> {
                 child: Text("Salvar"),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -211,6 +209,7 @@ class _ManageAchievementPlayersState extends State<_ManageAchievementPlayers> {
       ),
     );
 
+    if (!mounted) return;
     Navigator.pop(context);
   }
 }

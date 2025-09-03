@@ -118,7 +118,7 @@ class AppRouter {
     ],
   );
 
-  static void disposeListeners(context) {
+  static void disposeListeners(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(
       context,
       listen: false,
