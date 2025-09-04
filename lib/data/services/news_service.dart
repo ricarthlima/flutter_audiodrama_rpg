@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../_core/helpers/release_collections.dart';
+
 int calculateVersionInt(String? version) {
   if (version == null) return 0;
 
@@ -46,7 +48,9 @@ class NewsService {
 
     int local = await loadLocalNewest();
 
-    final query = await FirebaseFirestore.instance.collection("news").get();
+    final query = await FirebaseFirestore.instance
+        .collection("${rc}news")
+        .get();
 
     for (var doc in query.docs) {
       final news = NewsModel.fromMap(doc.data());
@@ -60,7 +64,7 @@ class NewsService {
 
   Future<void> writeNews(NewsModel news) async {
     return FirebaseFirestore.instance
-        .collection("news")
+        .collection("${rc}news")
         .doc(news.version)
         .set(news.toMap());
   }

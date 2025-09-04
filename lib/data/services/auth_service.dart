@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../../_core/helpers/release_collections.dart';
 import '../../domain/models/app_user.dart';
 import '../../router.dart';
 import '../../_core/providers/user_provider.dart';
@@ -70,7 +71,7 @@ class AuthService {
   Future<void> registerUser(AppUser appUser) async {
     DocumentSnapshot<Map<String, dynamic>> query = await FirebaseFirestore
         .instance
-        .collection("users")
+        .collection("${rc}users")
         .doc(appUser.id)
         .get();
 
@@ -79,7 +80,7 @@ class AuthService {
       appUser.username =
           "${appUser.email!.split("@")[0]}-${Random().nextInt(99999) + 10000}";
       await FirebaseFirestore.instance
-          .collection("users")
+          .collection("${rc}users")
           .doc(appUser.id)
           .set(appUser.toMap());
     }
@@ -89,7 +90,7 @@ class AuthService {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     DocumentSnapshot<Map<String, dynamic>> docs = await FirebaseFirestore
         .instance
-        .collection("users")
+        .collection("${rc}users")
         .doc(uid)
         .get();
 
@@ -103,7 +104,7 @@ class AuthService {
   Future<AppUser?> getUserInfosById({required String userId}) async {
     DocumentSnapshot<Map<String, dynamic>> docs = await FirebaseFirestore
         .instance
-        .collection("users")
+        .collection("${rc}users")
         .doc(userId)
         .get();
 

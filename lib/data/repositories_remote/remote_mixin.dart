@@ -79,7 +79,10 @@ abstract mixin class RemoteMixin<T extends FromMap> {
     final response = await http.get(Uri.parse(url));
     String jsonStr = response.body;
 
+    printD("[DOWNLOADED] $key");
+
     // 3) persistir local (Hive) e versão (SharedPreferences)
+    printD("[SAVING LOCAL] $key");
     await Hive.openBox('cache');
     final box = Hive.box('cache');
     await box.put(key, jsonStr);
@@ -88,8 +91,8 @@ abstract mixin class RemoteMixin<T extends FromMap> {
     await prefs.setInt(key, remoteVersion);
 
     await Hive.close();
+    printD("[SAVED LOCAL] $key");
 
-    printD("[DOWNLOADED] $key");
     return jsonStr;
   }
 

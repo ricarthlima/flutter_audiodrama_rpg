@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../_core/helpers/release_collections.dart';
 import '../../domain/models/campaign_vm_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -95,14 +96,14 @@ class CampaignVisualService {
     required CampaignVisualDataModel data,
   }) async {
     await FirebaseFirestore.instance
-        .collection("campaigns")
+        .collection("${rc}campaigns")
         .doc(campaignId)
         .update({"visualData": data.toMap()});
   }
 
   Future<void> onRemoveAll({required String campaignId}) async {
     await FirebaseFirestore.instance
-        .collection("campaigns")
+        .collection("${rc}campaigns")
         .doc(campaignId)
         .update({"visualData": null});
   }

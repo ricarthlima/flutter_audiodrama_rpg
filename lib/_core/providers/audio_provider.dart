@@ -8,6 +8,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/models/campaign.dart';
+import '../helpers/release_collections.dart';
 
 enum AudioProviderType { music, ambience, sfx }
 
@@ -402,7 +403,7 @@ class AudioProvider extends ChangeNotifier {
 class AudioProviderFirestore {
   Future<void> setAudioCampaign({required Campaign campaign}) async {
     await FirebaseFirestore.instance
-        .collection("campaigns")
+        .collection("${rc}campaigns")
         .doc(campaign.id)
         .update({"audioCampaign": campaign.audioCampaign.toMap()});
   }

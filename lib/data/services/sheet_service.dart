@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../_core/helpers/release_collections.dart';
 import '../../_core/utils/supabase_prefs.dart';
 import 'campaign_service.dart';
 import '../../domain/exceptions/sheet_service_exceptions.dart';
@@ -17,7 +18,7 @@ class SheetService {
 
   Future<List<String>> getListUsers() async {
     QuerySnapshot<Map<String, dynamic>> listUsersSnapshot =
-        await FirebaseFirestore.instance.collection("users").get();
+        await FirebaseFirestore.instance.collection("${rc}users").get();
 
     final listUsers = listUsersSnapshot.docs;
     return listUsers.map((e) => e.id).toList();
@@ -26,7 +27,7 @@ class SheetService {
   Future<AppUser> getUserByUsername(String username) async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
         .instance
-        .collection("users")
+        .collection("${rc}users")
         .where("username", isEqualTo: username)
         .get();
 
@@ -43,7 +44,7 @@ class SheetService {
   Stream<QuerySnapshot<Map<String, dynamic>>> listenSheetsByUser() {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     return FirebaseFirestore.instance
-        .collection("users")
+        .collection("${rc}users")
         .doc(uid)
         .collection("sheets")
         .snapshots();
@@ -56,7 +57,7 @@ class SheetService {
     List<Sheet> result = [];
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
-        .collection("users")
+        .collection("${rc}users")
         .doc(uid)
         .collection("sheets")
         .get();
@@ -76,7 +77,7 @@ class SheetService {
   }) async {
     DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
         .instance
-        .collection("users")
+        .collection("${rc}users")
         .doc(userId)
         .collection("sheets")
         .doc(sheetId)
@@ -127,7 +128,7 @@ class SheetService {
     }
 
     return FirebaseFirestore.instance
-        .collection("users")
+        .collection("${rc}users")
         .doc(uid)
         .collection("sheets")
         .doc(sheetId)
@@ -146,7 +147,7 @@ class SheetService {
     );
 
     FirebaseFirestore.instance
-        .collection("users")
+        .collection("${rc}users")
         .doc(uid)
         .collection("sheets")
         .doc(sheetId)
@@ -175,7 +176,7 @@ class SheetService {
     required String userId,
   }) {
     return FirebaseFirestore.instance
-        .collection("users")
+        .collection("${rc}users")
         .doc(userId)
         .collection("sheets")
         .doc(id)
@@ -191,7 +192,7 @@ class SheetService {
 
     DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
         .instance
-        .collection("users")
+        .collection("${rc}users")
         .doc(user.id)
         .collection("sheets")
         .doc(id)
@@ -216,7 +217,7 @@ class SheetService {
   Future<void> saveSheet(Sheet sheet) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     await FirebaseFirestore.instance
-        .collection("users")
+        .collection("${rc}users")
         .doc(uid)
         .collection("sheets")
         .doc(sheet.id)
@@ -227,14 +228,14 @@ class SheetService {
   Future<void> removeSheet(Sheet sheet) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     await FirebaseFirestore.instance
-        .collection("users")
+        .collection("${rc}users")
         .doc(uid)
         .collection("sheets")
         .doc(sheet.id)
         .delete();
 
     await FirebaseFirestore.instance
-        .collection("campaign-sheet")
+        .collection("${rc}campaign-sheet")
         .doc(sheet.id)
         .delete();
   }

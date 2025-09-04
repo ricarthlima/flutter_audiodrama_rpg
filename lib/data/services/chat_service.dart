@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../../_core/helpers/release_collections.dart';
 import '../../domain/models/campaign_chat.dart';
 import 'package:uuid/uuid.dart';
 
@@ -47,9 +48,9 @@ class ChatService {
     );
 
     await FirebaseFirestore.instance
-        .collection("campaigns")
+        .collection("${rc}campaigns")
         .doc(campaignId)
-        .collection("chat")
+        .collection("${rc}chat")
         .doc(chatMessage.id)
         .set(chatMessage.toMap());
   }
@@ -58,9 +59,9 @@ class ChatService {
     required String campaignId,
   }) {
     return FirebaseFirestore.instance
-        .collection("campaigns")
+        .collection("${rc}campaigns")
         .doc(campaignId)
-        .collection("chat")
+        .collection("${rc}chat")
         .snapshots();
   }
 
@@ -69,9 +70,9 @@ class ChatService {
     required String messageId,
   }) async {
     return FirebaseFirestore.instance
-        .collection("campaigns")
+        .collection("${rc}campaigns")
         .doc(campaignId)
-        .collection("chat")
+        .collection("${rc}chat")
         .doc(messageId)
         .delete();
   }

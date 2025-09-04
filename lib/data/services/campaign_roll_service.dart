@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../_core/helpers/release_collections.dart';
 import '../../domain/models/campaign_roll.dart';
 
 class CampaignRollService {
@@ -9,9 +10,9 @@ class CampaignRollService {
 
   Future<void> registerRoll({required CampaignRoll campaignRoll}) async {
     return FirebaseFirestore.instance
-        .collection("campaigns")
+        .collection("${rc}campaigns")
         .doc(campaignRoll.campaignId)
-        .collection("rolls")
+        .collection("${rc}rolls")
         .doc(campaignRoll.id)
         .set(campaignRoll.toMap());
   }
@@ -20,9 +21,9 @@ class CampaignRollService {
     required String campaignId,
   }) {
     return FirebaseFirestore.instance
-        .collection("campaigns")
+        .collection("${rc}campaigns")
         .doc(campaignId)
-        .collection("rolls")
+        .collection("${rc}rolls")
         .snapshots();
   }
 }
