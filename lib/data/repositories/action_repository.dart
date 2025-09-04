@@ -1,6 +1,6 @@
-import '../../domain/models/action_template.dart';
+import '../../domain/dto/action_template.dart';
 import '../../domain/models/action_value.dart';
-import '../../domain/models/list_action.dart';
+import '../../domain/dto/list_action.dart';
 
 abstract class ActionRepository {
   Future<void> onInitialize();
@@ -8,8 +8,9 @@ abstract class ActionRepository {
   List<ListAction> getAll();
 
   ActionTemplate? getActionById(String id) {
-    List<ActionTemplate> query =
-        getAllActions().where((element) => element.id == id).toList();
+    List<ActionTemplate> query = getAllActions()
+        .where((element) => element.id == id)
+        .toList();
 
     if (query.isNotEmpty) {
       return query[0];

@@ -1,23 +1,24 @@
 import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_fullscreen/flutter_fullscreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_rpg_audiodrama/_core/helpers/print.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories/spell_repository.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories_remote/action_repository_remote.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories_remote/item_repository_remote.dart';
+import 'package:flutter_rpg_audiodrama/data/repositories_remote/spell_repository_remote.dart';
+
 import '_core/url_strategy/url_strategy.dart';
 import 'data/repositories/action_repository.dart';
-import 'data/repositories/condition_repository.dart';
 import 'data/repositories/item_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '_core/providers/audio_provider.dart';
 import '_core/providers/user_provider.dart';
-import 'data/repositories_local/action_repository_local.dart';
-import 'data/repositories_local/condition_repository_local.dart';
-import 'data/repositories_local/item_repository_local.dart';
 import 'router.dart';
 import 'ui/_core/theme.dart';
 import 'ui/campaign/view/campaign_view_model.dart';
@@ -40,35 +41,33 @@ FirebaseOptions get currentPlatform => flavor == 'dev'
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  printD(flavor);
+
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   await FullScreen.ensureInitialized();
 
   configureUrlStrategy();
 
-  if (kIsWeb) {
-    await Firebase.initializeApp(
-      options: currentPlatform.copyWith(
-        databaseURL: const String.fromEnvironment("FIREBASE_URL"),
-      ),
-    );
-  } else {
-    await Firebase.initializeApp(options: currentPlatform);
-  }
+  await Firebase.initializeApp(options: currentPlatform);
 
   await Supabase.initialize(
     url: const String.fromEnvironment("SUPABASE_URL"),
     anonKey: const String.fromEnvironment("SUPABASE_ANON_KEY"),
   );
 
-  ActionRepository actionRepo = ActionRepositoryLocal();
+  ActionRepository actionRepo = ActionRepositoryRemote();
   await actionRepo.onInitialize();
 
-  ItemRepository itemRepo = ItemRepositoryLocal();
+  ItemRepository itemRepo = ItemRepositoryRemote();
   await itemRepo.onInitialize();
 
-  ConditionRepository conditionRepo = ConditionRepositoryLocal();
-  await conditionRepo.onInitialize();
+  // TODO: Se convir, pegar a Condição vinda do JSON
+  // ConditionRepository conditionRepo = ConditionRepositoryRemote();
+  // await conditionRepo.onInitialize();
+
+  SpellRepository spellRepository = SpellRepositoryRemote();
+  await spellRepository.onInitialize();
 
   SettingsProvider settingsProvider = SettingsProvider();
   await settingsProvider.loadSettings();
@@ -81,7 +80,7 @@ void main() async {
     id: "",
     username: "",
     actionRepo: actionRepo,
-    conditionRepo: conditionRepo,
+    // conditionRepo: conditionRepo,
   );
   ShoppingViewModel shoppingVM = ShoppingViewModel(
     sheetVM: sheetVM,

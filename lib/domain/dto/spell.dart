@@ -2,20 +2,21 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-class Spell {
+import 'package:flutter_rpg_audiodrama/data/repositories_remote/remote_mixin.dart';
+
+class Spell implements FromMap {
   int id;
   String energy;
   String name;
   String verbal;
   String description;
-  String actions;
+  List<String> actions;
   String range;
   List<String> tags;
   bool isBond;
   bool isResisted;
   bool hasBaseTest;
   List<String> actionIds;
-
   Spell({
     required this.id,
     required this.energy,
@@ -37,7 +38,7 @@ class Spell {
     String? name,
     String? verbal,
     String? description,
-    String? actions,
+    List<String>? actions,
     String? range,
     List<String>? tags,
     bool? isBond,
@@ -85,13 +86,15 @@ class Spell {
       name: map['name'] ?? '',
       verbal: map['verbal'] ?? '',
       description: map['description'] ?? '',
-      actions: map['actions'] ?? '',
+      actions: map['actions'] != null ? List<String>.from(map['actions']) : [],
       range: map['range'] ?? '',
-      tags: List<String>.from(map['tags']),
+      tags: map['tags'] != null ? List<String>.from(map['tags']) : [],
       isBond: map['isBond'] ?? false,
       isResisted: map['isResisted'] ?? false,
       hasBaseTest: map['hasBaseTest'] ?? false,
-      actionIds: List<String>.from(map['actionIds']),
+      actionIds: map['actionIds'] != null
+          ? List<String>.from(map['actionIds'])
+          : [],
     );
   }
 
@@ -114,7 +117,7 @@ class Spell {
         other.name == name &&
         other.verbal == verbal &&
         other.description == description &&
-        other.actions == actions &&
+        listEquals(other.actions, actions) &&
         other.range == range &&
         listEquals(other.tags, tags) &&
         other.isBond == isBond &&

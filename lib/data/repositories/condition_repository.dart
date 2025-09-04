@@ -1,4 +1,4 @@
-import '../../domain/models/condition.dart';
+import '../../domain/dto/condition.dart';
 
 abstract class ConditionRepository {
   Future<void> onInitialize();
@@ -7,9 +7,7 @@ abstract class ConditionRepository {
   List<Condition> get getConditions {
     List<Condition> listSorted = getAll();
 
-    listSorted.sort(
-      (a, b) => a.showingOrder.compareTo(b.showingOrder),
-    );
+    listSorted.sort((a, b) => a.showingOrder.compareTo(b.showingOrder));
     return listSorted;
   }
 
