@@ -18,7 +18,6 @@ import '_core/providers/user_provider.dart';
 import 'data/repositories_local/action_repository_local.dart';
 import 'data/repositories_local/condition_repository_local.dart';
 import 'data/repositories_local/item_repository_local.dart';
-import 'firebase_options.dart';
 import 'router.dart';
 import 'ui/_core/theme.dart';
 import 'ui/campaign/view/campaign_view_model.dart';
@@ -28,6 +27,15 @@ import 'ui/settings/view/settings_provider.dart';
 import 'ui/sheet/providers/sheet_view_model.dart';
 import 'ui/sheet_shopping/view/shopping_view_model.dart';
 import 'ui/sheet_statistics/view/statistics_view_model.dart';
+
+import 'firebase_options_dev.dart' as dev;
+import 'firebase_options_prod.dart' as prod;
+
+const String flavor = String.fromEnvironment('FLAVOR', defaultValue: 'prod');
+
+FirebaseOptions get currentPlatform => flavor == 'dev'
+    ? dev.DefaultFirebaseOptions.currentPlatform
+    : prod.DefaultFirebaseOptions.currentPlatform;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,14 +48,12 @@ void main() async {
 
   if (kIsWeb) {
     await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform.copyWith(
+      options: currentPlatform.copyWith(
         databaseURL: const String.fromEnvironment("FIREBASE_URL"),
       ),
     );
   } else {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    await Firebase.initializeApp(options: currentPlatform);
   }
 
   await Supabase.initialize(

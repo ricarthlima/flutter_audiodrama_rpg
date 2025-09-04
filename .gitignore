@@ -40,6 +40,8 @@ coverage/
 firebase.json
 firebase_app_id_file.json
 firebase_options.dart
+firebase_options_prod.dart
+firebase_options_dev.dart
 
 # ====================================================
 # ANDROID
@@ -110,6 +112,7 @@ firebase_options.dart
 
 # VSCode
 #.vscode/
+.vscode/launch.json
 
 # IntelliJ / Android Studio
 *.iml
@@ -149,5 +152,3 @@ app.*.map.json
 *.orig
 *.bak
 *.tmp
-
-.vscode/

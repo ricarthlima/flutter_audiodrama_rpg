@@ -1,0 +1,34 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Flutter Android (dev)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "args": [
+                "--flavor=dev",
+                "--dart-define=FLAVOR=dev",
+                "--dart-define=SUPABASE_URL=",
+                "--dart-define=SUPABASE_ANON_KEY=",
+                "--dart-define=SUPABASE_ID=",
+                "--dart-define=FIREBASE_URL="
+            ]
+        },
+        {
+            "name": "Flutter Web (dev)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "chrome",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define=FLAVOR=dev",
+                "--dart-define=SUPABASE_URL=",
+                "--dart-define=SUPABASE_ANON_KEY=",
+                "--dart-define=SUPABASE_ID=",
+                "--dart-define=FIREBASE_URL=",
+                "--no-web-experimental-hot-reload"
+            ]
+        }
+    ]
+}
