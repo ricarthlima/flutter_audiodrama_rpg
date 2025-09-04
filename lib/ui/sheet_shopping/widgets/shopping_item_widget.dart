@@ -4,7 +4,7 @@ import 'item_tooltip.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-import '../../../domain/models/item.dart';
+import '../../../domain/dto/item.dart';
 import '../../../domain/models/item_sheet.dart';
 import '../../_core/helpers/icon_maps.dart';
 
@@ -51,10 +51,11 @@ class ShoppingItemWidgetState extends State<ShoppingItemWidget> {
       width: 92,
       padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
-          border: Border.all(
-        width: 1,
-        color: Theme.of(context).textTheme.bodyMedium!.color!,
-      )),
+        border: Border.all(
+          width: 1,
+          color: Theme.of(context).textTheme.bodyMedium!.color!,
+        ),
+      ),
       child: Stack(
         children: [
           if (widget.itemSheet == null)
@@ -68,10 +69,7 @@ class ShoppingItemWidgetState extends State<ShoppingItemWidget> {
                 ),
               ),
             ),
-          Align(
-            alignment: Alignment(0, -0.3),
-            child: _resolveIcon(),
-          ),
+          Align(alignment: Alignment(0, -0.3), child: _resolveIcon()),
           Align(
             alignment: Alignment.bottomCenter,
             child: Text(

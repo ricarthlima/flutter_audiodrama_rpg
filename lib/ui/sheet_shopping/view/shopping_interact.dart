@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'shopping_view_model.dart';
-import '../../../domain/models/item.dart';
+import '../../../domain/dto/item.dart';
 import '../../_core/components/remove_dialog.dart';
 
 abstract class ShoppingInteract {

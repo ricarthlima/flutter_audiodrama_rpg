@@ -1,4 +1,4 @@
-import '../../../domain/models/action_template.dart';
+import '../../../domain/dto/action_template.dart';
 
 class GroupAction {
   String id;

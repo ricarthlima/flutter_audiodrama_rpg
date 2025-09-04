@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/fonts.dart';
-import '../../../domain/models/action_template.dart';
+import '../../../domain/dto/action_template.dart';
 
 class ActionTooltip extends StatelessWidget {
   final ActionTemplate action;
@@ -17,9 +17,7 @@ class ActionTooltip extends StatelessWidget {
     return Container(
       width: 300,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.black,
-      ),
+      decoration: BoxDecoration(color: Colors.black),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -35,7 +33,8 @@ class ActionTooltip extends StatelessWidget {
                 ),
               ),
               Visibility(
-                visible: action.isFree ||
+                visible:
+                    action.isFree ||
                     action.isPreparation ||
                     action.isReaction ||
                     action.isResisted,
@@ -69,7 +68,7 @@ class ActionTooltip extends StatelessWidget {
                 fontFamily: FontFamily.bungee,
               ),
             ),
-          )
+          ),
         ],
       ),
     );

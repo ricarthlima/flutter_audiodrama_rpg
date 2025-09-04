@@ -10,14 +10,14 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/models/group_action.dart';
 import '../../../data/repositories/action_repository.dart';
-import '../../../data/repositories/condition_repository.dart';
+// import '../../../data/repositories/condition_repository.dart';
 import '../helpers/sheet_subpages.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../data/services/sheet_service.dart';
 import '../../../domain/exceptions/sheet_service_exceptions.dart';
 import '../../../domain/models/action_lore.dart';
-import '../../../domain/models/action_template.dart';
+import '../../../domain/dto/action_template.dart';
 import '../../../domain/models/action_value.dart';
 import '../../../domain/models/roll_log.dart';
 import '../../../domain/models/sheet_model.dart';
@@ -27,13 +27,13 @@ class SheetViewModel extends ChangeNotifier {
   String username;
   bool isWindowed;
   ActionRepository actionRepo;
-  ConditionRepository conditionRepo;
+  // ConditionRepository conditionRepo;
 
   SheetViewModel({
     required this.id,
     required this.username,
     required this.actionRepo,
-    required this.conditionRepo,
+    // required this.conditionRepo,
     this.isWindowed = false,
   });
 

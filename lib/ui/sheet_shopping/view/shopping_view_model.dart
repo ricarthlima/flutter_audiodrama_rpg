@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../data/repositories/item_repository.dart';
 
-import '../../../domain/models/item.dart';
+import '../../../domain/dto/item.dart';
 import '../../../domain/models/item_sheet.dart';
 import '../../_core/helpers.dart';
 import '../../sheet/providers/sheet_view_model.dart';

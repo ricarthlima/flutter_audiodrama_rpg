@@ -12,7 +12,7 @@ import '../helpers/sheet_subpages.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/action_template.dart';
+import '../../../domain/dto/action_template.dart';
 import '../../../domain/models/roll_log.dart';
 import '../../sheet_statistics/view/statistics_view_model.dart';
 import '../components/roll_body_dialog.dart';

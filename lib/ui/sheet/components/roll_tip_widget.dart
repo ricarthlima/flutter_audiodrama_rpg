@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/models/action_template.dart';
+import '../../../domain/dto/action_template.dart';
 import '../widgets/action_tooltip.dart';
 
 class RollTipStackDialog extends StatelessWidget {
@@ -17,15 +17,9 @@ class RollTipStackDialog extends StatelessWidget {
     return Container(
       height: 300,
       decoration: BoxDecoration(
-        border: Border.all(
-          width: 4,
-          color: Colors.white,
-        ),
+        border: Border.all(width: 4, color: Colors.white),
       ),
-      child: ActionTooltip(
-        action: action,
-        isEffortUsed: isEffortUsed,
-      ),
+      child: ActionTooltip(action: action, isEffortUsed: isEffortUsed),
     );
   }
 }

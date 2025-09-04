@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 import 'package:badges/badges.dart' as badges;
 
-import '../../domain/models/action_template.dart';
+import '../../domain/dto/action_template.dart';
 import '../_core/app_colors.dart';
 import '../_core/components/image_dialog.dart';
 import '../_core/dimensions.dart';

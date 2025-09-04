@@ -7,7 +7,7 @@ import '../../_core/fonts.dart';
 import '../providers/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/action_template.dart';
+import '../../../domain/dto/action_template.dart';
 
 class ActionLoreStackDialog extends StatefulWidget {
   final ActionTemplate action;

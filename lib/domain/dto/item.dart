@@ -1,13 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-enum ItemIconType {
-  icons,
-  materialDesignIcons,
-  fontAwesome,
-}
+import '../../data/repositories_remote/remote_mixin.dart';
 
-class Item {
+enum ItemIconType { icons, materialDesignIcons, fontAwesome }
+
+class Item implements FromMap {
   final String id;
   final String name;
   final double weight;

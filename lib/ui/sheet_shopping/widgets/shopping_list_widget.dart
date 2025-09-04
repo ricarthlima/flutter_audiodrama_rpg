@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/item.dart';
+import '../../../domain/dto/item.dart';
 import '../../../domain/models/item_sheet.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart';

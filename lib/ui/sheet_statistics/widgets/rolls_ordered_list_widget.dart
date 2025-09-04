@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/action_template.dart';
+import '../../../domain/dto/action_template.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/fonts.dart';
 import '../../sheet/providers/sheet_view_model.dart';

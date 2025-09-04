@@ -4,15 +4,15 @@ import 'package:flutter_rpg_audiodrama/ui/_core/widgets/text_markdown.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/fonts.dart';
 
-class Condition extends StatefulWidget {
+class ConditionWidget extends StatefulWidget {
   final int condition;
-  const Condition({super.key, required this.condition});
+  const ConditionWidget({super.key, required this.condition});
 
   @override
-  State<Condition> createState() => _ConditionState();
+  State<ConditionWidget> createState() => _ConditionWidgetState();
 }
 
-class _ConditionState extends State<Condition> {
+class _ConditionWidgetState extends State<ConditionWidget> {
   OverlayEntry? _overlayEntry;
 
   @override

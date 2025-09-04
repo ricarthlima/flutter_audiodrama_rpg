@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
 
-import '../../domain/models/action_template.dart';
-import '../../domain/models/list_action.dart';
+import '../../domain/dto/action_template.dart';
+import '../../domain/dto/list_action.dart';
 import '../repositories/action_repository.dart';
 
 class ActionRepositoryLocal extends ActionRepository {
-  static const String _filePath = 'assets/sheets/acoes-0.0.6.json';
+  static const String _filePath = 'assets/sheets/actions.json';
   final List<ListAction> _cachedListActions = [];
 
   @override
@@ -22,11 +22,7 @@ class ActionRepositoryLocal extends ActionRepository {
           .map((e) => ActionTemplate.fromMap(e))
           .toList();
       _cachedListActions.add(
-        ListAction(
-          name: name,
-          isWork: isWork,
-          listActions: listAc,
-        ),
+        ListAction(name: name, isWork: isWork, listActions: listAc),
       );
     }
 

@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../../settings/view/settings_provider.dart';
 import '../helpers/enum_action_train_level.dart';
-import '../../../domain/models/action_template.dart';
+import '../../../domain/dto/action_template.dart';
 import '../providers/sheet_view_model.dart';
 import 'action_tooltip.dart';
 

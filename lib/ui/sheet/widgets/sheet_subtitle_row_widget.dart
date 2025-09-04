@@ -193,7 +193,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             SizedBox(
               width: 110,
               child: Center(
-                child: Condition(condition: sheetVM.sheet!.condition),
+                child: ConditionWidget(condition: sheetVM.sheet!.condition),
               ),
             ),
             if (sheetVM.isOwner)

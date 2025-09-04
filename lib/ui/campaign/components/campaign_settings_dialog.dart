@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
 import 'package:go_router/go_router.dart';
-import '../../../domain/models/list_action.dart';
+import '../../../domain/dto/list_action.dart';
 import '../../_core/fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';

@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class Condition {
+import 'package:flutter_rpg_audiodrama/data/repositories_remote/remote_mixin.dart';
+
+class Condition implements FromMap {
   String id;
   String name;
   String description;

@@ -5,7 +5,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:provider/provider.dart';
 
 import '../../../_core/utils/download_sheet_json.dart';
-import '../../../domain/models/list_action.dart';
+import '../../../domain/dto/list_action.dart';
 import '../../_core/widgets/loading_widget.dart';
 import '../providers/sheet_view_model.dart';
 import '../widgets/sheet_not_found_widget.dart';

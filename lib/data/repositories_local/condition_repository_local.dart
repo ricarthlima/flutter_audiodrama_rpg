@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
-import '../../domain/models/condition.dart';
+import '../../domain/dto/condition.dart';
 import '../repositories/condition_repository.dart';
 
 class ConditionRepositoryLocal extends ConditionRepository {
-  static const String _filePath = 'assets/sheets/conditions-0.0.2.json';
+  static const String _filePath = 'assets/sheets/conditions.json';
 
   List<Condition> _cachedConditions = [];
 

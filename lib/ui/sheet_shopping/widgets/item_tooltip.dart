@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../view/shopping_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/models/item.dart';
+import '../../../domain/dto/item.dart';
 import '../../../domain/models/item_sheet.dart';
 import '../../_core/utils/i18n_categories.dart';
 import '../view/shopping_interact.dart';
@@ -48,38 +48,33 @@ class ItemTooltip extends StatelessWidget {
                 (itemSheet != null)
                     ? "${item.name} (x${itemSheet!.amount})"
                     : item.name,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: item.listCategories
-                        .map((e) => Padding(
-                              padding: const EdgeInsets.only(right: 6.0),
-                              child: Text(
-                                i18nCategories(e),
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ))
+                        .map(
+                          (e) => Padding(
+                            padding: const EdgeInsets.only(right: 6.0),
+                            child: Text(
+                              i18nCategories(e),
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        )
                         .toList(),
                   ),
                   SizedBox(height: 8),
                   Text(item.description),
                   Text(
                     item.mechanic,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Visibility(
                     visible: item.isFinite,
-                    child: Text(
-                      "Máximo de usos: ${item.maxUses}",
-                    ),
+                    child: Text("Máximo de usos: ${item.maxUses}"),
                   ),
                   SizedBox(height: 8),
                   SingleChildScrollView(
@@ -101,20 +96,20 @@ class ItemTooltip extends StatelessWidget {
                                       .firstWhere((e) => e.itemId == item.id)
                                       .uses,
                                 ),
-                                style: TextStyle(
-                                  fontSize: 16,
-                                ),
+                                style: TextStyle(fontSize: 16),
                               ),
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                ),
                                 child: Text("•"),
                               ),
                             ],
                           ),
                         Tooltip(
-                            message: "Preço",
-                            child: Icon(Icons.attach_money_sharp)),
+                          message: "Preço",
+                          child: Icon(Icons.attach_money_sharp),
+                        ),
                         Text(
                           item.price.toString(),
                           style: TextStyle(fontSize: 16),
@@ -124,14 +119,16 @@ class ItemTooltip extends StatelessWidget {
                           child: Text("•"),
                         ),
                         Tooltip(
-                            message: "Peso", child: Icon(Icons.fitness_center)),
+                          message: "Peso",
+                          child: Icon(Icons.fitness_center),
+                        ),
                         Text(
                           item.weight.toString(),
                           style: TextStyle(fontSize: 16),
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
