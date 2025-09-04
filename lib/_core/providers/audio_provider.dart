@@ -7,15 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:flutter_rpg_audiodrama/_core/release_mode.dart';
-
 import '../../domain/models/campaign.dart';
 
-enum AudioProviderType {
-  music,
-  ambience,
-  sfx,
-}
+enum AudioProviderType { music, ambience, sfx }
 
 abstract class _AudioLocalConsts {
   static const String globalLocalVolume = "GLOBAL_LOCAL_VOLUME_KEY";
@@ -112,29 +106,35 @@ class AudioProvider extends ChangeNotifier {
   }
 
   Future<void> changeMusicVolume(double campaignVolume) async {
-    final target =
-        safeVolume(campaignVolume * globalLocalVolume * mscLocalVolume);
+    final target = safeVolume(
+      campaignVolume * globalLocalVolume * mscLocalVolume,
+    );
     if (_mscPlayer.volume != target) {
-      await _mscPlayer
-          .setVolume(campaignVolume * globalLocalVolume * mscLocalVolume);
+      await _mscPlayer.setVolume(
+        campaignVolume * globalLocalVolume * mscLocalVolume,
+      );
     }
   }
 
   Future<void> changeAmbienceVolume(double campaignVolume) async {
-    final target =
-        safeVolume(campaignVolume * globalLocalVolume * ambLocalVolume);
+    final target = safeVolume(
+      campaignVolume * globalLocalVolume * ambLocalVolume,
+    );
     if (_ambPlayer.volume != target) {
-      await _ambPlayer
-          .setVolume(campaignVolume * globalLocalVolume * ambLocalVolume);
+      await _ambPlayer.setVolume(
+        campaignVolume * globalLocalVolume * ambLocalVolume,
+      );
     }
   }
 
   Future<void> changeSfxVolume(double campaignVolume) async {
-    final target =
-        safeVolume(campaignVolume * globalLocalVolume * sfxLocalVolume);
+    final target = safeVolume(
+      campaignVolume * globalLocalVolume * sfxLocalVolume,
+    );
     if (_sfxPlayer.volume != target) {
-      await _sfxPlayer
-          .setVolume(campaignVolume * globalLocalVolume * sfxLocalVolume);
+      await _sfxPlayer.setVolume(
+        campaignVolume * globalLocalVolume * sfxLocalVolume,
+      );
     }
   }
 
@@ -161,10 +161,7 @@ class AudioProvider extends ChangeNotifier {
             timeStarted: timeStarted,
           );
         case AudioProviderType.sfx:
-          await _playSFX(
-            url: url,
-            timeStarted: timeStarted!,
-          );
+          await _playSFX(url: url, timeStarted: timeStarted!);
       }
     }
 
@@ -233,7 +230,8 @@ class AudioProvider extends ChangeNotifier {
     if (duration != null && timeStarted != null) {
       final elapsed = DateTime.now().difference(timeStarted);
       final offset = Duration(
-          milliseconds: elapsed.inMilliseconds % duration.inMilliseconds);
+        milliseconds: elapsed.inMilliseconds % duration.inMilliseconds,
+      );
       await player.seek(offset);
     }
 
@@ -257,10 +255,7 @@ class AudioProvider extends ChangeNotifier {
   Future<void> changeGlobalVolume(double volume) async {
     volume = safeVolume(volume);
 
-    await _changeGlobalVolume(
-      oldGlobal: globalLocalVolume,
-      newGlobal: volume,
-    );
+    await _changeGlobalVolume(oldGlobal: globalLocalVolume, newGlobal: volume);
     await saveLocalVolume(globalLV: volume);
   }
 
@@ -405,17 +400,11 @@ class AudioProvider extends ChangeNotifier {
 
 // TODO: Esse cara pode rodar para poder ir para CampaignVisualModel
 class AudioProviderFirestore {
-  Future<void> setAudioCampaign({
-    required Campaign campaign,
-  }) async {
+  Future<void> setAudioCampaign({required Campaign campaign}) async {
     await FirebaseFirestore.instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .doc(campaign.id)
-        .update(
-      {
-        "audioCampaign": campaign.audioCampaign.toMap(),
-      },
-    );
+        .update({"audioCampaign": campaign.audioCampaign.toMap()});
   }
 }
 
@@ -485,13 +474,15 @@ class AudioCampaign {
   factory AudioCampaign.fromMap(Map<String, dynamic> map) {
     return AudioCampaign(
       musicUrl: map['musicUrl'] != null ? map['musicUrl'] as String : null,
-      musicVolume:
-          map['musicVolume'] != null ? map['musicVolume'] as double : null,
+      musicVolume: map['musicVolume'] != null
+          ? map['musicVolume'] as double
+          : null,
       musicStarted: map['musicStarted'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['musicStarted'] as int)
           : null,
-      ambienceUrl:
-          map['ambienceUrl'] != null ? map['ambienceUrl'] as String : null,
+      ambienceUrl: map['ambienceUrl'] != null
+          ? map['ambienceUrl'] as String
+          : null,
       ambienceVolume: map['ambienceVolume'] != null
           ? map['ambienceVolume'] as double
           : null,

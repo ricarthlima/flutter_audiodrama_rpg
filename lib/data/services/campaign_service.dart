@@ -12,7 +12,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../_core/release_mode.dart';
 import '../../_core/utils/supabase_prefs.dart';
 import '../../domain/exceptions/general_exceptions.dart';
 
@@ -65,7 +64,7 @@ class CampaignService {
     }
 
     await FirebaseFirestore.instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .doc(newCampaign.id)
         .set(newCampaign.toMap());
 
@@ -86,7 +85,7 @@ class CampaignService {
     campaign.imageBannerUrl = imageBannerUrl;
 
     await FirebaseFirestore.instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .doc(campaign.id)
         .set(campaign.toMap());
   }
@@ -129,7 +128,7 @@ class CampaignService {
       if (needToFirestore) {
         campaign.imageBannerUrl = null;
         await FirebaseFirestore.instance
-            .collection("${releaseCollection}campaigns")
+            .collection("campaigns")
             .doc(campaign.id)
             .set(campaign.toMap());
       }
@@ -144,7 +143,7 @@ class CampaignService {
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
     QuerySnapshot<Map<String, dynamic>> query = await FirebaseFirestore.instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .where("enterCode", isEqualTo: joinCode)
         .get();
 
@@ -152,7 +151,7 @@ class CampaignService {
       Campaign campaign = Campaign.fromMap(query.docs[0].data());
       campaign.listIdPlayers.add(uid);
       return FirebaseFirestore.instance
-          .collection("${releaseCollection}campaigns")
+          .collection("campaigns")
           .doc(campaign.id)
           .set(campaign.toMap());
     }
@@ -163,7 +162,7 @@ class CampaignService {
   Future<Campaign?> getCampaignById(String id) async {
     DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
         .instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .doc(id)
         .get();
 
@@ -178,14 +177,14 @@ class CampaignService {
     String id,
   ) {
     return FirebaseFirestore.instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .doc(id)
         .snapshots();
   }
 
   Future<void> saveCampaign(Campaign campaign) async {
     await FirebaseFirestore.instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .doc(campaign.id)
         .set(campaign.toMap());
   }
@@ -197,13 +196,13 @@ class CampaignService {
 
     QuerySnapshot<Map<String, dynamic>> snapshotOwner = await FirebaseFirestore
         .instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .where("listIdOwners", arrayContains: uid)
         .get();
 
     QuerySnapshot<Map<String, dynamic>> snapshotPlayer = await FirebaseFirestore
         .instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .where("listIdPlayers", arrayContains: uid)
         .get();
 
@@ -225,7 +224,7 @@ class CampaignService {
 
     QuerySnapshot<Map<String, dynamic>> snapshotOwner = await FirebaseFirestore
         .instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .where("listIdOwners", arrayContains: uid)
         .get();
 
@@ -243,7 +242,7 @@ class CampaignService {
 
     QuerySnapshot<Map<String, dynamic>> snapshotOwner = await FirebaseFirestore
         .instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .where("listIdPlayers", arrayContains: uid)
         .get();
 
@@ -258,7 +257,7 @@ class CampaignService {
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
     return FirebaseFirestore.instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .where("listIdOwners", arrayContains: uid)
         .snapshots();
   }
@@ -267,21 +266,21 @@ class CampaignService {
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
     return FirebaseFirestore.instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .where("listIdPlayers", arrayContains: uid)
         .snapshots();
   }
 
   Future<void> saveCampaignSheet({required CampaignSheet campaignSheet}) async {
     await FirebaseFirestore.instance
-        .collection("${releaseCollection}campaign-sheet")
+        .collection("campaign-sheet")
         .doc(campaignSheet.sheetId)
         .set(campaignSheet.toMap());
   }
 
   Future<void> removeCampaign({required String sheetId}) async {
     await FirebaseFirestore.instance
-        .collection("${releaseCollection}campaign-sheet")
+        .collection("campaign-sheet")
         .doc(sheetId)
         .delete();
   }
@@ -293,7 +292,7 @@ class CampaignService {
 
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
-        .collection("${releaseCollection}campaign-sheet")
+        .collection("campaign-sheet")
         .where("userId", isEqualTo: uid)
         .get();
 
@@ -307,7 +306,7 @@ class CampaignService {
   Stream<QuerySnapshot<Map<String, dynamic>>> getCampaignSheetStream() {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     return FirebaseFirestore.instance
-        .collection("${releaseCollection}campaign-sheet")
+        .collection("campaign-sheet")
         .where("userId", isEqualTo: uid)
         .snapshots();
   }
@@ -316,7 +315,7 @@ class CampaignService {
     String campaignId,
   ) {
     return FirebaseFirestore.instance
-        .collection("${releaseCollection}campaign-sheet")
+        .collection("campaign-sheet")
         .where("campaignId", isEqualTo: campaignId)
         .snapshots();
   }
@@ -324,7 +323,7 @@ class CampaignService {
   Future<List<String>?> getListPlayersIdsInWorldBySheet(String sheetId) async {
     DocumentSnapshot<Map<String, dynamic>> query = await FirebaseFirestore
         .instance
-        .collection("${releaseCollection}campaign-sheet")
+        .collection("campaign-sheet")
         .doc(sheetId)
         .get();
 
@@ -342,19 +341,19 @@ class CampaignService {
     // TODO: Isso COM CERTEZA devia ser Firebase Function
 
     await FirebaseFirestore.instance
-        .collection("${releaseCollection}campaigns")
+        .collection("campaigns")
         .doc(campaignId)
         .delete();
 
     final queryCS = await FirebaseFirestore.instance
-        .collection("${releaseCollection}campaign-sheet")
+        .collection("campaign-sheet")
         .where('campaignId', isEqualTo: campaignId)
         .get();
 
     for (var doc in queryCS.docs) {
       CampaignSheet cs = CampaignSheet.fromMap(doc.data());
       await FirebaseFirestore.instance
-          .collection("${releaseCollection}campaign-sheet")
+          .collection("campaign-sheet")
           .doc(cs.sheetId)
           .delete();
     }

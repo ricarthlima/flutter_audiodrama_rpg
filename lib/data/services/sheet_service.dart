@@ -12,8 +12,6 @@ import '../../domain/models/sheet_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../_core/release_mode.dart';
-
 class SheetService {
   final _supabase = Supabase.instance.client;
 
@@ -45,7 +43,7 @@ class SheetService {
   Stream<QuerySnapshot<Map<String, dynamic>>> listenSheetsByUser() {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     return FirebaseFirestore.instance
-        .collection("${releaseCollection}users")
+        .collection("users")
         .doc(uid)
         .collection("sheets")
         .snapshots();
@@ -58,7 +56,7 @@ class SheetService {
     List<Sheet> result = [];
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
-        .collection("${releaseCollection}users")
+        .collection("users")
         .doc(uid)
         .collection("sheets")
         .get();
@@ -78,7 +76,7 @@ class SheetService {
   }) async {
     DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
         .instance
-        .collection("${releaseCollection}users")
+        .collection("users")
         .doc(userId)
         .collection("sheets")
         .doc(sheetId)
@@ -129,7 +127,7 @@ class SheetService {
     }
 
     return FirebaseFirestore.instance
-        .collection("${releaseCollection}users")
+        .collection("users")
         .doc(uid)
         .collection("sheets")
         .doc(sheetId)
@@ -148,7 +146,7 @@ class SheetService {
     );
 
     FirebaseFirestore.instance
-        .collection("${releaseCollection}users")
+        .collection("users")
         .doc(uid)
         .collection("sheets")
         .doc(sheetId)
@@ -177,7 +175,7 @@ class SheetService {
     required String userId,
   }) {
     return FirebaseFirestore.instance
-        .collection("${releaseCollection}users")
+        .collection("users")
         .doc(userId)
         .collection("sheets")
         .doc(id)
@@ -193,7 +191,7 @@ class SheetService {
 
     DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
         .instance
-        .collection("${releaseCollection}users")
+        .collection("users")
         .doc(user.id)
         .collection("sheets")
         .doc(id)
@@ -218,7 +216,7 @@ class SheetService {
   Future<void> saveSheet(Sheet sheet) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     await FirebaseFirestore.instance
-        .collection("${releaseCollection}users")
+        .collection("users")
         .doc(uid)
         .collection("sheets")
         .doc(sheet.id)
@@ -229,14 +227,14 @@ class SheetService {
   Future<void> removeSheet(Sheet sheet) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     await FirebaseFirestore.instance
-        .collection("${releaseCollection}users")
+        .collection("users")
         .doc(uid)
         .collection("sheets")
         .doc(sheet.id)
         .delete();
 
     await FirebaseFirestore.instance
-        .collection("${releaseCollection}campaign-sheet")
+        .collection("campaign-sheet")
         .doc(sheet.id)
         .delete();
   }
