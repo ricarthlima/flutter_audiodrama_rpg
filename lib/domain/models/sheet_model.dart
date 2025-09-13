@@ -38,6 +38,9 @@ class Sheet {
 
   int exhaustPoints;
 
+  List<String> listActiveModules;
+  List<String> listSpell;
+
   Sheet({
     required this.id,
     required this.characterName,
@@ -59,6 +62,8 @@ class Sheet {
     required this.listSharedIds,
     required this.ownerId,
     required this.exhaustPoints,
+    required this.listSpell,
+    required this.listActiveModules,
   });
 
   Sheet copyWith({
@@ -83,6 +88,8 @@ class Sheet {
     List<String>? listSharedIds,
     String? ownerId,
     int? exhaustPoints,
+    List<String>? listSpell,
+    List<String>? listActiveModules,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -105,6 +112,8 @@ class Sheet {
       campaignId: campaignId ?? this.campaignId,
       ownerId: ownerId ?? this.ownerId,
       exhaustPoints: exhaustPoints ?? this.exhaustPoints,
+      listSpell: listSpell ?? this.listSpell,
+      listActiveModules: listActiveModules ?? this.listActiveModules,
     );
   }
 
@@ -130,6 +139,8 @@ class Sheet {
       "listSharedIds": listSharedIds,
       "ownerId": ownerId,
       "exhaustPoints": exhaustPoints,
+      "listSpell": listSpell,
+      "listActiveModules": listActiveModules,
     };
   }
 
@@ -203,6 +214,16 @@ class Sheet {
           : [],
       ownerId: (map["ownerId"] != null) ? map["ownerId"] : "",
       exhaustPoints: (map["exhaustPoints"] ?? 0) as int,
+      listSpell: (map["listSpell"] != null)
+          ? (map["listSpell"] as List<dynamic>)
+                .map((e) => e.toString())
+                .toList()
+          : [],
+      listActiveModules: (map["listActiveModules"] != null)
+          ? (map["listActiveModules"] as List<dynamic>)
+                .map((e) => e.toString())
+                .toList()
+          : [],
     );
   }
 
@@ -232,7 +253,9 @@ class Sheet {
         listEquals(other.listSharedIds, listSharedIds) &&
         other.ownerId == ownerId &&
         listEquals(other.listActiveWorks, listActiveWorks) &&
-        exhaustPoints == other.exhaustPoints;
+        exhaustPoints == other.exhaustPoints &&
+        listSpell == other.listSpell &&
+        listActiveModules == other.listActiveModules;
   }
 
   @override
@@ -254,7 +277,9 @@ class Sheet {
         listSharedIds.hashCode ^
         ownerId.hashCode ^
         listActiveWorks.hashCode ^
-        exhaustPoints.hashCode;
+        exhaustPoints.hashCode ^
+        listSpell.hashCode ^
+        listActiveModules.hashCode;
   }
 
   @override

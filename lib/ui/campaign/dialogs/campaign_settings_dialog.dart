@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rpg_audiodrama/data/modules.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
 import 'package:go_router/go_router.dart';
@@ -86,7 +87,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
                         children: [
                           _buildGeneralTab(campaignVM),
                           _buildWorksTab(campaignVM, sheetVM),
-                          Text("Módulos"),
+                          _buildModulesTab(campaignVM, sheetVM),
                           _buildDangerTab(campaignVM),
                         ],
                       ),
@@ -275,6 +276,44 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildModulesTab(
+    CampaignViewModel campaignVM,
+    SheetViewModel sheetVM,
+  ) {
+    return Column(
+      spacing: 8,
+      children: [
+        Opacity(
+          opacity: 0.5,
+          child: Text(
+            "Ative ou desative módulos para essa campanha. Módulos desativados estarão indisponíveis para as pessoas jogadoras.",
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: Module.all.length,
+            itemBuilder: (context, index) {
+              Module module = Module.all[index];
+              return CheckboxListTile(
+                value: campaignVM
+                    .campaign!
+                    .campaignSheetSettings
+                    .listActiveModuleIds
+                    .contains(module.id),
+                title: Text(module.name),
+                contentPadding: EdgeInsets.zero,
+                controlAffinity: ListTileControlAffinity.leading,
+                onChanged: (value) {
+                  campaignVM.toggleModuleWork(module.id);
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 

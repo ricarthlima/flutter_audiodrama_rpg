@@ -125,6 +125,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
                       username: e.appUser.username!,
                       isWindowed: true,
                       actionRepo: context.read<SheetViewModel>().actionRepo,
+                      spellRepo: context.read<SheetViewModel>().spellRepo,
                       // conditionRepo: context
                       //     .read<SheetViewModel>()
                       //     .conditionRepo,

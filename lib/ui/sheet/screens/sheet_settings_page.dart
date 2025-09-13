@@ -5,6 +5,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:provider/provider.dart';
 
 import '../../../_core/utils/download_sheet_json.dart';
+import '../../../data/modules.dart';
 import '../../../domain/dto/list_action.dart';
 import '../../_core/widgets/loading_widget.dart';
 import '../providers/sheet_view_model.dart';
@@ -89,18 +90,16 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
               index,
             ) {
               ListAction work = sheetVM.actionRepo.getListWorks()[index];
-              return SizedBox(
-                width: 300,
-                child: CheckboxListTile(
-                  value: sheetVM.sheet!.listActiveWorks.contains(work.name),
-                  title: Text(
-                    work.name[0].toUpperCase() + work.name.substring(1),
-                  ),
-                  contentPadding: EdgeInsets.zero,
-                  onChanged: (value) {
-                    sheetVM.toggleActiveWork(work.name);
-                  },
+              return CheckboxListTile(
+                value: sheetVM.sheet!.listActiveWorks.contains(work.name),
+                title: Text(
+                  work.name[0].toUpperCase() + work.name.substring(1),
                 ),
+                contentPadding: EdgeInsets.zero,
+                controlAffinity: ListTileControlAffinity.leading,
+                onChanged: (value) {
+                  sheetVM.toggleActiveWork(work.name);
+                },
               );
             }),
           ),
@@ -109,7 +108,23 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
         _SettingItem(
           title: "Módulos",
           subtitle: "Ative e desative módulos de regras opcionais",
-          child: Column(),
+          child: Column(
+            children: List.generate(Module.all.length, (index) {
+              Module module = Module.all[index];
+              return Tooltip(
+                message: module.description,
+                child: CheckboxListTile(
+                  value: sheetVM.sheet!.listActiveModules.contains(module.id),
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: Text(module.name),
+                  contentPadding: EdgeInsets.zero,
+                  onChanged: (value) {
+                    sheetVM.toggleActiveModule(module.id);
+                  },
+                ),
+              );
+            }),
+          ),
         ),
     ];
   }

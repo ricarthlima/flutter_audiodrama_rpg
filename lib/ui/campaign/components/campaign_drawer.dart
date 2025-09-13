@@ -14,7 +14,7 @@ import '../../home/utils/home_tabs.dart';
 import '../../settings/settings_screen.dart';
 import '../utils/campaign_subpages.dart';
 import '../view/campaign_view_model.dart';
-import 'campaign_settings_dialog.dart';
+import '../dialogs/campaign_settings_dialog.dart';
 
 class CampaignDrawer extends StatelessWidget {
   const CampaignDrawer({super.key});
@@ -32,10 +32,10 @@ class CampaignDrawer extends StatelessWidget {
       onExit: (_) => campaignVM.isDrawerClosed = true,
       child: AnimatedContainer(
         color: Theme.of(context).scaffoldBackgroundColor.withAlpha(
-              (campaignVM.isDrawerClosed && campaignVM.currentTab == null)
-                  ? 25
-                  : 250,
-            ),
+          (campaignVM.isDrawerClosed && campaignVM.currentTab == null)
+              ? 25
+              : 250,
+        ),
         duration: Duration(milliseconds: 350),
         curve: Curves.ease,
         width: (campaignVM.isDrawerClosed) ? 48 : 275,
@@ -74,10 +74,7 @@ class CampaignDrawer extends StatelessWidget {
                     },
                     tooltip: "Expandir",
                     padding: EdgeInsets.zero,
-                    icon: Icon(
-                      Icons.menu,
-                      color: Colors.white,
-                    ),
+                    icon: Icon(Icons.menu, color: Colors.white),
                   ),
                 if (!campaignVM.isDrawerClosed)
                   Column(
@@ -104,7 +101,8 @@ class CampaignDrawer extends StatelessWidget {
                             onPressed: () {
                               Clipboard.setData(
                                 ClipboardData(
-                                    text: campaignVM.campaign!.enterCode),
+                                  text: campaignVM.campaign!.enterCode,
+                                ),
                               );
                             },
                             tooltip: "Copiar",
@@ -145,7 +143,8 @@ class CampaignDrawer extends StatelessWidget {
                           campaignVM.countChatMessages = snapshot.data!.size;
                           campaignVM.isChatFirstTime = false;
                         } else {
-                          count = snapshot.data!.size -
+                          count =
+                              snapshot.data!.size -
                               campaignVM.countChatMessages;
                         }
                       }
@@ -153,8 +152,9 @@ class CampaignDrawer extends StatelessWidget {
                       return Badge.count(
                         count: count,
                         isLabelVisible: count > 0,
-                        textColor:
-                            Theme.of(context).textTheme.bodyMedium!.color!,
+                        textColor: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium!.color!,
                         backgroundColor: AppColors.red,
                         child: Icon(Icons.chat),
                       );

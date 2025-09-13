@@ -327,6 +327,16 @@ class CampaignViewModel extends ChangeNotifier {
     notifyListeners();
     onSave();
   }
+
+  void toggleModuleWork(String workId) {
+    if (campaign!.campaignSheetSettings.listActiveModuleIds.contains(workId)) {
+      campaign!.campaignSheetSettings.listActiveModuleIds.remove(workId);
+    } else {
+      campaign!.campaignSheetSettings.listActiveModuleIds.add(workId);
+    }
+    notifyListeners();
+    onSave();
+  }
 }
 
 class SheetAppUser {

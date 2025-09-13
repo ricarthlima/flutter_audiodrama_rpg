@@ -80,6 +80,7 @@ void main() async {
     id: "",
     username: "",
     actionRepo: actionRepo,
+    spellRepo: spellRepository,
     // conditionRepo: conditionRepo,
   );
   ShoppingViewModel shoppingVM = ShoppingViewModel(

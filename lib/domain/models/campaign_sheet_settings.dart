@@ -4,33 +4,38 @@ import 'package:flutter/foundation.dart';
 
 class CampaignSheetSettings {
   List<String> listActiveWorkIds;
-  List<String> listModuleIds;
+  List<String> listActiveModuleIds;
+
   CampaignSheetSettings({
     required this.listActiveWorkIds,
-    required this.listModuleIds,
+    required this.listActiveModuleIds,
   });
 
   CampaignSheetSettings copyWith({
     List<String>? listActiveWorkIds,
-    List<String>? listModuleIds,
+    List<String>? listActiveModuleIds,
   }) {
     return CampaignSheetSettings(
       listActiveWorkIds: listActiveWorkIds ?? this.listActiveWorkIds,
-      listModuleIds: listModuleIds ?? this.listModuleIds,
+      listActiveModuleIds: listActiveModuleIds ?? this.listActiveModuleIds,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'listActiveWorkIds': listActiveWorkIds,
-      'listModuleIds': listModuleIds,
+      'listActiveModuleIds': listActiveModuleIds,
     };
   }
 
   factory CampaignSheetSettings.fromMap(Map<String, dynamic> map) {
     return CampaignSheetSettings(
-      listActiveWorkIds: List<String>.from(map['listActiveWorkIds']),
-      listModuleIds: List<String>.from(map['listModuleIds']),
+      listActiveWorkIds: map['listActiveWorkIds'] != null
+          ? List<String>.from(map['listActiveWorkIds'])
+          : [],
+      listActiveModuleIds: map['listActiveModuleIds'] != null
+          ? List<String>.from(map['listActiveModuleIds'])
+          : [],
     );
   }
 
@@ -41,7 +46,7 @@ class CampaignSheetSettings {
 
   @override
   String toString() =>
-      'CampaignSheetSettings(listActiveWorkIds: $listActiveWorkIds, listModuleIds: $listModuleIds)';
+      'CampaignSheetSettings(listActiveWorkIds: $listActiveWorkIds, listActiveModuleIds: $listActiveModuleIds)';
 
   @override
   bool operator ==(Object other) {
@@ -49,9 +54,9 @@ class CampaignSheetSettings {
 
     return other is CampaignSheetSettings &&
         listEquals(other.listActiveWorkIds, listActiveWorkIds) &&
-        listEquals(other.listModuleIds, listModuleIds);
+        listEquals(other.listActiveModuleIds, listActiveModuleIds);
   }
 
   @override
-  int get hashCode => listActiveWorkIds.hashCode ^ listModuleIds.hashCode;
+  int get hashCode => listActiveWorkIds.hashCode ^ listActiveModuleIds.hashCode;
 }

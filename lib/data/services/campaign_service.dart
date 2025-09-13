@@ -51,7 +51,7 @@ class CampaignService {
       audioCampaign: AudioCampaign(),
       campaignSheetSettings: CampaignSheetSettings(
         listActiveWorkIds: [],
-        listModuleIds: [],
+        listActiveModuleIds: [],
       ),
     );
 

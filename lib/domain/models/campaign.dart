@@ -134,7 +134,10 @@ class Campaign {
           : AudioCampaign(),
       campaignSheetSettings: (map['campaignSheetSettings'] != null)
           ? CampaignSheetSettings.fromMap(map['campaignSheetSettings'])
-          : CampaignSheetSettings(listActiveWorkIds: [], listModuleIds: []),
+          : CampaignSheetSettings(
+              listActiveWorkIds: [],
+              listActiveModuleIds: [],
+            ),
     );
   }
 
