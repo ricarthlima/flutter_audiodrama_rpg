@@ -1,7 +1,1 @@
-enum SheetSubpages {
-  sheet,
-  items,
-  notes,
-  statistics,
-  settings,
-}
+enum SheetSubpages { sheet, items, magic, notes, statistics, settings }

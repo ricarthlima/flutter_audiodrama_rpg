@@ -2,12 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
+import 'package:flutter_rpg_audiodrama/data/modules.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/stack_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/action_lore_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_tip_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_widget.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet_module_magic/sheet_module_magic.dart';
 import 'package:go_router/go_router.dart';
 import '../../router.dart';
 import 'helpers/sheet_subpages.dart';
@@ -248,13 +250,14 @@ class _SheetScreenState extends State<SheetScreen> {
                         children: [
                           SheetActionsScreen(scrollController: rowScroll),
                           SheetShoppingDialogScreen(),
+                          SheetModuleMagic(),
                           SheetNotesScreen(),
                           SheetStatisticsScreen(),
                           SheetSettingsScreen(),
                         ],
                       ),
                     ),
-                    _buildSubpageRouter(sheetVM, themeProvider),
+                    _buildSubpageRouter(sheetVM, userProvider, themeProvider),
                   ],
                 ),
               ),
@@ -318,8 +321,18 @@ class _SheetScreenState extends State<SheetScreen> {
 
   Widget _buildSubpageRouter(
     SheetViewModel sheetVM,
+    UserProvider userProvider,
     SettingsProvider themeProvider,
   ) {
+    Campaign? campaign = userProvider.getCampaignBySheet(sheetVM.sheet!.id);
+    bool showMagicModule =
+        (campaign != null &&
+            campaign.campaignSheetSettings.listActiveModuleIds.contains(
+              Module.magic.id,
+            )) ||
+        (campaign == null &&
+            sheetVM.sheet!.listActiveModules.contains(Module.magic.id));
+
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -371,6 +384,21 @@ class _SheetScreenState extends State<SheetScreen> {
                   icon: Icon(MdiIcons.treasureChest),
                 ),
               ),
+              if (showMagicModule)
+                Opacity(
+                  opacity: (sheetVM.currentPage == SheetSubpages.magic)
+                      ? 1
+                      : 0.5,
+                  child: IconButton(
+                    tooltip: "Magia",
+                    iconSize: 32,
+                    onPressed: () {
+                      SheetInteract.onMagicButtonClicked(context);
+                    },
+                    icon: Icon(MdiIcons.magicStaff, color: AppColors.module),
+                  ),
+                ),
+              SizedBox(height: 16),
               if (!isVertical(context))
                 Opacity(
                   opacity: (sheetVM.currentPage == SheetSubpages.notes)
@@ -413,7 +441,7 @@ class _SheetScreenState extends State<SheetScreen> {
               ),
             ],
           ),
-          SizedBox(height: 32),
+          SizedBox(height: 48),
           Builder(
             builder: (context) => IconButton(
               onPressed: () {

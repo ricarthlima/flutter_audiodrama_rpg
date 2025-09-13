@@ -35,6 +35,10 @@ abstract class SheetInteract {
     context.read<SheetViewModel>().currentPage = SheetSubpages.items;
   }
 
+  static Future<void> onMagicButtonClicked(BuildContext context) async {
+    context.read<SheetViewModel>().currentPage = SheetSubpages.magic;
+  }
+
   static Future<void> onNotesButtonClicked(BuildContext context) async {
     context.read<SheetViewModel>().currentPage = SheetSubpages.notes;
   }

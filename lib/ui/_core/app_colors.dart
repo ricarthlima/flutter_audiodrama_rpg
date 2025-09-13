@@ -1,4 +1,4 @@
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 
 class AppColors {
   AppColors._();
@@ -12,4 +12,6 @@ class AppColors {
   static const googleAuthTextLight = Color(0xff1F1F1F);
   static const googleAuthFillLight = Color(0xFFFFFFFF);
   static const googleAuthFillDark = Color(0xFF131314);
+
+  static const module = Colors.amber;
 }

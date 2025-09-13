@@ -5,11 +5,11 @@ class Module {
 
   Module({required this.id, required this.name, required this.description});
 
-  static List<Module> get all => [
-    Module(
-      id: "MAGIC",
-      name: "Magia",
-      description: "Adicione elementos mágicos a qualquer cenário com ADRPG.",
-    ),
-  ];
+  static Module get magic => Module(
+    id: "MAGIC",
+    name: "Magia",
+    description: "Adicione elementos mágicos a qualquer cenário com ADRPG.",
+  );
+
+  static List<Module> get all => [magic];
 }
