@@ -11,7 +11,12 @@ import '../../../domain/dto/action_template.dart';
 
 class ActionLoreStackDialog extends StatefulWidget {
   final ActionTemplate action;
-  const ActionLoreStackDialog({super.key, required this.action});
+  final Function onDismiss;
+  const ActionLoreStackDialog({
+    super.key,
+    required this.action,
+    required this.onDismiss,
+  });
 
   @override
   State<ActionLoreStackDialog> createState() => _ActionLoreStackDialogState();
@@ -57,11 +62,7 @@ class _ActionLoreStackDialogState extends State<ActionLoreStackDialog> {
             TextFormField(controller: _loreController, maxLines: 10),
             ElevatedButton(
               onPressed: () {
-                sheetViewModel.saveActionLore(
-                  actionId: widget.action.id,
-                  loreText: _loreController.text,
-                );
-                Navigator.pop(context);
+                _saveActionLore(sheetViewModel, context);
               },
               child: Text("Salvar"),
             ),
@@ -69,5 +70,16 @@ class _ActionLoreStackDialogState extends State<ActionLoreStackDialog> {
         ),
       ),
     );
+  }
+
+  void _saveActionLore(
+    SheetViewModel sheetViewModel,
+    BuildContext context,
+  ) async {
+    sheetViewModel.saveActionLore(
+      actionId: widget.action.id,
+      loreText: _loreController.text,
+    );
+    widget.onDismiss();
   }
 }

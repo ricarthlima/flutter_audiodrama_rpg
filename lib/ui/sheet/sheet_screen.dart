@@ -59,13 +59,20 @@ class _SheetScreenState extends State<SheetScreen> {
       final sheetVM = Provider.of<SheetViewModel>(context, listen: false);
       sheetVM.updateCredentials(id: widget.id, username: widget.username);
       sheetVM.refresh();
+      _keyListener = _handleKey;
+      HardwareKeyboard.instance.addHandler(_keyListener);
     });
-    _keyListener = _handleKey;
-    HardwareKeyboard.instance.addHandler(_keyListener);
   }
 
   bool _handleKey(KeyEvent event) {
-    if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.keyQ) {
+    SheetViewModel sheetVM = context.read<SheetViewModel>();
+
+    if (event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.escape) {
+      sheetVM.onStackDialogDismiss();
+    } else if (event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.keyQ &&
+        !(sheetVM.showingActionLore != null)) {
       showSearchDialog().then((value) {
         HardwareKeyboard.instance.addHandler(_keyListener);
         if (value != null) {
@@ -290,7 +297,12 @@ class _SheetScreenState extends State<SheetScreen> {
             onDismiss: () {
               sheetVM.onStackDialogDismiss();
             },
-            child: ActionLoreStackDialog(action: sheetVM.showingActionLore!),
+            child: ActionLoreStackDialog(
+              action: sheetVM.showingActionLore!,
+              onDismiss: () {
+                sheetVM.onStackDialogDismiss();
+              },
+            ),
           ),
       ],
     );
