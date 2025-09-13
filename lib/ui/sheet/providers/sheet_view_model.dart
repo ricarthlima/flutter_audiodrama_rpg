@@ -282,7 +282,7 @@ class SheetViewModel extends ChangeNotifier {
         return "Ação de Preparação: uma ação livre que exige Esforço.";
       case RollType.resisted:
         String result =
-            "Teste Resistido: conte os sucessos DT10 baseado no seu treinamento.";
+            "(Apenas personagem contra personagem)\nTeste Resistido: conte os sucessos DT10 baseado no seu treinamento.";
         if (trainingLevel <= 1) {
           result +=
               "\nComo seu treinamento é '${getTrainingLevel(trainingLevel)}', apenas o menor dado será considerado para o teste contra a DT10.";
@@ -290,7 +290,7 @@ class SheetViewModel extends ChangeNotifier {
         return result;
       case RollType.difficult:
         String result =
-            "Teste de Dificuldade: pegue um número baseado no seu treinamento.";
+            "(Personagem contra o mundo ou situações)\nTeste de Dificuldade: pegue um número baseado no seu treinamento.";
         if (trainingLevel <= 1) {
           result +=
               "\nComo seu treinamento é '${getTrainingLevel(trainingLevel)}', pegue o menor dado.";

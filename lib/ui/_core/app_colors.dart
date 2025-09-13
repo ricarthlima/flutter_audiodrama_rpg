@@ -6,6 +6,8 @@ class AppColors {
   static const redDark = Color(0xFF733428);
   static const brownDark = Color(0xFF261918);
 
+  static const backgroundDark = Color.fromARGB(255, 11, 10, 13);
+
   static const googleAuthBorderLight = Color(0xff747775);
   static const googleAuthBorderDark = Color(0xff8E918F);
   static const googleAuthTextDark = Color(0xffE3E3E3);

@@ -7,28 +7,24 @@ class AppTheme {
 
   static const FloatingActionButtonThemeData _fabTD =
       FloatingActionButtonThemeData(
-    backgroundColor: AppColors.red,
-    foregroundColor: Colors.white,
-  );
+        backgroundColor: AppColors.red,
+        foregroundColor: Colors.white,
+      );
 
   static ThemeData lightTheme = ThemeData.light().copyWith(
     textTheme: ThemeData.light().textTheme.apply(
-          fontFamily: FontFamily.sourceSerif4,
-        ),
+      fontFamily: FontFamily.sourceSerif4,
+    ),
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.red,
       brightness: Brightness.light,
     ),
     floatingActionButtonTheme: _fabTD,
-    dividerTheme: DividerThemeData(
-      color: Colors.black,
-    ),
+    dividerTheme: DividerThemeData(color: Colors.black),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero,
-          ),
+          RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
       ),
     ),
@@ -39,23 +35,24 @@ class AppTheme {
 
   static ThemeData darkTheme = ThemeData.dark().copyWith(
     textTheme: ThemeData.dark().textTheme.apply(
-          fontFamily: FontFamily.sourceSerif4,
-        ),
+      fontFamily: FontFamily.sourceSerif4,
+    ),
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.red,
       brightness: Brightness.dark,
     ),
+    scaffoldBackgroundColor: AppColors.backgroundDark,
     floatingActionButtonTheme: _fabTD,
-    appBarTheme: AppBarTheme(elevation: 1, toolbarHeight: 64),
-    dividerTheme: DividerThemeData(
-      color: Colors.white,
+    appBarTheme: AppBarTheme(
+      elevation: 1,
+      toolbarHeight: 64,
+      backgroundColor: AppColors.googleAuthFillDark,
     ),
+    dividerTheme: DividerThemeData(color: Colors.white, thickness: 0.33),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero,
-          ),
+          RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
       ),
     ),

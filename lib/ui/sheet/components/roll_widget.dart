@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -22,29 +23,43 @@ class _RollStackDialogState extends State<RollStackDialog> {
   List<double> listOpacity = [0, 0, 0];
   bool isShowingHighlighted = false;
 
+  Timer? timerHighlight;
+  Timer? timerShowRoll;
+
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callShowRoll();
+    });
     super.initState();
-    callShowRoll();
+  }
+
+  @override
+  void dispose() {
+    timerHighlight?.cancel();
+    timerShowRoll?.cancel();
+    super.dispose();
   }
 
   Future<void> callShowRoll() async {
-    await Future.delayed(Duration(milliseconds: 250));
-    setState(() {
-      listOpacity[i] = 1;
+    timerShowRoll = Timer(Duration(milliseconds: 250), () {
+      setState(() {
+        listOpacity[i] = 1;
+      });
+      i++;
+      if (i < widget.rollLog.rolls.length) {
+        callShowRoll();
+      } else {
+        makeCorrectHighlighted();
+      }
     });
-    i++;
-    if (i < widget.rollLog.rolls.length) {
-      callShowRoll();
-    } else {
-      makeCorrectHighlighted();
-    }
   }
 
-  Future<void> makeCorrectHighlighted() async {
-    await Future.delayed(Duration(milliseconds: 1500));
-    setState(() {
-      isShowingHighlighted = true;
+  void makeCorrectHighlighted() {
+    timerHighlight = Timer(Duration(milliseconds: 1500), () {
+      setState(() {
+        isShowingHighlighted = true;
+      });
     });
   }
 
@@ -55,8 +70,9 @@ class _RollStackDialogState extends State<RollStackDialog> {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.black.withAlpha(150),
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.black.withAlpha(200),
+        borderRadius: BorderRadius.zero,
+        border: Border.all(width: 5, color: Colors.white),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -139,34 +155,34 @@ class _RollStackDialogState extends State<RollStackDialog> {
                       isShowingHighlighted)
                   ? 1
                   : 0,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("Você obteve ", style: TextStyle(fontSize: 24)),
-                    Text(
-                      _calculateAmountSuccess().toString(),
-                      style: TextStyle(fontSize: 48),
-                    ),
-                    Text(" sucesso", style: TextStyle(fontSize: 24)),
-                    if (_calculateAmountSuccess() != 1)
-                      Text("s", style: TextStyle(fontSize: 24)),
-                    Text(".", style: TextStyle(fontSize: 24)),
-                  ],
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text("Você obteve ", style: TextStyle(fontSize: 24)),
+                  Text(
+                    _calculateAmountSuccess().toString(),
+                    style: TextStyle(fontSize: 48),
+                  ),
+                  Text(" sucesso", style: TextStyle(fontSize: 24)),
+                  if (_calculateAmountSuccess() != 1)
+                    Text("s", style: TextStyle(fontSize: 24)),
+                  Text(".", style: TextStyle(fontSize: 24)),
+                ],
               ),
             ),
-          Text(
-            sheetVM.getHelperText(
-              context.read<SheetViewModel>().actionRepo.getActionById(
-                widget.rollLog.idAction,
-              )!,
-              widget.rollLog.rollType,
+          Opacity(
+            opacity: 0.40,
+            child: Text(
+              sheetVM.getHelperText(
+                context.read<SheetViewModel>().actionRepo.getActionById(
+                  widget.rollLog.idAction,
+                )!,
+                widget.rollLog.rollType,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -197,5 +213,18 @@ class _RollStackDialogState extends State<RollStackDialog> {
     amount = (amount - naturalOne) + naturalTwenty;
 
     return max(0, amount);
+  }
+
+  String typeName(RollType rolltype) {
+    switch (rolltype) {
+      case RollType.free:
+        return "Livre";
+      case RollType.prepared:
+        return "Preparado";
+      case RollType.resisted:
+        return "Teste Resistido";
+      case RollType.difficult:
+        return "Teste de Dificuldade";
+    }
   }
 }
