@@ -247,7 +247,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
 
   Widget _getChangeImageWidget(CampaignViewModel campaignVM) {
     return NamedWidget(
-      title: "Mudar imagem de fundo",
+      title: "Mudar imagem de fundo (máximo 2MB)",
       isLeft: true,
       child: Column(
         spacing: 8,
