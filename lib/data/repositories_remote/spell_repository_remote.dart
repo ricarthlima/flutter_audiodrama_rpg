@@ -16,5 +16,6 @@ class SpellRepositoryRemote extends SpellRepository with RemoteMixin<Spell> {
   @override
   Future<void> onInitialize() async {
     await remoteInitialize();
+    super.cachedList.sort((a, b) => a.energy.compareTo(b.energy));
   }
 }

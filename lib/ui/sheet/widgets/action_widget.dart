@@ -54,39 +54,6 @@ class _ActionWidgetState extends State<ActionWidget> {
           mainAxisSize: MainAxisSize.min,
           spacing: 8,
           children: [
-            if (!sheetVM.isEditing && isFreeOrPreparation != null)
-              InkWell(
-                onTap: (!sheetVM.isEditing)
-                    ? () {
-                        SheetInteract.rollAction(
-                          context: context,
-                          action: widget.action,
-                          groupId: widget.groupId,
-                          rollType: widget.action.isPreparation
-                              ? RollType.prepared
-                              : RollType.free,
-                        );
-                      }
-                    : null,
-                child: ColorFiltered(
-                  colorFilter: getColorFilterInverter(
-                    themeProvider.themeMode == ThemeMode.dark,
-                  ),
-                  child: Tooltip(
-                    message: sheetVM.getHelperText(
-                      widget.action,
-                      widget.action.isPreparation
-                          ? RollType.prepared
-                          : RollType.free,
-                    ),
-                    child: Image.asset(
-                      isFreeOrPreparation!,
-                      height: 16,
-                      filterQuality: FilterQuality.none,
-                    ),
-                  ),
-                ),
-              ),
             if (!sheetVM.isEditing &&
                 isFreeOrPreparation == null &&
                 widget.action.isResisted)
@@ -131,34 +98,6 @@ class _ActionWidgetState extends State<ActionWidget> {
                               context: context,
                               action: widget.action,
                               groupId: widget.groupId,
-                              rollType: RollType.difficult,
-                            );
-                          }
-                        : null,
-                    child: ColorFiltered(
-                      colorFilter: getColorFilterInverter(
-                        themeProvider.themeMode == ThemeMode.dark,
-                      ),
-                      child: Tooltip(
-                        message: sheetVM.getHelperText(
-                          widget.action,
-                          RollType.difficult,
-                        ),
-                        child: Image.asset(
-                          HelperImagePath.dice,
-                          height: 16,
-                          filterQuality: FilterQuality.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: (!sheetVM.isEditing)
-                        ? () {
-                            SheetInteract.rollAction(
-                              context: context,
-                              action: widget.action,
-                              groupId: widget.groupId,
                               rollType: RollType.resisted,
                             );
                           }
@@ -180,8 +119,70 @@ class _ActionWidgetState extends State<ActionWidget> {
                       ),
                     ),
                   ),
+                  InkWell(
+                    onTap: (!sheetVM.isEditing)
+                        ? () {
+                            SheetInteract.rollAction(
+                              context: context,
+                              action: widget.action,
+                              groupId: widget.groupId,
+                              rollType: RollType.difficult,
+                            );
+                          }
+                        : null,
+                    child: ColorFiltered(
+                      colorFilter: getColorFilterInverter(
+                        themeProvider.themeMode == ThemeMode.dark,
+                      ),
+                      child: Tooltip(
+                        message: sheetVM.getHelperText(
+                          widget.action,
+                          RollType.difficult,
+                        ),
+                        child: Image.asset(
+                          HelperImagePath.dice,
+                          height: 16,
+                          filterQuality: FilterQuality.none,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
+            if (!sheetVM.isEditing && isFreeOrPreparation != null)
+              InkWell(
+                onTap: (!sheetVM.isEditing)
+                    ? () {
+                        SheetInteract.rollAction(
+                          context: context,
+                          action: widget.action,
+                          groupId: widget.groupId,
+                          rollType: widget.action.isPreparation
+                              ? RollType.prepared
+                              : RollType.free,
+                        );
+                      }
+                    : null,
+                child: ColorFiltered(
+                  colorFilter: getColorFilterInverter(
+                    themeProvider.themeMode == ThemeMode.dark,
+                  ),
+                  child: Tooltip(
+                    message: sheetVM.getHelperText(
+                      widget.action,
+                      widget.action.isPreparation
+                          ? RollType.prepared
+                          : RollType.free,
+                    ),
+                    child: Image.asset(
+                      isFreeOrPreparation!,
+                      height: 16,
+                      filterQuality: FilterQuality.none,
+                    ),
+                  ),
+                ),
+              ),
+
             Flexible(
               child: InkWell(
                 onTap: (!sheetVM.isEditing)

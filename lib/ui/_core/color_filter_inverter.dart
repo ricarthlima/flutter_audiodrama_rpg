@@ -14,6 +14,13 @@ ColorFilter colorFilterDefault = ColorFilter.matrix([
   0, 0, 0, 1, 0, // Mantém o alpha
 ]);
 
+ColorFilter colorFilterRed = ColorFilter.matrix([
+  1, 1, 1, 1, 1, // Mantém o vermelho
+  0, 0, 0, 0, 0, // Mantém o verde
+  0, 0, 0, 0, 0, // Mantém o azul
+  0, 0, 0, 1, 0, // Mantém o alpha
+]);
+
 ColorFilter getColorFilterInverter(bool isInverted) {
   return (isInverted) ? colorFilterInverter : colorFilterDefault;
 }

@@ -381,17 +381,31 @@ class AudioProvider extends ChangeNotifier {
     }
   }
 
+  DateTime lastDiceRoll01 = DateTime.now();
+  DateTime lastDiceRoll02 = DateTime.now();
+  DateTime lastDiceRoll03 = DateTime.now();
+
   Future<void> playDice(int index) async {
+    bool can01 =
+        lastDiceRoll01.difference(DateTime.now()).abs() > Duration(seconds: 2);
+    bool can02 =
+        lastDiceRoll02.difference(DateTime.now()).abs() > Duration(seconds: 2);
+    bool can03 =
+        lastDiceRoll03.difference(DateTime.now()).abs() > Duration(seconds: 2);
+
     int num = Random().nextInt(20);
-    if (index == 0) {
+    if (index == 0 && can01) {
+      lastDiceRoll01 = DateTime.now();
       await _dice01Player.stop();
       await _dice01Player.setAsset("assets/sounds/rolls/roll-$num.ogg");
       await _dice01Player.play();
-    } else if (index == 1) {
+    } else if (index == 1 && can02) {
+      lastDiceRoll02 = DateTime.now();
       await _dice02Player.stop();
       await _dice02Player.setAsset("assets/sounds/rolls/roll-$num.ogg");
       await _dice02Player.play();
-    } else if (index == 2) {
+    } else if (index == 2 && can03) {
+      lastDiceRoll03 = DateTime.now();
       await _dice03Player.stop();
       await _dice03Player.setAsset("assets/sounds/rolls/roll-$num.ogg");
       await _dice03Player.play();

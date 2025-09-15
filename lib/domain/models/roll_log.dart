@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 import '../../ui/_core/constants/roll_type.dart';
@@ -9,6 +10,7 @@ class RollLog {
   DateTime dateTime;
   bool isGettingLower;
   RollType rollType;
+  String? idSpell;
 
   RollLog({
     required this.rolls,
@@ -16,6 +18,7 @@ class RollLog {
     required this.dateTime,
     required this.isGettingLower,
     required this.rollType,
+    this.idSpell,
   });
 
   RollLog copyWith({
@@ -24,6 +27,7 @@ class RollLog {
     DateTime? dateTime,
     bool? isGettingLower,
     RollType? rollType,
+    String? idSpell,
   }) {
     return RollLog(
       rolls: rolls ?? this.rolls,
@@ -31,6 +35,7 @@ class RollLog {
       dateTime: dateTime ?? this.dateTime,
       isGettingLower: isGettingLower ?? this.isGettingLower,
       rollType: rollType ?? this.rollType,
+      idSpell: idSpell ?? this.idSpell,
     );
   }
 
@@ -41,18 +46,21 @@ class RollLog {
       'dateTime': dateTime.millisecondsSinceEpoch,
       'isGettingLower': isGettingLower,
       'rollType': rollType.name,
+      'idSpell': idSpell,
     };
   }
 
   factory RollLog.fromMap(Map<String, dynamic> map) {
     return RollLog(
-        rolls: List<int>.from((map['rolls'] as List<dynamic>)),
-        idAction: map['idAction'] as String,
-        dateTime: DateTime.fromMillisecondsSinceEpoch(map['dateTime'] as int),
-        isGettingLower: map['isGettingLower'] as bool,
-        rollType: map['rollType'] != null
-            ? RollType.values.where((e) => e.name == map['rollType']).first
-            : RollType.difficult);
+      rolls: List<int>.from((map['rolls'] as List<dynamic>)),
+      idAction: map['idAction'] as String,
+      dateTime: DateTime.fromMillisecondsSinceEpoch(map['dateTime'] as int),
+      isGettingLower: map['isGettingLower'] as bool,
+      rollType: map['rollType'] != null
+          ? RollType.values.where((e) => e.name == map['rollType']).first
+          : RollType.difficult,
+      idSpell: map['idSpell'] != null ? map['idSpell'] as String : null,
+    );
   }
 
   String toJson() => json.encode(toMap());
@@ -62,17 +70,20 @@ class RollLog {
 
   @override
   String toString() {
-    return 'RollLog(rolls: $rolls, idAction: $idAction, dateTime: $dateTime, isGettingLower: $isGettingLower)';
+    return 'RollLog(rolls: $rolls, idAction: $idAction, dateTime: $dateTime, isGettingLower: $isGettingLower, rollType: $rollType, idSpell: $idSpell)';
   }
 
   @override
-  bool operator ==(covariant RollLog other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return listEquals(other.rolls, rolls) &&
+    return other is RollLog &&
+        listEquals(other.rolls, rolls) &&
         other.idAction == idAction &&
         other.dateTime == dateTime &&
-        other.isGettingLower == isGettingLower;
+        other.isGettingLower == isGettingLower &&
+        other.rollType == rollType &&
+        other.idSpell == idSpell;
   }
 
   @override
@@ -80,6 +91,8 @@ class RollLog {
     return rolls.hashCode ^
         idAction.hashCode ^
         dateTime.hashCode ^
-        isGettingLower.hashCode;
+        isGettingLower.hashCode ^
+        rollType.hashCode ^
+        idSpell.hashCode;
   }
 }

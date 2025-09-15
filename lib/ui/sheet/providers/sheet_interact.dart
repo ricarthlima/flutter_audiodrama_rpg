@@ -8,6 +8,7 @@ import 'package:flutter_rpg_audiodrama/domain/models/campaign_roll.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:uuid/uuid.dart';
+import '../../../domain/dto/spell.dart';
 import '../helpers/sheet_subpages.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -62,6 +63,7 @@ abstract class SheetInteract {
     required ActionTemplate action,
     required String groupId,
     required RollType rollType,
+    Spell? spell,
   }) async {
     SheetViewModel sheetVM = context.read<SheetViewModel>();
     CampaignViewModel campaignVM = context.read<CampaignViewModel>();
@@ -108,6 +110,7 @@ abstract class SheetInteract {
       dateTime: DateTime.now(),
       isGettingLower: newActionValue <= 1,
       rollType: rollType,
+      idSpell: spell?.name,
     );
 
     sheetVM.onRoll(roll: roll, groupId: groupId);

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:flutter_rpg_audiodrama/domain/dto/spell.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/models/group_action.dart';
 import '../../../data/repositories/action_repository.dart';
@@ -44,7 +45,7 @@ class SheetViewModel extends ChangeNotifier {
   Sheet? sheet;
 
   // Atributos locais
-  RollLog? currentRollLog;
+  List<RollLog> currentRollLog = [];
   ActionTemplate? showingRollTip;
   ActionTemplate? showingActionTip;
   ActionTemplate? showingActionLore;
@@ -282,7 +283,7 @@ class SheetViewModel extends ChangeNotifier {
         return "Ação de Preparação: uma ação livre que exige Esforço.";
       case RollType.resisted:
         String result =
-            "(Apenas personagem contra personagem)\nTeste Resistido: conte os sucessos DT10 baseado no seu treinamento.";
+            "Teste Resistido\nConte os sucessos DT10 baseado no seu treinamento.";
         if (trainingLevel <= 1) {
           result +=
               "\nComo seu treinamento é '${getTrainingLevel(trainingLevel)}', apenas o menor dado será considerado para o teste contra a DT10.";
@@ -290,7 +291,7 @@ class SheetViewModel extends ChangeNotifier {
         return result;
       case RollType.difficult:
         String result =
-            "(Personagem contra o mundo ou situações)\nTeste de Dificuldade: pegue um número baseado no seu treinamento.";
+            "Teste de Dificuldade\nPegue um número baseado no seu treinamento.";
         if (trainingLevel <= 1) {
           result +=
               "\nComo seu treinamento é '${getTrainingLevel(trainingLevel)}', pegue o menor dado.";
@@ -586,7 +587,7 @@ class SheetViewModel extends ChangeNotifier {
 
     if (!actionRepo.isOnlyFreeOrPreparation(roll.idAction) ||
         actionRepo.isLuckAction(roll.idAction)) {
-      currentRollLog = roll;
+      currentRollLog.add(roll);
     } else {
       showingRollTip = action;
     }
@@ -605,7 +606,7 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   void onStackDialogDismiss() {
-    currentRollLog = null;
+    currentRollLog = [];
     showingRollTip = null;
     showingActionTip = null;
     showingActionLore = null;
@@ -708,5 +709,16 @@ class SheetViewModel extends ChangeNotifier {
       }
     }
     return null;
+  }
+
+  void addSpell(Spell data) {
+    if (sheet!.listSpell.contains(data.name)) return;
+    sheet!.listSpell.add(data.name);
+  }
+
+  void removeSpell(Spell data) {
+    if (!sheet!.listSpell.contains(data.name)) return;
+    sheet!.listSpell.remove(data.name);
+    scheduleSave();
   }
 }

@@ -2,13 +2,32 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/color_filter_inverter.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/constants/helper_image_path.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/dto/spell.dart';
 import '../../../domain/models/roll_log.dart';
 import '../../_core/constants/roll_type.dart';
-import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import '../providers/sheet_view_model.dart';
+
+class MultipleRollDialog extends StatelessWidget {
+  final List<RollLog> listRollLog;
+  const MultipleRollDialog({super.key, required this.listRollLog});
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      children: List.generate(listRollLog.length, (index) {
+        return Transform.scale(
+          scale: listRollLog.length > 1 ? 0.75 : 1,
+          child: RollStackDialog(rollLog: listRollLog[index]),
+        );
+      }),
+    );
+  }
+}
 
 class RollStackDialog extends StatefulWidget {
   final RollLog rollLog;
@@ -67,10 +86,15 @@ class _RollStackDialogState extends State<RollStackDialog> {
   Widget build(BuildContext context) {
     final sheetVM = Provider.of<SheetViewModel>(context);
 
+    Spell? spell;
+    if (widget.rollLog.idSpell != null) {
+      spell = sheetVM.spellRepo.getById(widget.rollLog.idSpell!);
+    }
     return Container(
+      constraints: BoxConstraints(minWidth: 500),
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.black.withAlpha(200),
+        color: Colors.black.withAlpha(225),
         borderRadius: BorderRadius.zero,
         border: Border.all(width: 5, color: Colors.white),
       ),
@@ -88,9 +112,10 @@ class _RollStackDialogState extends State<RollStackDialog> {
                 .name,
             style: TextStyle(fontSize: 32, fontFamily: FontFamily.bungee),
           ),
+
           Wrap(
-            spacing: isVertical(context) ? 32 : 64,
-            runSpacing: isVertical(context) ? 32 : 64,
+            spacing: 32,
+            runSpacing: 32,
             alignment: WrapAlignment.center,
             runAlignment: WrapAlignment.center,
             children: List.generate(widget.rollLog.rolls.length, (index) {
@@ -98,8 +123,8 @@ class _RollStackDialogState extends State<RollStackDialog> {
                 opacity: listOpacity[index],
                 duration: Duration(milliseconds: 750),
                 child: SizedBox(
-                  width: isVertical(context) ? 128 : 256,
-                  height: isVertical(context) ? 128 : 256,
+                  width: 128,
+                  height: 128,
                   child: Stack(
                     children: [
                       AnimatedSwitcher(
@@ -172,16 +197,61 @@ class _RollStackDialogState extends State<RollStackDialog> {
                 ],
               ),
             ),
-          Opacity(
-            opacity: 0.40,
-            child: Text(
-              sheetVM.getHelperText(
-                context.read<SheetViewModel>().actionRepo.getActionById(
-                  widget.rollLog.idAction,
-                )!,
-                widget.rollLog.rollType,
+          if (spell != null)
+            Container(
+              constraints: BoxConstraints(
+                minWidth: 400,
+                maxWidth: 400,
+                maxHeight: 200,
               ),
-              textAlign: TextAlign.center,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text(
+                      spell.name,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(spell.description, textAlign: TextAlign.center),
+                  ],
+                ),
+              ),
+            ),
+          SizedBox(width: 300, child: Divider()),
+          SizedBox(
+            width: 300,
+            child: Opacity(
+              opacity: 0.40,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8,
+                children: [
+                  ColorFiltered(
+                    colorFilter: colorFilterInverter,
+                    child: Image.asset(
+                      (widget.rollLog.rollType == RollType.difficult)
+                          ? HelperImagePath.dice
+                          : HelperImagePath.sword,
+                      width: 32,
+                      height: 32,
+                    ),
+                  ),
+                  Flexible(
+                    child: Text(
+                      sheetVM.getHelperText(
+                        context.read<SheetViewModel>().actionRepo.getActionById(
+                          widget.rollLog.idAction,
+                        )!,
+                        widget.rollLog.rollType,
+                      ),
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 10),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

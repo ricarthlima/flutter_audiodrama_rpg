@@ -74,7 +74,8 @@ class _SheetScreenState extends State<SheetScreen> {
       sheetVM.onStackDialogDismiss();
     } else if (event is KeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.keyQ &&
-        !(sheetVM.showingActionLore != null)) {
+        !(sheetVM.showingActionLore != null) &&
+        sheetVM.currentPage == SheetSubpages.sheet) {
       showSearchDialog().then((value) {
         HardwareKeyboard.instance.addHandler(_keyListener);
         if (value != null) {
@@ -278,12 +279,12 @@ class _SheetScreenState extends State<SheetScreen> {
           padding: const EdgeInsets.only(right: 80.0),
           child: GroupNotifications(),
         ),
-        if (sheetVM.currentRollLog != null)
+        if (sheetVM.currentRollLog.isNotEmpty)
           StackDialog(
             onDismiss: () {
               sheetVM.onStackDialogDismiss();
             },
-            child: RollStackDialog(rollLog: sheetVM.currentRollLog!),
+            child: MultipleRollDialog(listRollLog: sheetVM.currentRollLog),
           ),
         if (sheetVM.showingRollTip != null)
           StackDialog(
