@@ -18,7 +18,7 @@ class CampaignSheetsWidget extends StatelessWidget {
       spacing: 32,
       children: [
         Flexible(
-          fit: FlexFit.tight,
+          fit: FlexFit.loose,
           child: ListSheetsWidget(
             title: "Meus personagens",
             actions: [
@@ -42,14 +42,16 @@ class CampaignSheetsWidget extends StatelessWidget {
                   ),
                 )
                 .toList(),
+            showExpand: true,
           ),
         ),
         if (campaignVM.isOwner)
           Flexible(
-            fit: FlexFit.tight,
+            fit: FlexFit.loose,
             child: ListSheetsWidget(
               title: "Outros personagens",
               listSheetsAppUser: campaignVM.listSheetAppUser,
+              showExpand: true,
             ),
           ),
       ],
