@@ -28,43 +28,9 @@ class _HomeSheetScreenState extends State<HomeSheetScreen> {
     final userProvider = Provider.of<UserProvider>(context);
 
     if (isVertical(context)) {
-      return Stack(
-        children: [
-          PageView(
-            controller: pageController,
-            children: _buildBody(userProvider),
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(
-              onPressed: () {
-                Duration duration = Duration(milliseconds: 500);
-                Curve curve = Curves.ease;
-
-                if (pageController.page?.floor() == 0) {
-                  pageController
-                      .nextPage(duration: duration, curve: curve)
-                      .then((_) {
-                        setState(() {});
-                      });
-                } else {
-                  pageController
-                      .previousPage(duration: duration, curve: curve)
-                      .then((_) {
-                        setState(() {});
-                      });
-                }
-              },
-              child: Icon(
-                pageController.positions.isNotEmpty
-                    ? pageController.page?.floor() == 0
-                          ? Icons.arrow_forward
-                          : Icons.arrow_back
-                    : Icons.abc,
-              ),
-            ),
-          ),
-        ],
+      return PageView(
+        controller: pageController,
+        children: _buildBody(userProvider),
       );
     } else {
       return Row(children: _buildBody(userProvider));
@@ -75,17 +41,17 @@ class _HomeSheetScreenState extends State<HomeSheetScreen> {
     return [
       Flexible(
         child: HomeListSheetsWidget(
-          title: "Personagens em Campanhas",
-          listSheets: userProvider.listSheetsInCampaigns,
+          title: "Personagens avulsos",
+          listSheets: userProvider.listSheetsOutCampaigns,
           username: userProvider.currentAppUser.username!,
-          showAdding: false,
         ),
       ),
       Flexible(
         child: HomeListSheetsWidget(
-          title: "Personagens avulsos",
-          listSheets: userProvider.listSheetsOutCampaigns,
+          title: "Personagens em Campanhas",
+          listSheets: userProvider.listSheetsInCampaigns,
           username: userProvider.currentAppUser.username!,
+          showAdding: false,
         ),
       ),
     ];
