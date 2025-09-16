@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/domain/dto/spell.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/helper_image_path.dart';
@@ -6,6 +7,8 @@ import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart'
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/services/chat_service.dart';
+import '../../../domain/models/campaign.dart';
 import '../../_core/color_filter_inverter.dart';
 
 class SpellWidget extends StatefulWidget {
@@ -45,6 +48,8 @@ class _SpellWidgetState extends State<SpellWidget> {
   @override
   Widget build(BuildContext context) {
     SheetViewModel sheetVM = Provider.of<SheetViewModel>(context);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    Campaign? campaign = userProvider.getCampaignBySheet(sheetVM.sheet!.id);
 
     return InkWell(
       onTap: () {
@@ -112,18 +117,13 @@ class _SpellWidgetState extends State<SpellWidget> {
                 ),
                 Row(
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "Em breve: mostrar descrição da magia no chat.",
-                            ),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.chat),
-                    ),
+                    if (campaign != null)
+                      IconButton(
+                        onPressed: () {
+                          _sendToChat(sheetVM, campaign);
+                        },
+                        icon: Icon(Icons.chat),
+                      ),
                     IconButton(
                       onPressed: () {
                         setState(() {
@@ -155,7 +155,7 @@ class _SpellWidgetState extends State<SpellWidget> {
                   Opacity(
                     opacity: 0.75,
                     child: Text(
-                      "Alcance: ${widget.spell.range}.\nVínculo? ${_boolToSim(widget.spell.isBond)}.",
+                      "$_range $_bond",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 11,
@@ -170,6 +170,10 @@ class _SpellWidgetState extends State<SpellWidget> {
       ),
     );
   }
+
+  String get _range => "Alcance: ${widget.spell.range}.";
+
+  String get _bond => "Vínculo? ${_boolToSim(widget.spell.isBond)}.";
 
   String _boolToSim(bool value) {
     if (value) {
@@ -291,6 +295,25 @@ class _SpellWidgetState extends State<SpellWidget> {
           ),
         );
       }),
+    );
+  }
+
+  void _sendToChat(SheetViewModel sheetVM, Campaign campaign) {
+    ChatService.instance.sendMessageToChat(
+      campaignId: campaign.id,
+      message:
+          """
+# (${widget.spell.energy}) ${widget.spell.name}
+${widget.spell.description}
+
+${widget.spell.actions.reduce((value, element) => value += " | $element")}
+
+**$_range**
+
+**$_bond**
+
+${widget.spell.tags.reduce((value, element) => value += element)}
+          """,
     );
   }
 }

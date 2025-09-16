@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import '../../../_core/providers/user_provider.dart';
 import '../../../domain/models/app_user.dart';
 import '../../../domain/models/campaign_chat.dart';
@@ -119,11 +120,9 @@ class _CampaignChatWidgetState extends State<CampaignChatWidget> {
                                     height: 18,
                                     child: (e.imageB64 != null)
                                         ? Image.memory(
-                                            base64Decode(e.imageB64!))
-                                        : Icon(
-                                            Icons.person,
-                                            size: 18,
-                                          ),
+                                            base64Decode(e.imageB64!),
+                                          )
+                                        : Icon(Icons.person, size: 18),
                                   ),
                                   title: Text(e.username ?? e.id ?? "sem nome"),
                                   dense: true,
@@ -141,10 +140,7 @@ class _CampaignChatWidgetState extends State<CampaignChatWidget> {
             ),
             Text(
               "Chat",
-              style: TextStyle(
-                fontSize: 14,
-                fontFamily: FontFamily.bungee,
-              ),
+              style: TextStyle(fontSize: 14, fontFamily: FontFamily.bungee),
             ),
           ],
         ),
@@ -160,9 +156,7 @@ class _CampaignChatWidgetState extends State<CampaignChatWidget> {
                   .map((e) => CampaignChatMessage.fromMap(e.data()))
                   .toList();
 
-              listMessages.sort(
-                (a, b) => a.createdAt.compareTo(b.createdAt),
-              );
+              listMessages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
               Widget result = Expanded(
                 child: ListView.builder(
@@ -170,28 +164,67 @@ class _CampaignChatWidgetState extends State<CampaignChatWidget> {
                   controller: scrollController,
                   itemBuilder: (context, index) {
                     CampaignChatMessage chatMessage = listMessages[index];
-                    return ListTile(
-                      key:
-                          index == listMessages.length - 1 ? lastItemKey : null,
-                      title: Text(chatMessage.message),
-                      subtitle: (Text(
-                        "${(chatMessage.userId == FirebaseAuth.instance.currentUser!.uid) ? (userProvider.currentAppUser.username ?? "") : campaignVM.listSheetAppUser.where((x) => x.appUser.id! == chatMessage.userId).first.appUser.username ?? ""} | ${DateFormat('dd/MM/yyyy - HH:mm', 'pt_BR').format(chatMessage.createdAt)}",
-                        style: TextStyle(fontSize: 8),
-                      )),
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      trailing: (campaignVM.isOwner)
-                          ? IconButton(
+                    return Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: Theme.of(context).textTheme.bodyMedium!.color!,
+                        ),
+                        color: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium!.color!.withAlpha(10),
+                      ),
+                      margin: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(8),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        spacing: 4,
+                        children: [
+                          ListTile(
+                            key: index == listMessages.length - 1
+                                ? lastItemKey
+                                : null,
+                            title: MarkdownBody(data: chatMessage.message),
+                            subtitle: (Text(
+                              "${(chatMessage.userId == FirebaseAuth.instance.currentUser!.uid) ? (userProvider.currentAppUser.username ?? "") : campaignVM.listSheetAppUser.where((x) => x.appUser.id! == chatMessage.userId).first.appUser.username ?? ""} | ${DateFormat('dd/MM/yyyy - HH:mm', 'pt_BR').format(chatMessage.createdAt)}",
+                              style: TextStyle(fontSize: 8),
+                            )),
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              await Clipboard.setData(
+                                ClipboardData(text: chatMessage.message),
+                              );
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Copiado para a área de transferência',
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            label: Text("Copiar"),
+                            icon: Icon(Icons.copy),
+                          ),
+                          if (campaignVM.isOwner)
+                            ElevatedButton.icon(
                               onPressed: () {
                                 ChatService.instance.deleteMessage(
                                   campaignId: campaignVM.campaign!.id,
                                   messageId: chatMessage.id,
                                 );
                               },
-                              iconSize: 12,
+
+                              label: Text("Remover"),
                               icon: Icon(Icons.delete),
-                            )
-                          : null,
+                            ),
+                        ],
+                      ),
                     );
                   },
                 ),
@@ -216,8 +249,8 @@ class _CampaignChatWidgetState extends State<CampaignChatWidget> {
         Container(
           height: 200,
           decoration: BoxDecoration(
-              color:
-                  Theme.of(context).textTheme.bodyMedium!.color!.withAlpha(15)),
+            color: Theme.of(context).textTheme.bodyMedium!.color!.withAlpha(15),
+          ),
           child: Container(
             alignment: Alignment.bottomCenter,
             padding: EdgeInsets.all(8),
