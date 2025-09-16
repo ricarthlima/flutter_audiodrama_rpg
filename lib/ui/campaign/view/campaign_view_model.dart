@@ -52,6 +52,8 @@ class CampaignViewModel extends ChangeNotifier {
     await _verifyNewAchievement();
     await getSheetsByCampaign();
 
+    listOpenSheet = [];
+
     isLoading = false;
   }
 
