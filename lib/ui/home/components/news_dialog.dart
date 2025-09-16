@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_rpg_audiodrama/data/services/news_service.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/text_markdown.dart';
 import 'package:intl/intl.dart';
 
 void showNewsDialog(BuildContext context, NewsModel news) {
@@ -58,11 +58,18 @@ class _NewsDialogState extends State<_NewsDialog> {
                     controller: scrollController,
                     child: SingleChildScrollView(
                       controller: scrollController,
-                      child: TextMarkdown(
-                        widget.news.description,
-                        regularStyle: TextStyle(
-                          fontFamily: "SourceSerif4",
-                          color: Colors.white,
+                      child: MarkdownBody(
+                        data: widget.news.description,
+                        styleSheet: MarkdownStyleSheet(
+                          p: TextStyle(
+                            fontFamily: "SourceSerif4",
+                            color: Colors.white,
+                          ),
+                          strong: TextStyle(
+                            fontFamily: "SourceSerif4",
+                            color: AppColors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
