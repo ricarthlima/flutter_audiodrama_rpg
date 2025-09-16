@@ -28,6 +28,8 @@ class AudioProvider extends ChangeNotifier {
   final AudioPlayer _dice02Player = AudioPlayer();
   final AudioPlayer _dice03Player = AudioPlayer();
 
+  final AudioPlayer _chatNotfPlayer = AudioPlayer();
+
   double globalLocalVolume = 1;
   double mscLocalVolume = 1;
   double ambLocalVolume = 1;
@@ -86,12 +88,16 @@ class AudioProvider extends ChangeNotifier {
     await _dice02Player.setLoopMode(LoopMode.off);
     await _dice03Player.setLoopMode(LoopMode.off);
 
+    await _chatNotfPlayer.setLoopMode(LoopMode.off);
+
     int num = Random().nextInt(20);
     await _dice01Player.setAsset("assets/sounds/rolls/roll-$num.ogg");
     num = Random().nextInt(20);
     await _dice02Player.setAsset("assets/sounds/rolls/roll-$num.ogg");
     num = Random().nextInt(20);
     await _dice03Player.setAsset("assets/sounds/rolls/roll-$num.ogg");
+
+    await _chatNotfPlayer.setAsset("assets/sounds/chat-notification.mp3");
   }
 
   void onDispose() {
@@ -104,6 +110,7 @@ class AudioProvider extends ChangeNotifier {
     _dice01Player.stop();
     _dice02Player.stop();
     _dice03Player.stop();
+    _chatNotfPlayer.stop();
   }
 
   Future<void> changeMusicVolume(double campaignVolume) async {
@@ -379,6 +386,14 @@ class AudioProvider extends ChangeNotifier {
         await _sfxPlayer.stop();
         break;
     }
+  }
+
+  Future<void> playChatNotification() async {
+    if (_chatNotfPlayer.playing) {
+      await _chatNotfPlayer.stop();
+    }
+    await _chatNotfPlayer.setAsset("assets/sounds/chat-notification.mp3");
+    await _chatNotfPlayer.play();
   }
 
   DateTime lastDiceRoll01 = DateTime.now();

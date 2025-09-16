@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_fullscreen/flutter_fullscreen.dart';
 import 'package:provider/provider.dart';
 
+import '../../../_core/providers/audio_provider.dart';
 import '../../../data/services/chat_service.dart';
 import '../../../router.dart';
 import '../../_core/app_colors.dart';
@@ -22,7 +23,7 @@ class CampaignDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final campaignVM = Provider.of<CampaignViewModel>(context);
-
+    AudioProvider audioProvider = Provider.of<AudioProvider>(context);
     return MouseRegion(
       // onEnter: (event) {
       //   if (event.delta.dx > 0) {
@@ -147,6 +148,10 @@ class CampaignDrawer extends StatelessWidget {
                               snapshot.data!.size -
                               campaignVM.countChatMessages;
                         }
+                      }
+
+                      if (count > 0) {
+                        audioProvider.playChatNotification();
                       }
 
                       return Badge.count(
