@@ -57,6 +57,7 @@ flutter:
   assets:
     # - assets/sheets/
     - assets/images/
+    - assets/images/press-kit/
     - assets/lotties/
     - assets/sounds/
     - assets/sounds/rolls/

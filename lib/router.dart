@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/splash/splash_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -25,16 +26,22 @@ class AppRouter {
   static final GoRouter router = GoRouter(
     redirect: (context, state) async {
       bool loggedIn = FirebaseAuth.instance.currentUser != null;
-      if (!loggedIn) {
+      if (!loggedIn && state.fullPath != home) {
         return auth;
       }
-      await Provider.of<UserProvider>(context, listen: false).onInitialize();
+      if (loggedIn) {
+        await Provider.of<UserProvider>(context, listen: false).onInitialize();
+      }
       return null;
     },
     routes: [
       GoRoute(
         path: home,
         builder: (context, state) {
+          bool loggedIn = FirebaseAuth.instance.currentUser != null;
+          if (!loggedIn) {
+            return SplashScreen();
+          }
           disposeListeners(context);
           return HomeScreen();
         },
