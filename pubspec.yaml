@@ -76,13 +76,15 @@ flutter_launcher_icons:
     min_sdk_android: 21
     ios: true
     remove_alpha_channel_ios: true  
-    color: "#261918" 
+    color: "#0b0a0d" 
 
 flutter_native_splash:
-  color: "#261918"  
+  color: "#0b0a0d"  
   android_12:
-    color: "#261918"
+    color: "#0b0a0d"
   android: true
+  web: true
   ios: false
-  web: false
-
+  image: assets/images/d20-0.png
+  branding: assets/images/logo.png
+  branding_bottom_padding: 64

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_fullscreen/flutter_fullscreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_rpg_audiodrama/_core/helpers/print.dart';
 import 'package:flutter_rpg_audiodrama/data/repositories/spell_repository.dart';
 import 'package:flutter_rpg_audiodrama/data/repositories_remote/action_repository_remote.dart';
@@ -39,7 +40,8 @@ FirebaseOptions get currentPlatform => flavor == 'dev'
     : prod.DefaultFirebaseOptions.currentPlatform;
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   printD(flavor);
 
@@ -116,6 +118,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FlutterNativeSplash.remove();
     final themeProvider = Provider.of<SettingsProvider>(context);
 
     return MaterialApp.router(
