@@ -8,11 +8,14 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/domain/dto/spell.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/sheet_custom_count.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/models/group_action.dart';
+import '../../../data/modules.dart';
 import '../../../data/repositories/action_repository.dart';
 // import '../../../data/repositories/condition_repository.dart';
 import '../../../data/repositories/spell_repository.dart';
+import '../../../domain/models/campaign.dart';
 import '../helpers/sheet_subpages.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -231,13 +234,50 @@ class SheetViewModel extends ChangeNotifier {
   void restShort() {
     sheet!.stressPoints = max(0, sheet!.stressPoints - 3);
     sheet!.exhaustPoints = max(0, sheet!.exhaustPoints - 3);
+
+    if (customCount(energySpellModuleSCC) != null &&
+        sheet!.booleans["hasShortRested"] != true) {
+      _recoverEnergy(half: true);
+    }
+
+    sheet!.booleans["hasShortRested"] = true;
+
     scheduleSave();
   }
 
   void restLong() {
     sheet!.stressPoints = max(0, sheet!.stressPoints - 6);
     sheet!.exhaustPoints = 0;
+
+    if (customCount(energySpellModuleSCC) != null) {
+      _recoverEnergy();
+    }
+
+    sheet!.booleans["hasShortRested"] = false;
+
     scheduleSave();
+  }
+
+  void _recoverEnergy({bool half = false}) {
+    int maxToRecover = 0;
+    switch (sheet!.baseLevel) {
+      case 0:
+        maxToRecover = 6;
+      case 1:
+        maxToRecover = 12;
+      case 2:
+        maxToRecover = 18;
+      case 3:
+        maxToRecover = 27;
+    }
+    int amountToRecover = maxToRecover;
+    if (half) {
+      amountToRecover = amountToRecover ~/ 2;
+    }
+    customCount(energySpellModuleSCC)!.count = min(
+      maxToRecover,
+      customCount(energySpellModuleSCC)!.count + amountToRecover,
+    );
   }
 
   int getAptidaoMaxByLevel() {
@@ -719,6 +759,82 @@ class SheetViewModel extends ChangeNotifier {
   void removeSpell(Spell data) {
     if (!sheet!.listSpell.contains(data.name)) return;
     sheet!.listSpell.remove(data.name);
+    scheduleSave();
+  }
+
+  bool showMagicModule(Campaign? campaign) {
+    return (campaign != null &&
+            campaign.campaignSheetSettings.listActiveModuleIds.contains(
+              Module.magic.id,
+            )) ||
+        (campaign == null &&
+            sheet!.listActiveModules.contains(Module.magic.id));
+  }
+
+  SheetCustomCount? customCount(String idd) {
+    Iterable<SheetCustomCount> query = sheet!.listCustomCount.where(
+      (e) => e.id == idd,
+    );
+
+    if (query.isNotEmpty) {
+      return query.first;
+    }
+
+    return null;
+  }
+
+  void customCountAdd(String idd) {
+    Iterable<SheetCustomCount> query = sheet!.listCustomCount.where(
+      (e) => e.id == idd,
+    );
+    if (query.isEmpty) {
+      sheet!.listCustomCount.add(
+        SheetCustomCount(id: idd, name: "", description: "", count: 1),
+      );
+    } else {
+      query.first.count += 1;
+    }
+
+    scheduleSave();
+  }
+
+  void customCountRemove(String idd) {
+    Iterable<SheetCustomCount> query = sheet!.listCustomCount.where(
+      (e) => e.id == idd,
+    );
+
+    if (query.isNotEmpty) {
+      query.first.count -= 1;
+    } else {
+      sheet!.listCustomCount.add(
+        SheetCustomCount(id: idd, name: "", description: "", count: -1),
+      );
+    }
+
+    scheduleSave();
+  }
+
+  void consumeEnergy(int energy) {
+    bool needToExhaust = false;
+    if (customCount(energySpellModuleSCC) != null) {
+      if (customCount(energySpellModuleSCC)!.count < energy) {
+        needToExhaust = true;
+      }
+      customCount(energySpellModuleSCC)!.count -= energy;
+    } else {
+      needToExhaust = true;
+      sheet!.listCustomCount.add(
+        SheetCustomCount(
+          id: energySpellModuleSCC,
+          name: "energy",
+          description: "",
+          count: energy * -1,
+        ),
+      );
+    }
+    if (needToExhaust) {
+      sheet!.exhaustPoints += 4;
+    }
     scheduleSave();
   }
 }

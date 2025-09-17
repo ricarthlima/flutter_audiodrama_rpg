@@ -13,3 +13,5 @@ class Module {
 
   static List<Module> get all => [magic];
 }
+
+const String energySpellModuleSCC = "ENERGY_SPELL_MODULE_SCC";

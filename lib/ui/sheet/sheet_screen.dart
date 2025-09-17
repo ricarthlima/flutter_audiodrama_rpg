@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/data/modules.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/stack_dialog.dart';
@@ -326,13 +325,6 @@ class _SheetScreenState extends State<SheetScreen> {
     SettingsProvider themeProvider,
   ) {
     Campaign? campaign = userProvider.getCampaignBySheet(sheetVM.sheet!.id);
-    bool showMagicModule =
-        (campaign != null &&
-            campaign.campaignSheetSettings.listActiveModuleIds.contains(
-              Module.magic.id,
-            )) ||
-        (campaign == null &&
-            sheetVM.sheet!.listActiveModules.contains(Module.magic.id));
 
     return SingleChildScrollView(
       child: Column(
@@ -385,7 +377,7 @@ class _SheetScreenState extends State<SheetScreen> {
                   icon: Icon(MdiIcons.treasureChest),
                 ),
               ),
-              if (showMagicModule)
+              if (sheetVM.showMagicModule(campaign))
                 Opacity(
                   opacity: (sheetVM.currentPage == SheetSubpages.magic)
                       ? 1

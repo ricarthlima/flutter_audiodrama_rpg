@@ -3,6 +3,8 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_rpg_audiodrama/data/modules.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/sheet_custom_count.dart';
 import '../../_core/helpers/release_collections.dart';
 import '../../_core/utils/supabase_prefs.dart';
 import 'campaign_service.dart';
@@ -117,6 +119,15 @@ class SheetService {
       listActiveWorks: [],
       listActiveModules: [],
       listSpell: [],
+      listCustomCount: [
+        SheetCustomCount(
+          id: energySpellModuleSCC,
+          name: "Energia",
+          description: "Contador de energia para módulo de magia",
+          count: 6,
+        ),
+      ],
+      booleans: {},
     );
 
     if (campaignId != null) {

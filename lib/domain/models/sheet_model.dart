@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/sheet_custom_count.dart';
 
 import 'action_lore.dart';
 import 'action_value.dart';
@@ -41,6 +42,10 @@ class Sheet {
   List<String> listActiveModules;
   List<String> listSpell;
 
+  List<SheetCustomCount> listCustomCount;
+
+  Map<String, bool> booleans;
+
   Sheet({
     required this.id,
     required this.characterName,
@@ -64,6 +69,8 @@ class Sheet {
     required this.exhaustPoints,
     required this.listSpell,
     required this.listActiveModules,
+    required this.listCustomCount,
+    required this.booleans,
   });
 
   Sheet copyWith({
@@ -90,6 +97,8 @@ class Sheet {
     int? exhaustPoints,
     List<String>? listSpell,
     List<String>? listActiveModules,
+    List<SheetCustomCount>? listCustomCount,
+    Map<String, bool>? booleans,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -114,6 +123,8 @@ class Sheet {
       exhaustPoints: exhaustPoints ?? this.exhaustPoints,
       listSpell: listSpell ?? this.listSpell,
       listActiveModules: listActiveModules ?? this.listActiveModules,
+      listCustomCount: listCustomCount ?? this.listCustomCount,
+      booleans: booleans ?? this.booleans,
     );
   }
 
@@ -141,6 +152,8 @@ class Sheet {
       "exhaustPoints": exhaustPoints,
       "listSpell": listSpell,
       "listActiveModules": listActiveModules,
+      'listCustomCount': listCustomCount.map((x) => x.toMap()).toList(),
+      'booleans': booleans,
     };
   }
 
@@ -224,6 +237,16 @@ class Sheet {
                 .map((e) => e.toString())
                 .toList()
           : [],
+      listCustomCount: (map['listCustomCount'] != null)
+          ? (map['listCustomCount'] as List<dynamic>)
+                .map((e) => SheetCustomCount.fromMap(e))
+                .toList()
+          : [],
+      booleans: (map['booleans'] != null)
+          ? (map['booleans'] as Map<String, dynamic>).map((key, value) {
+              return MapEntry(key, value as bool);
+            })
+          : {},
     );
   }
 
@@ -255,7 +278,8 @@ class Sheet {
         listEquals(other.listActiveWorks, listActiveWorks) &&
         exhaustPoints == other.exhaustPoints &&
         listSpell == other.listSpell &&
-        listActiveModules == other.listActiveModules;
+        listActiveModules == other.listActiveModules &&
+        listCustomCount == other.listCustomCount;
   }
 
   @override
@@ -279,7 +303,8 @@ class Sheet {
         listActiveWorks.hashCode ^
         exhaustPoints.hashCode ^
         listSpell.hashCode ^
-        listActiveModules.hashCode;
+        listActiveModules.hashCode ^
+        listCustomCount.hashCode;
   }
 
   @override

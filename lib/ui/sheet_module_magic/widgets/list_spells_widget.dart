@@ -6,6 +6,7 @@ import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_filter_widget.da
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_interact.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet_module_magic/dialog/spell_energy_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet_module_magic/widgets/spell_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -128,8 +129,23 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
     );
   }
 
-  void _rollActions({required Spell spell, required RollType rollType}) {
+  void _rollActions({required Spell spell, required RollType rollType}) async {
     SheetViewModel sheetVM = context.read<SheetViewModel>();
+
+    int energy = int.parse(spell.energy.replaceAll("+", ""));
+
+    if (spell.energy.contains("+")) {
+      int? value = await showDialog<int>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return Dialog(child: SpellEnergyDialog(minEnergy: energy));
+        },
+      );
+      if (value != null) {
+        energy = value;
+      }
+    }
 
     if (spell.actionIds.length == 1) {
       String id = spell.actionIds.first;
@@ -157,5 +173,7 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
         }
       }
     }
+
+    sheetVM.consumeEnergy(energy);
   }
 }

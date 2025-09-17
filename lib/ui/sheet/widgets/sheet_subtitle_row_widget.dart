@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/exhaust_level.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/condition_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../_core/providers/user_provider.dart';
+import '../../../data/modules.dart';
+import '../../../domain/models/campaign.dart';
 import '../../_core/fonts.dart';
 import '../../_core/stress_level.dart';
 import '../../_core/widgets/named_widget.dart';
@@ -44,6 +47,8 @@ class SheetSubtitleRowWidget extends StatelessWidget {
     final sheetVM = Provider.of<SheetViewModel>(context);
     final themeProvider = Provider.of<SettingsProvider>(context);
     final userProvider = Provider.of<UserProvider>(context);
+    Campaign? campaign = userProvider.getCampaignBySheet(sheetVM.sheet!.id);
+
     return [
       NamedWidget(
         title: "Nível de Exaustão",
@@ -314,9 +319,68 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           ),
         ),
       ),
+      if (sheetVM.showMagicModule(campaign))
+        NamedWidget(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          isShowLeftSeparator: true,
+          title: "",
+          hardHeight: 50,
+          titleWidget: Text(
+            "Energia",
+            style: TextStyle(
+              fontFamily: FontFamily.sourceSerif4,
+              fontSize: 10,
+              color: Colors.amber.withAlpha(150),
+            ),
+          ),
+          child: Row(
+            children: [
+              if (sheetVM.isOwner)
+                IconButton(
+                  onPressed: () {
+                    sheetVM.customCountRemove(energySpellModuleSCC);
+                  },
+                  icon: Icon(Icons.remove),
+                ),
+              SizedBox(
+                width: 22,
+                child: Center(
+                  child: Text(
+                    (_hasSpellEnergyCount(sheetVM))
+                        ? _spellEnergyCount(sheetVM).toString()
+                        : "0",
+                    style: TextStyle(
+                      fontFamily: FontFamily.bungee,
+                      color:
+                          (_hasSpellEnergyCount(sheetVM) &&
+                              _spellEnergyCount(sheetVM) < 0)
+                          ? AppColors.red
+                          : null,
+                    ),
+                  ),
+                ),
+              ),
+              if (sheetVM.isOwner)
+                IconButton(
+                  onPressed: () {
+                    sheetVM.customCountAdd(energySpellModuleSCC);
+                  },
+                  padding: EdgeInsets.zero,
+                  icon: Icon(Icons.add),
+                ),
+            ],
+          ),
+        ),
       if (isVertical(context)) SizedBox(width: 124),
     ];
   }
+
+  int _spellEnergyCount(SheetViewModel sheetVM) {
+    return sheetVM.customCount(energySpellModuleSCC)!.count;
+  }
+
+  bool _hasSpellEnergyCount(SheetViewModel sheetVM) =>
+      sheetVM.customCount(energySpellModuleSCC) != null;
 }
 
 int fInverse(int y) {
