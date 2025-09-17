@@ -162,6 +162,7 @@ class _SpellWidgetState extends State<SpellWidget> {
                       ),
                     ),
                   ),
+                  if (widget.spell.source != null) source,
                   tags,
                 ],
               ),
@@ -295,6 +296,16 @@ class _SpellWidgetState extends State<SpellWidget> {
           ),
         );
       }),
+    );
+  }
+
+  Widget get source {
+    return Opacity(
+      opacity: 0.75,
+      child: Text(
+        "Fonte: ${widget.spell.source!}",
+        style: TextStyle(fontSize: 11),
+      ),
     );
   }
 

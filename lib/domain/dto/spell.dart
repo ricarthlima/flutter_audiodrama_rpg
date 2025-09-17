@@ -17,6 +17,8 @@ class Spell implements FromMap {
   bool isResisted;
   bool hasBaseTest;
   List<String> actionIds;
+  String? source;
+
   Spell({
     required this.id,
     required this.energy,
@@ -30,6 +32,7 @@ class Spell implements FromMap {
     required this.isResisted,
     required this.hasBaseTest,
     required this.actionIds,
+    this.source,
   });
 
   Spell copyWith({
@@ -45,6 +48,7 @@ class Spell implements FromMap {
     bool? isResisted,
     bool? hasBaseTest,
     List<String>? actionIds,
+    String? source,
   }) {
     return Spell(
       id: id ?? this.id,
@@ -59,6 +63,7 @@ class Spell implements FromMap {
       isResisted: isResisted ?? this.isResisted,
       hasBaseTest: hasBaseTest ?? this.hasBaseTest,
       actionIds: actionIds ?? this.actionIds,
+      source: source ?? this.source,
     );
   }
 
@@ -76,6 +81,7 @@ class Spell implements FromMap {
       'isResisted': isResisted,
       'hasBaseTest': hasBaseTest,
       'actionIds': actionIds,
+      'source': source,
     };
   }
 
@@ -95,6 +101,7 @@ class Spell implements FromMap {
       actionIds: map['actionIds'] != null
           ? List<String>.from(map['actionIds'])
           : [],
+      source: map['source'],
     );
   }
 
@@ -104,7 +111,7 @@ class Spell implements FromMap {
 
   @override
   String toString() {
-    return 'Spell(id: $id, energy: $energy, name: $name, verbal: $verbal, description: $description, actions: $actions, range: $range, tags: $tags, isBond: $isBond, isResisted: $isResisted, hasBaseTest: $hasBaseTest, actionIds: $actionIds)';
+    return 'Spell(id: $id, energy: $energy, name: $name, verbal: $verbal, description: $description, actions: $actions, range: $range, tags: $tags, isBond: $isBond, isResisted: $isResisted, hasBaseTest: $hasBaseTest, actionIds: $actionIds, source: $source)';
   }
 
   @override
@@ -123,7 +130,8 @@ class Spell implements FromMap {
         other.isBond == isBond &&
         other.isResisted == isResisted &&
         other.hasBaseTest == hasBaseTest &&
-        listEquals(other.actionIds, actionIds);
+        listEquals(other.actionIds, actionIds) &&
+        other.source == source;
   }
 
   @override
@@ -139,6 +147,7 @@ class Spell implements FromMap {
         isBond.hashCode ^
         isResisted.hashCode ^
         hasBaseTest.hashCode ^
-        actionIds.hashCode;
+        actionIds.hashCode ^
+        source.hashCode;
   }
 }

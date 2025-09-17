@@ -87,7 +87,8 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
                         .toList();
                   });
                 },
-                textExtractor: (spell) => spell.name,
+                textExtractor: (spell) =>
+                    spell.name + spell.verbal + (spell.source ?? ""),
                 enableSearch: true,
               ),
             ] +
