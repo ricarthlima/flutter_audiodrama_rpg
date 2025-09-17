@@ -193,7 +193,7 @@ class _SpellWidgetState extends State<SpellWidget> {
           children: [
             leading,
             Text(
-              "(${widget.spell.energy}) ${widget.spell.name}",
+              "(${widget.spell.energy}) ${(widget.spell.isBond) ? '(V)' : ''} ${widget.spell.name}",
               style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             ),
             Text(

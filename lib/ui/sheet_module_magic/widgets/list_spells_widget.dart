@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/domain/dto/action_template.dart';
 import 'package:flutter_rpg_audiodrama/domain/dto/spell.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/sheet_custom_count.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_filter_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_interact.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet_module_magic/dialog/spell_bond_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet_module_magic/dialog/spell_energy_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet_module_magic/widgets/spell_widget.dart';
 import 'package:provider/provider.dart';
@@ -89,10 +91,7 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
                   });
                 },
                 textExtractor: (spell) =>
-                    spell.name +
-                    spell.verbal +
-                    (spell.source ?? "") +
-                    spell.tags.reduce((v, e) => v += e),
+                    spell.name + spell.verbal + (spell.source ?? ""),
                 enableSearch: true,
               ),
             ] +
@@ -135,9 +134,22 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
   void _rollActions({required Spell spell, required RollType rollType}) async {
     SheetViewModel sheetVM = context.read<SheetViewModel>();
 
+    if (sheetVM.getBoolean("isBonded") && spell.isBond) {
+      bool? canRoll = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return Dialog(child: SpellBondDialog(sheetVM: sheetVM));
+        },
+      );
+
+      if (canRoll != true) return;
+    }
+
     int energy = int.parse(spell.energy.replaceAll("+", ""));
 
     if (spell.energy.contains("+")) {
+      if (!mounted) return;
       int? value = await showDialog<int>(
         context: context,
         barrierDismissible: false,
@@ -150,12 +162,11 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
       }
     }
 
-    if (!context.mounted) return;
-
     if (spell.actionIds.length == 1) {
       String id = spell.actionIds.first;
       ActionTemplate? action = sheetVM.actionRepo.getActionById(id);
       if (action != null) {
+        if (!mounted) return;
         SheetInteract.rollAction(
           context: context,
           action: action,
@@ -168,6 +179,7 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
       for (String id in spell.actionIds) {
         ActionTemplate? action = sheetVM.actionRepo.getActionById(id);
         if (action != null) {
+          if (!mounted) return;
           SheetInteract.rollAction(
             context: context,
             action: action,
@@ -177,6 +189,19 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
           );
         }
       }
+    }
+
+    if (spell.isBond) {
+      sheetVM.customCountInsert(
+        SheetCustomCount(
+          id: "bond",
+          name: spell.name,
+          description: "",
+          count: 0,
+        ),
+      );
+
+      sheetVM.setBoolean("isBonded", true);
     }
 
     sheetVM.consumeEnergy(energy);

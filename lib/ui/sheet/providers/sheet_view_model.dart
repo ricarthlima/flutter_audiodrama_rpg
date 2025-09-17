@@ -814,6 +814,24 @@ class SheetViewModel extends ChangeNotifier {
     scheduleSave();
   }
 
+  void customCountInsert(SheetCustomCount value) {
+    int index = sheet!.listCustomCount.indexWhere((e) => e.id == value.id);
+
+    if (index != -1) {
+      sheet!.listCustomCount[index] = value;
+    } else {
+      sheet!.listCustomCount.add(value);
+    }
+
+    scheduleSave();
+  }
+
+  void customCountDelete(String idd) {
+    sheet!.listCustomCount.removeWhere((e) => e.id == idd);
+
+    scheduleSave();
+  }
+
   void consumeEnergy(int energy) {
     bool needToExhaust = false;
     if (customCount(energySpellModuleSCC) != null) {
@@ -835,6 +853,15 @@ class SheetViewModel extends ChangeNotifier {
     if (needToExhaust) {
       sheet!.exhaustPoints += 4;
     }
+    scheduleSave();
+  }
+
+  bool getBoolean(String idd) {
+    return sheet!.booleans[idd] ?? false;
+  }
+
+  void setBoolean(String idd, bool value) {
+    sheet!.booleans[idd] = value;
     scheduleSave();
   }
 }

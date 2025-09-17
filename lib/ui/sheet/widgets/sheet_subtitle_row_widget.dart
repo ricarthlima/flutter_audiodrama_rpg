@@ -371,6 +371,37 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             ],
           ),
         ),
+      if (sheetVM.showMagicModule(campaign))
+        NamedWidget(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          isShowLeftSeparator: true,
+          title: "",
+          hardHeight: 50,
+          titleWidget: Text(
+            "Vinculado",
+            style: TextStyle(
+              fontFamily: FontFamily.sourceSerif4,
+              fontSize: 10,
+              color: Colors.amber.withAlpha(150),
+            ),
+          ),
+          child: Tooltip(
+            message: (sheetVM.getBoolean("isBonded"))
+                ? sheetVM.customCount("bond") != null
+                      ? sheetVM.customCount("bond")!.name
+                      : "Vínculo desconhecido."
+                : "",
+            child: Checkbox(
+              value: sheetVM.getBoolean("isBonded"),
+              onChanged: (value) {
+                sheetVM.setBoolean("isBonded", !sheetVM.getBoolean("isBonded"));
+                if (!sheetVM.getBoolean("isBonded")) {
+                  sheetVM.customCountDelete("bond");
+                }
+              },
+            ),
+          ),
+        ),
       if (isVertical(context)) SizedBox(width: 124),
     ];
   }
