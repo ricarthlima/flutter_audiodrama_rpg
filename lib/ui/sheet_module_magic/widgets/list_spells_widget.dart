@@ -89,7 +89,10 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
                   });
                 },
                 textExtractor: (spell) =>
-                    spell.name + spell.verbal + (spell.source ?? ""),
+                    spell.name +
+                    spell.verbal +
+                    (spell.source ?? "") +
+                    spell.tags.reduce((v, e) => v += e),
                 enableSearch: true,
               ),
             ] +
@@ -146,6 +149,8 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
         energy = value;
       }
     }
+
+    if (!context.mounted) return;
 
     if (spell.actionIds.length == 1) {
       String id = spell.actionIds.first;

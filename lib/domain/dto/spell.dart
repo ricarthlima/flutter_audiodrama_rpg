@@ -18,6 +18,7 @@ class Spell implements FromMap {
   bool hasBaseTest;
   List<String> actionIds;
   String? source;
+  bool isBeta;
 
   Spell({
     required this.id,
@@ -33,6 +34,7 @@ class Spell implements FromMap {
     required this.hasBaseTest,
     required this.actionIds,
     this.source,
+    required this.isBeta,
   });
 
   Spell copyWith({
@@ -49,6 +51,7 @@ class Spell implements FromMap {
     bool? hasBaseTest,
     List<String>? actionIds,
     String? source,
+    bool? isBeta,
   }) {
     return Spell(
       id: id ?? this.id,
@@ -64,6 +67,7 @@ class Spell implements FromMap {
       hasBaseTest: hasBaseTest ?? this.hasBaseTest,
       actionIds: actionIds ?? this.actionIds,
       source: source ?? this.source,
+      isBeta: isBeta ?? this.isBeta,
     );
   }
 
@@ -82,6 +86,7 @@ class Spell implements FromMap {
       'hasBaseTest': hasBaseTest,
       'actionIds': actionIds,
       'source': source,
+      'isBeta': isBeta,
     };
   }
 
@@ -102,6 +107,7 @@ class Spell implements FromMap {
           ? List<String>.from(map['actionIds'])
           : [],
       source: map['source'],
+      isBeta: map['isBeta'] ?? true,
     );
   }
 

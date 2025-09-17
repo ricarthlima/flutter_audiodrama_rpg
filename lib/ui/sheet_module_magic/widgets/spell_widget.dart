@@ -3,6 +3,7 @@ import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/domain/dto/spell.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/helper_image_path.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -185,17 +186,34 @@ class _SpellWidgetState extends State<SpellWidget> {
 
   Row _buildTitle() {
     return Row(
-      spacing: 8,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        leading,
-        Text(
-          "(${widget.spell.energy}) ${widget.spell.name}",
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          "(${widget.spell.verbal})",
-          style: TextStyle(fontStyle: FontStyle.italic),
+        Row(
+          spacing: 8,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            leading,
+            Text(
+              "(${widget.spell.energy}) ${widget.spell.name}",
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "(${widget.spell.verbal})",
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+            if (widget.spell.isBeta)
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                color: AppColors.red,
+                child: Text(
+                  "BETA",
+                  style: TextStyle(
+                    fontFamily: FontFamily.bungee,
+                    fontSize: 10,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+          ],
         ),
       ],
     );
