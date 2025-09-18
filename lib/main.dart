@@ -16,7 +16,6 @@ import '_core/url_strategy/url_strategy.dart';
 import 'data/repositories/action_repository.dart';
 import 'data/repositories/item_repository.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '_core/providers/audio_provider.dart';
 import '_core/providers/user_provider.dart';
@@ -52,11 +51,6 @@ void main() async {
   configureUrlStrategy();
 
   await Firebase.initializeApp(options: currentPlatform);
-
-  await Supabase.initialize(
-    url: const String.fromEnvironment("SUPABASE_URL"),
-    anonKey: const String.fromEnvironment("SUPABASE_ANON_KEY"),
-  );
 
   ActionRepository actionRepo = ActionRepositoryRemote();
   await actionRepo.onInitialize();

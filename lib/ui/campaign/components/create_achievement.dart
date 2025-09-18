@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/domain/exceptions/general_exceptions.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/snackbars/snackbars.dart';
 import '../../../domain/models/campaign_achievement.dart';
 import '../view/campaign_view_model.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/app_colors.dart';
@@ -33,7 +36,7 @@ class _CreateAchievementDialog extends StatefulWidget {
 class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
   final formKey = GlobalKey<FormState>();
 
-  XFile? image;
+  Uint8List? image;
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
   bool isHide = false;
@@ -110,22 +113,7 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
                                     widget.achievement!.imageUrl!,
                                   ),
                                 ),
-                              if (image != null)
-                                FutureBuilder(
-                                  future: image!.readAsBytes(),
-                                  builder: (context, snapshot) {
-                                    switch (snapshot.connectionState) {
-                                      case ConnectionState.none:
-                                      case ConnectionState.waiting:
-                                      case ConnectionState.active:
-                                        return Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      case ConnectionState.done:
-                                        return Image.memory(snapshot.data!);
-                                    }
-                                  },
-                                ),
+                              if (image != null) Image.memory(image!),
                               Align(
                                 alignment: Alignment.bottomRight,
                                 child: Padding(
@@ -245,13 +233,21 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
   }
 
   void _onUploadImagePressed() async {
-    onLoadImageClicked(context: context, maxSizeInBytes: 1000000).then((
-      imageBytes,
-    ) {
-      setState(() {
-        image = imageBytes;
-      });
-    });
+    try {
+      Uint8List? imageBytes = await loadAndCompressImage(
+        context,
+        minHeight: 64,
+        minWidth: 64,
+      );
+      if (imageBytes != null) {
+        setState(() {
+          image = imageBytes;
+        });
+      }
+    } on ImageTooLargeException {
+      if (!mounted) return;
+      showImageTooLargeSnackbar(context);
+    }
   }
 
   void _onCreatePressed() async {

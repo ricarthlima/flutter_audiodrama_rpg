@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,6 @@ import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../domain/models/sheet_model.dart';
@@ -157,19 +157,21 @@ class CampaignViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> onUpdateImage(XFile imageBytes) async {
+  Future<void> onUpdateImage(Uint8List imageBytes) async {
     if (campaign != null) {
-      await CampaignService.instance.updateImage(
-        fileImage: imageBytes,
-        campaign: campaign!,
+      String urlDownload = await CampaignService.instance.uploadBioImage(
+        imageBytes: imageBytes,
+        campaignId: campaign!.id,
       );
+      campaign!.imageBannerUrl = urlDownload;
       notifyListeners();
+      onSave();
     }
   }
 
   Future<void> onRemoveImage() async {
     if (campaign != null) {
-      await CampaignService.instance.removeImage(campaign: campaign!);
+      await CampaignService.instance.removeBioImage(campaignId: campaign!.id);
       campaign!.imageBannerUrl = null;
       notifyListeners();
     }
@@ -182,7 +184,7 @@ class CampaignViewModel extends ChangeNotifier {
     required bool isHide,
     required bool isHideDescription,
     required bool isImageHided,
-    XFile? image,
+    Uint8List? image,
   }) async {
     String id = Uuid().v7();
 
@@ -193,10 +195,10 @@ class CampaignViewModel extends ChangeNotifier {
     String? urlImage;
 
     if (image != null) {
-      urlImage = await CampaignService.instance.uploadImage(
-        file: image,
-        suffix: "achievement-$id",
+      urlImage = await CampaignService.instance.uploadAchievementImage(
+        imageBytes: image,
         campaignId: campaign!.id,
+        achievementId: id,
       );
     } else {
       if (idd != null) {

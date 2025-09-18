@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet_settings.dart';
 import '../../_core/helpers/generate_access_key.dart';
 import '../../_core/helpers/release_collections.dart';
@@ -9,11 +10,8 @@ import '../../_core/providers/audio_provider.dart';
 import '../../domain/models/campaign.dart';
 import '../../domain/models/campaign_sheet.dart';
 import '../../domain/models/campaign_vm_model.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../_core/utils/supabase_prefs.dart';
 import '../../domain/exceptions/general_exceptions.dart';
 
 class CampaignService {
@@ -21,13 +19,13 @@ class CampaignService {
   static final CampaignService _instance = CampaignService._();
   static CampaignService get instance => _instance;
 
-  final _supabase = Supabase.instance.client;
+  final storageRef = FirebaseStorage.instance.ref();
 
   Future<Campaign> createCampaign({
     required String name,
     required String description,
     DateTime? nextSession,
-    XFile? fileImage,
+    Uint8List? fileImage,
   }) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     String? imageBannerUrl;
@@ -56,9 +54,8 @@ class CampaignService {
     );
 
     if (fileImage != null) {
-      imageBannerUrl = await uploadImage(
-        file: fileImage,
-        suffix: "bio",
+      imageBannerUrl = await uploadBioImage(
+        imageBytes: fileImage,
         campaignId: newCampaign.id,
       );
       newCampaign.imageBannerUrl = imageBannerUrl;
@@ -72,72 +69,37 @@ class CampaignService {
     return newCampaign;
   }
 
-  Future<void> updateImage({
-    required XFile fileImage,
-    required Campaign campaign,
-  }) async {
-    await removeImage(campaign: campaign, needToFirestore: false);
-
-    String imageBannerUrl = await uploadImage(
-      file: fileImage,
-      suffix: "bio",
-      campaignId: campaign.id,
-    );
-    campaign.imageBannerUrl = imageBannerUrl;
-
-    await FirebaseFirestore.instance
-        .collection("${rc}campaigns")
-        .doc(campaign.id)
-        .set(campaign.toMap());
-  }
-
   // Apenas o próprio usuário
-  Future<String> uploadImage({
-    required XFile file,
-    required String suffix,
+  Future<String> uploadBioImage({
+    required Uint8List imageBytes,
     required String campaignId,
   }) async {
-    String bucket = SupabasePrefs.storageBucketCampaign;
+    String filePath = "/campaigns/$campaignId/bio.png";
+    final fileRef = storageRef.child(filePath);
 
-    String extension = file.name.split(".").last;
-    String filePath = "public/$campaignId/$suffix-${DateTime.now()}.$extension";
+    await fileRef.putData(imageBytes);
 
-    Uint8List fileBytes = await file.readAsBytes();
-
-    await _supabase.storage
-        .from(bucket)
-        .uploadBinary(
-          filePath,
-          fileBytes,
-          fileOptions: FileOptions(upsert: true),
-        );
-
-    final publicUrl = _supabase.storage.from(bucket).getPublicUrl(filePath);
-
-    return publicUrl;
+    return await fileRef.getDownloadURL();
   }
 
   // Apenas o próprio usuário
-  Future<void> removeImage({
-    required Campaign campaign,
-    bool needToFirestore = true,
+  Future<void> removeBioImage({required String campaignId}) async {
+    String filePath = "/campaigns/$campaignId/bio.png";
+    final fileRef = storageRef.child(filePath);
+    return fileRef.delete();
+  }
+
+  Future<String> uploadAchievementImage({
+    required Uint8List imageBytes,
+    required String campaignId,
+    required String achievementId,
   }) async {
-    if (campaign.imageBannerUrl != null) {
-      String oldImage = campaign.imageBannerUrl!;
-      String fileName = oldImage.split("/").last;
+    String filePath = "/campaigns/$campaignId/achievement-$achievementId.png";
+    final fileRef = storageRef.child(filePath);
 
-      if (needToFirestore) {
-        campaign.imageBannerUrl = null;
-        await FirebaseFirestore.instance
-            .collection("${rc}campaigns")
-            .doc(campaign.id)
-            .set(campaign.toMap());
-      }
+    await fileRef.putData(imageBytes);
 
-      _supabase.storage.from(SupabasePrefs.storageBucketSheet).remove([
-        "bios/$fileName",
-      ]);
-    }
+    return await fileRef.getDownloadURL();
   }
 
   Future<void> joinCampaign(String joinCode) async {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
 
 import '../../_core/app_colors.dart';
 import '../../_core/utils/load_image.dart';
@@ -26,7 +26,7 @@ class _CreateCampaignDialog extends StatefulWidget {
 class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
   final formKey = GlobalKey<FormState>();
 
-  XFile? image;
+  Uint8List? imageBytes;
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
 
@@ -69,25 +69,8 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  (image != null)
-                      ? SizedBox(
-                          height: 300,
-                          child: FutureBuilder(
-                            future: image!.readAsBytes(),
-                            builder: (context, snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.none:
-                                case ConnectionState.waiting:
-                                case ConnectionState.active:
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                case ConnectionState.done:
-                                  return Image.memory(snapshot.data!);
-                              }
-                            },
-                          ),
-                        )
+                  (imageBytes != null)
+                      ? SizedBox(height: 300, child: Image.memory(imageBytes!))
                       : SizedBox(
                           height: 100,
                           child: Column(
@@ -147,9 +130,9 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
   }
 
   void _onUploadImagePressed() async {
-    XFile? imageFile = await onLoadImageClicked(context: context);
+    Uint8List? imageFile = await loadAndCompressImage(context);
     if (imageFile != null) {
-      image = imageFile;
+      imageBytes = imageFile;
     }
     setState(() {});
   }
@@ -167,7 +150,7 @@ class __CreateCampaignDialogState extends State<_CreateCampaignDialog> {
         context: context,
         name: name,
         description: desc,
-        fileImage: image,
+        imageBytes: imageBytes,
       );
 
       setState(() {

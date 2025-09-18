@@ -389,7 +389,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
             message: (sheetVM.getBoolean("isBonded"))
                 ? sheetVM.customCount("bond") != null
                       ? sheetVM.customCount("bond")!.name
-                      : "Vínculo desconhecido."
+                      : "Vínculo desconhecido"
                 : "",
             child: Checkbox(
               value: sheetVM.getBoolean("isBonded"),

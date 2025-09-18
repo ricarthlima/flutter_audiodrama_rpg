@@ -74,7 +74,7 @@ abstract mixin class RemoteMixin<T extends FromMap> {
 
     // 2) baixar JSON do Storage
     final ref = FirebaseStorage.instance.ref();
-    final path = ref.child('sheets/$key.json');
+    final path = ref.child('jsons/$key.json');
     String url = await path.getDownloadURL();
     final response = await http.get(Uri.parse(url));
     String jsonStr = response.body;

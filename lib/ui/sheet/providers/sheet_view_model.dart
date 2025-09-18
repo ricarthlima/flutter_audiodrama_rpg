@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,7 +16,6 @@ import '../../../data/repositories/action_repository.dart';
 import '../../../data/repositories/spell_repository.dart';
 import '../../../domain/models/campaign.dart';
 import '../helpers/sheet_subpages.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../data/services/sheet_service.dart';
 import '../../../domain/exceptions/sheet_service_exceptions.dart';
@@ -531,38 +529,26 @@ class SheetViewModel extends ChangeNotifier {
   //   return result;
   // }
 
-  Future<void> onUploadBioImageClicked(XFile image) async {
-    int sizeInBytes = await image.length();
+  Future<void> onUploadBioImageClicked(Uint8List image) async {
+    _isLoading = true;
+    notifyListeners();
 
-    if (sizeInBytes >= 2000000) {
-      //TODO: Sua imagem é muito pesada.
-    } else {
-      String? path;
-      if (!kIsWeb) {
-        path = await sheetService.uploadBioImage(
-          File(image.path),
-          "${DateTime.now().millisecondsSinceEpoch}-$id.${image.name.split(".").last}",
-        );
-      } else {
-        Uint8List bytes = await image.readAsBytes();
-        path = await sheetService.uploadBioImageBytes(
-          bytes,
-          "${DateTime.now().millisecondsSinceEpoch}-$id.${image.name.split(".").last}",
-        );
-      }
+    String? path = await sheetService.uploadBioImageBytes(
+      bytes: image,
+      sheetId: sheet!.id,
+    );
 
-      sheet!.imageUrl = path;
+    _isLoading = false;
+    notifyListeners();
 
-      scheduleSave();
-    }
+    sheet!.imageUrl = path;
+
+    scheduleSave();
   }
 
   Future<void> onRemoveImageClicked() async {
     if (sheet!.imageUrl == null) return;
-
-    String fileName = sheet!.imageUrl!.split("/").last;
-
-    await sheetService.deleteBioImage(fileName);
+    await sheetService.deleteBioImage(sheetId: sheet!.id);
     sheet!.imageUrl = null;
 
     scheduleSave();

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,11 +7,13 @@ import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_roll_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_roll.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/snackbars/snackbars.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:uuid/uuid.dart';
 import '../../../domain/dto/spell.dart';
+import '../../../domain/exceptions/general_exceptions.dart';
+import '../../_core/utils/load_image.dart';
 import '../helpers/sheet_subpages.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/dto/action_template.dart';
@@ -135,16 +138,15 @@ abstract class SheetInteract {
   }
 
   static Future<void> onUploadBioImageClicked(BuildContext context) async {
-    ImagePicker picker = ImagePicker();
-
-    XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
-      requestFullMetadata: false,
-    );
-
-    if (image != null) {
+    try {
+      Uint8List? image = await loadAndCompressImage(context);
+      if (image != null) {
+        if (!context.mounted) return;
+        context.read<SheetViewModel>().onUploadBioImageClicked(image);
+      }
+    } on ImageTooLargeException {
       if (!context.mounted) return;
-      context.read<SheetViewModel>().onUploadBioImageClicked(image);
+      showImageTooLargeSnackbar(context);
     }
   }
 }

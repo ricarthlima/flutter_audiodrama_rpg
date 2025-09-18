@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rpg_audiodrama/data/modules.dart';
+import 'package:flutter_rpg_audiodrama/domain/exceptions/general_exceptions.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/snackbars/snackbars.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
 import 'package:go_router/go_router.dart';
 import '../../../domain/dto/list_action.dart';
 import '../../_core/fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/app_colors.dart';
@@ -196,10 +197,20 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
   }
 
   void _onUploadImagePressed(CampaignViewModel campaignVM) async {
-    XFile? image = await onLoadImageClicked(context: context);
-
-    if (image != null) {
-      campaignVM.onUpdateImage(image);
+    try {
+      Uint8List? imageBytes = await loadAndCompressImage(context);
+      if (imageBytes != null) {
+        setState(() {
+          isLoading = true;
+        });
+        await campaignVM.onUpdateImage(imageBytes);
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } on ImageTooLargeException {
+      if (!mounted) return;
+      showImageTooLargeSnackbar(context);
     }
   }
 

@@ -1,22 +1,20 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_rpg_audiodrama/data/modules.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_custom_count.dart';
 import '../../_core/helpers/release_collections.dart';
-import '../../_core/utils/supabase_prefs.dart';
 import 'campaign_service.dart';
 import '../../domain/exceptions/sheet_service_exceptions.dart';
 import '../../domain/models/app_user.dart';
 import '../../domain/models/campaign_sheet.dart';
 import '../../domain/models/sheet_model.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 class SheetService {
-  final _supabase = Supabase.instance.client;
+  final storageRef = FirebaseStorage.instance.ref();
 
   Future<List<String>> getListUsers() async {
     QuerySnapshot<Map<String, dynamic>> listUsersSnapshot =
@@ -254,32 +252,22 @@ class SheetService {
   }
 
   // Apenas o próprio usuário
-  Future<String> uploadBioImage(File file, String fileName) async {
-    String result = await _supabase.storage
-        .from(SupabasePrefs.storageBucketSheet)
-        .upload("bios/$fileName", file);
+  Future<String> uploadBioImageBytes({
+    required Uint8List bytes,
+    required String sheetId,
+  }) async {
+    String filePath = "sheets/$sheetId/bio.png";
+    final fileRef = storageRef.child(filePath);
 
-    return result;
+    await fileRef.putData(bytes);
+
+    return await fileRef.getDownloadURL();
   }
 
   // Apenas o próprio usuário
-  Future<String> uploadBioImageBytes(Uint8List file, String fileName) async {
-    String bucket = SupabasePrefs.storageBucketSheet;
-    String filePath = "bios/$fileName";
-
-    await _supabase.storage
-        .from(bucket)
-        .uploadBinary(filePath, file, fileOptions: FileOptions(upsert: true));
-
-    final publicUrl = _supabase.storage.from(bucket).getPublicUrl(filePath);
-
-    return publicUrl;
-  }
-
-  // Apenas o próprio usuário
-  Future<void> deleteBioImage(String fileName) {
-    return _supabase.storage.from(SupabasePrefs.storageBucketSheet).remove([
-      "bios/$fileName",
-    ]);
+  Future<void> deleteBioImage({required String sheetId}) async {
+    String filePath = "sheets/$sheetId/bio.png";
+    final fileRef = storageRef.child(filePath);
+    return fileRef.delete();
   }
 }

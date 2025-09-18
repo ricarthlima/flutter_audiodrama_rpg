@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../data/services/campaign_service.dart';
 import '../../../domain/models/campaign.dart';
@@ -12,12 +12,12 @@ abstract class HomeCampaignInteract {
     required BuildContext context,
     required String name,
     required String description,
-    XFile? fileImage,
+    Uint8List? imageBytes,
   }) async {
     Campaign campaign = await CampaignService.instance.createCampaign(
       name: name,
       description: description,
-      fileImage: fileImage,
+      fileImage: imageBytes,
     );
 
     if (!context.mounted) return;
