@@ -33,10 +33,10 @@ import '../sheet_notes/sheet_notes.dart';
 import '../sheet_shopping/shopping_screen.dart';
 import '../sheet_statistics/sheet_statistics_screen.dart';
 import 'components/sheet_drawer.dart';
-import 'screens/sheet_settings_page.dart';
+import 'sections/sheet_settings_page.dart';
 import 'providers/sheet_interact.dart';
 import 'providers/sheet_view_model.dart';
-import 'screens/sheet_action_screen.dart';
+import 'sections/sheet_action_screen.dart';
 import 'widgets/sheet_not_found_widget.dart';
 import 'widgets/sheet_subtitle_row_widget.dart';
 

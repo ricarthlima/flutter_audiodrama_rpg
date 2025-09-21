@@ -11,7 +11,13 @@ class Module {
     description: "Adicione elementos mágicos a qualquer cenário com ADRPG.",
   );
 
-  static List<Module> get all => [magic];
+  static Module get grid => Module(
+    id: "GRID",
+    name: "Mapas de Batalha",
+    description: "Ativar os Mapas de Batalha, grids e tokens.",
+  );
+
+  static List<Module> get all => [magic, grid];
 }
 
 const String energySpellModuleSCC = "ENERGY_SPELL_MODULE_SCC";

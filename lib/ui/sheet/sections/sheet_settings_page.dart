@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/setting_token_item.dart';
 import 'package:provider/provider.dart';
 
 import '../../../_core/utils/download_sheet_json.dart';
@@ -45,22 +45,11 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
     SheetViewModel sheetVM = Provider.of<SheetViewModel>(context);
     UserProvider userProvider = Provider.of<UserProvider>(context);
 
-    return SizedBox(
-      width: (isVertical(context) ? null : width(context) / 2),
+    return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 16,
-        children: [
-          SizedBox(height: 8),
-          SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: listItems(sheetVM, userProvider),
-            ),
-          ),
-        ],
+        children: listItems(sheetVM, userProvider),
       ),
     );
   }
@@ -111,6 +100,7 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
           child: Column(
             children: List.generate(Module.all.length, (index) {
               Module module = Module.all[index];
+              if (module.id == Module.grid.id) return SizedBox();
               return Tooltip(
                 message: module.description,
                 child: CheckboxListTile(
@@ -124,6 +114,23 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
                 ),
               );
             }),
+          ),
+        ),
+      if (campaign != null &&
+          campaign.campaignSheetSettings.listActiveModuleIds.contains(
+            Module.grid.id,
+          ))
+        _SettingItem(
+          title: "Tokens",
+          subtitle: "Adicione e escolha entre até 5 tokens.",
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              spacing: 8,
+              children: List.generate(5, (index) {
+                return SettingTokenItem(index: index);
+              }),
+            ),
           ),
         ),
     ];
@@ -161,10 +168,7 @@ class _SettingItem extends StatelessWidget {
           ],
         ),
         child,
-        SizedBox(
-          width: (isVertical(context) ? null : width(context) / 2),
-          child: Divider(thickness: 0.1),
-        ),
+        Divider(thickness: 0.1),
         SizedBox(),
       ],
     );

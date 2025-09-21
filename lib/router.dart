@@ -14,7 +14,7 @@ import 'ui/campaign/utils/campaign_subpages.dart';
 import 'ui/campaign/view/campaign_view_model.dart';
 import 'ui/home/home_screen.dart';
 import 'ui/home/utils/home_tabs.dart';
-import 'ui/sheet/screens/sheet_settings_page.dart';
+import 'ui/sheet/sections/sheet_settings_page.dart';
 import 'ui/sheet/sheet_screen.dart';
 import 'ui/sheet/providers/sheet_view_model.dart';
 
@@ -138,7 +138,7 @@ class AppRouter {
     );
     audioProvider.onDispose();
 
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(
       context,
       listen: false,
     );

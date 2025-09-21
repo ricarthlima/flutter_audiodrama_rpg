@@ -69,7 +69,7 @@ abstract class SheetInteract {
     Spell? spell,
   }) async {
     SheetViewModel sheetVM = context.read<SheetViewModel>();
-    CampaignViewModel campaignVM = context.read<CampaignViewModel>();
+    CampaignProvider campaignVM = context.read<CampaignProvider>();
 
     AudioProvider audioProvider = Provider.of<AudioProvider>(
       context,

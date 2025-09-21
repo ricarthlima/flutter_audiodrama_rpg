@@ -850,4 +850,36 @@ class SheetViewModel extends ChangeNotifier {
     sheet!.booleans[idd] = value;
     scheduleSave();
   }
+
+  void setTokenIndex(int value) {
+    sheet!.indexToken = value;
+    scheduleSave();
+  }
+
+  void uploadToken({required Uint8List image, required int index}) async {
+    String url = await SheetService().uploadTokenImage(
+      image: image,
+      sheetId: sheet!.id,
+      index: index,
+    );
+
+    if (index < sheet!.listTokens.length) {
+      sheet!.listTokens[index] = url;
+    } else {
+      sheet!.listTokens.add(url);
+    }
+
+    scheduleSave();
+  }
+
+  void removeToken(int index) {
+    if (sheet!.indexToken >= index && index != 0) {
+      sheet!.indexToken -= 1;
+    }
+
+    sheet!.listTokens.removeAt(index);
+    SheetService().deleteTokenImage(index: index, sheetId: sheet!.id);
+
+    scheduleSave();
+  }
 }

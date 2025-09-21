@@ -126,6 +126,8 @@ class SheetService {
         ),
       ],
       booleans: {},
+      indexToken: 0,
+      listTokens: [],
     );
 
     if (campaignId != null) {
@@ -267,6 +269,28 @@ class SheetService {
   // Apenas o próprio usuário
   Future<void> deleteBioImage({required String sheetId}) async {
     String filePath = "sheets/$sheetId/bio.png";
+    final fileRef = storageRef.child(filePath);
+    return fileRef.delete();
+  }
+
+  Future<String> uploadTokenImage({
+    required Uint8List image,
+    required String sheetId,
+    required int index,
+  }) async {
+    String filePath = "sheets/$sheetId/tokens/token-$index.png";
+    final fileRef = storageRef.child(filePath);
+
+    await fileRef.putData(image);
+
+    return await fileRef.getDownloadURL();
+  }
+
+  Future<void> deleteTokenImage({
+    required String sheetId,
+    required int index,
+  }) async {
+    String filePath = "sheets/$sheetId/tokens/token-$index.png";
     final fileRef = storageRef.child(filePath);
     return fileRef.delete();
   }

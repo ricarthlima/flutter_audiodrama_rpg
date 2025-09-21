@@ -46,6 +46,9 @@ class Sheet {
 
   Map<String, bool> booleans;
 
+  int indexToken;
+  List<String> listTokens;
+
   Sheet({
     required this.id,
     required this.characterName,
@@ -71,6 +74,8 @@ class Sheet {
     required this.listActiveModules,
     required this.listCustomCount,
     required this.booleans,
+    required this.indexToken,
+    required this.listTokens,
   });
 
   Sheet copyWith({
@@ -99,6 +104,8 @@ class Sheet {
     List<String>? listActiveModules,
     List<SheetCustomCount>? listCustomCount,
     Map<String, bool>? booleans,
+    int? indexToken,
+    List<String>? listTokens,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -125,6 +132,8 @@ class Sheet {
       listActiveModules: listActiveModules ?? this.listActiveModules,
       listCustomCount: listCustomCount ?? this.listCustomCount,
       booleans: booleans ?? this.booleans,
+      indexToken: indexToken ?? this.indexToken,
+      listTokens: listTokens ?? this.listTokens,
     );
   }
 
@@ -154,6 +163,8 @@ class Sheet {
       "listActiveModules": listActiveModules,
       'listCustomCount': listCustomCount.map((x) => x.toMap()).toList(),
       'booleans': booleans,
+      'indexToken': indexToken,
+      'listTokens': listTokens,
     };
   }
 
@@ -247,6 +258,12 @@ class Sheet {
               return MapEntry(key, value as bool);
             })
           : {},
+      indexToken: (map["indexToken"] ?? 0) as int,
+      listTokens: (map["listTokens"] != null)
+          ? (map["listTokens"] as List<dynamic>)
+                .map((e) => e.toString())
+                .toList()
+          : [],
     );
   }
 
