@@ -8,10 +8,7 @@ import '../../_core/components/show_snackbar.dart';
 
 class CampaignWidget extends StatelessWidget {
   final Campaign campaign;
-  const CampaignWidget({
-    super.key,
-    required this.campaign,
-  });
+  const CampaignWidget({super.key, required this.campaign});
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +45,7 @@ class CampaignWidget extends StatelessWidget {
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withAlpha(175),
-              ),
+              decoration: BoxDecoration(color: Colors.black.withAlpha(175)),
               padding: const EdgeInsets.all(8),
               child: SizedBox(
                 height: 50,
@@ -69,9 +64,7 @@ class CampaignWidget extends StatelessWidget {
                     ),
                     Text(
                       "Criado em: ${campaign.createdAt.toString().substring(0, 10)}",
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
@@ -128,9 +121,7 @@ class CampaignWidget extends StatelessWidget {
                   campaignId: campaign.id,
                 );
               },
-              child: const CircleAvatar(
-                child: Icon(Icons.play_arrow_rounded),
-              ),
+              child: const CircleAvatar(child: Icon(Icons.play_arrow_rounded)),
             ),
           ),
         ],
@@ -139,14 +130,9 @@ class CampaignWidget extends StatelessWidget {
   }
 
   void _copyButtonPressed(BuildContext context) {
-    Clipboard.setData(
-      ClipboardData(text: campaign.enterCode),
-    ).then((value) {
+    Clipboard.setData(ClipboardData(text: campaign.enterCode)).then((value) {
       if (!context.mounted) return;
-      showSnackBar(
-        context: context,
-        message: "Copiado!",
-      );
+      showSnackBar(context: context, message: "Copiado!");
     });
   }
 }

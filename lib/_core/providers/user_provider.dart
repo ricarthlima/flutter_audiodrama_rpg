@@ -165,17 +165,17 @@ class UserProvider extends ChangeNotifier {
               Campaign campaign = Campaign.fromMap(snapshot.data()!);
               if (context.mounted) {
                 SchedulerBinding.instance.addPostFrameCallback((_) {
-                  context.read<CampaignViewModel>().forceUpdateCampaign(
+                  context.read<CampaignProvider>().forceUpdateCampaign(
                     campaign,
                   );
-                  context.read<CampaignViewModel>().activatePresence();
+                  context.read<CampaignProvider>().activatePresence();
 
                   context.read<CampaignVisualNovelViewModel>().campaignId =
                       campaignId;
                   context.read<CampaignVisualNovelViewModel>().data =
                       campaign.visualData;
 
-                  if (context.read<CampaignViewModel>().hasInteracted) {
+                  if (context.read<CampaignProvider>().hasInteracted) {
                     playCampaignAudios(campaign, context);
                   }
                   completer.complete();
