@@ -613,20 +613,45 @@ class _SheetScreenState extends State<SheetScreen> {
                       child: Icon(Icons.delete, size: 16, color: Colors.black),
                     ),
                   ),
+
                   Align(
                     alignment: Alignment.bottomRight,
-                    child: Padding(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withAlpha(100),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                       padding: const EdgeInsets.all(5.0),
-                      child: Tooltip(
-                        message: "Remover imagem",
-                        child: InkWell(
-                          onTap: () => sheetVM.onRemoveImageClicked(),
-                          child: Icon(
-                            Icons.delete,
-                            size: 14,
-                            color: Colors.white,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 4,
+                        children: [
+                          Tooltip(
+                            message: "Substituir imagem",
+                            child: InkWell(
+                              onTap: () =>
+                                  SheetInteract.onUploadBioImageClicked(
+                                    context,
+                                  ),
+                              child: Icon(
+                                Icons.file_upload_outlined,
+                                size: 14,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
-                        ),
+                          Tooltip(
+                            message: "Remover imagem",
+                            child: InkWell(
+                              onTap: () => sheetVM.onRemoveImageClicked(),
+                              child: Icon(
+                                Icons.delete,
+                                size: 14,
+                                color: AppColors.red,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

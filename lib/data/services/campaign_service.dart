@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet_settings.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
 import '../../_core/helpers/generate_access_key.dart';
 import '../../_core/helpers/release_collections.dart';
 import '../../_core/providers/audio_provider.dart';
@@ -19,6 +20,7 @@ class CampaignService {
   static final CampaignService _instance = CampaignService._();
   static CampaignService get instance => _instance;
 
+  final uid = FirebaseAuth.instance.currentUser!.uid;
   final storageRef = FirebaseStorage.instance.ref();
 
   Future<Campaign> createCampaign({
@@ -51,6 +53,7 @@ class CampaignService {
         listActiveWorkIds: [],
         listActiveModuleIds: [],
       ),
+      campaignScenes: CampaignScenes.visual,
     );
 
     if (fileImage != null) {
@@ -74,7 +77,7 @@ class CampaignService {
     required Uint8List imageBytes,
     required String campaignId,
   }) async {
-    String filePath = "/campaigns/$campaignId/bio.png";
+    String filePath = "users/$uid/campaigns/$campaignId/bio.png";
     final fileRef = storageRef.child(filePath);
 
     await fileRef.putData(imageBytes);
@@ -94,7 +97,8 @@ class CampaignService {
     required String campaignId,
     required String achievementId,
   }) async {
-    String filePath = "/campaigns/$campaignId/achievement-$achievementId.png";
+    String filePath =
+        "users/$uid/campaigns/$campaignId/achievement-$achievementId.png";
     final fileRef = storageRef.child(filePath);
 
     await fileRef.putData(imageBytes);
