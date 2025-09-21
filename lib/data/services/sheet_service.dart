@@ -14,7 +14,6 @@ import '../../domain/models/sheet_model.dart';
 import 'package:uuid/uuid.dart';
 
 class SheetService {
-  final uid = FirebaseAuth.instance.currentUser!.uid;
   final storageRef = FirebaseStorage.instance.ref();
 
   Future<List<String>> getListUsers() async {
@@ -44,6 +43,7 @@ class SheetService {
   // Apenas o próprio usuário
   Stream<QuerySnapshot<Map<String, dynamic>>> listenSheetsByUser() {
     String uid = FirebaseAuth.instance.currentUser!.uid;
+
     return FirebaseFirestore.instance
         .collection("${rc}users")
         .doc(uid)
@@ -259,6 +259,8 @@ class SheetService {
     required Uint8List bytes,
     required String sheetId,
   }) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
     String filePath = "users/$uid/sheets/$sheetId/bio.png";
     final fileRef = storageRef.child(filePath);
 
@@ -269,6 +271,8 @@ class SheetService {
 
   // Apenas o próprio usuário
   Future<void> deleteBioImage({required String sheetId}) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
     String filePath = "users/$uid/sheets/$sheetId/bio.png";
     final fileRef = storageRef.child(filePath);
     return fileRef.delete();
@@ -279,6 +283,8 @@ class SheetService {
     required String sheetId,
     required int index,
   }) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
     String filePath = "users/$uid/sheets/$sheetId/tokens/token-$index.png";
     final fileRef = storageRef.child(filePath);
 
@@ -291,6 +297,8 @@ class SheetService {
     required String sheetId,
     required int index,
   }) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
     String filePath = "users/$uid/sheets/$sheetId/tokens/token-$index.png";
     final fileRef = storageRef.child(filePath);
     return fileRef.delete();
