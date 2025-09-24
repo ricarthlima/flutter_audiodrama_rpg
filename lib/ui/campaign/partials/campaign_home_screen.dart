@@ -411,7 +411,7 @@ class _CampaignVisualOwner extends StatelessWidget {
                                 contentPadding: EdgeInsets.zero,
                                 controlAffinity:
                                     ListTileControlAffinity.leading,
-                                title: Text("Limpar ao mudar"),
+                                title: Text("Centralizar ao mudar"),
                                 onChanged: (value) {
                                   visualVM.isClearZoomAndPan =
                                       !visualVM.isClearZoomAndPan;
@@ -475,6 +475,9 @@ class _ListCharactersVisual extends StatelessWidget {
         CheckboxListTile(
           value: (isRight) ? visualVM.isClearRight : visualVM.isClearLeft,
           contentPadding: EdgeInsets.zero,
+          controlAffinity: (isRight)
+              ? ListTileControlAffinity.leading
+              : ListTileControlAffinity.trailing,
           onChanged: (value) {
             if (isRight) {
               visualVM.isClearRight = !visualVM.isClearRight;
@@ -482,7 +485,10 @@ class _ListCharactersVisual extends StatelessWidget {
               visualVM.isClearLeft = !visualVM.isClearLeft;
             }
           },
-          title: Text("Limpar ao mudar fundo"),
+          title: Text(
+            "Limpar ao mudar fundo",
+            textAlign: (!isRight) ? TextAlign.end : TextAlign.start,
+          ),
         ),
         SizedBox(
           height: 250,
