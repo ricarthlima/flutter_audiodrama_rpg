@@ -11,7 +11,7 @@ class CampaignSheetsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
     UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return Column(

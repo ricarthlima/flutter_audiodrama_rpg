@@ -14,7 +14,7 @@ class AchievementWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
     return Visibility(
       visible:
           !achievement.isHided ||
@@ -237,14 +237,14 @@ class AchievementWidget extends StatelessWidget {
   // bool _getShowLiberarGeralCondition(CampaignViewModel campaignVM) =>
   //     !campaignVM.isEditing && !isPlayerUnlockedAchievement();
 
-  bool _getShowDescriptionCondition(CampaignViewModel campaignVM) {
+  bool _getShowDescriptionCondition(CampaignProvider campaignVM) {
     return !achievement.isDescriptionHided ||
         (campaignVM.isOwner && campaignVM.isEditing) ||
         isPlayerUnlockedAchievement() ||
         isUnlockedToAll(campaignVM);
   }
 
-  bool _getShowImageCondition(CampaignViewModel campaignVM) {
+  bool _getShowImageCondition(CampaignProvider campaignVM) {
     return achievement.imageUrl != null &&
         (!achievement.isImageHided ||
             campaignVM.isEditing ||
@@ -252,7 +252,7 @@ class AchievementWidget extends StatelessWidget {
             isUnlockedToAll(campaignVM));
   }
 
-  bool _getShowIconCondition(CampaignViewModel campaignVM) {
+  bool _getShowIconCondition(CampaignProvider campaignVM) {
     return achievement.imageUrl == null ||
         (achievement.isImageHided && !isPlayerUnlockedAchievement()) &&
             !campaignVM.isEditing &&
@@ -261,7 +261,7 @@ class AchievementWidget extends StatelessWidget {
 
   void unlockToAllUsers(
     BuildContext context,
-    CampaignViewModel campaignVM,
+    CampaignProvider campaignVM,
   ) async {
     bool? result = await showDialog(
       context: context,
@@ -300,7 +300,7 @@ class AchievementWidget extends StatelessWidget {
     );
   }
 
-  bool isUnlockedToAll(CampaignViewModel campaignVM) {
+  bool isUnlockedToAll(CampaignProvider campaignVM) {
     List<String> a = achievement.listUsers;
     List<String> b = campaignVM.campaign!.listIdPlayers;
     return Set.from(a).containsAll(b) && Set.from(b).containsAll(a);

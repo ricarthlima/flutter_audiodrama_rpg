@@ -23,7 +23,7 @@ class _CampaignFirstInteractScreenState
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
     UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return Stack(
@@ -34,10 +34,7 @@ class _CampaignFirstInteractScreenState
               return LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black.withAlpha(100),
-                  Colors.transparent,
-                ],
+                colors: [Colors.black.withAlpha(100), Colors.transparent],
               ).createShader(bounds);
             },
             blendMode: BlendMode.dstIn,
@@ -105,7 +102,7 @@ class _CampaignFirstInteractScreenState
               icon: Icon(Icons.arrow_back),
             ),
           ),
-        )
+        ),
       ],
     );
   }

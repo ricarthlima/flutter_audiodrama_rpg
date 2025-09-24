@@ -135,7 +135,7 @@ class HomeListItemWidget extends StatelessWidget {
               : IconButton(
                   onPressed: () {
                     String? campaignId = context
-                        .read<CampaignViewModel>()
+                        .read<CampaignProvider>()
                         .campaign
                         ?.id;
                     homeVM.onDuplicateSheetToMe(

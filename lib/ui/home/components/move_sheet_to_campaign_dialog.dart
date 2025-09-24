@@ -14,9 +14,7 @@ Future<dynamic> showMoveSheetToCampaignDialog({
   return showDialog(
     context: context,
     builder: (context) {
-      return Dialog(
-        child: _MoveSheetToCampaignDialog(sheet: sheet),
-      );
+      return Dialog(child: _MoveSheetToCampaignDialog(sheet: sheet));
     },
   );
 }
@@ -55,10 +53,7 @@ class _MoveSheetToCampaignDialogState
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          width: 4,
-          color: AppColors.red,
-        ),
+        border: Border.all(width: 4, color: AppColors.red),
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
       padding: EdgeInsets.all(32),
@@ -76,14 +71,12 @@ class _MoveSheetToCampaignDialogState
           DropdownButton<Campaign>(
             value: campaign,
             isExpanded: true,
-            items: userProvider.listAllCampaigns.map(
-              (Campaign campaign) {
-                return DropdownMenuItem<Campaign>(
-                  value: campaign,
-                  child: Text(campaign.name!),
-                );
-              },
-            ).toList(),
+            items: userProvider.listAllCampaigns.map((Campaign campaign) {
+              return DropdownMenuItem<Campaign>(
+                value: campaign,
+                child: Text(campaign.name!),
+              );
+            }).toList(),
             onChanged: (value) {
               setState(() {
                 campaign = value;

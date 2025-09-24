@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 
 void showImageTooLargeSnackbar(BuildContext context) {
-  _showErrorSnackBar(context, "Sua imagem é pesada demais.");
+  showErrorSnackBar(context, "Sua imagem é pesada demais.");
 }
 
-void _showErrorSnackBar(BuildContext context, String message) {
+void showErrorSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(

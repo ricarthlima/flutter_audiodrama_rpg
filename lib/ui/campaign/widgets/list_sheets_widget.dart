@@ -52,7 +52,7 @@ class _ListSheetsWidgetState extends State<ListSheetsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
     return AnimatedSize(
       duration: Duration(milliseconds: 250),
       alignment: Alignment.topCenter,

@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,12 +14,17 @@ import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/models/battle_map.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/models/token.dart';
 import 'package:uuid/uuid.dart';
+import 'package:vector_math/vector_math_64.dart';
 
 import '../../../domain/models/sheet_model.dart';
+import '../../_core/helpers/image_size_from_bytes.dart';
 
-class CampaignViewModel extends ChangeNotifier {
+class CampaignProvider extends ChangeNotifier {
   bool _hasInteracted = false;
   bool get hasInteracted => _hasInteracted;
   set hasInteracted(bool value) {
@@ -340,6 +346,189 @@ class CampaignViewModel extends ChangeNotifier {
     }
     notifyListeners();
     onSave();
+  }
+
+  CampaignScenes get campaignScene => campaign!.campaignScenes;
+  set campaignScene(CampaignScenes value) {
+    campaign!.campaignScenes = value;
+    notifyListeners();
+    onSave();
+  }
+
+  String? ownerViewBattleMap;
+  double _battleMapZoom = 1;
+  double get battleMapZoom => _battleMapZoom;
+  set battleMapZoom(double value) {
+    _battleMapZoom = value;
+    gridTransformationOwner.value = Matrix4.identity()
+      ..scaleByVector3(Vector3.all(_battleMapZoom));
+    notifyListeners();
+  }
+
+  void setZoom(Size childSize) {
+    double zoom = _battleMapZoom;
+    final Offset c = childSize.center(Offset.zero);
+
+    gridTransformationOwner.value = Matrix4.identity()
+      ..translateByDouble(c.dx, c.dy, 0.0, 1.0) // tz=0, tw=1
+      ..scaleByVector3(Vector3(zoom, zoom, 1.0)) // escala uniforme em X/Y
+      ..translateByDouble(-c.dx, -c.dy, 0.0, 1.0); // desfaz a translação
+  }
+
+  TransformationController gridTransformationOwner = TransformationController();
+
+  void activeOwnerBattleMap(BattleMap battleMap) {
+    ownerViewBattleMap = battleMap.id;
+    notifyListeners();
+  }
+
+  Future<void> upinsertBattleMap({
+    required String id,
+    required String name,
+    required int columns,
+    required int rows,
+    required Uint8List image,
+    required String? ambience,
+    required String? music,
+  }) async {
+    BattleMap battleMap = BattleMap(
+      id: id,
+      name: name,
+      rows: rows,
+      columns: columns,
+      listTokens: [],
+      ambienceId: ambience,
+      musicId: music,
+      imageUrl: "",
+      imageSize: await imageSizeFromBytes(image),
+      gridColor: 0,
+      gridOpacity: 1,
+    );
+
+    String imageUrl = await CampaignService.instance.uploadBattleMapImage(
+      image: image,
+      campaignId: campaign!.id,
+      id: id,
+    );
+
+    battleMap.imageUrl = imageUrl;
+
+    int index = campaign!.listBattleMaps.indexWhere((e) => e.id == id);
+    if (index == -1) {
+      campaign!.listBattleMaps.add(battleMap);
+    } else {
+      campaign!.listBattleMaps[index] = campaign!.listBattleMaps[index]
+          .copyWith(
+            name: name,
+            rows: rows,
+            columns: columns,
+            ambienceId: ambience,
+            musicId: music,
+            imageUrl: imageUrl,
+          );
+    }
+
+    await onSave();
+  }
+
+  Future<void> removeBattleMap(BattleMap battleMap) async {
+    if (campaign!.activeBattleMapId == battleMap.id) {
+      campaign!.activeBattleMapId = null;
+    }
+    campaign!.listBattleMaps.removeWhere((e) => e.id == battleMap.id);
+    notifyListeners();
+    await CampaignService.instance.removeBattleMap(
+      campaignId: campaign!.id,
+      battleMapId: battleMap.id,
+    );
+    onSave();
+  }
+
+  Future<void> activeGlobalBattleMap(BattleMap battleMap) async {
+    campaign!.activeBattleMapId = battleMap.id;
+    notifyListeners();
+    onSave();
+  }
+
+  void deactivateGlobalBattleMap() {
+    campaign!.activeBattleMapId = null;
+    notifyListeners();
+    onSave();
+  }
+
+  void addTokenToBattleMap({
+    required BattleMap battleMap,
+    required Sheet sheet,
+    required Point<double>
+    position, // posição em unidades de grid (âncora no centro)
+  }) {
+    int index = campaign!.listBattleMaps.indexWhere(
+      (e) => e.id == battleMap.id,
+    );
+    if (index == -1) return;
+
+    String image = (sheet.listTokens.isNotEmpty)
+        ? sheet.listTokens[sheet.indexToken]
+        : (sheet.imageUrl != null)
+        ? sheet.imageUrl!
+        : "";
+
+    int cols = battleMap.columns;
+    int rows = battleMap.rows;
+
+    Offset centerNorm = Offset(position.x / cols, position.y / rows);
+    Size sizeNorm = Size(1 / cols, 1 / rows);
+
+    campaign!.listBattleMaps[index].listTokens.add(
+      Token(
+        id: const Uuid().v4(),
+        mapId: battleMap.id,
+        imageUrl: image,
+        obeyGrid: true,
+        centerNorm: centerNorm,
+        sizeNorm: sizeNorm,
+        centerGrid: Point<double>(position.x, position.y),
+        sizeGrid: const Size(1, 1),
+        rotationDeg: 0,
+        zIndex: 0,
+        isVisible: true,
+        owners: <String>[sheet.ownerId],
+      ),
+    );
+
+    notifyListeners();
+  }
+
+  void moveTokenToBattleMap({
+    required BattleMap battleMap,
+    required Point<double>
+    position, // posição em unidades de grid (âncora no centro)
+    required Token token,
+  }) {
+    int mapIndex = campaign!.listBattleMaps.indexWhere(
+      (e) => e.id == battleMap.id,
+    );
+    if (mapIndex == -1) return;
+
+    int tokenIndex = campaign!.listBattleMaps[mapIndex].listTokens.indexWhere(
+      (e) => e.id == token.id,
+    );
+    if (tokenIndex == -1) return;
+
+    int cols = battleMap.columns;
+    int rows = battleMap.rows;
+
+    Offset centerNorm = Offset(position.x / cols, position.y / rows);
+
+    Token updated = token.copyWith(
+      obeyGrid: true,
+      centerNorm: centerNorm,
+      centerGrid: Point<double>(position.x, position.y),
+    );
+
+    campaign!.listBattleMaps[mapIndex].listTokens[tokenIndex] = updated;
+
+    notifyListeners();
   }
 }
 

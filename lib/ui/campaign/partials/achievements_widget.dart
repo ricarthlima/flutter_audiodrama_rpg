@@ -13,7 +13,7 @@ class CampaignAchievementsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,7 +39,9 @@ class CampaignAchievementsWidget extends StatelessWidget {
   }
 
   List<Widget> _generateListAchievementsWidget(
-      BuildContext context, CampaignViewModel campaignVM) {
+    BuildContext context,
+    CampaignProvider campaignVM,
+  ) {
     // Dono editando, vê tudo.
     if (campaignVM.isOwner) {
       return campaignVM.campaign!.listAchievements.map((achievement) {
@@ -47,14 +49,15 @@ class CampaignAchievementsWidget extends StatelessWidget {
       }).toList();
     }
 
-    List<CampaignAchievement> listNotHided =
-        campaignVM.campaign!.listAchievements
-            .where(
-              (e) =>
-                  !e.isHided ||
-                  e.listUsers.contains(FirebaseAuth.instance.currentUser!.uid),
-            )
-            .toList();
+    List<CampaignAchievement> listNotHided = campaignVM
+        .campaign!
+        .listAchievements
+        .where(
+          (e) =>
+              !e.isHided ||
+              e.listUsers.contains(FirebaseAuth.instance.currentUser!.uid),
+        )
+        .toList();
 
     int totalHided =
         campaignVM.campaign!.listAchievements.length - listNotHided.length;
@@ -63,24 +66,30 @@ class CampaignAchievementsWidget extends StatelessWidget {
 
     List<CampaignAchievement> listHave = listNotHided
         .where(
-            (e) => e.listUsers.contains(FirebaseAuth.instance.currentUser!.uid))
+          (e) => e.listUsers.contains(FirebaseAuth.instance.currentUser!.uid),
+        )
         .toList();
 
     List<CampaignAchievement> listDontHave = listNotHided
-        .where((e) =>
-            !e.listUsers.contains(FirebaseAuth.instance.currentUser!.uid))
+        .where(
+          (e) => !e.listUsers.contains(FirebaseAuth.instance.currentUser!.uid),
+        )
         .toList();
 
     listHave.sort((a, b) => a.title.compareTo(b.title));
     listDontHave.sort((a, b) => a.title.compareTo(b.title));
 
-    listReturn.addAll(listHave.map((achievement) {
-      return AchievementWidget(achievement: achievement);
-    }));
+    listReturn.addAll(
+      listHave.map((achievement) {
+        return AchievementWidget(achievement: achievement);
+      }),
+    );
 
-    listReturn.addAll(listDontHave.map((achievement) {
-      return AchievementWidget(achievement: achievement);
-    }));
+    listReturn.addAll(
+      listDontHave.map((achievement) {
+        return AchievementWidget(achievement: achievement);
+      }),
+    );
 
     if (totalHided > 0) {
       listReturn.add(
@@ -92,8 +101,9 @@ class CampaignAchievementsWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               width: 4,
-              color:
-                  Theme.of(context).textTheme.bodyMedium!.color!.withAlpha(90),
+              color: Theme.of(
+                context,
+              ).textTheme.bodyMedium!.color!.withAlpha(90),
             ),
           ),
           child: Center(

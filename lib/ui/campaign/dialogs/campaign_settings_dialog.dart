@@ -38,7 +38,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
     SheetViewModel sheetVM = Provider.of<SheetViewModel>(context);
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -151,7 +151,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
     );
   }
 
-  NamedWidget _getNameWidget(CampaignViewModel campaignVM) {
+  NamedWidget _getNameWidget(CampaignProvider campaignVM) {
     return NamedWidget(
       title: "Nome",
       isLeft: true,
@@ -179,7 +179,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
     );
   }
 
-  Widget _getDescriptionWidget(CampaignViewModel campaignVM) {
+  Widget _getDescriptionWidget(CampaignProvider campaignVM) {
     return NamedWidget(
       title: "Descrição",
       isLeft: true,
@@ -196,7 +196,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
     );
   }
 
-  void _onUploadImagePressed(CampaignViewModel campaignVM) async {
+  void _onUploadImagePressed(CampaignProvider campaignVM) async {
     try {
       Uint8List? imageBytes = await loadAndCompressImage(context);
       if (imageBytes != null) {
@@ -214,7 +214,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
     }
   }
 
-  Widget _buildGeneralTab(CampaignViewModel campaignVM) {
+  Widget _buildGeneralTab(CampaignProvider campaignVM) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,7 +257,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
     );
   }
 
-  Widget _getChangeImageWidget(CampaignViewModel campaignVM) {
+  Widget _getChangeImageWidget(CampaignProvider campaignVM) {
     return NamedWidget(
       title: "Mudar imagem de fundo (máximo 2MB)",
       isLeft: true,
@@ -290,10 +290,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
     );
   }
 
-  Widget _buildModulesTab(
-    CampaignViewModel campaignVM,
-    SheetViewModel sheetVM,
-  ) {
+  Widget _buildModulesTab(CampaignProvider campaignVM, SheetViewModel sheetVM) {
     return Column(
       spacing: 8,
       children: [
@@ -315,6 +312,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
                     .listActiveModuleIds
                     .contains(module.id),
                 title: Text(module.name),
+                subtitle: Text(module.description),
                 contentPadding: EdgeInsets.zero,
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (value) {
@@ -328,7 +326,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
     );
   }
 
-  Widget _buildWorksTab(CampaignViewModel campaignVM, SheetViewModel sheetVM) {
+  Widget _buildWorksTab(CampaignProvider campaignVM, SheetViewModel sheetVM) {
     return Column(
       spacing: 8,
       children: [
@@ -365,7 +363,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
     );
   }
 
-  Widget _buildDangerTab(CampaignViewModel campaignVM) {
+  Widget _buildDangerTab(CampaignProvider campaignVM) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

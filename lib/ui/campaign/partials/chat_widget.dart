@@ -25,7 +25,7 @@ class CampaignChatWidget extends StatefulWidget {
 class _CampaignChatWidgetState extends State<CampaignChatWidget> {
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
     UserProvider userProvider = Provider.of<UserProvider>(context);
 
     final FocusNode focusNode = FocusNode();

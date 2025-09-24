@@ -37,48 +37,50 @@ class CampaignSheetItem extends StatelessWidget {
       dense: true,
       contentPadding: EdgeInsets.zero,
       leading: SizedBox(
-        height: 24,
-        width: 24,
-        child: (sheet.imageUrl != null)
-            ? InkWell(
-                onTap: () {
-                  showImageDialog(
-                    context: context,
-                    imageUrl: sheet.imageUrl!,
-                  );
-                },
-                child: Container(
-                  decoration: isVertical(context)
-                      ? null
-                      : BoxDecoration(
-                          border: Border.all(width: 2, color: Colors.white),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                  height: 24,
-                  width: 24,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: Image.network(
-                      sheet.imageUrl!,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.center,
-                      height: 24,
-                      width: 24,
+        child: Draggable<Sheet>(
+          data: sheet,
+          feedback: Material(
+            child: SizedBox(
+              width: 72,
+              height: 72,
+              child: (sheet.listTokens.isNotEmpty)
+                  ? Image.network(sheet.listTokens[sheet.indexToken])
+                  : (sheet.imageUrl != null)
+                  ? Image.network(sheet.imageUrl!)
+                  : Icon(Icons.person),
+            ),
+          ),
+          child: (sheet.imageUrl != null)
+              ? InkWell(
+                  onTap: () {
+                    showImageDialog(
+                      context: context,
+                      imageUrl: sheet.imageUrl!,
+                    );
+                  },
+                  child: Container(
+                    decoration: isVertical(context)
+                        ? null
+                        : BoxDecoration(
+                            border: Border.all(width: 2, color: Colors.white),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: Image.network(
+                        sheet.imageUrl!,
+                        fit: BoxFit.cover,
+                        alignment: Alignment.center,
+                      ),
                     ),
                   ),
-                ),
-              )
-            : Icon(
-                Icons.feed,
-                size: 24,
-              ),
+                )
+              : Icon(Icons.feed, size: 24),
+        ),
       ),
       title: Text(
         sheet.characterName,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
       subtitle: Opacity(
         opacity: 0.90,
@@ -107,8 +109,10 @@ class CampaignSheetItem extends StatelessWidget {
         onSelected: (_SheetMenuOptions value) {
           switch (value) {
             case _SheetMenuOptions.export:
-              downloadJsonFile(sheet.toMapWithoutId(),
-                  "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json");
+              downloadJsonFile(
+                sheet.toMapWithoutId(),
+                "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json",
+              );
               return;
             case _SheetMenuOptions.openInScreen:
               AppRouter().goSheet(
@@ -119,10 +123,7 @@ class CampaignSheetItem extends StatelessWidget {
               );
               return;
             case _SheetMenuOptions.moveToCampaign:
-              showMoveSheetToCampaignDialog(
-                context: context,
-                sheet: sheet,
-              );
+              showMoveSheetToCampaignDialog(context: context, sheet: sheet);
               return;
             case _SheetMenuOptions.duplicate:
               homeViewModel.onDuplicateSheet(sheet: sheet);
@@ -148,10 +149,7 @@ class CampaignSheetItem extends StatelessWidget {
               value: _SheetMenuOptions.openInScreen,
               child: Row(
                 spacing: 8,
-                children: [
-                  Icon(Icons.arrow_forward),
-                  Text("Abrir"),
-                ],
+                children: [Icon(Icons.arrow_forward), Text("Abrir")],
               ),
             ),
             if (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid)
@@ -170,10 +168,7 @@ class CampaignSheetItem extends StatelessWidget {
                 value: _SheetMenuOptions.duplicate,
                 child: Row(
                   spacing: 8,
-                  children: [
-                    Icon(Icons.copy),
-                    Text("Duplicar"),
-                  ],
+                  children: [Icon(Icons.copy), Text("Duplicar")],
                 ),
               ),
             if (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid)
@@ -182,10 +177,7 @@ class CampaignSheetItem extends StatelessWidget {
                 child: Row(
                   spacing: 8,
                   children: [
-                    Icon(
-                      Icons.delete,
-                      color: AppColors.red,
-                    ),
+                    Icon(Icons.delete, color: AppColors.red),
                     Text("Remover"),
                   ],
                 ),

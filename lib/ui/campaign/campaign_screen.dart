@@ -28,7 +28,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(
+      CampaignProvider campaignVM = Provider.of<CampaignProvider>(
         context,
         listen: false,
       );
@@ -46,7 +46,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
 
     // TODO: modularizar esse campanha nao encontrada
     return Scaffold(
@@ -64,7 +64,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
     );
   }
 
-  Widget _buildBodyWithDrawer(CampaignViewModel campaignVM) {
+  Widget _buildBodyWithDrawer(CampaignProvider campaignVM) {
     return Stack(
       children: [
         CampaignHomeScreen(),

@@ -37,7 +37,7 @@ class _ManageAchievementPlayersState extends State<_ManageAchievementPlayers> {
 
   bool isLoading = true;
 
-  void loadUserInfos(CampaignViewModel campaignVM) async {
+  void loadUserInfos(CampaignProvider campaignVM) async {
     List<AppUser> listAppUsers = await AuthService().getUserInfoByListIds(
       listIds: campaignVM.campaign!.listIdPlayers,
     );
@@ -60,7 +60,7 @@ class _ManageAchievementPlayersState extends State<_ManageAchievementPlayers> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(
+      CampaignProvider campaignVM = Provider.of<CampaignProvider>(
         context,
         listen: false,
       );
@@ -71,7 +71,7 @@ class _ManageAchievementPlayersState extends State<_ManageAchievementPlayers> {
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
 
     if (isLoading) return Center(child: CircularProgressIndicator());
 
@@ -202,7 +202,7 @@ class _ManageAchievementPlayersState extends State<_ManageAchievementPlayers> {
     setState(() {});
   }
 
-  void onSaveButton(CampaignViewModel campaignVM) async {
+  void onSaveButton(CampaignProvider campaignVM) async {
     await campaignVM.updateAchievement(
       widget.achievement.copyWith(
         listUsers: listUnlocked.map((e) => e.id!).toList(),

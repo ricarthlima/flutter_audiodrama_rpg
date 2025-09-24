@@ -255,7 +255,7 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
       String name = nameController.text;
       String description = descController.text;
 
-      await context.read<CampaignViewModel>().onCreateAchievement(
+      await context.read<CampaignProvider>().onCreateAchievement(
         idd: (widget.achievement != null) ? widget.achievement!.id : null,
         name: name,
         description: description,

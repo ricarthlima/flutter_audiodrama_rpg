@@ -7,6 +7,8 @@ import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet_settings.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_vm_model.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/models/battle_map.dart';
 
 class Campaign {
   String id;
@@ -28,6 +30,11 @@ class Campaign {
 
   CampaignSheetSettings campaignSheetSettings;
 
+  CampaignScenes campaignScenes;
+
+  String? activeBattleMapId;
+  List<BattleMap> listBattleMaps;
+
   Campaign({
     required this.id,
     required this.listIdOwners,
@@ -43,6 +50,9 @@ class Campaign {
     required this.visualData,
     required this.audioCampaign,
     required this.campaignSheetSettings,
+    required this.campaignScenes,
+    required this.activeBattleMapId,
+    required this.listBattleMaps,
   });
 
   Campaign copyWith({
@@ -60,6 +70,9 @@ class Campaign {
     CampaignVisualDataModel? visualData,
     AudioCampaign? audioCampaign,
     CampaignSheetSettings? campaignSheetSettings,
+    CampaignScenes? campaignScenes,
+    String? activeBattleMapId,
+    List<BattleMap>? listBattleMaps,
   }) {
     return Campaign(
       id: id ?? this.id,
@@ -77,6 +90,9 @@ class Campaign {
       audioCampaign: audioCampaign ?? this.audioCampaign,
       campaignSheetSettings:
           campaignSheetSettings ?? this.campaignSheetSettings,
+      campaignScenes: campaignScenes ?? this.campaignScenes,
+      activeBattleMapId: activeBattleMapId ?? this.activeBattleMapId,
+      listBattleMaps: listBattleMaps ?? this.listBattleMaps,
     );
   }
 
@@ -96,6 +112,9 @@ class Campaign {
       'visualData': visualData.toMap(),
       'audioCampaign': audioCampaign.toMap(),
       'campaignSheetSettings': campaignSheetSettings.toMap(),
+      'campaignScenes': campaignScenes.name,
+      'activeBattleMapId': activeBattleMapId,
+      'listBattleMaps': listBattleMaps.map((e) => e.toMap()).toList(),
     };
   }
 
@@ -138,6 +157,20 @@ class Campaign {
               listActiveWorkIds: [],
               listActiveModuleIds: [],
             ),
+
+      campaignScenes: (map['campaignScenes'] != null)
+          ? CampaignScenes.values
+                .where((e) => e.name == map['campaignScenes'])
+                .first
+          : CampaignScenes.visual,
+      activeBattleMapId: (map['activeBattleMapId'] != null)
+          ? map['activeBattleMapId'] as String
+          : null,
+      listBattleMaps: (map['listBattleMaps'] != null)
+          ? (map['listBattleMaps'] as List<dynamic>)
+                .map((e) => BattleMap.fromMap(e))
+                .toList()
+          : [],
     );
   }
 
@@ -167,7 +200,8 @@ class Campaign {
         other.description == description &&
         other.nextSession == nextSession &&
         listEquals(other.listAchievements, listAchievements) &&
-        other.audioCampaign == audioCampaign;
+        other.audioCampaign == audioCampaign &&
+        other.campaignScenes == campaignScenes;
   }
 
   @override
@@ -183,6 +217,7 @@ class Campaign {
         description.hashCode ^
         nextSession.hashCode ^
         listAchievements.hashCode ^
-        audioCampaign.hashCode;
+        audioCampaign.hashCode ^
+        campaignScenes.hashCode;
   }
 }

@@ -7,13 +7,11 @@ import 'package:provider/provider.dart';
 import '../view/campaign_view_model.dart';
 
 class GroupNotifications extends StatelessWidget {
-  const GroupNotifications({
-    super.key,
-  });
+  const GroupNotifications({super.key});
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
@@ -36,7 +34,7 @@ class NotificationAchievementWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
     return Container(
       width: 300,
       height: 100,
@@ -53,28 +51,20 @@ class NotificationAchievementWidget extends StatelessWidget {
           Container(
             height: 18,
             padding: EdgeInsets.symmetric(horizontal: 8),
-            decoration: BoxDecoration(
-              color: AppColors.red,
-            ),
+            decoration: BoxDecoration(color: AppColors.red),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   "CONQUISTA DESBLOQUEADA",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
                 InkWell(
                   onTap: () {
                     campaignVM.hasAchievementShowed(achievement);
                   },
-                  child: Icon(
-                    Icons.close,
-                    size: 12,
-                  ),
-                )
+                  child: Icon(Icons.close, size: 12),
+                ),
               ],
             ),
           ),
@@ -86,15 +76,9 @@ class NotificationAchievementWidget extends StatelessWidget {
               spacing: 16,
               children: [
                 if (achievement.imageUrl != null)
-                  Image.network(
-                    achievement.imageUrl!,
-                    width: 64,
-                  ),
+                  Image.network(achievement.imageUrl!, width: 64),
                 if (achievement.imageUrl == null)
-                  Icon(
-                    Icons.star_border,
-                    size: 64,
-                  ),
+                  Icon(Icons.star_border, size: 64),
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,9 +88,7 @@ class NotificationAchievementWidget extends StatelessWidget {
                       child: Text(
                         achievement.title,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontFamily: FontFamily.bungee,
-                        ),
+                        style: TextStyle(fontFamily: FontFamily.bungee),
                       ),
                     ),
                     SizedBox(
@@ -117,7 +99,7 @@ class NotificationAchievementWidget extends StatelessWidget {
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),

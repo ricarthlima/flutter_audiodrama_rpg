@@ -13,7 +13,7 @@ class CampaignAchievementsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +33,8 @@ class CampaignAchievementsScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Text(
-                "Visualização de pessoa jogadora, entre em modo edição para fazer alterações. Pessoas jogadoras veem integralmente conquistas que já desbloquearam."),
+              "Visualização de pessoa jogadora, entre em modo edição para fazer alterações. Pessoas jogadoras veem integralmente conquistas que já desbloquearam.",
+            ),
           ),
         Wrap(
           alignment: WrapAlignment.start,
@@ -41,13 +42,15 @@ class CampaignAchievementsScreen extends StatelessWidget {
           spacing: 8,
           runSpacing: 16,
           children: _generateListAchievementsWidget(context, campaignVM),
-        )
+        ),
       ],
     );
   }
 
   List<Widget> _generateListAchievementsWidget(
-      BuildContext context, CampaignViewModel campaignVM) {
+    BuildContext context,
+    CampaignProvider campaignVM,
+  ) {
     // Dono editando, vê tudo.
     if (campaignVM.isOwner) {
       return campaignVM.campaign!.listAchievements.map((achievement) {
@@ -55,22 +58,25 @@ class CampaignAchievementsScreen extends StatelessWidget {
       }).toList();
     }
 
-    List<CampaignAchievement> listNotHided =
-        campaignVM.campaign!.listAchievements
-            .where(
-              (e) =>
-                  !e.isHided ||
-                  e.listUsers.contains(FirebaseAuth.instance.currentUser!.uid),
-            )
-            .toList();
+    List<CampaignAchievement> listNotHided = campaignVM
+        .campaign!
+        .listAchievements
+        .where(
+          (e) =>
+              !e.isHided ||
+              e.listUsers.contains(FirebaseAuth.instance.currentUser!.uid),
+        )
+        .toList();
 
     int totalHided =
         campaignVM.campaign!.listAchievements.length - listNotHided.length;
 
     List<Widget> listReturn = [];
-    listReturn.addAll(listNotHided.map((achievement) {
-      return AchievementWidget(achievement: achievement);
-    }));
+    listReturn.addAll(
+      listNotHided.map((achievement) {
+        return AchievementWidget(achievement: achievement);
+      }),
+    );
     listReturn.add(
       Container(
         width: 250,

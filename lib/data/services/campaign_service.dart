@@ -54,6 +54,8 @@ class CampaignService {
         listActiveModuleIds: [],
       ),
       campaignScenes: CampaignScenes.visual,
+      activeBattleMapId: null,
+      listBattleMaps: [],
     );
 
     if (fileImage != null) {
@@ -324,5 +326,30 @@ class CampaignService {
           .doc(cs.sheetId)
           .delete();
     }
+  }
+
+  Future<String> uploadBattleMapImage({
+    required Uint8List image,
+    required String campaignId,
+    required String id,
+  }) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    String filePath = "users/$uid/campaigns/$campaignId/battle-maps/$id.png";
+
+    final fileRef = storageRef.child(filePath);
+
+    await fileRef.putData(image);
+    return await fileRef.getDownloadURL();
+  }
+
+  Future<void> removeBattleMap({
+    required String campaignId,
+    required String battleMapId,
+  }) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    String filePath =
+        "users/$uid/campaigns/$campaignId/battle-maps/$battleMapId.png";
+    final fileRef = storageRef.child(filePath);
+    return await fileRef.delete();
   }
 }

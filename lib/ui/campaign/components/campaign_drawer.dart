@@ -22,7 +22,7 @@ class CampaignDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final campaignVM = Provider.of<CampaignViewModel>(context);
+    final campaignVM = Provider.of<CampaignProvider>(context);
     AudioProvider audioProvider = Provider.of<AudioProvider>(context);
     return MouseRegion(
       // onEnter: (event) {

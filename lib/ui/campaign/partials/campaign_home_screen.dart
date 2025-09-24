@@ -6,6 +6,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_roll_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_roll.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/sections/campaign_grid_guest.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/sections/campaign_grid_owner.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/list_settings.dart';
 import '../../../_core/providers/audio_provider.dart';
 import '../../../domain/models/campaign_visual.dart';
 import '../../_core/app_colors.dart';
@@ -33,7 +37,7 @@ class _CampaignHomeScreenState extends State<CampaignHomeScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(
+      CampaignProvider campaignVM = Provider.of<CampaignProvider>(
         context,
         listen: false,
       );
@@ -48,32 +52,47 @@ class _CampaignHomeScreenState extends State<CampaignHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
 
     if (campaignVM.isOwner) {
-      return _CampaignHomeOwner();
+      return _CampaignRouterOwner();
     }
 
-    return _CampaignHomeGuest();
+    return _CampaignRouterGuest();
   }
 }
 
-class _CampaignHomeGuest extends StatefulWidget {
-  final double sizeFactor;
-  final bool isPreview;
-  const _CampaignHomeGuest({this.sizeFactor = 1.0, this.isPreview = false});
+class _CampaignRouterGuest extends StatelessWidget {
+  const _CampaignRouterGuest();
 
   @override
-  State<_CampaignHomeGuest> createState() => _CampaignHomeGuestState();
+  Widget build(BuildContext context) {
+    CampaignProvider campaignPV = Provider.of<CampaignProvider>(context);
+    switch (campaignPV.campaignScene) {
+      case CampaignScenes.visual:
+        return _CampaignVisualGuest();
+      case CampaignScenes.grid:
+        return CampaignGridGuest();
+    }
+  }
 }
 
-class _CampaignHomeGuestState extends State<_CampaignHomeGuest> {
+class _CampaignVisualGuest extends StatefulWidget {
+  final double sizeFactor;
+  final bool isPreview;
+  const _CampaignVisualGuest({this.sizeFactor = 1.0, this.isPreview = false});
+
+  @override
+  State<_CampaignVisualGuest> createState() => _CampaignVisualGuestState();
+}
+
+class _CampaignVisualGuestState extends State<_CampaignVisualGuest> {
   StreamSubscription? rollStreamSub;
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      CampaignViewModel campaignVM = context.read<CampaignViewModel>();
+      CampaignProvider campaignVM = context.read<CampaignProvider>();
       AudioProvider audioProvider = context.read<AudioProvider>();
       CampaignRollService.instance
           .listen(campaignId: campaignVM.campaign!.id)
@@ -242,6 +261,21 @@ class _CampaignHomeGuestState extends State<_CampaignHomeGuest> {
   }
 }
 
+class _CampaignRouterOwner extends StatelessWidget {
+  const _CampaignRouterOwner();
+
+  @override
+  Widget build(BuildContext context) {
+    CampaignProvider campaignPV = Provider.of<CampaignProvider>(context);
+    switch (campaignPV.campaignScene) {
+      case CampaignScenes.visual:
+        return _CampaignVisualOwner();
+      case CampaignScenes.grid:
+        return CampaignGridOwner();
+    }
+  }
+}
+
 class _CampaignOwnerEmpty extends StatelessWidget {
   const _CampaignOwnerEmpty();
 
@@ -283,8 +317,8 @@ class _CampaignOwnerEmpty extends StatelessWidget {
   }
 }
 
-class _CampaignHomeOwner extends StatelessWidget {
-  const _CampaignHomeOwner();
+class _CampaignVisualOwner extends StatelessWidget {
+  const _CampaignVisualOwner();
 
   @override
   Widget build(BuildContext context) {
@@ -296,7 +330,7 @@ class _CampaignHomeOwner extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(top: 32, left: 32, right: 96),
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 96),
       child: SizedBox(
         width: width(context),
         child: Column(
@@ -305,7 +339,7 @@ class _CampaignHomeOwner extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 8,
           children: [
-            Column(children: [_ListSettings(), Divider(thickness: 0.1)]),
+            Column(children: [ListSettings(), Divider(thickness: 0.1)]),
             Column(
               children: [
                 Row(
@@ -334,7 +368,7 @@ class _CampaignHomeOwner extends StatelessWidget {
                           ),
                           child: AspectRatio(
                             aspectRatio: 16 / 9,
-                            child: _CampaignHomeGuest(
+                            child: _CampaignVisualGuest(
                               sizeFactor: 300 / height(context),
                               isPreview: true,
                             ),
@@ -409,49 +443,6 @@ class _CampaignHomeOwner extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ListSettings extends StatelessWidget {
-  const _ListSettings();
-
-  @override
-  Widget build(BuildContext context) {
-    CampaignVisualNovelViewModel visualVM =
-        Provider.of<CampaignVisualNovelViewModel>(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: 16,
-      children: [
-        Text(
-          "Mesa de Ambientação",
-          style: TextStyle(fontFamily: FontFamily.bungee, fontSize: 22),
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            spacing: 8,
-            children: [
-              OutlinedButton.icon(
-                onPressed: () {
-                  showTutorialServer(context);
-                },
-                icon: Icon(Icons.podcasts),
-                label: Text("Servidor"),
-              ),
-              OutlinedButton.icon(
-                onPressed: () {
-                  visualVM.onRemove();
-                },
-                icon: Icon(Icons.delete_forever),
-                label: Text("Excluir tudo"),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }
@@ -813,7 +804,7 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
     super.initState();
     listAudiosVisualization = widget.listAudios.toList();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(
+      CampaignProvider campaignVM = Provider.of<CampaignProvider>(
         context,
         listen: false,
       );
@@ -838,7 +829,7 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    CampaignViewModel campaignVM = Provider.of<CampaignViewModel>(context);
+    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
     AudioProvider audioProvider = Provider.of<AudioProvider>(context);
 
     return Column(
@@ -986,7 +977,7 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
   }
 
   void setAudio({
-    required CampaignViewModel campaignVM,
+    required CampaignProvider campaignVM,
     required CampaignVisual audio,
   }) {
     switch (widget.type) {

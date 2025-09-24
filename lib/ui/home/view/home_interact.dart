@@ -17,9 +17,9 @@ abstract class HomeInteract {
     if (resultName != null) {
       if (!context.mounted) return;
       context.read<HomeViewModel>().onCreateSheetClicked(
-            name: resultName,
-            campaignId: campaignId,
-          );
+        name: resultName,
+        campaignId: campaignId,
+      );
     }
   }
 

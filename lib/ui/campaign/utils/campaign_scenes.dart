@@ -1,0 +1,1 @@
+enum CampaignScenes { visual, grid }
