@@ -104,215 +104,239 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
     final sheetVM = Provider.of<SheetViewModel>(context);
     final shoppingVM = Provider.of<ShoppingViewModel>(context);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 8,
-      children: [
-        SizedBox(
-          height: 42,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 32,
+    return Expanded(
+      child: Stack(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
             children: [
-              Text(
-                widget.isSeller ? "Comprar" : "Seus itens",
-                style: TextStyle(fontSize: 20, fontFamily: FontFamily.bungee),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          if (isOrderedByName) {
-                            isAscendent = !isAscendent;
-                          } else {
-                            isOrderedByName = true;
-                            isOrderedByPrice = false;
-                            isOrderedByWeight = false;
-                            isOrderedByAmount = false;
-                            isAscendent = true;
-                          }
-                          _orderItems();
-                          _orderItemsMine();
-                        },
-                        tooltip: "Ordenar por nome",
-                        icon: Icon(Icons.sort_by_alpha),
+              SizedBox(
+                height: 42,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 32,
+                  children: [
+                    Text(
+                      widget.isSeller ? "Comprar" : "Seus itens",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: FontFamily.bungee,
                       ),
-                      IconButton(
-                        onPressed: () {
-                          if (isOrderedByPrice) {
-                            isAscendent = !isAscendent;
-                          } else {
-                            isOrderedByPrice = true;
-                            isOrderedByName = false;
-                            isOrderedByWeight = false;
-                            isOrderedByAmount = false;
-                            isAscendent = true;
-                          }
-                          _orderItems();
-                          _orderItemsMine();
-                        },
-                        tooltip: "Ordenar por preço",
-                        icon: Icon(Icons.attach_money_rounded),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          if (isOrderedByWeight) {
-                            isAscendent = !isAscendent;
-                          } else {
-                            isOrderedByWeight = true;
-                            isOrderedByPrice = false;
-                            isOrderedByName = false;
-                            isOrderedByAmount = false;
-                            isAscendent = true;
-                          }
-                          _orderItems();
-                          _orderItemsMine();
-                        },
-                        tooltip: "Ordenar por peso",
-                        icon: Icon(Icons.fitness_center_rounded),
-                      ),
-                      if (!widget.isSeller)
-                        IconButton(
-                          onPressed: () {
-                            if (isOrderedByWeight) {
-                              isAscendent = !isAscendent;
-                            } else {
-                              isOrderedByAmount = true;
-                              isOrderedByWeight = false;
-                              isOrderedByPrice = false;
-                              isOrderedByName = false;
-                              isAscendent = true;
-                            }
-                            _orderItems();
-                            _orderItemsMine();
-                          },
-                          tooltip: "Ordenar por quantidade",
-                          icon: Icon(Icons.numbers),
-                        ),
-                      if (widget.isSeller)
-                        SizedBox(
-                          width: 120,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                            ),
-                            child: CheckboxListTile(
-                              value: shoppingVM.isFree,
-                              dense: true,
-                              visualDensity: VisualDensity.compact,
-                              title: Text("De graça"),
-                              contentPadding: EdgeInsets.zero,
-                              onChanged: (value) {
-                                shoppingVM.isFree = !shoppingVM.isFree;
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                if (isOrderedByName) {
+                                  isAscendent = !isAscendent;
+                                } else {
+                                  isOrderedByName = true;
+                                  isOrderedByPrice = false;
+                                  isOrderedByWeight = false;
+                                  isOrderedByAmount = false;
+                                  isAscendent = true;
+                                }
+                                _orderItems();
+                                _orderItemsMine();
                               },
+                              tooltip: "Ordenar por nome",
+                              icon: Icon(Icons.sort_by_alpha),
                             ),
-                          ),
+                            IconButton(
+                              onPressed: () {
+                                if (isOrderedByPrice) {
+                                  isAscendent = !isAscendent;
+                                } else {
+                                  isOrderedByPrice = true;
+                                  isOrderedByName = false;
+                                  isOrderedByWeight = false;
+                                  isOrderedByAmount = false;
+                                  isAscendent = true;
+                                }
+                                _orderItems();
+                                _orderItemsMine();
+                              },
+                              tooltip: "Ordenar por preço",
+                              icon: Icon(Icons.attach_money_rounded),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                if (isOrderedByWeight) {
+                                  isAscendent = !isAscendent;
+                                } else {
+                                  isOrderedByWeight = true;
+                                  isOrderedByPrice = false;
+                                  isOrderedByName = false;
+                                  isOrderedByAmount = false;
+                                  isAscendent = true;
+                                }
+                                _orderItems();
+                                _orderItemsMine();
+                              },
+                              tooltip: "Ordenar por peso",
+                              icon: Icon(Icons.fitness_center_rounded),
+                            ),
+                            if (!widget.isSeller)
+                              IconButton(
+                                onPressed: () {
+                                  if (isOrderedByWeight) {
+                                    isAscendent = !isAscendent;
+                                  } else {
+                                    isOrderedByAmount = true;
+                                    isOrderedByWeight = false;
+                                    isOrderedByPrice = false;
+                                    isOrderedByName = false;
+                                    isAscendent = true;
+                                  }
+                                  _orderItems();
+                                  _orderItemsMine();
+                                },
+                                tooltip: "Ordenar por quantidade",
+                                icon: Icon(Icons.numbers),
+                              ),
+                            if (widget.isSeller)
+                              IntrinsicWidth(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0,
+                                  ),
+                                  child: CheckboxListTile(
+                                    value: shoppingVM.isFree,
+                                    dense: true,
+                                    visualDensity: VisualDensity.compact,
+                                    controlAffinity:
+                                        ListTileControlAffinity.leading,
+                                    title: Text("De graça"),
+                                    contentPadding: EdgeInsets.zero,
+                                    onChanged: (value) {
+                                      shoppingVM.isFree = !shoppingVM.isFree;
+                                    },
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                    ],
-                  ),
+                      ),
+                    ),
+                    if (!widget.isSeller)
+                      _buildToggleStore(shoppingVM, sheetVM, context),
+                  ],
                 ),
               ),
-              if (!widget.isSeller)
-                _buildToggleStore(shoppingVM, sheetVM, context),
+              TextFormField(
+                controller: !widget.isSeller
+                    ? shoppingVM.searchInventoryController
+                    : shoppingVM.searchSellerController,
+                decoration: InputDecoration(
+                  label: Text("Pesquisar item"),
+                  suffix: InkWell(
+                    onTap: () => (widget.isSeller)
+                        ? shoppingVM.onSearchOnSeller()
+                        : shoppingVM.onSearchOnInventory(),
+                    child: Icon(Icons.search),
+                  ),
+                ),
+                onFieldSubmitted: (value) => (widget.isSeller)
+                    ? shoppingVM.onSearchOnSeller()
+                    : shoppingVM.onSearchOnInventory(),
+                onChanged: (value) => (widget.isSeller)
+                    ? shoppingVM.onSearchOnSeller()
+                    : shoppingVM.onSearchOnInventory(),
+              ),
+              Wrap(
+                children: context
+                    .read<ShoppingViewModel>()
+                    .itemRepo
+                    .listCategories
+                    .map((e) {
+                      return ItemCategoryWidget(
+                        category: e,
+                        isSeller: widget.isSeller,
+                        isActive: (!widget.isSeller)
+                            ? shoppingVM.listFilteredCategories.contains(e)
+                            : shoppingVM.listFilteredCategoriesSeller.contains(
+                                e,
+                              ),
+                      );
+                    })
+                    .toList(),
+              ),
+              SizedBox(
+                height: 450 * (height(context) / 866),
+                child: DragTarget<Item>(
+                  onAcceptWithDetails: (details) {
+                    if (!widget.isSeller) {
+                      shoppingVM.buyItem(item: details.data);
+                    }
+                  },
+                  builder: (context, candidateData, rejectedData) {
+                    return Stack(
+                      children: [
+                        GridView.builder(
+                          shrinkWrap: false,
+                          padding: EdgeInsets.only(right: 16),
+                          physics: AlwaysScrollableScrollPhysics(),
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 128,
+                                mainAxisSpacing: 8,
+                                crossAxisSpacing: 8,
+                                childAspectRatio: 1,
+                              ),
+                          itemCount: (widget.isSeller)
+                              ? shoppingVM.listSellerItems.length
+                              : shoppingVM.listInventoryItems.length,
+                          itemBuilder: (context, index) {
+                            Item? item;
+                            ItemSheet? itemSheet;
+
+                            if (widget.isSeller) {
+                              item = shoppingVM.listSellerItems[index];
+                            } else {
+                              itemSheet = shoppingVM.listInventoryItems[index];
+                              item = shoppingVM.itemRepo.getItemById(
+                                itemSheet.itemId,
+                                listCustomItem: sheetVM.sheet!.listCustomItems,
+                              )!;
+                            }
+
+                            return ShoppingItemWidget(
+                              item: item,
+                              itemSheet: itemSheet,
+                            );
+                          },
+                        ),
+                        if (candidateData.isNotEmpty && !widget.isSeller)
+                          Container(
+                            alignment: Alignment.center,
+                            color: Colors.white.withAlpha(30),
+                            child: Text("Comprar"),
+                          ),
+                      ],
+                    );
+                  },
+                ),
+              ),
             ],
           ),
-        ),
-        TextFormField(
-          controller: !widget.isSeller
-              ? shoppingVM.searchInventoryController
-              : shoppingVM.searchSellerController,
-          decoration: InputDecoration(
-            label: Text("Pesquisar item"),
-            suffix: InkWell(
-              onTap: () => (widget.isSeller)
-                  ? shoppingVM.onSearchOnSeller()
-                  : shoppingVM.onSearchOnInventory(),
-              child: Icon(Icons.search),
+          if (!shoppingVM.isBuying)
+            Align(
+              alignment: Alignment.bottomRight,
+              child: FloatingActionButton(
+                onPressed: () {
+                  sheetVM.showItemDialog();
+                },
+                child: Icon(Icons.add),
+              ),
             ),
-          ),
-          onFieldSubmitted: (value) => (widget.isSeller)
-              ? shoppingVM.onSearchOnSeller()
-              : shoppingVM.onSearchOnInventory(),
-          onChanged: (value) => (widget.isSeller)
-              ? shoppingVM.onSearchOnSeller()
-              : shoppingVM.onSearchOnInventory(),
-        ),
-        Wrap(
-          children: context
-              .read<ShoppingViewModel>()
-              .itemRepo
-              .listCategories
-              .map((e) {
-                return ItemCategoryWidget(
-                  category: e,
-                  isSeller: widget.isSeller,
-                  isActive: (!widget.isSeller)
-                      ? shoppingVM.listFilteredCategories.contains(e)
-                      : shoppingVM.listFilteredCategoriesSeller.contains(e),
-                );
-              })
-              .toList(),
-        ),
-        SizedBox(
-          height: 450 * (height(context) / 866),
-          child: DragTarget<Item>(
-            onAcceptWithDetails: (details) {
-              if (!widget.isSeller) {
-                shoppingVM.buyItem(item: details.data);
-              }
-            },
-            builder: (context, candidateData, rejectedData) {
-              return Stack(
-                children: [
-                  GridView.builder(
-                    shrinkWrap: false,
-                    padding: EdgeInsets.zero,
-                    physics: AlwaysScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 92,
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8,
-                      childAspectRatio: 1,
-                    ),
-                    itemCount: (widget.isSeller)
-                        ? shoppingVM.listSellerItems.length
-                        : shoppingVM.listInventoryItems.length,
-                    itemBuilder: (context, index) {
-                      Item? item;
-                      ItemSheet? itemSheet;
-
-                      if (widget.isSeller) {
-                        item = shoppingVM.listSellerItems[index];
-                      } else {
-                        itemSheet = shoppingVM.listInventoryItems[index];
-                        item = shoppingVM.itemRepo.getItemById(
-                          itemSheet.itemId,
-                        )!;
-                      }
-
-                      return ShoppingItemWidget(
-                        item: item,
-                        itemSheet: itemSheet,
-                      );
-                    },
-                  ),
-                  if (candidateData.isNotEmpty && !widget.isSeller)
-                    Container(
-                      alignment: Alignment.center,
-                      color: Colors.white.withAlpha(30),
-                      child: Text("Comprar"),
-                    ),
-                ],
-              );
-            },
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -368,14 +392,17 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
 
   void _orderItemsMine() {
     final shoppingViewModel = context.read<ShoppingViewModel>();
+    final sheetVM = context.read<SheetViewModel>();
 
     if (isOrderedByName) {
       shoppingViewModel.listInventoryItems.sort((a, b) {
         Item itemA = context.read<ShoppingViewModel>().itemRepo.getItemById(
           a.itemId,
+          listCustomItem: sheetVM.sheet!.listCustomItems,
         )!;
         Item itemB = context.read<ShoppingViewModel>().itemRepo.getItemById(
           b.itemId,
+          listCustomItem: sheetVM.sheet!.listCustomItems,
         )!;
         return removeDiacritics(
           itemA.name,
@@ -393,9 +420,11 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
       shoppingViewModel.listInventoryItems.sort((a, b) {
         Item itemA = context.read<ShoppingViewModel>().itemRepo.getItemById(
           a.itemId,
+          listCustomItem: sheetVM.sheet!.listCustomItems,
         )!;
         Item itemB = context.read<ShoppingViewModel>().itemRepo.getItemById(
           b.itemId,
+          listCustomItem: sheetVM.sheet!.listCustomItems,
         )!;
         return itemA.price.compareTo(itemB.price);
       });
@@ -411,9 +440,11 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
       shoppingViewModel.listInventoryItems.sort((a, b) {
         Item itemA = context.read<ShoppingViewModel>().itemRepo.getItemById(
           a.itemId,
+          listCustomItem: sheetVM.sheet!.listCustomItems,
         )!;
         Item itemB = context.read<ShoppingViewModel>().itemRepo.getItemById(
           b.itemId,
+          listCustomItem: sheetVM.sheet!.listCustomItems,
         )!;
         return itemA.weight.compareTo(itemB.weight);
       });

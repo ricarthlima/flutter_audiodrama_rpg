@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_custom_count.dart';
 
+import '../dto/item.dart';
 import 'action_lore.dart';
 import 'action_value.dart';
 import 'item_sheet.dart';
@@ -49,6 +50,8 @@ class Sheet {
   int indexToken;
   List<String> listTokens;
 
+  List<Item> listCustomItems;
+
   Sheet({
     required this.id,
     required this.characterName,
@@ -76,6 +79,7 @@ class Sheet {
     required this.booleans,
     required this.indexToken,
     required this.listTokens,
+    required this.listCustomItems,
   });
 
   Sheet copyWith({
@@ -106,6 +110,7 @@ class Sheet {
     Map<String, bool>? booleans,
     int? indexToken,
     List<String>? listTokens,
+    List<Item>? listCustomItems,
   }) {
     return Sheet(
       id: id ?? this.id,
@@ -134,6 +139,7 @@ class Sheet {
       booleans: booleans ?? this.booleans,
       indexToken: indexToken ?? this.indexToken,
       listTokens: listTokens ?? this.listTokens,
+      listCustomItems: listCustomItems ?? this.listCustomItems,
     );
   }
 
@@ -165,6 +171,7 @@ class Sheet {
       'booleans': booleans,
       'indexToken': indexToken,
       'listTokens': listTokens,
+      'listCustomItems': listCustomItems.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -264,6 +271,11 @@ class Sheet {
                 .map((e) => e.toString())
                 .toList()
           : [],
+      listCustomItems: (map["listCustomItems"] != null)
+          ? (map["listCustomItems"] as List<dynamic>)
+                .map((e) => Item.fromMap(e))
+                .toList()
+          : [],
     );
   }
 
@@ -296,7 +308,8 @@ class Sheet {
         exhaustPoints == other.exhaustPoints &&
         listSpell == other.listSpell &&
         listActiveModules == other.listActiveModules &&
-        listCustomCount == other.listCustomCount;
+        listCustomCount == other.listCustomCount &&
+        listCustomItems == other.listCustomItems;
   }
 
   @override
@@ -321,7 +334,8 @@ class Sheet {
         exhaustPoints.hashCode ^
         listSpell.hashCode ^
         listActiveModules.hashCode ^
-        listCustomCount.hashCode;
+        listCustomCount.hashCode ^
+        listCustomItems.hashCode;
   }
 
   @override

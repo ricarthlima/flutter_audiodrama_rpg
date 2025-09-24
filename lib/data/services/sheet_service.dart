@@ -129,6 +129,7 @@ class SheetService {
       booleans: {},
       indexToken: 0,
       listTokens: [],
+      listCustomItems: [],
     );
 
     if (campaignId != null) {

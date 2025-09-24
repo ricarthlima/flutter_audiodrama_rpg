@@ -83,6 +83,7 @@ void main() async {
     sheetVM: sheetVM,
     itemRepo: itemRepo,
   );
+
   StatisticsViewModel statisticsVM = StatisticsViewModel();
   CampaignProvider campaignVM = CampaignProvider();
   CampaignVisualNovelViewModel campaignVisualVM = CampaignVisualNovelViewModel(

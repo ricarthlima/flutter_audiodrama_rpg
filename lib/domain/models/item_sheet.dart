@@ -5,17 +5,9 @@ class ItemSheet {
   String itemId;
   int uses;
   int amount;
-  ItemSheet({
-    required this.itemId,
-    required this.uses,
-    required this.amount,
-  });
+  ItemSheet({required this.itemId, required this.uses, required this.amount});
 
-  ItemSheet copyWith({
-    String? itemId,
-    int? uses,
-    int? amount,
-  }) {
+  ItemSheet copyWith({String? itemId, int? uses, int? amount}) {
     return ItemSheet(
       itemId: itemId ?? this.itemId,
       uses: uses ?? this.uses,
@@ -24,11 +16,7 @@ class ItemSheet {
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'itemId': itemId,
-      'uses': uses,
-      'amount': amount,
-    };
+    return <String, dynamic>{'itemId': itemId, 'uses': uses, 'amount': amount};
   }
 
   factory ItemSheet.fromMap(Map<String, dynamic> map) {

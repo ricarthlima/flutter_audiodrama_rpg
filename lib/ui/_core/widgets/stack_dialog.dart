@@ -6,12 +6,13 @@ class StackDialog extends StatelessWidget {
   final Function onDismiss;
   final Color barrierColor;
   final int barrierAlpha;
-  const StackDialog(
-      {super.key,
-      required this.child,
-      required this.onDismiss,
-      this.barrierColor = Colors.black,
-      this.barrierAlpha = 130});
+  const StackDialog({
+    super.key,
+    required this.onDismiss,
+    this.barrierColor = Colors.black,
+    this.barrierAlpha = 130,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +29,7 @@ class StackDialog extends StatelessWidget {
             child: Text(""),
           ),
         ),
-        Align(
-          alignment: Alignment.center,
-          child: child,
-        ),
+        Align(alignment: Alignment.center, child: child),
       ],
     );
   }

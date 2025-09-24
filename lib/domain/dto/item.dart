@@ -73,4 +73,9 @@ class Item implements FromMap {
 
   factory Item.fromJson(String source) =>
       Item.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'Item(id: $id, name: $name, weight: $weight, price: $price, description: $description, mechanic: $mechanic, isFinite: $isFinite, maxUses: $maxUses, listCategories: $listCategories, icon: $icon, iconType: $iconType)';
+  }
 }

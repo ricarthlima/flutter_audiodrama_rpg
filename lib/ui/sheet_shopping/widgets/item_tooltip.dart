@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
 import '../view/shopping_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +25,7 @@ class ItemTooltip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shoppingVM = Provider.of<ShoppingViewModel>(context);
+    final sheetVM = context.read<SheetViewModel>();
 
     return MouseRegion(
       onEnter: (_) => onEnter(),
@@ -143,7 +145,10 @@ class ItemTooltip extends StatelessWidget {
                     children: [
                       if (item.isFinite)
                         TextButton(
-                          onPressed: () => shoppingVM.useItem(itemId: item.id),
+                          onPressed: () => shoppingVM.useItem(
+                            itemId: item.id,
+                            listCustomItem: sheetVM.sheet!.listCustomItems,
+                          ),
                           child: Text("Usar"),
                         ),
                       if (item.isFinite)

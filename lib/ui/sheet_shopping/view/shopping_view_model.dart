@@ -11,7 +11,20 @@ class ShoppingViewModel extends ChangeNotifier {
   final ItemRepository itemRepo;
 
   ShoppingViewModel({required this.sheetVM, required this.itemRepo})
-    : listSellerItems = itemRepo.listItems;
+    : listSellerItems = itemRepo.listItems {
+    sheetVM.addListener(refresh);
+  }
+
+  @override
+  void dispose() {
+    sheetVM.removeListener(refresh);
+    super.dispose();
+  }
+
+  void refresh() {
+    onSearchOnInventory();
+    notifyListeners();
+  }
 
   List<Item> listSellerItems = [];
   List<ItemSheet> listInventoryItems = [];
@@ -91,8 +104,8 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void sellItem({required String itemId}) {
-    Item item = itemRepo.getItemById(itemId)!;
+  void sellItem({required String itemId, required List<Item> listCustomItem}) {
+    Item item = itemRepo.getItemById(itemId, listCustomItem: listCustomItem)!;
     _listSheetItems.where((e) => e.itemId == itemId).first.amount--;
     if (_listSheetItems.where((e) => e.itemId == itemId).first.amount <= 0) {
       _listSheetItems.removeWhere((e) => e.itemId == itemId);
@@ -113,8 +126,8 @@ class ShoppingViewModel extends ChangeNotifier {
     saveChanges();
   }
 
-  void useItem({required String itemId}) {
-    Item item = itemRepo.getItemById(itemId)!;
+  void useItem({required String itemId, required List<Item> listCustomItem}) {
+    Item item = itemRepo.getItemById(itemId, listCustomItem: listCustomItem)!;
 
     int index = _listSheetItems.indexWhere(
       (ItemSheet itemSheet) => itemSheet.itemId == itemId,
@@ -149,7 +162,6 @@ class ShoppingViewModel extends ChangeNotifier {
       (ItemSheet itemSheet) => itemSheet.itemId == itemId,
     );
 
-    notifyListeners();
     saveChanges();
   }
 
@@ -166,6 +178,10 @@ class ShoppingViewModel extends ChangeNotifier {
   }
 
   Future<void> saveChanges({double? money}) async {
+    notifyListeners();
+
+    onSearchOnInventory();
+
     sheetVM.sheet!.listItemSheet = _listSheetItems;
 
     if (money != null) {
@@ -215,15 +231,20 @@ class ShoppingViewModel extends ChangeNotifier {
     if (listFilteredCategories.isNotEmpty || search != "") {
       if (search != "") {
         listInventoryItems = listInventoryItems.where((ItemSheet itemSheet) {
-          Item item = itemRepo.getItemById(itemSheet.itemId)!;
+          Item? item = itemRepo.getItemById(
+            itemSheet.itemId,
+            listCustomItem: sheetVM.sheet!.listCustomItems,
+          )!;
           return removeDiacritics(item.name).toLowerCase().contains(search);
         }).toList();
       }
 
       if (listFilteredCategories.isNotEmpty) {
         listInventoryItems.retainWhere((itemSheet) {
-          Item item = itemRepo.getItemById(itemSheet.itemId)!;
-
+          Item? item = itemRepo.getItemById(
+            itemSheet.itemId,
+            listCustomItem: sheetVM.sheet!.listCustomItems,
+          )!;
           for (String category in item.listCategories) {
             if (listFilteredCategories.contains(category)) {
               return true;

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
+import 'package:provider/provider.dart';
 import 'shopping_view_model.dart';
 import '../../../domain/dto/item.dart';
 import '../../_core/components/remove_dialog.dart';
@@ -9,7 +11,11 @@ abstract class ShoppingInteract {
     required String itemId,
     required ShoppingViewModel shoppingVM,
   }) async {
-    Item item = shoppingVM.itemRepo.getItemById(itemId)!;
+    final sheetVM = context.read<SheetViewModel>();
+    Item item = shoppingVM.itemRepo.getItemById(
+      itemId,
+      listCustomItem: sheetVM.sheet!.listCustomItems,
+    )!;
 
     bool? result = await showRemoveItemDialog(
       context: context,
@@ -27,7 +33,11 @@ abstract class ShoppingInteract {
     required ShoppingViewModel shoppingVM,
     bool isOver = false,
   }) async {
-    Item item = shoppingVM.itemRepo.getItemById(itemId)!;
+    final sheetVM = context.read<SheetViewModel>();
+    Item item = shoppingVM.itemRepo.getItemById(
+      itemId,
+      listCustomItem: sheetVM.sheet!.listCustomItems,
+    )!;
 
     bool? result = await showRemoveItemDialog(
       context: context,

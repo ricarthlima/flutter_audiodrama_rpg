@@ -47,9 +47,7 @@ class ShoppingItemWidgetState extends State<ShoppingItemWidget> {
 
   Container _buildBody(BuildContext context) {
     return Container(
-      height: 92,
-      width: 92,
-      padding: EdgeInsets.all(4),
+      padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         border: Border.all(
           width: 1,
@@ -86,7 +84,7 @@ class ShoppingItemWidgetState extends State<ShoppingItemWidget> {
   }
 
   Widget _resolveIcon() {
-    double size = 32;
+    double size = 40;
     switch (widget.item.iconType) {
       case ItemIconType.icons:
         return Icon(flutterIconMap[widget.item.icon!]);

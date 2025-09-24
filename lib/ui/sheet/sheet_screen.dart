@@ -9,6 +9,7 @@ import 'package:flutter_rpg_audiodrama/ui/sheet/components/action_lore_dialog.da
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_tip_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/components/roll_widget.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet_module_magic/sheet_module_magic.dart';
+import 'package:flutter_rpg_audiodrama/ui/sheet_shopping/dialogs/upinsert_item_dialog.dart';
 import 'package:go_router/go_router.dart';
 import '../../router.dart';
 import 'helpers/sheet_subpages.dart';
@@ -302,6 +303,17 @@ class _SheetScreenState extends State<SheetScreen> {
             },
             child: ActionLoreStackDialog(
               action: sheetVM.showingActionLore!,
+              onDismiss: () {
+                sheetVM.onStackDialogDismiss();
+              },
+            ),
+          ),
+        if (sheetVM.showingUpinsertItemDialog)
+          StackDialog(
+            onDismiss: () {
+              sheetVM.onStackDialogDismiss();
+            },
+            child: UpinsertItemDialog(
               onDismiss: () {
                 sheetVM.onStackDialogDismiss();
               },

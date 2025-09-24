@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_rpg_audiodrama/domain/dto/spell.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/item_sheet.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/sheet_custom_count.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
 import 'package:flutter_rpg_audiodrama/ui/sheet/models/group_action.dart';
@@ -14,6 +15,7 @@ import '../../../data/modules.dart';
 import '../../../data/repositories/action_repository.dart';
 // import '../../../data/repositories/condition_repository.dart';
 import '../../../data/repositories/spell_repository.dart';
+import '../../../domain/dto/item.dart';
 import '../../../domain/models/campaign.dart';
 import '../helpers/sheet_subpages.dart';
 
@@ -50,6 +52,8 @@ class SheetViewModel extends ChangeNotifier {
   ActionTemplate? showingRollTip;
   ActionTemplate? showingActionTip;
   ActionTemplate? showingActionLore;
+  bool showingUpinsertItemDialog = false;
+  Item? showingUpinsertItem;
 
   // Outras fichas
   List<Sheet> listSheets = [];
@@ -631,11 +635,18 @@ class SheetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void showItemDialog({Item? item}) {
+    showingUpinsertItem = item;
+    showingUpinsertItemDialog = true;
+    notifyListeners();
+  }
+
   void onStackDialogDismiss() {
     currentRollLog = [];
     showingRollTip = null;
     showingActionTip = null;
     showingActionLore = null;
+    showingUpinsertItemDialog = false;
     notifyListeners();
   }
 
@@ -880,6 +891,17 @@ class SheetViewModel extends ChangeNotifier {
     sheet!.listTokens.removeAt(index);
     SheetService().deleteTokenImage(index: index, sheetId: sheet!.id);
 
+    scheduleSave();
+  }
+
+  void upinsertCustomItem(Item item, int amount) {
+    int index = sheet!.listCustomItems.indexWhere((e) => e.id == item.id);
+    if (index != -1) {
+      sheet!.listCustomItems[index] = item;
+    } else {
+      sheet!.listCustomItems.add(item);
+      sheet!.listItemSheet.add(ItemSheet(itemId: item.id, uses: 0, amount: 1));
+    }
     scheduleSave();
   }
 }
