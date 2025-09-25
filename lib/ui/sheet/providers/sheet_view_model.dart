@@ -125,7 +125,7 @@ class SheetViewModel extends ChangeNotifier {
   Future<void> refresh() async {
     startLoading();
 
-    futureGetSheet = sheetService.getSheetId(id: id, username: username);
+    futureGetSheet = sheetService.getSheetById(id: id, username: username);
 
     try {
       Sheet? sheetModel = await futureGetSheet;
@@ -537,7 +537,7 @@ class SheetViewModel extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    String? path = await sheetService.uploadBioImageBytes(
+    String? path = await sheetService.uploadBioImage(
       bytes: image,
       sheetId: sheet!.id,
     );

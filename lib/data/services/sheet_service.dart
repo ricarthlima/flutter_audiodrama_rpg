@@ -198,7 +198,8 @@ class SheetService {
         .snapshots();
   }
 
-  Future<Sheet?> getSheetId({
+  /// Tenta recuperar uma ficha pelo seu ID e o [username] da pessoa dona.
+  Future<Sheet?> getSheetById({
     required String id,
     required String username,
   }) async {
@@ -228,20 +229,22 @@ class SheetService {
     return null;
   }
 
-  // TODO: Por enquanto, apenas o próprio usuário
+  /// Salva a ficha
   Future<void> saveSheet(Sheet sheet) async {
-    String uid = FirebaseAuth.instance.currentUser!.uid;
     await FirebaseFirestore.instance
         .collection("${rc}users")
-        .doc(uid)
+        .doc(sheet.ownerId)
         .collection("sheets")
         .doc(sheet.id)
         .set(sheet.toMap());
   }
 
-  // Apenas o próprio usuário
+  /// Remove a ficha e sua relação com a campanha
   Future<void> removeSheet(Sheet sheet) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    if (uid != sheet.ownerId) return;
+
     await FirebaseFirestore.instance
         .collection("${rc}users")
         .doc(uid)
@@ -255,8 +258,8 @@ class SheetService {
         .delete();
   }
 
-  // Apenas o próprio usuário
-  Future<String> uploadBioImageBytes({
+  /// Sobe imagem de bio e retorna o link de download
+  Future<String> uploadBioImage({
     required Uint8List bytes,
     required String sheetId,
   }) async {
@@ -270,7 +273,7 @@ class SheetService {
     return await fileRef.getDownloadURL();
   }
 
-  // Apenas o próprio usuário
+  /// Remove a imagem de bio
   Future<void> deleteBioImage({required String sheetId}) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
@@ -279,6 +282,7 @@ class SheetService {
     return fileRef.delete();
   }
 
+  /// Subir imagem token
   Future<String> uploadTokenImage({
     required Uint8List image,
     required String sheetId,
@@ -294,6 +298,7 @@ class SheetService {
     return await fileRef.getDownloadURL();
   }
 
+  /// Remover imagem de token
   Future<void> deleteTokenImage({
     required String sheetId,
     required int index,
