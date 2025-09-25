@@ -749,14 +749,15 @@ class SheetViewModel extends ChangeNotifier {
   }
 
   void addSpell(Spell data) {
-    if (sheet!.listSpell.contains(data.name)) return;
-    sheet!.listSpell.add(data.name);
+    if (sheet!.listSpell.contains(data.id)) return;
+    sheet!.listSpell.add(data.id);
+    notifyListeners();
   }
 
   void removeSpell(Spell data) {
-    if (!sheet!.listSpell.contains(data.name)) return;
-    sheet!.listSpell.remove(data.name);
-    scheduleSave();
+    if (!sheet!.listSpell.contains(data.id)) return;
+    sheet!.listSpell.remove(data.id);
+    notifyListeners();
   }
 
   bool showMagicModule(Campaign? campaign) {

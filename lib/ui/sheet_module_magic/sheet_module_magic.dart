@@ -80,8 +80,16 @@ class SheetModuleMagic extends StatelessWidget {
   }
 
   List<Spell> _listSheetSpells(SheetViewModel sheetVM) {
-    return sheetVM.sheet!.listSpell
-        .map((e) => sheetVM.spellRepo.getAll().where((j) => j.name == e).first)
-        .toList();
+    List<Spell> listSpell = [];
+
+    for (String spellId in sheetVM.sheet!.listSpell) {
+      for (Spell spell in sheetVM.spellRepo.getAll()) {
+        if (spell.id == spellId) {
+          listSpell.add(spell);
+        }
+      }
+    }
+
+    return listSpell;
   }
 }

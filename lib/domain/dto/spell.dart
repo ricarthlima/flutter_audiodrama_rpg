@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_rpg_audiodrama/data/repositories_remote/remote_mixin.dart';
 
 class Spell implements FromMap {
-  int id;
+  String id;
   String energy;
   String name;
   String verbal;
@@ -38,7 +38,7 @@ class Spell implements FromMap {
   });
 
   Spell copyWith({
-    int? id,
+    String? id,
     String? energy,
     String? name,
     String? verbal,
@@ -92,7 +92,7 @@ class Spell implements FromMap {
 
   factory Spell.fromMap(Map<String, dynamic> map) {
     return Spell(
-      id: map['id']?.toInt() ?? 0,
+      id: (map['id'] as dynamic).toString(),
       energy: map['energy'] ?? '',
       name: map['name'] ?? '',
       verbal: map['verbal'] ?? '',
