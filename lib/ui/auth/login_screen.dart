@@ -25,9 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Text(
               "AUDIODRAMA ",
-              style: TextStyle(
-                fontFamily: FontFamily.bungee,
-              ),
+              style: TextStyle(fontFamily: FontFamily.bungee),
             ),
             Text(
               "RPG",
@@ -38,17 +36,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ],
         ),
-        actions: [
-          Icon(Icons.light_mode),
-          Switch(
-            value: themeProvider.themeMode == ThemeMode.dark,
-            onChanged: (value) {
-              themeProvider.toggleTheme(value);
-            },
-          ),
-          Icon(Icons.dark_mode),
-          SizedBox(width: 16),
-        ],
       ),
       body: Center(
         child: GoogleAuthButtonWidget(
