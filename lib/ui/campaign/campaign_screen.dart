@@ -143,6 +143,13 @@ class _CampaignScreenState extends State<CampaignScreen> {
             );
           }).toList(),
         ),
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CampaignPeopleConnected(),
+          ),
+        ),
       ],
     );
   }
