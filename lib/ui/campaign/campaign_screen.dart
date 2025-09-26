@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import '../../data/services/chat_service.dart';
 import '../_core/components/movable_expandable_screen.dart';
 import '../../_core/providers/user_provider.dart';
@@ -14,7 +17,7 @@ import '../sheet/sheet_screen.dart';
 import '../sheet/providers/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
-import 'partials/chat_widget.dart';
+import 'partials/campaign_chat_section.dart';
 
 class CampaignScreen extends StatefulWidget {
   const CampaignScreen({super.key});
@@ -76,6 +79,7 @@ class _CampaignScreenState extends State<CampaignScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
+                spacing: 8,
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
@@ -85,19 +89,18 @@ class _CampaignScreenState extends State<CampaignScreen> {
                         onPressed: () {
                           campaignVM.currentTab = null;
                         },
-                        iconSize: 16,
                         icon: Icon(Icons.close),
                       ),
                     ),
                   ),
                   Container(
-                    width: 300,
+                    width: min(width(context), 500),
                     padding: EdgeInsets.all(16),
                     color: Theme.of(context).scaffoldBackgroundColor,
                     child: IndexedStack(
                       index: campaignVM.currentTab!.index,
                       children: [
-                        CampaignChatWidget(),
+                        CampaignChatSection(),
                         CampaignSheetsWidget(),
                         CampaignAchievementsWidget(),
                       ],

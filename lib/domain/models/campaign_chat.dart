@@ -1,17 +1,24 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+enum CampaignChatType { message, roll, spell }
+
 class CampaignChatMessage {
   String id;
   String userId;
   String message;
   DateTime createdAt;
 
+  CampaignChatType type;
+  String? whisperId;
+
   CampaignChatMessage({
     required this.id,
     required this.userId,
     required this.message,
     required this.createdAt,
+    required this.type,
+    this.whisperId,
   });
 
   CampaignChatMessage copyWith({
@@ -19,12 +26,16 @@ class CampaignChatMessage {
     String? userId,
     String? message,
     DateTime? createdAt,
+    CampaignChatType? type,
+    String? whisperId,
   }) {
     return CampaignChatMessage(
       id: id ?? this.id,
       userId: userId ?? this.userId,
       message: message ?? this.message,
       createdAt: createdAt ?? this.createdAt,
+      type: type ?? this.type,
+      whisperId: whisperId ?? this.whisperId,
     );
   }
 
@@ -34,6 +45,8 @@ class CampaignChatMessage {
       'userId': userId,
       'message': message,
       'createdAt': createdAt.millisecondsSinceEpoch,
+      'type': type.name,
+      'whisperId': whisperId,
     };
   }
 
@@ -43,6 +56,10 @@ class CampaignChatMessage {
       userId: map['userId'] as String,
       message: map['message'] as String,
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
+      type: map['type'] != null
+          ? CampaignChatType.values.where((e) => e.name == map['type']).first
+          : CampaignChatType.message,
+      whisperId: map['whisperId'],
     );
   }
 
@@ -53,17 +70,20 @@ class CampaignChatMessage {
 
   @override
   String toString() {
-    return 'CampaignChatMessage(id: $id, userId: $userId, message: $message, createdAt: $createdAt)';
+    return 'CampaignChatMessage(id: $id, userId: $userId, message: $message, createdAt: $createdAt, type: $type, whisperId: $whisperId)';
   }
 
   @override
-  bool operator ==(covariant CampaignChatMessage other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other.id == id &&
+    return other is CampaignChatMessage &&
+        other.id == id &&
         other.userId == userId &&
         other.message == message &&
-        other.createdAt == createdAt;
+        other.createdAt == createdAt &&
+        other.type == type &&
+        other.whisperId == whisperId;
   }
 
   @override
@@ -71,6 +91,8 @@ class CampaignChatMessage {
     return id.hashCode ^
         userId.hashCode ^
         message.hashCode ^
-        createdAt.hashCode;
+        createdAt.hashCode ^
+        type.hashCode ^
+        whisperId.hashCode;
   }
 }

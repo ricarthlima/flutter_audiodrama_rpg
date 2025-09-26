@@ -39,12 +39,15 @@ class ChatService {
   Future<void> sendMessageToChat({
     required String campaignId,
     required String message,
+    String? whisperId,
   }) async {
     CampaignChatMessage chatMessage = CampaignChatMessage(
       id: Uuid().v8(),
       userId: FirebaseAuth.instance.currentUser!.uid,
       message: message,
       createdAt: DateTime.now(),
+      type: CampaignChatType.message,
+      whisperId: whisperId,
     );
 
     await FirebaseFirestore.instance
