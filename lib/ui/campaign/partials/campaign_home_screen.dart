@@ -167,6 +167,9 @@ class _CampaignVisualGuestState extends State<_CampaignVisualGuest> {
                               ),
                       ),
                     ),
+                  ] +
+                  _generateListStack(context, visualVM) +
+                  [
                     if (!widget.isPreview)
                       Align(
                         alignment: Alignment.center,
@@ -183,8 +186,7 @@ class _CampaignVisualGuestState extends State<_CampaignVisualGuest> {
                               .toList(),
                         ),
                       ),
-                  ] +
-                  _generateListStack(context, visualVM),
+                  ],
             ),
           ),
         ),
@@ -199,7 +201,7 @@ class _CampaignVisualGuestState extends State<_CampaignVisualGuest> {
     List<Widget> result = [];
     List<Widget> leftList = [];
 
-    double verticalScale = (isVertical(context)) ? 0.2 : 1;
+    double verticalScale = (isVertical(context)) ? 0.2 : 0.75;
 
     for (int i = 0; i < visualVM.data.listLeftActive.length; i++) {
       CampaignVisual cm = visualVM.data.listLeftActive[i];
@@ -589,8 +591,9 @@ class _RowGroups extends StatelessWidget {
           child: _ImageAreaWidget(
             title: "Cenários",
             listImages: visualVM.data.listBackgrounds,
-            width: 200,
+            childWidth: 200,
             showTitle: true,
+            aspectRatio: 16 / 9,
             onTap: visualVM.toggleBackground,
           ),
         ),
@@ -600,7 +603,8 @@ class _RowGroups extends StatelessWidget {
           child: _ImageAreaWidget(
             title: "Objetos, Notas e Itens",
             listImages: visualVM.data.listObjects,
-            width: 64,
+            childWidth: 64,
+            aspectRatio: 1,
             onTap: visualVM.toggleObject,
           ),
         ),
@@ -639,14 +643,16 @@ class _RowGroups extends StatelessWidget {
 class _ImageAreaWidget extends StatefulWidget {
   final String title;
   final List<CampaignVisual> listImages;
-  final double width;
+  final double childWidth;
+  final double aspectRatio;
   final Function(CampaignVisual object) onTap;
   final bool showTitle;
 
   const _ImageAreaWidget({
     required this.title,
     required this.listImages,
-    required this.width,
+    required this.childWidth,
+    required this.aspectRatio,
     required this.onTap,
     this.showTitle = false,
   });
@@ -701,20 +707,23 @@ class __ImageAreaWidgetState extends State<_ImageAreaWidget> {
         SizedBox(height: 16),
         SizedBox(
           height: 300,
-          child: MasonryGridView.builder(
-            padding: EdgeInsets.only(bottom: 64),
+          child: GridView.builder(
+            padding: EdgeInsets.only(bottom: 64, right: 16),
             shrinkWrap: true,
-            gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: widget.width,
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: widget.childWidth,
+              childAspectRatio: widget.aspectRatio,
+              crossAxisSpacing: 4,
+              mainAxisSpacing: 4,
             ),
-            mainAxisSpacing: 4,
-            crossAxisSpacing: 4,
             itemCount: listVisualization.length,
             itemBuilder: (context, index) {
               final visualObject = listVisualization[index];
               return SizedBox(
                 height: (!widget.showTitle) ? null : 85,
+                width: widget.childWidth,
                 child: Stack(
+                  fit: StackFit.expand,
                   children: [
                     InkWell(
                       onTap: () => widget.onTap(visualObject),

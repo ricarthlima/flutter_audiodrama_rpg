@@ -183,6 +183,21 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
       data.backgroundActive = null;
     } else {
       data.backgroundActive = visualBG;
+      data.backgroundActive!.isEnable = true;
+    }
+
+    if (data.backgroundActive != null) {
+      for (var vb in data.listBackgrounds) {
+        if (vb.name == data.backgroundActive!.name) {
+          vb.isEnable = true;
+        } else {
+          vb.isEnable = false;
+        }
+      }
+    } else {
+      for (var vb in data.listBackgrounds) {
+        vb.isEnable = false;
+      }
     }
 
     if (_isClearLeft) {
@@ -198,8 +213,8 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
       data.allowZoom = false;
     }
 
-    onSave();
     notifyListeners();
+    onSave();
   }
 
   void toggleObject(CampaignVisual visualObject) {
@@ -232,44 +247,3 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
     onSave();
   }
 }
-
-// CampaignVisual _getTestBackground() {
-//   return CampaignVisual(
-//       name: "Floresta-${Random().nextInt(9999)}",
-//       url:
-//           "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/floresta.jpg",
-//       type: CampaignVisualType.background);
-// }
-
-// List<CampaignVisual> _getTestListLeft() {
-//   return [
-//     "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/Erin.png",
-//     "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/Gaspar_Portrait.png",
-//   ]
-//       .map(
-//         (e) => CampaignVisual(
-//           name: e.split("/").last.split(".").first,
-//           url: e,
-//           type: CampaignVisualType.portrait,
-//         ),
-//       )
-//       .toList();
-// }
-
-// List<CampaignVisual> _getTestListRight() {
-//   return [
-//     "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/sombra-portrait.png",
-//     "https://raw.githubusercontent.com/ricarthlima/public_image_repo_test/refs/heads/main/viper-portrait.png",
-//   ]
-//       .map(
-//         (e) => CampaignVisual(
-//             name: e.split("/").last.split(".").first,
-//             url: e,
-//             type: CampaignVisualType.portrait),
-//       )
-//       .toList();
-// }
-
-// List<CampaignVisual> _getTestListAll() {
-//   return _getTestListLeft() + _getTestListRight();
-// }
