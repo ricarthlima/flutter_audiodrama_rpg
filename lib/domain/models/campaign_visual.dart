@@ -1,14 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-enum CampaignVisualType {
-  portrait,
-  background,
-  music,
-  ambience,
-  sfx,
-  objects,
-}
+enum CampaignVisualType { portrait, background, music, ambience, sfx, objects }
 
 class CampaignVisual {
   String name;
@@ -54,21 +47,19 @@ class CampaignVisual {
 
   factory CampaignVisual.fromMap(Map<String, dynamic> map) {
     return CampaignVisual(
-        name: map['name'] as String,
-        url: map['url'] as String,
-        isEnable: map['isEnable'] ?? false,
-        type: CampaignVisualType.values
-            .where((e) => e.name == map['type'] as String)
-            .first);
+      name: map['name'] as String,
+      url: map['url'] as String,
+      isEnable: map['isEnable'] ?? false,
+      type: CampaignVisualType.values
+          .where((e) => e.name == map['type'] as String)
+          .first,
+    );
   }
 
   String toJson() => json.encode(toMap());
 
   factory CampaignVisual.fromJson(String source) =>
       CampaignVisual.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() => 'CampaignVisual(name: $name, url: $url)';
 
   @override
   bool operator ==(covariant CampaignVisual other) {
@@ -79,4 +70,8 @@ class CampaignVisual {
 
   @override
   int get hashCode => name.hashCode ^ url.hashCode;
+
+  @override
+  String toString() =>
+      'CampaignVisual(name: $name, url: $url, isEnable: $isEnable)';
 }

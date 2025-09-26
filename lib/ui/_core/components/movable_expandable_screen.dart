@@ -137,7 +137,7 @@ class _MovableExpandableScreenState extends State<MovableExpandableScreen> {
                             icon: const Icon(Icons.close, color: Colors.white),
                           ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

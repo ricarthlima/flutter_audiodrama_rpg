@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_roll_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_roll.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_screen.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/sections/campaign_grid_guest.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/sections/campaign_grid_owner.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
@@ -14,7 +15,6 @@ import '../../../_core/providers/audio_provider.dart';
 import '../../../domain/models/campaign_visual.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/components/image_dialog.dart';
-import '../../_core/components/movable_expandable_panel.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import '../../_core/widgets/generic_filter_widget.dart';
@@ -177,9 +177,10 @@ class _CampaignVisualGuestState extends State<_CampaignVisualGuest> {
                           children: visualVM.data.listObjects
                               .where((e) => e.isEnable)
                               .map(
-                                (e) => MovableExpandablePanel(
+                                (e) => MovableExpandableScreen(
                                   key: ValueKey(e.url),
-                                  headerTitle: e.name,
+                                  title: e.name,
+                                  width: 600,
                                   child: Image.network(e.url),
                                 ),
                               )
