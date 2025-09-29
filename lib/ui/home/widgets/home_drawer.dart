@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../../_core/providers/user_provider.dart';
-import '../../_core/web/open_popup/open_popup.dart';
-import '../utils/home_tabs.dart';
 import 'package:provider/provider.dart';
 
+import '../../../_core/providers/user_provider.dart';
 import '../../_core/dimensions.dart';
+import '../../_core/web/open_popup/open_popup.dart';
 import '../../_core/widgets/compactable_button.dart';
+import '../utils/home_tabs.dart';
 import '../view/home_view_model.dart';
 
 class HomeDrawer extends StatelessWidget {
@@ -27,8 +27,8 @@ class HomeDrawer extends StatelessWidget {
         curve: Curves.ease,
         width: (homeViewModel.isDrawerClosed)
             ? (isVertical(context))
-                ? 0
-                : 48
+                  ? 0
+                  : 48
             : 275,
         height: height(context),
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -90,9 +90,7 @@ class HomeDrawer extends StatelessWidget {
                   Text(
                     FirebaseAuth.instance.currentUser!.displayName!,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
                     FirebaseAuth.instance.currentUser!.email!,
@@ -104,7 +102,7 @@ class HomeDrawer extends StatelessWidget {
                 homeViewModel.currentPage = HomeTabs.profile;
                 changeURL(HomeTabs.profile.name);
               },
-            )
+            ),
           ],
         ),
       ),

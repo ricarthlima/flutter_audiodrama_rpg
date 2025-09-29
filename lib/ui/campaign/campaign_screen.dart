@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/campaign_people_connected.dart';
+import '../_core/dimensions.dart';
+import 'widgets/campaign_people_connected.dart';
 import '../../data/services/chat_service.dart';
 import '../_core/components/movable_expandable_screen.dart';
 import '../../_core/providers/user_provider.dart';

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/sheet_custom_count.dart';
+import 'sheet_custom_count.dart';
 
 import '../dto/item.dart';
 import 'action_lore.dart';

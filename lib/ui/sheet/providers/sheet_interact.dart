@@ -3,12 +3,12 @@ import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
-import 'package:flutter_rpg_audiodrama/data/services/campaign_roll_service.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign_roll.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/snackbars/snackbars.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import '../../../_core/providers/audio_provider.dart';
+import '../../../data/services/campaign_roll_service.dart';
+import '../../../domain/models/campaign_roll.dart';
+import '../../_core/constants/roll_type.dart';
+import '../../_core/snackbars/snackbars.dart';
+import '../../campaign/view/campaign_view_model.dart';
 import 'package:uuid/uuid.dart';
 import '../../../domain/dto/spell.dart';
 import '../../../domain/exceptions/general_exceptions.dart';

@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/color_filter_inverter.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/constants/helper_image_path.dart';
+import '../../_core/color_filter_inverter.dart';
+import '../../_core/constants/helper_image_path.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/dto/spell.dart';

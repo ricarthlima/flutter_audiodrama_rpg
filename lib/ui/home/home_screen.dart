@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/services/news_service.dart';
-import 'package:flutter_rpg_audiodrama/ui/home/components/news_dialog.dart';
+import '../../data/services/news_service.dart';
+import 'components/news_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/providers/user_provider.dart';

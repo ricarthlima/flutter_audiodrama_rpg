@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import '../../../_core/providers/user_provider.dart';
+import '../view/campaign_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/services/chat_service.dart';

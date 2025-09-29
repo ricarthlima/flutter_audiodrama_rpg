@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
 import 'package:provider/provider.dart';
-import 'shopping_view_model.dart';
+
 import '../../../domain/dto/item.dart';
 import '../../_core/components/remove_dialog.dart';
+import '../../sheet/providers/sheet_view_model.dart';
+import 'shopping_view_model.dart';
 
 abstract class ShoppingInteract {
   static Future<void> removeItem({

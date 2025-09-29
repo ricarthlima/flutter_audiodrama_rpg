@@ -1,5 +1,5 @@
-import 'package:flutter_rpg_audiodrama/data/repositories_remote/remote_mixin.dart';
-import 'package:flutter_rpg_audiodrama/domain/dto/spell.dart';
+import 'remote_mixin.dart';
+import '../../domain/dto/spell.dart';
 
 import '../repositories/spell_repository.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_rpg_audiodrama/data/repositories/action_repository.dart';
+import '../repositories/action_repository.dart';
 import '../../_core/helpers/print.dart';
 import '../../domain/dto/action_template.dart';
 import '../../domain/dto/list_action.dart';

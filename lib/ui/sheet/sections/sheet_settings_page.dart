@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/setting_token_item.dart';
+import '../../../_core/providers/user_provider.dart';
+import '../../../domain/models/campaign.dart';
+import '../widgets/setting_token_item.dart';
 import 'package:provider/provider.dart';
 
 import '../../../_core/utils/download_sheet_json.dart';

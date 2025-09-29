@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/settings/components/add_news_dialog.dart';
+import 'components/add_news_dialog.dart';
 import '../../_core/providers/audio_provider.dart';
 import '../_core/dimensions.dart';
 import '../_core/fonts.dart';
@@ -32,9 +32,7 @@ class SettingsScreen extends StatelessWidget {
       width: min(400, width(context)),
       height: min(800, height(context)),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("Configurações"),
-        ),
+        appBar: AppBar(title: Text("Configurações")),
         body: Padding(
           padding: const EdgeInsets.all(16),
           child: SingleChildScrollView(
@@ -43,10 +41,7 @@ class SettingsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: 4,
               children: [
-                Text(
-                  "Geral",
-                  style: TextStyle(fontFamily: FontFamily.bungee),
-                ),
+                Text("Geral", style: TextStyle(fontFamily: FontFamily.bungee)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -65,14 +60,8 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                Divider(
-                  height: 32,
-                  thickness: 0.5,
-                ),
-                Text(
-                  "Audio",
-                  style: TextStyle(fontFamily: FontFamily.bungee),
-                ),
+                Divider(height: 32, thickness: 0.5),
+                Text("Audio", style: TextStyle(fontFamily: FontFamily.bungee)),
                 Column(
                   spacing: 8,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -127,10 +116,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                Divider(
-                  height: 32,
-                  thickness: 0.5,
-                ),
+                Divider(height: 32, thickness: 0.5),
                 if (FirebaseAuth.instance.currentUser?.email ==
                     "ricarth.lima@gmail.com")
                   ElevatedButton(
@@ -141,17 +127,15 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ListTile(
                   onTap: () {
-                    FirebaseAuth.instance.signOut().then(
-                      (value) {
-                        if (!context.mounted) return;
-                        AppRouter().goAuth(context: context);
-                      },
-                    );
+                    FirebaseAuth.instance.signOut().then((value) {
+                      if (!context.mounted) return;
+                      AppRouter().goAuth(context: context);
+                    });
                   },
                   leading: Icon(Icons.logout),
                   title: Text("Deslogar"),
                   contentPadding: EdgeInsets.zero,
-                )
+                ),
               ],
             ),
           ),

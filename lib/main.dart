@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_fullscreen/flutter_fullscreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories/spell_repository.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories_remote/action_repository_remote.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories_remote/item_repository_remote.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories_remote/spell_repository_remote.dart';
+import 'data/repositories/spell_repository.dart';
+import 'data/repositories_remote/action_repository_remote.dart';
+import 'data/repositories_remote/item_repository_remote.dart';
+import 'data/repositories_remote/spell_repository_remote.dart';
 
 import '_core/url_strategy/url_strategy.dart';
 import 'data/repositories/action_repository.dart';

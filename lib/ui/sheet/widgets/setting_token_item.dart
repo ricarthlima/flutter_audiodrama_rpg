@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/exceptions/general_exceptions.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/components/image_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/snackbars/snackbars.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/utils/load_image.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
+import '../../../domain/exceptions/general_exceptions.dart';
+import '../../_core/app_colors.dart';
+import '../../_core/components/image_dialog.dart';
+import '../../_core/snackbars/snackbars.dart';
+import '../../_core/utils/load_image.dart';
+import '../providers/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
 class SettingTokenItem extends StatelessWidget {

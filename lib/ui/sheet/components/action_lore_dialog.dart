@@ -1,13 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../domain/dto/action_template.dart';
 import '../../../domain/models/action_lore.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
 import '../providers/sheet_view_model.dart';
-import 'package:provider/provider.dart';
-
-import '../../../domain/dto/action_template.dart';
 
 class ActionLoreStackDialog extends StatefulWidget {
   final ActionTemplate action;

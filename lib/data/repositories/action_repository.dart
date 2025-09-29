@@ -1,6 +1,6 @@
 import '../../domain/dto/action_template.dart';
-import '../../domain/models/action_value.dart';
 import '../../domain/dto/list_action.dart';
+import '../../domain/models/action_value.dart';
 
 abstract class ActionRepository {
   Future<void> onInitialize();

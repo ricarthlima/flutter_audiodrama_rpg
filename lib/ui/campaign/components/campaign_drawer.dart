@@ -13,9 +13,9 @@ import '../../_core/fonts.dart';
 import '../../_core/widgets/compactable_button.dart';
 import '../../home/utils/home_tabs.dart';
 import '../../settings/settings_screen.dart';
+import '../dialogs/campaign_settings_dialog.dart';
 import '../utils/campaign_subpages.dart';
 import '../view/campaign_view_model.dart';
-import '../dialogs/campaign_settings_dialog.dart';
 
 class CampaignDrawer extends StatelessWidget {
   const CampaignDrawer({super.key});

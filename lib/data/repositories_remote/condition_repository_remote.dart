@@ -1,5 +1,5 @@
-import 'package:flutter_rpg_audiodrama/data/repositories/condition_repository.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories_remote/remote_mixin.dart';
+import '../repositories/condition_repository.dart';
+import 'remote_mixin.dart';
 
 import '../../domain/dto/condition.dart';
 

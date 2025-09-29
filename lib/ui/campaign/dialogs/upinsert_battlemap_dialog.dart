@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rpg_audiodrama/domain/exceptions/general_exceptions.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/snackbars/snackbars.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/utils/load_image.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/validators/validators.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/models/battle_map.dart';
+import '../../../domain/exceptions/general_exceptions.dart';
+import '../../_core/fonts.dart';
+import '../../_core/snackbars/snackbars.dart';
+import '../../_core/utils/load_image.dart';
+import '../../_core/validators/validators.dart';
+import '../view/campaign_view_model.dart';
+import '../../campaign_battle_map/models/battle_map.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 

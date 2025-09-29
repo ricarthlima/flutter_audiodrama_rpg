@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:flutter_rpg_audiodrama/router.dart';
+import '../../router.dart';
 import 'package:go_router/go_router.dart';
 
 import '../_core/app_colors.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
+import 'generic_header.dart';
 
 /// Sempre colocar numa coluna!
 class ExpansibleList extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:flutter_rpg_audiodrama/data/services/news_service.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
+import '../../../data/services/news_service.dart';
+import '../../_core/app_colors.dart';
 import 'package:intl/intl.dart';
 
 void showNewsDialog(BuildContext context, NewsModel news) {

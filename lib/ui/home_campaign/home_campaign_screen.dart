@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../domain/models/campaign.dart';
-import '../../_core/providers/user_provider.dart';
-import 'components/join_campaign_dialog.dart';
-import 'widgets/campaign_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../_core/providers/user_provider.dart';
+import '../../domain/models/campaign.dart';
 import '../_core/widgets/generic_header.dart';
 import 'components/create_campaign_dialog.dart';
+import 'components/join_campaign_dialog.dart';
+import 'widgets/campaign_widget.dart';
 
 class HomeCampaignScreen extends StatelessWidget {
   const HomeCampaignScreen({super.key});

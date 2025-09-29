@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter_rpg_audiodrama/data/repositories/item_repository.dart';
-import 'package:flutter_rpg_audiodrama/data/repositories_remote/remote_mixin.dart';
-import 'package:flutter_rpg_audiodrama/domain/dto/item.dart';
+import '../repositories/item_repository.dart';
+import 'remote_mixin.dart';
+import '../../domain/dto/item.dart';
 
 import '../../_core/helpers/print.dart';
 import '../../ui/_core/utils/i18n_categories.dart';

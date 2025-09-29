@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet_module_magic/widgets/list_spells_widget.dart';
+import '../sheet/providers/sheet_view_model.dart';
+import 'widgets/list_spells_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/models/battle_map.dart';
+import '../../_core/app_colors.dart';
+import '../../_core/components/remove_dialog.dart';
+import '../../campaign/view/campaign_view_model.dart';
+import '../models/battle_map.dart';
 import 'package:provider/provider.dart';
 
 class CampaignBattleMapListItem extends StatelessWidget {

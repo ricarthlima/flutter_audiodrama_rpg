@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../../../router.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart';
-import 'package:provider/provider.dart';
-
 import '../../_core/fonts.dart';
 import '../../settings/settings_screen.dart';
 import '../view/home_view_model.dart';
@@ -21,18 +21,10 @@ AppBar getHomeAppBar(BuildContext context) {
     title: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          "AUDIODRAMA ",
-          style: TextStyle(
-            fontFamily: FontFamily.bungee,
-          ),
-        ),
+        Text("AUDIODRAMA ", style: TextStyle(fontFamily: FontFamily.bungee)),
         Text(
           "RPG",
-          style: TextStyle(
-            fontFamily: FontFamily.bungee,
-            color: AppColors.red,
-          ),
+          style: TextStyle(fontFamily: FontFamily.bungee, color: AppColors.red),
         ),
       ],
     ),
@@ -52,12 +44,10 @@ AppBar getHomeAppBar(BuildContext context) {
       if (!isVertical(context))
         IconButton(
           onPressed: () {
-            FirebaseAuth.instance.signOut().then(
-              (value) {
-                if (!context.mounted) return;
-                AppRouter().goAuth(context: context);
-              },
-            );
+            FirebaseAuth.instance.signOut().then((value) {
+              if (!context.mounted) return;
+              AppRouter().goAuth(context: context);
+            });
           },
           icon: Icon(Icons.logout),
         ),

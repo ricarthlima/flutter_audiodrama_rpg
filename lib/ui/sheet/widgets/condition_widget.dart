@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/text_markdown.dart';
 
 import '../../_core/app_colors.dart';
 import '../../_core/fonts.dart';
+import '../../_core/widgets/text_markdown.dart';
 
 class ConditionWidget extends StatefulWidget {
   final int condition;

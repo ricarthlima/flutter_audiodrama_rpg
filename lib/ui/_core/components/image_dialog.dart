@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import '../dimensions.dart';
 import '../web/open_popup/open_popup.dart';
 
@@ -58,7 +59,7 @@ Future<dynamic> showImageDialog({
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -88,10 +89,7 @@ class IconViewImageButton extends StatelessWidget {
           onTap: () {
             showImageDialog(context: context, imageUrl: imageUrl);
           },
-          child: Icon(
-            Icons.visibility,
-            size: size,
-          ),
+          child: Icon(Icons.visibility, size: size),
         ),
       ),
     );

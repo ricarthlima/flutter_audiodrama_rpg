@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../../_core/app_colors.dart';
 import '../../_core/utils/i18n_categories.dart';
 import '../view/shopping_view_model.dart';
-import 'package:provider/provider.dart';
 
 class ItemCategoryWidget extends StatelessWidget {
   final String category;

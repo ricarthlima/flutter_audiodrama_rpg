@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
+import '../app_colors.dart';
 
 void showImageTooLargeSnackbar(BuildContext context) {
   showErrorSnackBar(context, "Sua imagem é pesada demais.");

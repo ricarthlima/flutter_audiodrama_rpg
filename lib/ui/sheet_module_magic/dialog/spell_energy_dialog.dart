@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
+import '../../_core/fonts.dart';
 
 class SpellEnergyDialog extends StatefulWidget {
   final int minEnergy;

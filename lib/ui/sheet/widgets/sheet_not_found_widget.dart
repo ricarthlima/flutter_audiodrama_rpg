@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '../../../router.dart';
 
 class SheetNotFoundWidget extends StatelessWidget {
-  const SheetNotFoundWidget({
-    super.key,
-  });
+  const SheetNotFoundWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

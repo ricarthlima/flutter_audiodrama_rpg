@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/web/download_json/download_json.dart';
+import '../../_core/web/download_json/download_json.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/app_user.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/constants/helper_image_path.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
+import '../../_core/constants/helper_image_path.dart';
+import '../../_core/constants/roll_type.dart';
 import '../../../domain/models/action_value.dart';
 import '../../_core/color_filter_inverter.dart';
 import '../../_core/components/wip_snackbar.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/domain/dto/spell.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/constants/helper_image_path.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
+import '../../../_core/providers/user_provider.dart';
+import '../../../domain/dto/spell.dart';
+import '../../_core/app_colors.dart';
+import '../../_core/constants/helper_image_path.dart';
+import '../../_core/fonts.dart';
+import '../../sheet/providers/sheet_view_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 

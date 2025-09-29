@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
+import '../../sheet/providers/sheet_view_model.dart';
 import '../view/shopping_view_model.dart';
 import 'package:provider/provider.dart';
 

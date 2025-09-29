@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'widgets/bio_widget.dart';
 import 'widgets/notes_widget.dart';
 

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../../../data/services/campaign_visual_service.dart';
 import '../../../domain/models/campaign_visual.dart';
 import '../../../domain/models/campaign_vm_model.dart';

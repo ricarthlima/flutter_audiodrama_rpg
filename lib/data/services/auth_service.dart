@@ -5,13 +5,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../../_core/helpers/release_collections.dart';
-import '../../domain/models/app_user.dart';
-import '../../router.dart';
-import '../../_core/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import '../../_core/helpers/release_collections.dart';
+import '../../_core/providers/user_provider.dart';
+import '../../domain/models/app_user.dart';
+import '../../router.dart';
 import '../preferences/local_data_manager.dart';
 
 class AuthService {

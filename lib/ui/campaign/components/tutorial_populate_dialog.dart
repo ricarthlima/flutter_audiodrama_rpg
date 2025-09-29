@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
+import '../../_core/app_colors.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import '../../_core/fonts.dart';
 import '../view/campaign_visual_novel_view_model.dart';

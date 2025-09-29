@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/constants/exhaust_level.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/widgets/condition_widget.dart';
+import '../../_core/app_colors.dart';
+import '../../_core/constants/exhaust_level.dart';
+import '../../_core/dimensions.dart';
+import 'condition_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../_core/providers/user_provider.dart';

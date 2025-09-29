@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:flutter_rpg_audiodrama/data/repositories_remote/remote_mixin.dart';
+import '../../data/repositories_remote/remote_mixin.dart';
 
 class Spell implements FromMap {
   String id;

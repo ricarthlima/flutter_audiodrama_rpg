@@ -3,10 +3,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/models/battle_map.dart';
-import '../controllers/battle_map_controller.dart';
 
+import '../controllers/battle_map_controller.dart';
 import '../models/token.dart';
 
 /// Recebe um token e mostra-o. Deverá ser usado sobre o grid;

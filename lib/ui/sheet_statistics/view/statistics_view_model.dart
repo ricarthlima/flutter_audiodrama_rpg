@@ -1,8 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 import '../../../_core/utils/roll_log_statistics.dart';
 import '../../../domain/models/roll_log.dart';
-import 'package:intl/intl.dart';
 
 class StatisticsViewModel extends ChangeNotifier {
   StatisticsViewModel();
@@ -41,19 +42,17 @@ class StatisticsViewModel extends ChangeNotifier {
 
   List<Map<String, int>> getListByCount() {
     List<Map<String, int>> listResult =
-        RollLogStatistics.countActions(RollLogStatistics.filterLogsByPeriod(
-      listLogs: listCompleteRollLog,
-      start: _filterDateStart,
-      end: _filterDateEnd,
-    )).entries.map(
-      (entry) {
-        return {entry.key: entry.value};
-      },
-    ).toList();
+        RollLogStatistics.countActions(
+          RollLogStatistics.filterLogsByPeriod(
+            listLogs: listCompleteRollLog,
+            start: _filterDateStart,
+            end: _filterDateEnd,
+          ),
+        ).entries.map((entry) {
+          return {entry.key: entry.value};
+        }).toList();
 
-    listResult.sort(
-      (a, b) => b.values.first.compareTo(a.values.first),
-    );
+    listResult.sort((a, b) => b.values.first.compareTo(a.values.first));
 
     return listResult;
   }
@@ -63,26 +62,16 @@ class StatisticsViewModel extends ChangeNotifier {
   }
 
   List<BarChartGroupData> _prepareHorizontal(
-      Map<DateTime, Map<String, int>> data) {
+    Map<DateTime, Map<String, int>> data,
+  ) {
     List<BarChartGroupData> barGroups = [];
     int x = 0;
     data.forEach((date, actions) {
       List<BarChartRodData> barRods = [];
       actions.forEach((action, count) {
-        barRods.add(
-          BarChartRodData(
-            toY: count.toDouble(),
-            width: 8,
-          ),
-        );
+        barRods.add(BarChartRodData(toY: count.toDouble(), width: 8));
       });
-      barGroups.add(
-        BarChartGroupData(
-          x: x,
-          barRods: barRods,
-          barsSpace: 4,
-        ),
-      );
+      barGroups.add(BarChartGroupData(x: x, barRods: barRods, barsSpace: 4));
       x++;
     });
     return barGroups;
@@ -92,8 +81,9 @@ class StatisticsViewModel extends ChangeNotifier {
       TextEditingController();
 
   TextEditingController get startDateEditingController {
-    _startDateEditingController.text =
-        DateFormat("dd/MM/yyyy HH:mm").format(_filterDateStart);
+    _startDateEditingController.text = DateFormat(
+      "dd/MM/yyyy HH:mm",
+    ).format(_filterDateStart);
 
     return _startDateEditingController;
   }
@@ -102,8 +92,9 @@ class StatisticsViewModel extends ChangeNotifier {
       TextEditingController();
 
   TextEditingController get endDateEditingController {
-    _endDateEditingController.text =
-        DateFormat("dd/MM/yyyy HH:mm").format(_filterDateEnd);
+    _endDateEditingController.text = DateFormat(
+      "dd/MM/yyyy HH:mm",
+    ).format(_filterDateEnd);
 
     return _endDateEditingController;
   }

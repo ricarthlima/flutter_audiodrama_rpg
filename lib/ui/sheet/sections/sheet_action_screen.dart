@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/_core/providers/user_provider.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/models/group_action.dart';
+import '../../../_core/providers/user_provider.dart';
+import '../../../domain/models/campaign.dart';
+import '../../_core/dimensions.dart';
+import '../models/group_action.dart';
 import '../../_core/app_colors.dart';
 import 'package:provider/provider.dart';
 

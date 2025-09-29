@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/exceptions/general_exceptions.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/snackbars/snackbars.dart';
+import '../../../domain/exceptions/general_exceptions.dart';
+import '../../_core/snackbars/snackbars.dart';
 import '../../../domain/models/campaign_achievement.dart';
 import '../view/campaign_view_model.dart';
 import 'package:provider/provider.dart';

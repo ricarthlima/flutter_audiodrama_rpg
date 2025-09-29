@@ -2,8 +2,9 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import '../../../domain/exceptions/general_exceptions.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../../domain/exceptions/general_exceptions.dart';
 
 /// Pode lançar [ImageTooLargeException] se a imagem for grande demais.
 Future<Uint8List?> loadAndCompressImage(

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
+import 'roll_log.dart';
 
 class CampaignRoll {
   String id;

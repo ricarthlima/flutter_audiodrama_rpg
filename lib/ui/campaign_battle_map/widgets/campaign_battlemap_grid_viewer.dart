@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/expansible_list.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/models/battle_map.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/widgets/drop_on_battlemap.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/widgets/token_widget.dart';
+import '../../_core/fonts.dart';
+import '../../_core/widgets/expansible_list.dart';
+import '../../campaign/view/campaign_view_model.dart';
+import '../models/battle_map.dart';
+import 'drop_on_battlemap.dart';
+import 'token_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sheet_model.dart';

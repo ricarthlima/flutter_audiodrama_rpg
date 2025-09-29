@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/models/token.dart';
 
 import '../models/battle_map.dart';
+import '../models/token.dart';
 
 class BattleMapController extends ChangeNotifier {
   bool? isCampaignOwner;

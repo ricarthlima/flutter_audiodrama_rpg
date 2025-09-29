@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../../../domain/models/campaign.dart';
 import '../../../router.dart';
-import '../../_core/dimensions.dart';
-
 import '../../_core/components/show_snackbar.dart';
+import '../../_core/dimensions.dart';
 
 class CampaignWidget extends StatelessWidget {
   final Campaign campaign;

@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rpg_audiodrama/data/modules.dart';
-import 'package:flutter_rpg_audiodrama/domain/exceptions/general_exceptions.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/components/remove_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/snackbars/snackbars.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
+import '../../../data/modules.dart';
+import '../../../domain/exceptions/general_exceptions.dart';
+import '../../_core/components/remove_dialog.dart';
+import '../../_core/snackbars/snackbars.dart';
+import '../../sheet/providers/sheet_view_model.dart';
 import 'package:go_router/go_router.dart';
 import '../../../domain/dto/list_action.dart';
 import '../../_core/fonts.dart';

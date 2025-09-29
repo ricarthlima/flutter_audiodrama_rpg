@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/data/services/news_service.dart';
+import '../../../data/services/news_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 void showAddNewsDialog(BuildContext context) {

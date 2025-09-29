@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/domain/dto/action_template.dart';
-import 'package:flutter_rpg_audiodrama/domain/dto/spell.dart';
-import 'package:flutter_rpg_audiodrama/domain/models/sheet_custom_count.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/constants/roll_type.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_filter_widget.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/widgets/generic_header.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_interact.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet/providers/sheet_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet_module_magic/dialog/spell_bond_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet_module_magic/dialog/spell_energy_dialog.dart';
-import 'package:flutter_rpg_audiodrama/ui/sheet_module_magic/widgets/spell_widget.dart';
+import '../../../domain/dto/action_template.dart';
+import '../../../domain/dto/spell.dart';
+import '../../../domain/models/sheet_custom_count.dart';
+import '../../_core/constants/roll_type.dart';
+import '../../_core/widgets/generic_filter_widget.dart';
+import '../../_core/widgets/generic_header.dart';
+import '../../sheet/providers/sheet_interact.dart';
+import '../../sheet/providers/sheet_view_model.dart';
+import '../dialog/spell_bond_dialog.dart';
+import '../dialog/spell_energy_dialog.dart';
+import 'spell_widget.dart';
 import 'package:provider/provider.dart';
 
 class ListSpellsWidget extends StatefulWidget {

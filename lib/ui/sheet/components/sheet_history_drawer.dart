@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import '../../../domain/models/roll_log.dart';
-import '../widgets/roll_log_widget.dart';
 
+import '../../../domain/models/roll_log.dart';
 import '../../_core/fonts.dart';
+import '../widgets/roll_log_widget.dart';
 
 class SheetHistoryDrawer extends StatefulWidget {
   final List<RollLog> listRollLog;
@@ -36,10 +36,7 @@ class _SheetHistoryDrawerState extends State<SheetHistoryDrawer> {
           Text(
             "Histórico de Rolagem",
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: FontFamily.bungee,
-              fontSize: 16,
-            ),
+            style: TextStyle(fontFamily: FontFamily.bungee, fontSize: 16),
           ),
           SizedBox(height: 16),
           Expanded(
@@ -47,9 +44,11 @@ class _SheetHistoryDrawerState extends State<SheetHistoryDrawer> {
               controller: _scrollController,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
+                children:
+                    <Widget>[
                       Visibility(
-                        visible: widget.listRollLog.length >
+                        visible:
+                            widget.listRollLog.length >
                             showingPages * itensPerPage,
                         child: ElevatedButton(
                           onPressed: () {
@@ -63,12 +62,16 @@ class _SheetHistoryDrawerState extends State<SheetHistoryDrawer> {
                       SizedBox(height: 16),
                     ] +
                     (widget.listRollLog
-                        .sublist(max(
-                            0,
-                            widget.listRollLog.length -
-                                (showingPages * itensPerPage)))
-                        .map((rl) => RollLogWidget(rollLog: rl))
-                        .toList() as List<Widget>),
+                            .sublist(
+                              max(
+                                0,
+                                widget.listRollLog.length -
+                                    (showingPages * itensPerPage),
+                              ),
+                            )
+                            .map((rl) => RollLogWidget(rollLog: rl))
+                            .toList()
+                        as List<Widget>),
               ),
             ),
           ),

@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../../../domain/models/campaign_achievement.dart';
 import '../../_core/widgets/generic_header.dart';
 import '../components/create_achievement.dart';
-import '../widgets/achievement_widget.dart';
-import 'package:provider/provider.dart';
-
 import '../view/campaign_view_model.dart';
+import '../widgets/achievement_widget.dart';
 
 class CampaignAchievementsScreen extends StatelessWidget {
   const CampaignAchievementsScreen({super.key});
