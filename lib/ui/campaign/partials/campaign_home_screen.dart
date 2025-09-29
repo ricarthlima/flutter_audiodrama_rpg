@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_roll_service.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_roll.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/components/movable_expandable_screen.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/vertical_split_view.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/sections/campaign_grid_guest.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/sections/campaign_grid_owner.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
@@ -333,7 +334,7 @@ class _CampaignVisualOwner extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(top: 16, left: 16, right: 96),
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 96, bottom: 16),
       child: SizedBox(
         width: width(context),
         child: Column(
@@ -342,38 +343,45 @@ class _CampaignVisualOwner extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 8,
           children: [
-            Column(children: [ListSettings(), Divider(thickness: 0.1)]),
-            Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            ListSettings(),
+            Expanded(
+              child: VerticalSplitView(
+                initialRatio: 0.75,
+                minRatio: 0.2,
+                maxRatio: 0.9,
+                dividerThickness: 4,
+                spacing: 10,
+                dragSensitivity: 10,
+                top: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: 8,
                   children: [
                     Flexible(
-                      flex: 3,
+                      flex: 2,
                       fit: FlexFit.tight,
                       child: _ListCharactersVisual(),
                     ),
-                    VerticalDivider(),
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          height: 270,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 2,
-                              color: Theme.of(
-                                context,
-                              ).textTheme.bodyMedium!.color!,
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 2,
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium!.color!,
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                              color: Theme.of(context).scaffoldBackgroundColor,
                             ),
-                            borderRadius: BorderRadius.circular(4),
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                          ),
-                          child: AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: _CampaignVisualGuest(
-                              sizeFactor: 300 / height(context),
-                              isPreview: true,
+                            child: AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: _CampaignVisualGuest(
+                                sizeFactor: 300 / height(context),
+                                isPreview: true,
+                              ),
                             ),
                           ),
                         ),
@@ -425,24 +433,16 @@ class _CampaignVisualOwner extends StatelessWidget {
                         ),
                       ],
                     ),
-                    VerticalDivider(),
                     Flexible(
-                      flex: 3,
+                      flex: 2,
                       fit: FlexFit.tight,
                       child: _ListCharactersVisual(isRight: true),
                     ),
                   ],
                 ),
-                Divider(thickness: 0.1),
-              ],
+                bottom: _RowGroups(),
+              ),
             ),
-            // Column(
-            //   children: [
-            //     _ListBackgrounds(),
-            //     Divider(thickness: 0.1),
-            //   ],
-            // ),
-            _RowGroups(),
           ],
         ),
       ),
@@ -493,11 +493,10 @@ class _ListCharactersVisual extends StatelessWidget {
             textAlign: (!isRight) ? TextAlign.end : TextAlign.start,
           ),
         ),
-        SizedBox(
-          height: 250,
+        Flexible(
           child: MasonryGridView.builder(
             controller: scrollController,
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.only(right: 16),
             gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 120, // largura máxima por item
             ),
@@ -575,8 +574,6 @@ class _ImageVisualItem extends StatelessWidget {
 }
 
 class _RowGroups extends StatelessWidget {
-  const _RowGroups();
-
   @override
   Widget build(BuildContext context) {
     CampaignVisualNovelViewModel visualVM =
@@ -706,8 +703,7 @@ class __ImageAreaWidgetState extends State<_ImageAreaWidget> {
           },
         ),
         SizedBox(height: 16),
-        SizedBox(
-          height: 300,
+        Flexible(
           child: GridView.builder(
             padding: EdgeInsets.only(bottom: 64, right: 16),
             shrinkWrap: true,
@@ -936,8 +932,7 @@ class __AudioAreaWidgetState extends State<_AudioAreaWidget> {
             ),
           ],
         ),
-        SizedBox(
-          height: 300,
+        Flexible(
           child: ListView.builder(
             padding: EdgeInsets.only(bottom: 128),
             itemCount: listAudiosVisualization.length,
