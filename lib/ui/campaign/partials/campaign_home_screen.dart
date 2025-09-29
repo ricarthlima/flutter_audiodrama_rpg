@@ -68,13 +68,7 @@ class _CampaignRouterGuest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CampaignProvider campaignPV = Provider.of<CampaignProvider>(context);
-    switch (campaignPV.campaignScene) {
-      case CampaignScenes.visual:
-        return _CampaignVisualGuest();
-      case CampaignScenes.grid:
-        return CampaignGridGuest();
-    }
+    return CampaignGridGuest();
   }
 }
 
@@ -270,13 +264,7 @@ class _CampaignRouterOwner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CampaignProvider campaignPV = Provider.of<CampaignProvider>(context);
-    switch (campaignPV.campaignScene) {
-      case CampaignScenes.visual:
-        return _CampaignVisualOwner();
-      case CampaignScenes.grid:
-        return CampaignGridOwner();
-    }
+    return _CampaignVisualOwner();
   }
 }
 
@@ -326,6 +314,7 @@ class _CampaignVisualOwner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final campaignVM = context.watch<CampaignProvider>();
     CampaignVisualNovelViewModel visualVM =
         Provider.of<CampaignVisualNovelViewModel>(context);
 
@@ -352,100 +341,107 @@ class _CampaignVisualOwner extends StatelessWidget {
                 dividerThickness: 4,
                 spacing: 10,
                 dragSensitivity: 10,
-                top: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  spacing: 8,
-                  children: [
-                    Flexible(
-                      flex: 2,
-                      fit: FlexFit.tight,
-                      child: _ListCharactersVisual(),
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2,
-                                color: Theme.of(
-                                  context,
-                                ).textTheme.bodyMedium!.color!,
-                              ),
-                              borderRadius: BorderRadius.circular(4),
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                            ),
-                            child: AspectRatio(
-                              aspectRatio: 16 / 9,
-                              child: _CampaignVisualGuest(
-                                sizeFactor: 300 / height(context),
-                                isPreview: true,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          spacing: 8,
-                          children: [
-                            IntrinsicWidth(
-                              child: CheckboxListTile(
-                                value: visualVM.data.allowPan,
-                                dense: true,
-                                contentPadding: EdgeInsets.zero,
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
-                                title: Text("Mover"),
-                                onChanged: (value) {
-                                  visualVM.togglePan();
-                                },
-                              ),
-                            ),
-                            IntrinsicWidth(
-                              child: CheckboxListTile(
-                                value: visualVM.data.allowZoom,
-                                dense: true,
-                                contentPadding: EdgeInsets.zero,
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
-                                title: Text("Zoom"),
-                                onChanged: (value) {
-                                  visualVM.toggleZoom();
-                                },
-                              ),
-                            ),
-                            IntrinsicWidth(
-                              child: CheckboxListTile(
-                                value: visualVM.isClearZoomAndPan,
-                                dense: true,
-                                contentPadding: EdgeInsets.zero,
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
-                                title: Text("Centralizar ao mudar"),
-                                onChanged: (value) {
-                                  visualVM.isClearZoomAndPan =
-                                      !visualVM.isClearZoomAndPan;
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Flexible(
-                      flex: 2,
-                      fit: FlexFit.tight,
-                      child: _ListCharactersVisual(isRight: true),
-                    ),
-                  ],
-                ),
+                top: switch (campaignVM.campaignScene) {
+                  CampaignScenes.visual => CampaignVisualOwner(
+                    visualVM: visualVM,
+                  ),
+                  CampaignScenes.grid => CampaignGridOwner(),
+                },
+
                 bottom: _RowGroups(),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class CampaignVisualOwner extends StatelessWidget {
+  const CampaignVisualOwner({super.key, required this.visualVM});
+
+  final CampaignVisualNovelViewModel visualVM;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      spacing: 8,
+      children: [
+        Flexible(flex: 2, fit: FlexFit.tight, child: _ListCharactersVisual()),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 2,
+                    color: Theme.of(context).textTheme.bodyMedium!.color!,
+                  ),
+                  borderRadius: BorderRadius.circular(4),
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                ),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: _CampaignVisualGuest(
+                    sizeFactor: 300 / height(context),
+                    isPreview: true,
+                  ),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 8,
+              children: [
+                IntrinsicWidth(
+                  child: CheckboxListTile(
+                    value: visualVM.data.allowPan,
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text("Mover"),
+                    onChanged: (value) {
+                      visualVM.togglePan();
+                    },
+                  ),
+                ),
+                IntrinsicWidth(
+                  child: CheckboxListTile(
+                    value: visualVM.data.allowZoom,
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text("Zoom"),
+                    onChanged: (value) {
+                      visualVM.toggleZoom();
+                    },
+                  ),
+                ),
+                IntrinsicWidth(
+                  child: CheckboxListTile(
+                    value: visualVM.isClearZoomAndPan,
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text("Centralizar ao mudar"),
+                    onChanged: (value) {
+                      visualVM.isClearZoomAndPan = !visualVM.isClearZoomAndPan;
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        Flexible(
+          flex: 2,
+          fit: FlexFit.tight,
+          child: _ListCharactersVisual(isRight: true),
+        ),
+      ],
     );
   }
 }

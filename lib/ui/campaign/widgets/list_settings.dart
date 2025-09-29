@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/components/wip_snackbar.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/components/tutorial_populate_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
@@ -47,8 +46,7 @@ class ListSettings extends StatelessWidget {
             InkWell(
               onTap: campaignPV.campaignScene != CampaignScenes.grid
                   ? () {
-                      // campaignPV.campaignScene = CampaignScenes.grid;
-                      showSnackBarWip(context);
+                      campaignPV.campaignScene = CampaignScenes.grid;
                     }
                   : null,
               child: Text(
