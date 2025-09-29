@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'ui/splash/splash_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -14,9 +13,10 @@ import 'ui/campaign/utils/campaign_subpages.dart';
 import 'ui/campaign/view/campaign_view_model.dart';
 import 'ui/home/home_screen.dart';
 import 'ui/home/utils/home_tabs.dart';
+import 'ui/sheet/providers/sheet_view_model.dart';
 import 'ui/sheet/sections/sheet_settings_page.dart';
 import 'ui/sheet/sheet_screen.dart';
-import 'ui/sheet/providers/sheet_view_model.dart';
+import 'ui/splash/splash_screen.dart';
 
 class AppRouter {
   static const String home = "/";

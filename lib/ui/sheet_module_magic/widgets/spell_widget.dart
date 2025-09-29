@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../../_core/providers/user_provider.dart';
-import '../../../domain/dto/spell.dart';
-import '../../_core/app_colors.dart';
-import '../../_core/constants/helper_image_path.dart';
-import '../../_core/fonts.dart';
-import '../../sheet/providers/sheet_view_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../../_core/providers/user_provider.dart';
 import '../../../data/services/chat_service.dart';
+import '../../../domain/dto/spell.dart';
 import '../../../domain/models/campaign.dart';
+import '../../_core/app_colors.dart';
 import '../../_core/color_filter_inverter.dart';
+import '../../_core/constants/helper_image_path.dart';
+import '../../_core/fonts.dart';
+import '../../sheet/providers/sheet_view_model.dart';
 
 class SpellWidget extends StatefulWidget {
   final Spell spell;

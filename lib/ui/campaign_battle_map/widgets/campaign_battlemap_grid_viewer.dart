@@ -1,18 +1,18 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import '../../_core/fonts.dart';
-import '../../_core/widgets/expansible_list.dart';
-import '../../campaign/view/campaign_view_model.dart';
-import '../models/battle_map.dart';
-import 'drop_on_battlemap.dart';
-import 'token_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sheet_model.dart';
+import '../../_core/fonts.dart';
+import '../../_core/widgets/expansible_list.dart';
+import '../../campaign/view/campaign_view_model.dart';
 import '../helpers/battle_grid_painter.dart';
 import '../helpers/grid_helpers.dart';
+import '../models/battle_map.dart';
 import '../models/token.dart';
+import 'drop_on_battlemap.dart';
+import 'token_widget.dart';
 
 class CampaignBattleMapGridViewer extends StatelessWidget {
   const CampaignBattleMapGridViewer({super.key});

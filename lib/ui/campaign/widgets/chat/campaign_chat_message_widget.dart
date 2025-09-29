@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import '../../../../_core/providers/user_provider.dart';
-import '../../view/campaign_view_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../_core/providers/user_provider.dart';
 import '../../../../data/services/chat_service.dart';
 import '../../../../domain/models/campaign_chat.dart';
 import '../../../_core/app_colors.dart';
+import '../../view/campaign_view_model.dart';
 
 class CampaignChatMessageWidget extends StatelessWidget {
   final CampaignChatMessage chatMessage;

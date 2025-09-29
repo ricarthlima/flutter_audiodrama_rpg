@@ -1,7 +1,6 @@
-import 'remote_mixin.dart';
 import '../../domain/dto/spell.dart';
-
 import '../repositories/spell_repository.dart';
+import 'remote_mixin.dart';
 
 class SpellRepositoryRemote extends SpellRepository with RemoteMixin<Spell> {
   @override

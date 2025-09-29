@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../_core/providers/user_provider.dart';
-import '../../../domain/models/campaign.dart';
-import '../../_core/dimensions.dart';
-import '../models/group_action.dart';
-import '../../_core/app_colors.dart';
 import 'package:provider/provider.dart';
 
+import '../../../_core/providers/user_provider.dart';
+import '../../../domain/models/campaign.dart';
+import '../../_core/app_colors.dart';
+import '../../_core/dimensions.dart';
+import '../models/group_action.dart';
 import '../providers/sheet_view_model.dart';
 import '../widgets/list_actions_widget.dart';
 

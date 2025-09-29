@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../_core/helpers/release_collections.dart';
 import '../../domain/models/campaign_chat.dart';
-import 'package:uuid/uuid.dart';
 
 class ChatService {
   ChatService._();

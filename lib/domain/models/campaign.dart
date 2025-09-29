@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-
 import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet_settings.dart';

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../sheet/providers/sheet_view_model.dart';
-import '../view/shopping_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/dto/item.dart';
 import '../../../domain/models/item_sheet.dart';
 import '../../_core/utils/i18n_categories.dart';
+import '../../sheet/providers/sheet_view_model.dart';
 import '../view/shopping_interact.dart';
+import '../view/shopping_view_model.dart';
 
 class ItemTooltip extends StatelessWidget {
   final Item item;

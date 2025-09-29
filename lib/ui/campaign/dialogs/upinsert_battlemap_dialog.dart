@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+
 import '../../../domain/exceptions/general_exceptions.dart';
 import '../../_core/fonts.dart';
 import '../../_core/snackbars/snackbars.dart';
 import '../../_core/utils/load_image.dart';
 import '../../_core/validators/validators.dart';
-import '../view/campaign_view_model.dart';
 import '../../campaign_battle_map/models/battle_map.dart';
-import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
+import '../view/campaign_view_model.dart';
 
 void showUpinsertBattleMap(BuildContext context, {BattleMap? battleMap}) {
   showDialog(

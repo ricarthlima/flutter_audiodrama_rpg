@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../../_core/app_colors.dart';
 import '../../_core/components/remove_dialog.dart';
 import '../../campaign/view/campaign_view_model.dart';
 import '../models/battle_map.dart';
-import 'package:provider/provider.dart';
 
 class CampaignBattleMapListItem extends StatelessWidget {
   final BattleMap battleMap;

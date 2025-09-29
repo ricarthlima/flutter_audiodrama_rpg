@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../_core/components/show_snackbar.dart';
-import '../../_core/fonts.dart';
 
 import '../../_core/app_colors.dart';
+import '../../_core/components/show_snackbar.dart';
+import '../../_core/fonts.dart';
 import '../../_core/widgets/circular_progress_indicator.dart';
 import '../view/home_campaign_view_model.dart';
 

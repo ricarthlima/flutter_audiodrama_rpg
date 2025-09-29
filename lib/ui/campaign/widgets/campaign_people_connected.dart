@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import '../../../_core/providers/user_provider.dart';
-import '../view/campaign_view_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../../_core/providers/user_provider.dart';
 import '../../../data/services/chat_service.dart';
 import '../../../domain/models/app_user.dart';
+import '../view/campaign_view_model.dart';
 
 class CampaignPeopleConnected extends StatefulWidget {
   const CampaignPeopleConnected({super.key});

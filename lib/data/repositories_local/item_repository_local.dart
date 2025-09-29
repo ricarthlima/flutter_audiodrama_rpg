@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import '../repositories/item_repository.dart';
-import '../../ui/_core/utils/i18n_categories.dart';
 
 import '../../domain/dto/item.dart';
+import '../../ui/_core/utils/i18n_categories.dart';
+import '../repositories/item_repository.dart';
 
 class ItemRepositoryLocal extends ItemRepository {
   static const String _filePath = 'assets/sheets/items.json';

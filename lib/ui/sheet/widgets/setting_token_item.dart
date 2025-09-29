@@ -1,13 +1,14 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../../../domain/exceptions/general_exceptions.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/components/image_dialog.dart';
 import '../../_core/snackbars/snackbars.dart';
 import '../../_core/utils/load_image.dart';
 import '../providers/sheet_view_model.dart';
-import 'package:provider/provider.dart';
 
 class SettingTokenItem extends StatelessWidget {
   final int index;

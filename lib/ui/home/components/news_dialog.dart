@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:intl/intl.dart';
+
 import '../../../data/services/news_service.dart';
 import '../../_core/app_colors.dart';
-import 'package:intl/intl.dart';
 
 void showNewsDialog(BuildContext context, NewsModel news) {
   showDialog(

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import '../../data/services/news_service.dart';
-import 'components/news_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/providers/user_provider.dart';
 import '../../_core/version.dart';
+import '../../data/services/news_service.dart';
 import '../_core/dimensions.dart';
 import '../home_campaign/home_campaign_screen.dart';
 import '../home_sheet/home_sheet_screen.dart';
 import 'components/home_app_bar.dart';
+import 'components/news_dialog.dart';
 import 'utils/home_tabs.dart';
 import 'view/home_view_model.dart';
 import 'widgets/home_drawer.dart';

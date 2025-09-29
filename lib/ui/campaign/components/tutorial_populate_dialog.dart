@@ -1,11 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../../_core/app_colors.dart';
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
-import '../../_core/fonts.dart';
-import '../view/campaign_visual_novel_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+
+import '../../_core/app_colors.dart';
+import '../../_core/fonts.dart';
+import '../view/campaign_visual_novel_view_model.dart';
 
 void showTutorialServer(BuildContext context) {
   final ytController = YoutubePlayerController(

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../../_core/app_colors.dart';
 import '../../_core/fonts.dart';
 import '../utils/campaign_scenes.dart';
 import '../view/campaign_view_model.dart';
-import 'package:provider/provider.dart';
 
 class ListSettings extends StatelessWidget {
   const ListSettings({super.key});

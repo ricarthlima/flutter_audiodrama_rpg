@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../models/group_action.dart';
-import '../providers/sheet_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/dto/action_template.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart';
 import '../../_core/fonts.dart';
+import '../models/group_action.dart';
+import '../providers/sheet_view_model.dart';
 import 'action_widget.dart';
 
 class ListActionsWidget extends StatelessWidget {

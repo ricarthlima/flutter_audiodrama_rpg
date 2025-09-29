@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 
 import '../../_core/helpers/release_collections.dart';
 import '../../domain/models/campaign_vm_model.dart';
-import 'package:http/http.dart' as http;
 
 class CampaignVisualService {
   CampaignVisualService._();

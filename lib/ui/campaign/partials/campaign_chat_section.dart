@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import '../../../data/services/chat_service.dart';
 import '../../../domain/models/campaign_chat.dart';
 import '../../_core/fonts.dart';
-import 'package:provider/provider.dart';
-import '../../../data/services/chat_service.dart';
 import '../view/campaign_view_model.dart';
 import '../widgets/chat/campaign_chat_message_widget.dart';
 
