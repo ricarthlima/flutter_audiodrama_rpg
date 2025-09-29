@@ -36,6 +36,16 @@ class _CampaignSettingsDialog extends StatefulWidget {
 class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
   bool isLoading = false;
 
+  List<Widget> get _listTabs {
+    return [
+      Tab(child: Text("Básico")),
+      Tab(child: Text("Geral")),
+      Tab(child: Text("Ofícios")),
+      Tab(child: Text("Módulos")),
+      Tab(child: Text("Área de Perigo")),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
@@ -45,7 +55,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
       width: 500,
       height: 700,
       child: DefaultTabController(
-        length: 4,
+        length: _listTabs.length,
         child: Scaffold(
           body: Stack(
             children: [
@@ -58,7 +68,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Colors.black.withAlpha(175),
+                          Colors.black.withAlpha(100),
                           Colors.transparent,
                         ],
                       ).createShader(bounds);
@@ -66,7 +76,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
                     blendMode: BlendMode.dstIn,
                     child: Image.network(
                       campaignVM.campaign!.imageBannerUrl!,
-                      height: (isVertical(context)) ? 250 : 300,
+                      height: 100,
                       width: width(context),
                       fit: BoxFit.cover,
                     ),
@@ -86,6 +96,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
                     Flexible(
                       child: TabBarView(
                         children: [
+                          _buildBasicTab(campaignVM),
                           _buildGeneralTab(campaignVM),
                           _buildWorksTab(campaignVM, sheetVM),
                           _buildModulesTab(campaignVM, sheetVM),
@@ -135,18 +146,54 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
               if (campaignVM.isOwner)
                 Align(
                   alignment: Alignment.topCenter,
-                  child: TabBar(
-                    tabs: [
-                      Tab(child: Text("Geral")),
-                      Tab(child: Text("Ofícios")),
-                      Tab(child: Text("Módulos")),
-                      Tab(child: Text("Área de Perigo")),
-                    ],
-                  ),
+                  child: TabBar(tabs: _listTabs),
                 ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildGeneralTab(CampaignProvider campaignVM) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 8,
+        children: [
+          Opacity(
+            opacity: 0.5,
+            child: Text("Configurações gerais sobre a campanha."),
+          ),
+          CheckboxListTile(
+            value: campaignVM.campaign!.campaignSheetSettings.activeResisted,
+            onChanged: (value) {
+              campaignVM.campaign!.campaignSheetSettings.activeResisted =
+                  !campaignVM.campaign!.campaignSheetSettings.activeResisted;
+              campaignVM.onSave();
+            },
+            contentPadding: EdgeInsets.zero,
+            controlAffinity: ListTileControlAffinity.leading,
+            title: Text("Ativar Testes Resistidos"),
+            subtitle: Text(
+              "(Regra legado) Permite rolagem contra DT10 para obter sucessos.",
+            ),
+          ),
+          CheckboxListTile(
+            value: campaignVM.campaign!.campaignSheetSettings.activePublicRolls,
+            onChanged: (value) {
+              campaignVM.campaign!.campaignSheetSettings.activePublicRolls =
+                  !campaignVM.campaign!.campaignSheetSettings.activePublicRolls;
+              campaignVM.onSave();
+            },
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: EdgeInsets.zero,
+            title: Text("Rolagens públicas"),
+            subtitle: Text(
+              "Permite que todas as pessoas na campanha vejam todas as rolagens.",
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -214,7 +261,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
     }
   }
 
-  Widget _buildGeneralTab(CampaignProvider campaignVM) {
+  Widget _buildBasicTab(CampaignProvider campaignVM) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,

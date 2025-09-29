@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/campaign_people_connected.dart';
 import '../../data/services/chat_service.dart';
 import '../_core/components/movable_expandable_screen.dart';
 import '../../_core/providers/user_provider.dart';
@@ -68,6 +69,8 @@ class _CampaignScreenState extends State<CampaignScreen> {
   }
 
   Widget _buildBodyWithDrawer(CampaignProvider campaignVM) {
+    final sheetVM = context.read<SheetViewModel>();
+
     return Stack(
       children: [
         CampaignHomeScreen(),
@@ -110,16 +113,18 @@ class _CampaignScreenState extends State<CampaignScreen> {
               ),
             ),
           ),
+
         Align(alignment: Alignment.centerRight, child: CampaignDrawer()),
         GroupNotifications(),
         Stack(
           children: campaignVM.listOpenSheet.map((e) {
             return MovableExpandableScreen(
+              key: ValueKey<String>(e.sheet.id),
               title: e.sheet.characterName,
               onPopup: () {
                 openUrl("#/${e.appUser.username!}/sheet/${e.sheet.id}");
               },
-              onExit: () => campaignVM.closeSheetInCampaign(e.sheet),
+              onExit: () => campaignVM..closeSheetInCampaign(e.sheet),
               child: MultiProvider(
                 providers: [
                   ChangeNotifierProvider(
@@ -127,11 +132,8 @@ class _CampaignScreenState extends State<CampaignScreen> {
                       id: e.sheet.id,
                       username: e.appUser.username!,
                       isWindowed: true,
-                      actionRepo: context.read<SheetViewModel>().actionRepo,
-                      spellRepo: context.read<SheetViewModel>().spellRepo,
-                      // conditionRepo: context
-                      //     .read<SheetViewModel>()
-                      //     .conditionRepo,
+                      actionRepo: sheetVM.actionRepo,
+                      spellRepo: sheetVM.spellRepo,
                     ),
                   ),
                 ],
@@ -143,12 +145,15 @@ class _CampaignScreenState extends State<CampaignScreen> {
             );
           }).toList(),
         ),
-        Align(
-          alignment: Alignment.bottomLeft,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CampaignPeopleConnected(),
-          ),
+        Selector<CampaignProvider, String?>(
+          selector: (context, cp) => cp.campaign?.id,
+          builder: (context, value, child) {
+            return Positioned(
+              bottom: 8,
+              left: 8,
+              child: CampaignPeopleConnected(),
+            );
+          },
         ),
       ],
     );

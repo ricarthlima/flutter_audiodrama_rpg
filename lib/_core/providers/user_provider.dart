@@ -149,10 +149,17 @@ class UserProvider extends ChangeNotifier {
     return listS;
   }
 
+  String? lastCampaignId;
+
   Future<void> initializeCampaign({
     required BuildContext context,
     required String campaignId,
   }) async {
+    if (campaignId != lastCampaignId) {
+      lastCampaignId = campaignId;
+      context.read<CampaignProvider>().removeTrash();
+    }
+
     await _streamCurrentCampaign?.cancel();
 
     final completer = Completer<void>();
@@ -165,9 +172,7 @@ class UserProvider extends ChangeNotifier {
               Campaign campaign = Campaign.fromMap(snapshot.data()!);
               if (context.mounted) {
                 SchedulerBinding.instance.addPostFrameCallback((_) {
-                  context.read<CampaignProvider>().forceUpdateCampaign(
-                    campaign,
-                  );
+                  context.read<CampaignProvider>().updateCampaign(campaign);
                   context.read<CampaignProvider>().activatePresence();
 
                   context.read<CampaignVisualNovelViewModel>().campaignId =

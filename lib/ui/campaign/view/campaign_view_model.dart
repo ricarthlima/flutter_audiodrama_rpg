@@ -42,15 +42,15 @@ class CampaignProvider extends ChangeNotifier {
 
   StreamSubscription? sheetsSub;
 
-  Future<void> forceUpdateCampaign(Campaign campaign) async {
+  Future<void> updateCampaign(Campaign campaign) async {
     isLoading = true;
 
-    if (sheetsSub != null) {
-      await sheetsSub!.cancel();
+    if (this.campaign != null && this.campaign!.id != campaign.id) {
+      removeTrash();
     }
 
     this.campaign = campaign;
-    // campaignId = campaign.id;
+
     nameController.text = campaign.name ?? "";
     descController.text = campaign.description ?? "";
     notificationCount = 0;
@@ -58,9 +58,20 @@ class CampaignProvider extends ChangeNotifier {
     await _verifyNewAchievement();
     await getSheetsByCampaign();
 
-    listOpenSheet = [];
-
     isLoading = false;
+  }
+
+  void removeTrash() async {
+    listOpenSheet = [];
+    if (sheetsSub != null) {
+      await sheetsSub!.cancel();
+    }
+  }
+
+  @override
+  void dispose() {
+    removeTrash();
+    super.dispose();
   }
 
   bool _isLoading = true;
@@ -313,6 +324,7 @@ class CampaignProvider extends ChangeNotifier {
 
   bool _isChatFirstTime = true;
   bool get isChatFirstTime => _isChatFirstTime;
+
   set isChatFirstTime(bool value) {
     _isChatFirstTime = value;
     notifyListeners();

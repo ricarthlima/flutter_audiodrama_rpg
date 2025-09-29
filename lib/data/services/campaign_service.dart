@@ -52,6 +52,8 @@ class CampaignService {
       campaignSheetSettings: CampaignSheetSettings(
         listActiveWorkIds: [],
         listActiveModuleIds: [],
+        activePublicRolls: false,
+        activeResisted: false,
       ),
       campaignScenes: CampaignScenes.visual,
       activeBattleMapId: null,

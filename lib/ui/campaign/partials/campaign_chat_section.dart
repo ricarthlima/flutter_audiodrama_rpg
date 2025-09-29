@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import '../../../domain/models/campaign_chat.dart';
 import '../../_core/fonts.dart';
 import 'package:provider/provider.dart';
-
 import '../../../data/services/chat_service.dart';
 import '../view/campaign_view_model.dart';
 import '../widgets/chat/campaign_chat_message_widget.dart';
@@ -17,175 +16,194 @@ class CampaignChatSection extends StatefulWidget {
 }
 
 class _CampaignChatSectionState extends State<CampaignChatSection> {
-  List<SheetAppUser> listSheetAppUser = [];
+  late final FocusNode _focusNode;
+  late final TextEditingController _messageController;
+  late final ScrollController _scrollController;
+
   String? whisperId;
+  bool _isAutoScrolling = false;
+  bool _didInitialJump = false;
+  int _lastItemCount = 0;
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final campaignVM = context.read<CampaignProvider>();
-      listSheetAppUser = List<SheetAppUser>.from(campaignVM.listSheetAppUser);
-      listSheetAppUser.removeWhere(
-        (e) => campaignVM.campaign!.listIdOwners.contains(e.appUser.id),
-      );
-
-      setState(() {});
-    });
     super.initState();
+    _focusNode = FocusNode();
+    _messageController = TextEditingController();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final CampaignProvider cp = context.watch<CampaignProvider>();
+    if (whisperId != null &&
+        whisperId!.isNotEmpty &&
+        !cp.listSheetAppUser.any((e) => e.appUser.id == whisperId)) {
+      setState(() => whisperId = null);
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _messageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _sendMessage(CampaignProvider campaignVM) {
+    String value = _messageController.text;
+    if (value.isEmpty) return;
+    String? to = (whisperId == "") ? null : whisperId;
+    ChatService.instance.sendMessageToChat(
+      campaignId: campaignVM.campaign!.id,
+      message: value,
+      whisperId: to,
+    );
+    _messageController.clear();
+  }
+
+  Future<void> _scrollToEnd({required bool immediate}) async {
+    if (!_scrollController.hasClients) return;
+    final double target = _scrollController.position.maxScrollExtent;
+    if (immediate) {
+      try {
+        _scrollController.jumpTo(target);
+      } catch (_) {}
+      return;
+    }
+    if (_isAutoScrolling) return;
+    _isAutoScrolling = true;
+    try {
+      await _scrollController.animateTo(
+        target,
+        duration: const Duration(milliseconds: 140),
+        curve: Curves.linear,
+      );
+    } catch (_) {
+    } finally {
+      _isAutoScrolling = false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    CampaignProvider campaignVM = Provider.of<CampaignProvider>(context);
-
-    final FocusNode focusNode = FocusNode();
-
-    TextEditingController messageController = TextEditingController();
-    final ScrollController scrollController = ScrollController();
-
-    GlobalKey lastItemKey = GlobalKey();
-
-    sendMessage() {
-      String value = messageController.text;
-
-      if (whisperId == "") {
-        whisperId = null;
-      }
-
-      if (value.isEmpty) return;
-      ChatService.instance.sendMessageToChat(
-        campaignId: campaignVM.campaign!.id,
-        message: value,
-        whisperId: whisperId,
-      );
-      setState(() {
-        messageController.text = "";
-      });
-    }
-
-    void scrollToBottom() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (scrollController.hasClients &&
-            scrollController.position.hasContentDimensions) {
-          scrollController.animateTo(
-            scrollController.position.maxScrollExtent,
-            duration: Duration(milliseconds: 100),
-            curve: Curves.linear,
-          );
-        }
-      });
-    }
-
-    if (campaignVM.campaign == null) return SizedBox();
+    CampaignProvider campaignVM = context.watch<CampaignProvider>();
+    if (campaignVM.campaign == null) return const SizedBox();
 
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: 16,
       children: [
-        Text(
+        const Text(
           "Chat",
           style: TextStyle(fontSize: 14, fontFamily: FontFamily.bungee),
         ),
-        StreamBuilder(
-          stream: ChatService.instance.listenChat(
-            campaignId: campaignVM.campaign!.id,
-          ),
-          builder: (context, snapshot) {
-            List<CampaignChatMessage> listMessages = [];
+        Expanded(
+          child: StreamBuilder(
+            stream: ChatService.instance.listenChat(
+              campaignId: campaignVM.campaign!.id,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.none ||
+                  snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (!snapshot.hasData || snapshot.data == null) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            if (snapshot.hasData) {
-              listMessages = snapshot.data!.docs
-                  .map((e) => CampaignChatMessage.fromMap(e.data()))
-                  .toList();
+              List<CampaignChatMessage> listMessages =
+                  snapshot.data!.docs
+                      .map((e) => CampaignChatMessage.fromMap(e.data()))
+                      .toList()
+                    ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
-              listMessages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+              int count = listMessages.length;
 
-              Widget result = Expanded(
-                child: Scrollbar(
-                  controller: scrollController,
-                  thumbVisibility: true,
-                  child: ListView.builder(
-                    itemCount: listMessages.length,
-                    controller: scrollController,
-                    itemBuilder: (context, index) {
-                      CampaignChatMessage chatMessage = listMessages[index];
-                      String? nextUserId =
-                          (index < listMessages.length - 1 &&
-                              chatMessage.createdAt
-                                      .difference(
-                                        listMessages[index + 1].createdAt,
-                                      )
-                                      .abs() <
-                                  Duration(minutes: 2) &&
-                              chatMessage.type == CampaignChatType.message &&
-                              listMessages[index + 1].type ==
-                                  CampaignChatType.message &&
-                              chatMessage.whisperId ==
-                                  listMessages[index + 1].whisperId)
-                          ? listMessages[index + 1].userId
-                          : null;
-                      Widget result = SizedBox();
-                      switch (chatMessage.type) {
-                        case CampaignChatType.message:
-                          result = CampaignChatMessageWidget(
-                            key: index == listMessages.length - 1
-                                ? lastItemKey
-                                : null,
-                            chatMessage: chatMessage,
-                            nextMessageUserId: nextUserId,
-                          );
-                        case CampaignChatType.roll:
-                          // TODO: Handle this case.
-                          throw UnimplementedError();
-                        case CampaignChatType.spell:
-                          // TODO: Handle this case.
-                          throw UnimplementedError();
-                      }
-                      return Padding(
-                        padding: EdgeInsetsGeometry.only(right: 16),
-                        child: Visibility(
-                          visible:
-                              (chatMessage.userId == uid) ||
-                              (chatMessage.whisperId == null) ||
-                              (chatMessage.whisperId! == uid) ||
-                              (chatMessage.whisperId == "OWNERS" &&
-                                  campaignVM.isOwner),
-                          child: result,
-                        ),
+              if (!_didInitialJump && count > 0) {
+                _didInitialJump = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) _scrollToEnd(immediate: true);
+                });
+              }
+
+              if (count > _lastItemCount) {
+                _lastItemCount = count;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) _scrollToEnd(immediate: false);
+                });
+              }
+
+              Widget list = ListView.builder(
+                controller: _scrollController,
+                itemCount: listMessages.length,
+                itemBuilder: (context, index) {
+                  CampaignChatMessage chatMessage = listMessages[index];
+
+                  String? nextUserId;
+                  if (index + 1 < listMessages.length) {
+                    CampaignChatMessage next = listMessages[index + 1];
+                    bool isCluster =
+                        (chatMessage.type == CampaignChatType.message) &&
+                        (next.type == CampaignChatType.message) &&
+                        (chatMessage.whisperId == next.whisperId) &&
+                        (chatMessage.createdAt
+                                .difference(next.createdAt)
+                                .abs() <
+                            const Duration(minutes: 2));
+                    nextUserId = isCluster ? next.userId : null;
+                  }
+
+                  Widget child;
+                  switch (chatMessage.type) {
+                    case CampaignChatType.message:
+                      child = CampaignChatMessageWidget(
+                        chatMessage: chatMessage,
+                        nextMessageUserId: nextUserId,
                       );
-                    },
-                  ),
-                ),
-              );
-              scrollToBottom();
+                      break;
+                    case CampaignChatType.roll:
+                      child = const SizedBox.shrink();
+                      break;
+                    case CampaignChatType.spell:
+                      child = const SizedBox.shrink();
+                      break;
+                  }
 
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (lastItemKey.currentContext != null) {
-                  Scrollable.ensureVisible(
-                    lastItemKey.currentContext!,
-                    duration: Duration(milliseconds: 100),
+                  bool visible =
+                      (chatMessage.userId == uid) ||
+                      (chatMessage.whisperId == null) ||
+                      (chatMessage.whisperId == uid) ||
+                      (chatMessage.whisperId == "OWNERS" && campaignVM.isOwner);
+
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: Visibility(visible: visible, child: child),
                   );
-                }
-              });
+                },
+              );
 
-              return result;
-            }
-
-            return Center(child: CircularProgressIndicator());
-          },
+              return Scrollbar(
+                controller: _scrollController,
+                thumbVisibility: true,
+                child: list,
+              );
+            },
+          ),
         ),
         Container(
           alignment: Alignment.bottomCenter,
           child: KeyboardListener(
-            focusNode: focusNode,
+            focusNode: _focusNode,
             onKeyEvent: (KeyEvent event) {
               if (event is KeyDownEvent &&
                   event.logicalKey == LogicalKeyboardKey.enter &&
                   !HardwareKeyboard.instance.isShiftPressed) {
-                sendMessage();
+                _sendMessage(campaignVM);
               }
             },
             child: Column(
@@ -194,17 +212,15 @@ class _CampaignChatSectionState extends State<CampaignChatSection> {
               spacing: 8,
               children: [
                 Container(
-                  padding: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
                   color: Theme.of(
                     context,
                   ).textTheme.bodyMedium!.color!.withAlpha(30),
                   child: TextFormField(
-                    controller: messageController,
+                    controller: _messageController,
                     autocorrect: true,
-                    onFieldSubmitted: (value) {
-                      sendMessage();
-                    },
-                    style: TextStyle(fontSize: 12),
+                    onFieldSubmitted: (_) => _sendMessage(campaignVM),
+                    style: const TextStyle(fontSize: 12),
                     maxLength: 2000,
                     maxLines: 5,
                   ),
@@ -212,35 +228,32 @@ class _CampaignChatSectionState extends State<CampaignChatSection> {
                 Row(
                   children: [
                     Expanded(
-                      child: DropdownMenu(
+                      child: DropdownMenu<String>(
                         enableFilter: false,
                         enableSearch: false,
                         requestFocusOnTap: false,
                         expandedInsets: EdgeInsets.zero,
-                        label: Text("Sussurrar para"),
-                        menuStyle: MenuStyle(
+                        label: const Text("Sussurrar para"),
+                        menuStyle: const MenuStyle(
                           padding: WidgetStatePropertyAll(EdgeInsets.zero),
                         ),
-                        dropdownMenuEntries:
-                            [
-                              DropdownMenuEntry<String>(
-                                value: '',
-                                label: '(Todo mundo)',
-                              ),
-                              DropdownMenuEntry<String>(
-                                value: 'OWNERS',
-                                label: '(Pessoas narradoras)',
-                              ),
-                            ] +
-                            listSheetAppUser
-                                .map(
-                                  (e) => DropdownMenuEntry<String>(
-                                    value: e.appUser.id ?? '',
-                                    label: e.sheet.characterName,
-                                  ),
-                                )
-                                .toList(),
-                        onSelected: (value) {
+                        dropdownMenuEntries: [
+                          const DropdownMenuEntry<String>(
+                            value: '',
+                            label: '(Todo mundo)',
+                          ),
+                          const DropdownMenuEntry<String>(
+                            value: 'OWNERS',
+                            label: '(Pessoas narradoras)',
+                          ),
+                          ...campaignVM.listSheetAppUser.map(
+                            (e) => DropdownMenuEntry<String>(
+                              value: e.appUser.id ?? '',
+                              label: e.sheet.characterName,
+                            ),
+                          ),
+                        ],
+                        onSelected: (String? value) {
                           setState(() {
                             whisperId = value;
                           });
@@ -248,10 +261,8 @@ class _CampaignChatSectionState extends State<CampaignChatSection> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () {
-                        sendMessage();
-                      },
-                      icon: Icon(Icons.send),
+                      onPressed: () => _sendMessage(campaignVM),
+                      icon: const Icon(Icons.send),
                     ),
                   ],
                 ),
