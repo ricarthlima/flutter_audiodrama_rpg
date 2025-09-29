@@ -16,6 +16,7 @@ import '../../_core/app_colors.dart';
 import '../../_core/dimensions.dart' show isVertical, width;
 import '../../_core/utils/load_image.dart';
 import '../../_core/widgets/named_widget.dart';
+import '../components/tutorial_populate_dialog.dart';
 import '../view/campaign_view_model.dart';
 
 Future<void> showCampaignSettingsDialog({required BuildContext context}) {
@@ -52,7 +53,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
     SheetViewModel sheetVM = Provider.of<SheetViewModel>(context);
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
-      width: 500,
+      width: 700,
       height: 700,
       child: DefaultTabController(
         length: _listTabs.length,
@@ -76,7 +77,7 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
                     blendMode: BlendMode.dstIn,
                     child: Image.network(
                       campaignVM.campaign!.imageBannerUrl!,
-                      height: 100,
+                      height: 98,
                       width: width(context),
                       fit: BoxFit.cover,
                     ),
@@ -203,25 +204,15 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
       title: "Nome",
       isLeft: true,
       child: SizedBox(
-        width: 500 - 32,
-        child: (campaignVM.isOwner)
-            ? TextField(
-                controller: campaignVM.nameController,
-                style: TextStyle(
-                  fontSize: isVertical(context) ? 18 : 24,
-                  fontFamily: FontFamily.sourceSerif4,
-                ),
-                maxLength: 40,
-              )
-            : Text(
-                campaignVM.campaign!.name ?? "(Sem nome)",
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: isVertical(context) ? 18 : 32,
-                  fontFamily: FontFamily.bungee,
-                  color: AppColors.red,
-                ),
-              ),
+        width: 700 - 32,
+        child: TextField(
+          controller: campaignVM.nameController,
+          style: TextStyle(
+            fontSize: isVertical(context) ? 18 : 24,
+            fontFamily: FontFamily.sourceSerif4,
+          ),
+          maxLength: 40,
+        ),
       ),
     );
   }
@@ -230,16 +221,14 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
     return NamedWidget(
       title: "Descrição",
       isLeft: true,
-      child: (campaignVM.isOwner)
-          ? SizedBox(
-              width: 500 - 32,
-              child: TextField(
-                controller: campaignVM.descController,
-                maxLength: 5000,
-                maxLines: null,
-              ),
-            )
-          : Text(campaignVM.campaign!.description ?? "..."),
+      child: SizedBox(
+        width: 700 - 32,
+        child: TextField(
+          controller: campaignVM.descController,
+          maxLength: 5000,
+          maxLines: null,
+        ),
+      ),
     );
   }
 
@@ -308,31 +297,39 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
     return NamedWidget(
       title: "Mudar imagem de fundo (máximo 2MB)",
       isLeft: true,
-      child: Column(
-        spacing: 8,
-        children: [
-          if (campaignVM.campaign!.imageBannerUrl != null)
-            SizedBox(
-              width: 500 - 32,
-              child: Image.network(campaignVM.campaign!.imageBannerUrl!),
-            ),
-          Row(
-            spacing: 32,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () => _onUploadImagePressed(campaignVM),
-                label: Text("Alterar imagem"),
-                icon: Icon(Icons.image_outlined),
-              ),
-              if (campaignVM.campaign!.imageBannerUrl != null)
-                ElevatedButton.icon(
-                  onPressed: () => campaignVM.onRemoveImage(),
-                  label: Text("Remover imagem"),
-                  icon: Icon(Icons.remove, color: AppColors.red),
+      child: SizedBox(
+        width: 700 - 32,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          spacing: 8,
+          children: [
+            if (campaignVM.campaign!.imageBannerUrl != null)
+              Flexible(
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.network(campaignVM.campaign!.imageBannerUrl!),
                 ),
-            ],
-          ),
-        ],
+              ),
+            Flexible(
+              child: Column(
+                spacing: 8,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () => _onUploadImagePressed(campaignVM),
+                    label: Text("Alterar imagem"),
+                    icon: Icon(Icons.image_outlined),
+                  ),
+                  if (campaignVM.campaign!.imageBannerUrl != null)
+                    ElevatedButton.icon(
+                      onPressed: () => campaignVM.onRemoveImage(),
+                      label: Text("Remover imagem"),
+                      icon: Icon(Icons.remove, color: AppColors.red),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -411,9 +408,29 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
   }
 
   Widget _buildDangerTab(CampaignProvider campaignVM) {
+    // final visualVM = context.read<CampaignVisualNovelViewModel>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 16,
       children: [
+        NamedWidget(
+          title: "Repopular assets a partir de um servidor",
+          isLeft: true,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              showTutorialServer(context);
+            },
+            icon: Icon(Icons.podcasts),
+            label: Text("Repopular"),
+          ),
+        ),
+        // OutlinedButton.icon(
+        //   onPressed: () {
+        //     visualVM.onRemove();
+        //   },
+        //   icon: Icon(Icons.delete_forever),
+        //   label: Text("Excluir tudo"),
+        // ),
         NamedWidget(
           title: "Excluir campanha definitivamente",
           isLeft: true,

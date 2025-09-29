@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/components/tutorial_populate_dialog.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
-import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_visual_novel_view_model.dart';
 import 'package:provider/provider.dart';
 
 class ListSettings extends StatelessWidget {
-  final bool showVisualControllers;
-  const ListSettings({super.key, this.showVisualControllers = true});
+  const ListSettings({super.key});
 
   @override
   Widget build(BuildContext context) {
-    CampaignVisualNovelViewModel visualVM =
-        Provider.of<CampaignVisualNovelViewModel>(context);
-
     CampaignProvider campaignPV = Provider.of<CampaignProvider>(context);
 
     return Row(
@@ -62,29 +56,6 @@ class ListSettings extends StatelessWidget {
             ),
           ],
         ),
-        if (showVisualControllers)
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              spacing: 8,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: () {
-                    showTutorialServer(context);
-                  },
-                  icon: Icon(Icons.podcasts),
-                  label: Text("Servidor"),
-                ),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    visualVM.onRemove();
-                  },
-                  icon: Icon(Icons.delete_forever),
-                  label: Text("Excluir tudo"),
-                ),
-              ],
-            ),
-          ),
       ],
     );
   }
