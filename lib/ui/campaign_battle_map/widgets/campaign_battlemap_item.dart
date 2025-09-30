@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../_core/app_colors.dart';
 import '../../_core/components/remove_dialog.dart';
 import '../../campaign/view/campaign_view_model.dart';
+import '../controllers/battle_map_controller.dart';
 import '../models/battle_map.dart';
 
 class CampaignBattleMapListItem extends StatelessWidget {
@@ -13,6 +14,8 @@ class CampaignBattleMapListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final campaignProvider = context.watch<CampaignProvider>();
+    final battleMapProvider = context.watch<CampaignOwnerBattleMapProvider>();
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
@@ -25,7 +28,7 @@ class CampaignBattleMapListItem extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () {
-          campaignProvider.activeOwnerBattleMap(battleMap);
+          battleMapProvider.onInitialize(battleMap);
         },
         contentPadding: EdgeInsets.zero,
         leading: AspectRatio(

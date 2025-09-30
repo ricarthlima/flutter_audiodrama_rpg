@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_fullscreen/flutter_fullscreen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/controllers/battle_map_controller.dart';
 import 'data/repositories/spell_repository.dart';
 import 'data/repositories_remote/action_repository_remote.dart';
 import 'data/repositories_remote/item_repository_remote.dart';
@@ -90,6 +91,10 @@ void main() async {
     campaignId: "",
   );
 
+  CampaignOwnerBattleMapProvider battleMapCTRL = CampaignOwnerBattleMapProvider(
+    campaignProvider: campaignVM,
+  );
+
   runApp(
     MultiProvider(
       providers: [
@@ -102,6 +107,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => campaignVM),
         ChangeNotifierProvider(create: (_) => campaignVisualVM),
         ChangeNotifierProvider(create: (_) => audioProvider),
+        ChangeNotifierProvider(create: (_) => battleMapCTRL),
       ],
       child: const MainApp(),
     ),

@@ -1,116 +1,104 @@
 import 'dart:math';
-import 'dart:ui';
+
+import 'package:flutter/widgets.dart';
 
 class Token {
   final String id;
-  final String mapId;
+  final String battleMapId;
   final String imageUrl;
-  final bool obeyGrid;
-  final Offset centerNorm;
-  final Size sizeNorm;
-  final Point<double>? centerGrid;
-  final Size? sizeGrid;
-  final double rotationDeg;
-  final int zIndex;
-  final bool isVisible;
-  final List<String> owners;
 
-  const Token({
+  final Point<double> position;
+  final Size size;
+  final double rotationDeg;
+
+  final int zIndex;
+
+  final bool isVisible;
+
+  final List<String> owners;
+  final bool stickGrid;
+
+  final String? sheetId;
+
+  Token({
     required this.id,
-    required this.mapId,
+    required this.battleMapId,
     required this.imageUrl,
-    required this.obeyGrid,
-    required this.centerNorm,
-    required this.sizeNorm,
-    this.centerGrid,
-    this.sizeGrid,
-    this.rotationDeg = 0,
-    this.zIndex = 0,
-    this.isVisible = true,
+    required this.position,
+    required this.size,
+    required this.rotationDeg,
+    required this.zIndex,
+    required this.isVisible,
     required this.owners,
+    required this.stickGrid,
+    this.sheetId,
   });
 
   Token copyWith({
     String? id,
-    String? mapId,
+    String? battleMapId,
     String? imageUrl,
-    bool? obeyGrid,
-    Offset? centerNorm,
+    Point<double>? position,
     Size? sizeNorm,
-    Point<double>? centerGrid,
-    Size? sizeGrid,
     double? rotationDeg,
     int? zIndex,
     bool? isVisible,
     List<String>? owners,
+    bool? stickGrid,
+    String? sheetId,
   }) {
     return Token(
       id: id ?? this.id,
-      mapId: mapId ?? this.mapId,
+      battleMapId: battleMapId ?? this.battleMapId,
       imageUrl: imageUrl ?? this.imageUrl,
-      obeyGrid: obeyGrid ?? this.obeyGrid,
-      centerNorm: centerNorm ?? this.centerNorm,
-      sizeNorm: sizeNorm ?? this.sizeNorm,
-      centerGrid: centerGrid ?? this.centerGrid,
-      sizeGrid: sizeGrid ?? this.sizeGrid,
+      position: position ?? this.position,
+      size: sizeNorm ?? size,
       rotationDeg: rotationDeg ?? this.rotationDeg,
       zIndex: zIndex ?? this.zIndex,
       isVisible: isVisible ?? this.isVisible,
       owners: owners ?? this.owners,
+      stickGrid: stickGrid ?? this.stickGrid,
+      sheetId: sheetId ?? this.sheetId,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'mapId': mapId,
+      'mapId': battleMapId,
       'imageUrl': imageUrl,
-      'obeyGrid': obeyGrid,
-      'centerNorm': {'x': centerNorm.dx, 'y': centerNorm.dy},
-      'sizeNorm': {'w': sizeNorm.width, 'h': sizeNorm.height},
-      'centerGrid': centerGrid == null
-          ? null
-          : {'x': centerGrid!.x, 'y': centerGrid!.y},
-      'sizeGrid': sizeGrid == null
-          ? null
-          : {'w': sizeGrid!.width, 'h': sizeGrid!.height},
+      'obeyGrid': stickGrid,
+      'size': {'w': size.width, 'h': size.height},
+      'position': {'x': position.x, 'y': position.y},
       'rotationDeg': rotationDeg,
       'zIndex': zIndex,
       'isVisible': isVisible,
       'owners': owners,
+      'sheetId': sheetId,
     };
   }
 
   factory Token.fromMap(Map<String, dynamic> map) {
     return Token(
       id: map['id'],
-      mapId: map['mapId'],
+      battleMapId: map['mapId'],
       imageUrl: map['imageUrl'],
-      obeyGrid: map['obeyGrid'] as bool,
-      centerNorm: Offset(
-        (map['centerNorm']['x'] as num).toDouble(),
-        (map['centerNorm']['y'] as num).toDouble(),
+      stickGrid: map['obeyGrid'] as bool,
+      size: Size(
+        (map['size']['w'] as num).toDouble(),
+        (map['size']['h'] as num).toDouble(),
       ),
-      sizeNorm: Size(
-        (map['sizeNorm']['w'] as num).toDouble(),
-        (map['sizeNorm']['h'] as num).toDouble(),
-      ),
-      centerGrid: map['centerGrid'] == null
-          ? null
+      position: map['position'] == null
+          ? Point<double>(0, 0)
           : Point<double>(
-              (map['centerGrid']['x'] as num).toDouble(),
-              (map['centerGrid']['y'] as num).toDouble(),
-            ),
-      sizeGrid: map['sizeGrid'] == null
-          ? null
-          : Size(
-              (map['sizeGrid']['w'] as num).toDouble(),
-              (map['sizeGrid']['h'] as num).toDouble(),
+              (map['position']['x'] as num).toDouble(),
+              (map['position']['y'] as num).toDouble(),
             ),
       rotationDeg: (map['rotationDeg'] as num?)?.toDouble() ?? 0,
       zIndex: map['zIndex'] ?? 0,
       isVisible: map['isVisible'] ?? true,
       owners: List<String>.from(map['owners'] ?? const []),
+      sheetId: map['sheetId'],
     );
   }
 }

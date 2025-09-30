@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'token.dart';
@@ -18,7 +19,7 @@ class BattleMap {
   List<Token> listTokens;
 
   double gridOpacity;
-  int gridColor;
+  Color gridColor;
 
   BattleMap({
     required this.id,
@@ -45,7 +46,7 @@ class BattleMap {
     String? musicId,
     List<Token>? listTokens,
     double? gridOpacity,
-    int? gridColor,
+    Color? gridColor,
   }) {
     return BattleMap(
       id: id ?? this.id,
@@ -74,7 +75,7 @@ class BattleMap {
       'musicId': musicId,
       'listTokens': listTokens.map((x) => x.toMap()).toList(),
       'gridOpacity': gridOpacity,
-      'gridColor': gridColor,
+      'gridColor': gridColor.toARGB32(),
     };
   }
 
@@ -94,7 +95,9 @@ class BattleMap {
         map['listTokens']?.map((x) => Token.fromMap(x)),
       ),
       gridOpacity: map['gridOpacity']?.toDouble() ?? 0,
-      gridColor: map['gridColor']?.toInt() ?? 0,
+      gridColor: map['gridColor'] != null
+          ? Color(map['gridColor'])
+          : Colors.white,
     );
   }
 

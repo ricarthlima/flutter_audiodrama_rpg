@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart';
 
-import '../models/token.dart';
-
 Offset viewportToScene(Offset viewportPoint, Matrix4 m) {
   final Matrix4 inv = Matrix4.inverted(m);
   final Vector3 v = Vector3(viewportPoint.dx, viewportPoint.dy, 0)
@@ -52,29 +50,26 @@ Offset gridToSceneTopLeft(Point<int> gridCell, Size imageSize, GridSpec grid) {
   return Offset(gridCell.x * m.cellW, gridCell.y * m.cellH);
 }
 
-Rect tokenRectPx(Token t, Size imageSize, {GridSpec? grid}) {
-  final double imageW = imageSize.width;
-  final double imageH = imageSize.height;
+// Rect tokenRectPx(Token t, Size imageSize, {GridSpec? grid}) {
+//   final double imageW = imageSize.width;
+//   final double imageH = imageSize.height;
 
-  Offset centerPx;
-  Size sizePx;
+//   Offset centerPx;
+//   Size sizePx;
 
-  if (t.obeyGrid &&
-      t.centerGrid != null &&
-      t.sizeGrid != null &&
-      grid != null) {
-    final double cellW = imageW / grid.cols;
-    final double cellH = imageH / grid.rows;
-    centerPx = Offset(t.centerGrid!.x * cellW, t.centerGrid!.y * cellH);
-    sizePx = Size(t.sizeGrid!.width * cellW, t.sizeGrid!.height * cellH);
-  } else {
-    centerPx = Offset(t.centerNorm.dx * imageW, t.centerNorm.dy * imageH);
-    sizePx = Size(t.sizeNorm.width * imageW, t.sizeNorm.height * imageH);
-  }
+//   if (t.stickGrid && t.position != null && t.sizeGrid != null && grid != null) {
+//     final double cellW = imageW / grid.cols;
+//     final double cellH = imageH / grid.rows;
+//     centerPx = Offset(t.position!.x * cellW, t.position!.y * cellH);
+//     sizePx = Size(t.sizeGrid!.width * cellW, t.sizeGrid!.height * cellH);
+//   } else {
+//     centerPx = Offset(t.centerNorm.dx * imageW, t.centerNorm.dy * imageH);
+//     sizePx = Size(t.size.width * imageW, t.size.height * imageH);
+//   }
 
-  return Rect.fromCenter(
-    center: centerPx,
-    width: sizePx.width,
-    height: sizePx.height,
-  );
-}
+//   return Rect.fromCenter(
+//     center: centerPx,
+//     width: sizePx.width,
+//     height: sizePx.height,
+//   );
+// }

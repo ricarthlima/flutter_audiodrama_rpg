@@ -1,117 +1,136 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/named_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/sheet_model.dart';
 import '../../_core/fonts.dart';
 import '../../_core/widgets/expansible_list.dart';
-import '../../campaign/view/campaign_view_model.dart';
+import '../controllers/battle_map_controller.dart';
 import '../helpers/battle_grid_painter.dart';
-import '../helpers/grid_helpers.dart';
 import '../models/battle_map.dart';
 import '../models/token.dart';
-import 'drop_on_battlemap.dart';
 import 'token_widget.dart';
 
-class CampaignBattleMapGridViewer extends StatelessWidget {
+class CampaignBattleMapGridViewer extends StatefulWidget {
   const CampaignBattleMapGridViewer({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final campaignProvider = context.watch<CampaignProvider>();
-    bool isActive =
-        campaignProvider.ownerViewBattleMap != null ||
-        campaignProvider.campaign!.activeBattleMapId != null;
+  State<CampaignBattleMapGridViewer> createState() =>
+      _CampaignBattleMapGridViewerState();
+}
 
-    if (!isActive) {
-      return Placeholder();
+class _CampaignBattleMapGridViewerState
+    extends State<CampaignBattleMapGridViewer> {
+  final _stackKey = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
+    final battleMapProvider = context.watch<CampaignOwnerBattleMapProvider>();
+
+    if (battleMapProvider.battleMap == null) {
+      return Center();
     }
 
-    String id = (campaignProvider.ownerViewBattleMap != null)
-        ? campaignProvider.ownerViewBattleMap!
-        : campaignProvider.campaign!.activeBattleMapId!;
-
-    BattleMap battleMap = campaignProvider.campaign!.listBattleMaps
-        .where((e) => e.id == id)
-        .first;
-
+    BattleMap battleMap = battleMapProvider.battleMap!;
     final Size imageSize = battleMap.imageSize;
-    final GridSpec grid = GridSpec(
-      cols: battleMap.columns,
-      rows: battleMap.rows,
-    );
 
     return Stack(
+      key: _stackKey,
       fit: StackFit.passthrough,
+      clipBehavior: Clip.hardEdge,
       children: [
-        DropOnBattleMap<Token>(
-          controller: campaignProvider.gridTransformationOwner,
-          imageSize: imageSize,
-          grid: grid,
-          onDrop: (DropResult<Token> dropResult) {
-            campaignProvider.moveTokenToBattleMap(
+        DragTarget<Token>(
+          onAcceptWithDetails: (details) {
+            battleMapProvider.moveToken(
               battleMap: battleMap,
-              position: dropResult.rawGridPos,
-              token: dropResult.data,
+              position: generatePositionByDetail(
+                details.offset,
+                battleMapProvider,
+              ),
+              token: details.data,
             );
           },
-          child: DropOnBattleMap<Sheet>(
-            controller: campaignProvider.gridTransformationOwner,
-            imageSize: imageSize,
-            grid: grid,
-            onDrop: (DropResult<Sheet> dropResult) {
-              campaignProvider.addTokenToBattleMap(
-                battleMap: battleMap,
-                sheet: dropResult.data,
-                position: dropResult.rawGridPos,
-              );
-            },
-            child: InteractiveViewer(
-              transformationController:
-                  campaignProvider.gridTransformationOwner,
-              minScale: 0.5,
-              maxScale: 6,
-              child: Padding(
-                padding: const EdgeInsets.all(128.0),
-                child: Stack(
-                  children: [
-                    Positioned.fill(child: Image.network(battleMap.imageUrl)),
-                    Positioned.fill(
-                      child: CustomPaint(
-                        painter: BattleGridPainter(
-                          cols: battleMap.columns,
-                          rows: battleMap.rows,
-                          color: Colors.white.withOpacity(0.25),
-                          stroke: 1.0,
-                        ),
-                      ),
-                    ),
-                    for (Token t in battleMap.listTokens)
-                      Builder(
-                        builder: (_) {
-                          final Rect r = tokenRectPx(t, imageSize, grid: grid);
-                          return Positioned(
-                            left: r.left,
-                            top: r.top,
-                            width: r.width,
-                            height: r.height,
-                            child: Transform.rotate(
-                              angle: t.rotationDeg * pi / 180.0,
-                              child: TokenWidget(
-                                token: t,
-                                battleMap: battleMap,
+          builder: (context, candidateData, rejectedData) {
+            return DragTarget<Sheet>(
+              onAcceptWithDetails: (details) {
+                battleMapProvider.addToken(
+                  battleMap: battleMap,
+                  position: generatePositionByDetail(
+                    details.offset,
+                    battleMapProvider,
+                  ),
+                  sheet: details.data,
+                );
+              },
+              builder: (context, candidateData, rejectedData) {
+                return InteractiveViewer(
+                  transformationController: battleMapProvider.gridTrans,
+                  minScale: 0.5,
+                  maxScale: 6,
+                  child: Center(
+                    child: SizedBox(
+                      width: imageSize.width,
+                      height: imageSize.height,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Image.network(
+                              battleMap.imageUrl,
+                              fit: BoxFit.cover,
+                              filterQuality: FilterQuality.none,
+                              width: imageSize.width,
+                              height: imageSize.height,
+                            ),
+                          ),
+                          Positioned.fill(
+                            child: CustomPaint(
+                              painter: BattleGridPainter(
+                                cols: battleMap.columns,
+                                rows: battleMap.rows,
+                                color: battleMap.gridColor.withAlpha(
+                                  (battleMap.gridOpacity * 255).floor(),
+                                ),
+                                stroke: 1.0,
                               ),
                             ),
-                          );
-                        },
+                          ),
+                          for (Token token in battleMap.listTokens)
+                            Builder(
+                              builder: (context) {
+                                Size size = Size(
+                                  (imageSize.width / battleMap.columns) *
+                                      token.size.width,
+                                  (imageSize.height / battleMap.rows) *
+                                      token.size.height,
+                                );
+                                print(size);
+                                return Positioned(
+                                  left: token.position.x,
+                                  top: token.position.y,
+                                  width: size.width,
+                                  height: size.height,
+                                  child: Transform.rotate(
+                                    angle: token.rotationDeg * pi / 180.0,
+                                    child: TokenWidget(
+                                      token: token,
+                                      sizeInGrid: size,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                        ],
                       ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
         ),
+
         Align(
           alignment: Alignment.topCenter,
           child: Container(color: Colors.black.withAlpha(200), height: 40),
@@ -139,10 +158,10 @@ class CampaignBattleMapGridViewer extends StatelessWidget {
                       Slider(
                         min: 0.5,
                         max: 6,
-                        value: campaignProvider.battleMapZoom,
+                        value: battleMapProvider.zoom,
                         onChanged: (value) {
-                          campaignProvider.battleMapZoom = value;
-                          campaignProvider.setZoom(context.size!);
+                          battleMapProvider.zoom = value;
+                          battleMapProvider.setZoom(context.size!);
                         },
                       ),
                     ],
@@ -155,11 +174,27 @@ class CampaignBattleMapGridViewer extends StatelessWidget {
                     startClosed: true,
                     child: Container(
                       color: Colors.black.withAlpha(200),
+                      padding: EdgeInsets.all(8),
                       child: SingleChildScrollView(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [Text("Trabalho em progresso")],
+                          children: [
+                            NamedWidget(
+                              title: "Opacidade do grid",
+                              isLeft: true,
+                              child: Slider(
+                                value: battleMap.gridOpacity,
+                                min: 0,
+                                max: 1,
+                                padding: EdgeInsets.zero,
+                                onChanged: (value) {
+                                  battleMap.gridOpacity = value;
+                                  battleMapProvider.onUpdate(battleMap);
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -171,5 +206,21 @@ class CampaignBattleMapGridViewer extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Point<double> generatePositionByDetail(
+    Offset offset,
+    CampaignOwnerBattleMapProvider battleMapProvider,
+  ) {
+    final box = _stackKey.currentContext!.findRenderObject() as RenderBox;
+
+    // 2) Converter global -> local
+    final local = box.globalToLocal(offset);
+
+    // 3) Centralizar o token no ponto solto (opcional)
+    final scenePoint = battleMapProvider.gridTrans.toScene(local);
+
+    Point<double> position = Point(scenePoint.dx, scenePoint.dy);
+    return position;
   }
 }

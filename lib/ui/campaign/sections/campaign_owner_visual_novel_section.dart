@@ -4,6 +4,7 @@ import '../view/campaign_visual_novel_view_model.dart';
 import '../widgets/visual_novel/character_area_widget.dart';
 
 import '../campaign_guest_screen.dart';
+import '../widgets/visual_novel/image_area_widget.dart';
 
 class CampaignOwnerVisualNovelSection extends StatelessWidget {
   const CampaignOwnerVisualNovelSection({super.key, required this.visualVM});
@@ -16,6 +17,18 @@ class CampaignOwnerVisualNovelSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       spacing: 8,
       children: [
+        Flexible(
+          flex: 4,
+          fit: FlexFit.tight,
+          child: ImageAreaWidget(
+            title: "Cenários",
+            listImages: visualVM.data.listBackgrounds,
+            childWidth: 200,
+            showTitle: true,
+            aspectRatio: 16 / 9,
+            onTap: visualVM.toggleBackground,
+          ),
+        ),
         Flexible(
           flex: 2,
           fit: FlexFit.tight,
