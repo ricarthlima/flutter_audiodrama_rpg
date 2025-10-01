@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_turn_order.dart';
 import '../../domain/models/campaign_sheet_settings.dart';
 import '../../ui/campaign/utils/campaign_scenes.dart';
 import '../../_core/helpers/generate_access_key.dart';
@@ -58,6 +59,12 @@ class CampaignService {
       campaignScenes: CampaignScenes.visual,
       activeBattleMapId: null,
       listBattleMaps: [],
+      campaignTurnOrder: CampaignTurnOrder(
+        isTurnActive: false,
+        turn: 0,
+        sheetTurn: 0,
+        listSheetOrders: [],
+      ),
     );
 
     if (fileImage != null) {

@@ -8,8 +8,8 @@ import '../components/create_achievement.dart';
 import '../view/campaign_view_model.dart';
 import '../widgets/achievement_widget.dart';
 
-class CampaignAchievementsWidget extends StatelessWidget {
-  const CampaignAchievementsWidget({super.key});
+class CampaignDrawerAchievements extends StatelessWidget {
+  const CampaignDrawerAchievements({super.key});
 
   @override
   Widget build(BuildContext context) {

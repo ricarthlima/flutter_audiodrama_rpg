@@ -5,18 +5,18 @@ import 'package:provider/provider.dart';
 
 import '../../../data/services/chat_service.dart';
 import '../../../domain/models/campaign_chat.dart';
-import '../../_core/fonts.dart';
+import '../../_core/widgets/generic_header.dart';
 import '../view/campaign_view_model.dart';
 import '../widgets/chat/campaign_chat_message_widget.dart';
 
-class CampaignChatSection extends StatefulWidget {
-  const CampaignChatSection({super.key});
+class CampaignDrawerChat extends StatefulWidget {
+  const CampaignDrawerChat({super.key});
 
   @override
-  State<CampaignChatSection> createState() => _CampaignChatSectionState();
+  State<CampaignDrawerChat> createState() => _CampaignDrawerChatState();
 }
 
-class _CampaignChatSectionState extends State<CampaignChatSection> {
+class _CampaignDrawerChatState extends State<CampaignDrawerChat> {
   late final FocusNode _focusNode;
   late final TextEditingController _messageController;
   late final ScrollController _scrollController;
@@ -99,10 +99,7 @@ class _CampaignChatSectionState extends State<CampaignChatSection> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: 16,
       children: [
-        const Text(
-          "Chat",
-          style: TextStyle(fontSize: 14, fontFamily: FontFamily.bungee),
-        ),
+        GenericHeader(title: "Chat"),
         Expanded(
           child: StreamBuilder(
             stream: ChatService.instance.listenChat(

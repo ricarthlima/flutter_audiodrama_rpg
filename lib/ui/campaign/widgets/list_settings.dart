@@ -55,6 +55,23 @@ class ListSettings extends StatelessWidget {
                 ),
               ),
             ),
+            InkWell(
+              onTap: campaignPV.campaignScene != CampaignScenes.cutscenes
+                  ? () {
+                      campaignPV.campaignScene = CampaignScenes.cutscenes;
+                    }
+                  : null,
+              child: Text(
+                "CENAS DE CORTE",
+                style: TextStyle(
+                  color: (campaignPV.campaignScene == CampaignScenes.cutscenes)
+                      ? AppColors.red
+                      : AppColors.googleAuthBorderLight,
+                  fontFamily: FontFamily.bungee,
+                  fontSize: 18,
+                ),
+              ),
+            ),
           ],
         ),
       ],

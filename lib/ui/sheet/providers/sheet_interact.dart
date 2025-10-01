@@ -67,6 +67,7 @@ abstract class SheetInteract {
     required String groupId,
     required RollType rollType,
     Spell? spell,
+    bool? rollInitiativeVisible,
   }) async {
     SheetViewModel sheetVM = context.read<SheetViewModel>();
     CampaignProvider campaignVM = context.read<CampaignProvider>();
@@ -117,6 +118,15 @@ abstract class SheetInteract {
     );
 
     sheetVM.onRoll(roll: roll, groupId: groupId);
+    if (rollInitiativeVisible != null && campaignVM.campaign != null) {
+      campaignVM.rollInitiative(
+        sheet: sheetVM.sheet!,
+        isVisible: rollInitiativeVisible,
+        rollValue: (roll.isGettingLower)
+            ? rolls.reduce((v, e) => v = min(v, e))
+            : rolls.reduce((v, e) => v = max(v, e)),
+      );
+    }
 
     for (int i = 0; i < rolls.length; i++) {
       await Future.delayed(Duration(milliseconds: 500));

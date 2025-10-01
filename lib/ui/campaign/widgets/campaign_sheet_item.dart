@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import '../../_core/web/download_json/download_json.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +33,9 @@ class CampaignSheetItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeViewModel = Provider.of<HomeViewModel>(context);
+    final homeVM = Provider.of<HomeViewModel>(context);
+    final campaignVM = context.watch<CampaignProvider>();
+
     return ListTile(
       dense: true,
       contentPadding: EdgeInsets.zero,
@@ -105,85 +108,100 @@ class CampaignSheetItem extends StatelessWidget {
           ],
         ),
       ),
-      trailing: PopupMenuButton<_SheetMenuOptions>(
-        onSelected: (_SheetMenuOptions value) {
-          switch (value) {
-            case _SheetMenuOptions.export:
-              downloadJsonFile(
-                sheet.toMapWithoutId(),
-                "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json",
-              );
-              return;
-            case _SheetMenuOptions.openInScreen:
-              AppRouter().goSheet(
-                context: context,
-                username: username,
-                sheet: sheet,
-                isPushing: isShowingByCampaign,
-              );
-              return;
-            case _SheetMenuOptions.moveToCampaign:
-              showMoveSheetToCampaignDialog(context: context, sheet: sheet);
-              return;
-            case _SheetMenuOptions.duplicate:
-              homeViewModel.onDuplicateSheet(sheet: sheet);
-              return;
-            case _SheetMenuOptions.remove:
-              HomeInteract.onRemoveSheet(context: context, sheet: sheet);
-              return;
-          }
-        },
-        itemBuilder: (context) {
-          return <PopupMenuEntry<_SheetMenuOptions>>[
-            PopupMenuItem(
-              value: _SheetMenuOptions.export,
-              child: Row(
-                spacing: 8,
-                children: [
-                  Icon(Icons.file_download_outlined),
-                  Text("Exportar"),
-                ],
-              ),
-            ),
-            PopupMenuItem(
-              value: _SheetMenuOptions.openInScreen,
-              child: Row(
-                spacing: 8,
-                children: [Icon(Icons.arrow_forward), Text("Abrir")],
-              ),
-            ),
-            if (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid)
-              PopupMenuItem(
-                value: _SheetMenuOptions.moveToCampaign,
-                child: Row(
-                  spacing: 8,
-                  children: [
-                    Icon(Icons.move_down_rounded),
-                    Text("Mover para campanha"),
-                  ],
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            onPressed: () {
+              campaignVM.rollInitiative(sheet: sheet, isVisible: true);
+            },
+            onLongPress: () {
+              campaignVM.rollInitiative(sheet: sheet, isVisible: false);
+            },
+            tooltip: "Rolar Iniciativa",
+            icon: Image.asset("assets/images/d20.png"),
+          ),
+          PopupMenuButton<_SheetMenuOptions>(
+            onSelected: (_SheetMenuOptions value) {
+              switch (value) {
+                case _SheetMenuOptions.export:
+                  downloadJsonFile(
+                    sheet.toMapWithoutId(),
+                    "sheet-${sheet.characterName.toLowerCase().replaceAll(" ", "_")}.json",
+                  );
+                  return;
+                case _SheetMenuOptions.openInScreen:
+                  AppRouter().goSheet(
+                    context: context,
+                    username: username,
+                    sheet: sheet,
+                    isPushing: isShowingByCampaign,
+                  );
+                  return;
+                case _SheetMenuOptions.moveToCampaign:
+                  showMoveSheetToCampaignDialog(context: context, sheet: sheet);
+                  return;
+                case _SheetMenuOptions.duplicate:
+                  homeVM.onDuplicateSheet(sheet: sheet);
+                  return;
+                case _SheetMenuOptions.remove:
+                  HomeInteract.onRemoveSheet(context: context, sheet: sheet);
+                  return;
+              }
+            },
+            itemBuilder: (context) {
+              return <PopupMenuEntry<_SheetMenuOptions>>[
+                PopupMenuItem(
+                  value: _SheetMenuOptions.export,
+                  child: Row(
+                    spacing: 8,
+                    children: [
+                      Icon(Icons.file_download_outlined),
+                      Text("Exportar"),
+                    ],
+                  ),
                 ),
-              ),
-            if (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid)
-              PopupMenuItem(
-                value: _SheetMenuOptions.duplicate,
-                child: Row(
-                  spacing: 8,
-                  children: [Icon(Icons.copy), Text("Duplicar")],
+                PopupMenuItem(
+                  value: _SheetMenuOptions.openInScreen,
+                  child: Row(
+                    spacing: 8,
+                    children: [Icon(Icons.arrow_forward), Text("Abrir")],
+                  ),
                 ),
-              ),
-            if (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid)
-              PopupMenuItem(
-                value: _SheetMenuOptions.remove,
-                child: Row(
-                  spacing: 8,
-                  children: [
-                    Icon(Icons.delete, color: AppColors.red),
-                    Text("Remover"),
-                  ],
-                ),
-              ),
-          ];
-        },
+                if (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid)
+                  PopupMenuItem(
+                    value: _SheetMenuOptions.moveToCampaign,
+                    child: Row(
+                      spacing: 8,
+                      children: [
+                        Icon(Icons.move_down_rounded),
+                        Text("Mover para campanha"),
+                      ],
+                    ),
+                  ),
+                if (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid)
+                  PopupMenuItem(
+                    value: _SheetMenuOptions.duplicate,
+                    child: Row(
+                      spacing: 8,
+                      children: [Icon(Icons.copy), Text("Duplicar")],
+                    ),
+                  ),
+                if (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid)
+                  PopupMenuItem(
+                    value: _SheetMenuOptions.remove,
+                    child: Row(
+                      spacing: 8,
+                      children: [
+                        Icon(Icons.delete, color: AppColors.red),
+                        Text("Remover"),
+                      ],
+                    ),
+                  ),
+              ];
+            },
+          ),
+        ],
       ),
       onTap: () {
         if (isShowingByCampaign) {

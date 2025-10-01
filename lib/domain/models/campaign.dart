@@ -2,9 +2,11 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+
 import 'package:flutter_rpg_audiodrama/_core/providers/audio_provider.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet_settings.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_turn_order.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_vm_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/models/battle_map.dart';
@@ -34,6 +36,8 @@ class Campaign {
   String? activeBattleMapId;
   List<BattleMap> listBattleMaps;
 
+  CampaignTurnOrder campaignTurnOrder;
+
   Campaign({
     required this.id,
     required this.listIdOwners,
@@ -52,6 +56,7 @@ class Campaign {
     required this.campaignScenes,
     required this.activeBattleMapId,
     required this.listBattleMaps,
+    required this.campaignTurnOrder,
   });
 
   Campaign copyWith({
@@ -72,6 +77,7 @@ class Campaign {
     CampaignScenes? campaignScenes,
     String? activeBattleMapId,
     List<BattleMap>? listBattleMaps,
+    CampaignTurnOrder? campaignTurnOrder,
   }) {
     return Campaign(
       id: id ?? this.id,
@@ -92,6 +98,7 @@ class Campaign {
       campaignScenes: campaignScenes ?? this.campaignScenes,
       activeBattleMapId: activeBattleMapId ?? this.activeBattleMapId,
       listBattleMaps: listBattleMaps ?? this.listBattleMaps,
+      campaignTurnOrder: campaignTurnOrder ?? this.campaignTurnOrder,
     );
   }
 
@@ -114,6 +121,7 @@ class Campaign {
       'campaignScenes': campaignScenes.name,
       'activeBattleMapId': activeBattleMapId,
       'listBattleMaps': listBattleMaps.map((e) => e.toMap()).toList(),
+      'campaignTurnOrder': campaignTurnOrder.toMap(),
     };
   }
 
@@ -172,6 +180,14 @@ class Campaign {
                 .map((e) => BattleMap.fromMap(e))
                 .toList()
           : [],
+      campaignTurnOrder: (map['campaignTurnOrder'] != null)
+          ? CampaignTurnOrder.fromMap(map['campaignTurnOrder'])
+          : CampaignTurnOrder(
+              isTurnActive: false,
+              turn: 0,
+              sheetTurn: 0,
+              listSheetOrders: [],
+            ),
     );
   }
 
@@ -182,7 +198,7 @@ class Campaign {
 
   @override
   String toString() {
-    return 'Campaign(id: $id, listIdOwners: $listIdOwners, listIdPlayers: $listIdPlayers, enterCode: $enterCode, createdAt: $createdAt, updatedAt: $updatedAt, name: $name, imageBannerUrl: $imageBannerUrl, description: $description, nextSession: $nextSession, listAchievements: $listAchievements, audioCampaign: $audioCampaign)';
+    return 'Campaign(id: $id, listIdOwners: $listIdOwners, listIdPlayers: $listIdPlayers, enterCode: $enterCode, createdAt: $createdAt, updatedAt: $updatedAt, name: $name, imageBannerUrl: $imageBannerUrl, description: $description, nextSession: $nextSession, listAchievements: $listAchievements, audioCampaign: $audioCampaign, activeBattleMapId: $activeBattleMapId, listBattleMaps: $listBattleMaps)';
   }
 
   @override
@@ -202,7 +218,8 @@ class Campaign {
         other.nextSession == nextSession &&
         listEquals(other.listAchievements, listAchievements) &&
         other.audioCampaign == audioCampaign &&
-        other.campaignScenes == campaignScenes;
+        other.activeBattleMapId == activeBattleMapId &&
+        listEquals(other.listBattleMaps, listBattleMaps);
   }
 
   @override
@@ -219,6 +236,7 @@ class Campaign {
         nextSession.hashCode ^
         listAchievements.hashCode ^
         audioCampaign.hashCode ^
-        campaignScenes.hashCode;
+        activeBattleMapId.hashCode ^
+        listBattleMaps.hashCode;
   }
 }

@@ -50,6 +50,7 @@ class CampaignOwnerSubScreen extends StatelessWidget {
                     visualVM: visualVM,
                   ),
                   CampaignScenes.grid => CampaignGridOwner(),
+                  CampaignScenes.cutscenes => Placeholder(),
                 },
 
                 bottom: AmbienceAssetsSection(),

@@ -1,5 +1,1 @@
-enum CampaignTabs {
-  chat,
-  sheets,
-  achievements,
-}
+enum CampaignTabs { chat, sheets, turns, achievements }

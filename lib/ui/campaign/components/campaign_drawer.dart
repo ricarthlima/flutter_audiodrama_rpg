@@ -186,6 +186,18 @@ class CampaignDrawer extends StatelessWidget {
                 CompactableButton(
                   controller: CompactableButtonController(
                     isCompressed: campaignVM.isDrawerClosed,
+                    isSelected: campaignVM.currentTab == CampaignTabs.turns,
+                  ),
+                  title: "Turnos",
+                  leadingIcon: Icons.access_time,
+                  onPressed: () {
+                    campaignVM.currentTab = CampaignTabs.turns;
+                    campaignVM.isDrawerClosed = true;
+                  },
+                ),
+                CompactableButton(
+                  controller: CompactableButtonController(
+                    isCompressed: campaignVM.isDrawerClosed,
                     isSelected:
                         campaignVM.currentTab == CampaignTabs.achievements,
                   ),

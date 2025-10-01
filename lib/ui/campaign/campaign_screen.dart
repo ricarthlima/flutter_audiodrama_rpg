@@ -12,10 +12,11 @@ import '../sheet/providers/sheet_view_model.dart';
 import '../sheet/sheet_screen.dart';
 import 'campaign_router_screen.dart';
 import 'components/campaign_drawer.dart';
-import 'partials/achievements_widget.dart';
-import 'partials/campaign_chat_section.dart';
+import 'drawer/campaign_drawer_achievements.dart';
+import 'drawer/campaign_drawer_chat.dart';
+import 'drawer/campaign_drawer_turn_order.dart';
 import 'partials/campaign_first_interact_screen.dart';
-import 'partials/sheets_widget.dart';
+import 'drawer/campaign_drawer_sheets.dart';
 import 'view/campaign_view_model.dart';
 import 'widgets/campaign_people_connected.dart';
 import 'widgets/group_notifications.dart';
@@ -96,16 +97,21 @@ class _CampaignScreenState extends State<CampaignScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    width: min(width(context), 500),
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 500),
+                    width: min(
+                      width(context),
+                      campaignVM.currentTab!.index == 0 ? 500 : 400,
+                    ),
                     padding: EdgeInsets.all(16),
                     color: Theme.of(context).scaffoldBackgroundColor,
                     child: IndexedStack(
                       index: campaignVM.currentTab!.index,
                       children: [
-                        CampaignChatSection(),
-                        CampaignSheetsWidget(),
-                        CampaignAchievementsWidget(),
+                        CampaignDrawerChat(),
+                        CampaignDrawerSheets(),
+                        CampaignDrawerTurnOrder(),
+                        CampaignDrawerAchievements(),
                       ],
                     ),
                   ),

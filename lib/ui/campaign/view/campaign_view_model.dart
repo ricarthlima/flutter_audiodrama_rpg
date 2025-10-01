@@ -1,9 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/_core/helpers/important_actions.dart';
 import 'package:flutter_rpg_audiodrama/data/preferences/local_data_manager.dart';
 import 'package:flutter_rpg_audiodrama/data/services/auth_service.dart';
 import 'package:flutter_rpg_audiodrama/data/services/campaign_service.dart';
@@ -13,6 +15,7 @@ import 'package:flutter_rpg_audiodrama/domain/models/app_user.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_achievement.dart';
 import 'package:flutter_rpg_audiodrama/domain/models/campaign_sheet.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/campaign_turn_order.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_subpages.dart';
 import 'package:uuid/uuid.dart';
@@ -93,11 +96,11 @@ class CampaignProvider extends ChangeNotifier {
   TextEditingController descController = TextEditingController();
 
   Future<void> onSave() async {
+    notifyListeners();
     if (campaign != null) {
       campaign!.name = nameController.text;
       campaign!.description = descController.text;
-      CampaignService.instance.saveCampaign(campaign!);
-      notifyListeners();
+      // CampaignService.instance.saveCampaign(campaign!);
     }
   }
 
@@ -436,6 +439,154 @@ class CampaignProvider extends ChangeNotifier {
     }
 
     onSave();
+  }
+
+  void addSheetTurn() {
+    campaign!.campaignTurnOrder.sheetTurn++;
+    _updateTurnBySheetTurn();
+    onSave();
+  }
+
+  void removeSheetTurn() {
+    campaign!.campaignTurnOrder.sheetTurn--;
+    _updateTurnBySheetTurn();
+    onSave();
+  }
+
+  void _updateTurnBySheetTurn() {
+    if (campaign!.campaignTurnOrder.sheetTurn == -1) {
+      campaign!.campaignTurnOrder.turn--;
+    } else if (campaign!.campaignTurnOrder.sheetTurn ==
+        campaign!.campaignTurnOrder.listSheetOrders.length) {
+      campaign!.campaignTurnOrder.turn++;
+    }
+
+    campaign!.campaignTurnOrder.sheetTurn =
+        campaign!.campaignTurnOrder.sheetTurn %
+        campaign!.campaignTurnOrder.listSheetOrders.length;
+
+    notifyListeners();
+  }
+
+  void addTurn() {
+    campaign!.campaignTurnOrder.turn++;
+    notifyListeners();
+    onSave();
+  }
+
+  void removeTurn() {
+    campaign!.campaignTurnOrder.turn--;
+    notifyListeners();
+    onSave();
+  }
+
+  void rollInitiative({
+    required Sheet sheet,
+    required bool isVisible,
+    int? rollValue,
+  }) {
+    int value = 1;
+
+    if (rollValue != null) {
+      value = rollValue;
+    } else {
+      int indexActionValue = sheet.listActionValue.indexWhere(
+        (e) => e.actionId == ImportantActions.resistirReflexos,
+      );
+
+      if (indexActionValue != -1) {
+        value = sheet.listActionValue[indexActionValue].value;
+      }
+
+      int dice1 = Random().nextInt(19) + 1;
+      int dice2 = Random().nextInt(19) + 1;
+      int dice3 = Random().nextInt(19) + 1;
+
+      switch (value) {
+        case 0:
+          {
+            value = min(min(dice1, dice2), dice3);
+          }
+        case 1:
+          {
+            value = min(dice1, dice2);
+          }
+        case 2:
+          {
+            value = dice1;
+          }
+        case 3:
+          {
+            value = max(dice1, dice2);
+          }
+        case 4:
+          {
+            value = max(max(dice1, dice2), dice3);
+          }
+      }
+    }
+
+    final sheetTurn = SheetTurnOrder(
+      sheetId: sheet.id,
+      orderValue: value,
+      isVisible: isVisible,
+    );
+
+    int index = campaign!.campaignTurnOrder.listSheetOrders.indexWhere(
+      (e) => e.sheetId == sheet.id,
+    );
+
+    if (index == -1) {
+      campaign!.campaignTurnOrder.listSheetOrders.add(sheetTurn);
+    } else {
+      campaign!.campaignTurnOrder.listSheetOrders[index] = sheetTurn;
+    }
+
+    sortTurn();
+    onSave();
+  }
+
+  void toggleTurnVisibility({required String sheetId}) {
+    int index = campaign!.campaignTurnOrder.listSheetOrders.indexWhere(
+      (e) => e.sheetId == sheetId,
+    );
+
+    if (index != -1) {
+      campaign!.campaignTurnOrder.listSheetOrders[index].isVisible =
+          !campaign!.campaignTurnOrder.listSheetOrders[index].isVisible;
+    }
+
+    onSave();
+  }
+
+  void changeTurnValue({required String sheetId, required int orderValue}) {
+    int index = campaign!.campaignTurnOrder.listSheetOrders.indexWhere(
+      (e) => e.sheetId == sheetId,
+    );
+
+    if (index != -1) {
+      campaign!.campaignTurnOrder.listSheetOrders[index].orderValue =
+          orderValue;
+    }
+
+    sortTurn();
+    onSave();
+  }
+
+  void removeFromTurn(String sheetId) {
+    campaign!.campaignTurnOrder.listSheetOrders.removeWhere(
+      (e) => e.sheetId == sheetId,
+    );
+
+    sortTurn();
+    onSave();
+  }
+
+  void sortTurn() {
+    campaign!.campaignTurnOrder.listSheetOrders.sort((a, b) {
+      return b.orderValue.compareTo(a.orderValue);
+    });
+    notifyListeners();
   }
 }
 
