@@ -45,4 +45,14 @@ class SettingsProvider extends ChangeNotifier {
   }
 
   String? lastScreen;
+
+  Future<double> getVerticalSplitRatio() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble("VERTICAL_SPLIT_RATIO") ?? 0.75;
+  }
+
+  Future<void> setVerticalSplitRatio(double ratio) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble("VERTICAL_SPLIT_RATIO", ratio);
+  }
 }

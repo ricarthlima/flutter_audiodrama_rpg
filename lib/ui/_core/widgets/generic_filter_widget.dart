@@ -75,7 +75,10 @@ class _GenericFilterWidgetState<T> extends State<GenericFilterWidget<T>> {
         if (widget.enableSearch)
           Expanded(
             child: TextField(
-              decoration: const InputDecoration(labelText: 'Pesquisar'),
+              decoration: const InputDecoration(
+                labelText: 'Pesquisar',
+                border: InputBorder.none,
+              ),
               onChanged: (value) {
                 searchQuery = value;
                 _applyFilters();

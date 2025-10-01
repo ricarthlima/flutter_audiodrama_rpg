@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/settings/view/settings_provider.dart';
 import '../_core/dimensions.dart';
 import '../_core/widgets/vertical_split_view.dart';
 import 'sections/ambience_assets_section.dart';
@@ -13,8 +14,29 @@ import 'package:provider/provider.dart';
 import '../_core/fonts.dart';
 import 'components/tutorial_populate_dialog.dart';
 
-class CampaignOwnerSubScreen extends StatelessWidget {
+class CampaignOwnerSubScreen extends StatefulWidget {
   const CampaignOwnerSubScreen({super.key});
+
+  @override
+  State<CampaignOwnerSubScreen> createState() => _CampaignOwnerSubScreenState();
+}
+
+class _CampaignOwnerSubScreenState extends State<CampaignOwnerSubScreen> {
+  double verticalRatio = 0.75;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final settings = context.read<SettingsProvider>();
+      settings.getVerticalSplitRatio().then((ratio) {
+        setState(() {
+          verticalRatio = ratio;
+          print(verticalRatio);
+        });
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +61,15 @@ class CampaignOwnerSubScreen extends StatelessWidget {
             ListSettings(),
             Expanded(
               child: VerticalSplitView(
-                initialRatio: 0.75,
+                initialRatio: verticalRatio,
                 minRatio: 0.2,
                 maxRatio: 0.9,
                 dividerThickness: 4,
                 spacing: 10,
                 dragSensitivity: 10,
+                onChange: (ratio) {
+                  context.read<SettingsProvider>().setVerticalSplitRatio(ratio);
+                },
                 top: switch (campaignVM.campaignScene) {
                   CampaignScenes.visual => CampaignOwnerVisualNovelSection(
                     visualVM: visualVM,

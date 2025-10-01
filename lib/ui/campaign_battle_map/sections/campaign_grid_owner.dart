@@ -21,72 +21,69 @@ class CampaignGridOwner extends StatelessWidget {
     return HorizontalSplitView(
       initialRatio: 0.75,
       dividerThickness: 5,
-
       left: CampaignBattleMapGridViewer(),
-      right: Column(
-        children: [
-          ExpansibleList(
-            title: "Mapas de Batalha",
-            actions: [
-              IconButton(
-                onPressed: () {
-                  showUpinsertBattleMap(context);
-                },
-                icon: Icon(Icons.add),
+      right: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(right: 12.0),
+          child: Column(
+            children: [
+              ExpansibleList(
+                title: "Mapas de Batalha",
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      showUpinsertBattleMap(context);
+                    },
+                    icon: Icon(Icons.add),
+                  ),
+                ],
+                child: Column(
+                  children: campaignCTRL.campaign!.listBattleMaps
+                      .map((e) => CampaignBattleMapListItem(battleMap: e))
+                      .toList(),
+                ),
               ),
-            ],
-            child: Column(
-              children: campaignCTRL.campaign!.listBattleMaps
-                  .map((e) => CampaignBattleMapListItem(battleMap: e))
-                  .toList(),
-            ),
-          ),
-          ExpansibleList(
-            title: "Objetos",
-            startClosed: true,
-            child: Column(children: []),
-          ),
-          ExpansibleList(
-            title: "Meus Personagens",
-            startClosed: true,
-            child: Column(
-              children: userProvider
-                  .getMySheetsByCampaign(campaignCTRL.campaign!.id)
-                  .map((e) {
-                    final sau = SheetAppUser(
-                      sheet: e,
-                      appUser: userProvider.currentAppUser,
-                    );
+              ExpansibleList(
+                title: "Objetos",
+                startClosed: true,
+                child: Column(children: []),
+              ),
+              ExpansibleList(
+                title: "Meus Personagens",
+                startClosed: true,
+                child: Column(
+                  children: userProvider
+                      .getMySheetsByCampaign(campaignCTRL.campaign!.id)
+                      .map((e) {
+                        final sau = SheetAppUser(
+                          sheet: e,
+                          appUser: userProvider.currentAppUser,
+                        );
+                        return CampaignSheetItem(
+                          sheet: sau.sheet,
+                          username: sau.appUser.username!,
+                        );
+                      })
+                      .toList(),
+                ),
+              ),
+              ExpansibleList(
+                title: "Outros Personagens",
+                startClosed: true,
+                child: Column(
+                  children: campaignCTRL.listSheetAppUser.map((sau) {
                     return CampaignSheetItem(
                       sheet: sau.sheet,
                       username: sau.appUser.username!,
                     );
-                  })
-                  .toList(),
-            ),
+                  }).toList(),
+                ),
+              ),
+              SizedBox(height: 300),
+            ],
           ),
-          ExpansibleList(
-            title: "Outros Personagens",
-            startClosed: true,
-            child: Column(
-              children: campaignCTRL.listSheetAppUser.map((sau) {
-                return CampaignSheetItem(
-                  sheet: sau.sheet,
-                  username: sau.appUser.username!,
-                );
-              }).toList(),
-            ),
-          ),
-        ],
+        ),
       ),
     );
-
-    // Row(
-    //   spacing: 8,
-    //   children: [
-    //     Expanded(child: ),
-    //     VerticalDivider(),
-    //    ],
-    // );
   }
 }

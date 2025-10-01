@@ -12,6 +12,8 @@ class HorizontalSplitView extends StatefulWidget {
   final Curve animationCurve;
   final double dragSensitivity;
 
+  final Function(double ratio)? onChange;
+
   const HorizontalSplitView({
     super.key,
     required this.left,
@@ -24,6 +26,7 @@ class HorizontalSplitView extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 120),
     this.animationCurve = Curves.easeOut,
     this.dragSensitivity = 8,
+    this.onChange,
   });
 
   @override
@@ -37,6 +40,16 @@ class _HorizontalSplitViewState extends State<HorizontalSplitView> {
   void initState() {
     super.initState();
     ratio = widget.initialRatio.clamp(widget.minRatio, widget.maxRatio);
+  }
+
+  @override
+  void didUpdateWidget(covariant HorizontalSplitView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialRatio != widget.initialRatio) {
+      setState(() {
+        ratio = widget.initialRatio.clamp(widget.minRatio, widget.maxRatio);
+      });
+    }
   }
 
   @override
@@ -68,6 +81,9 @@ class _HorizontalSplitViewState extends State<HorizontalSplitView> {
                 setState(() {
                   ratio = newRatio.clamp(widget.minRatio, widget.maxRatio);
                 });
+                if (widget.onChange != null) {
+                  widget.onChange!(ratio);
+                }
               },
               child: MouseRegion(
                 cursor: SystemMouseCursors.resizeLeftRight,

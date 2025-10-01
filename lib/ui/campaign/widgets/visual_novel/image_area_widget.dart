@@ -53,24 +53,32 @@ class _ImageAreaWidgetState extends State<ImageAreaWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.title, style: TextStyle(fontFamily: FontFamily.bungee)),
-        GenericFilterWidget<CampaignVisual>(
-          listValues: widget.listImages,
-          listOrderers: [
-            GenericFilterOrderer<CampaignVisual>(
-              label: "Por nome",
-              iconAscending: Icons.sort_by_alpha,
-              iconDescending: Icons.sort_by_alpha,
-              orderFunction: (a, b) => a.name.compareTo(b.name),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(widget.title, style: TextStyle(fontFamily: FontFamily.bungee)),
+            SizedBox(
+              width: 200,
+              child: GenericFilterWidget<CampaignVisual>(
+                listValues: widget.listImages,
+                listOrderers: [
+                  GenericFilterOrderer<CampaignVisual>(
+                    label: "Por nome",
+                    iconAscending: Icons.sort_by_alpha,
+                    iconDescending: Icons.sort_by_alpha,
+                    orderFunction: (a, b) => a.name.compareTo(b.name),
+                  ),
+                ],
+                textExtractor: (p0) => p0.name,
+                enableSearch: true,
+                onFiltered: (listFiltered) {
+                  setState(() {
+                    listVisualization = listFiltered.map((e) => e).toList();
+                  });
+                },
+              ),
             ),
           ],
-          textExtractor: (p0) => p0.name,
-          enableSearch: true,
-          onFiltered: (listFiltered) {
-            setState(() {
-              listVisualization = listFiltered.map((e) => e).toList();
-            });
-          },
         ),
         SizedBox(height: 16),
         Flexible(

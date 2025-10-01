@@ -24,46 +24,60 @@ class AssetImageItem extends StatelessWidget {
       onTap: () {
         visualVM.toggleVisual(isRight: isRight, visual: visual);
       },
-      child: Container(
-        width: 100,
-        height: 100,
-        decoration: BoxDecoration(
-          border: visualVM.isVisualInList(isRight: isRight, visual: visual)
-              ? Border.all(width: 4, color: AppColors.red)
-              : Border.all(width: 4, color: Colors.transparent),
-        ),
-        child: Stack(
-          children: [
-            CachedNetworkImage(imageUrl: visual.url, width: 100),
-            IconViewImageButton(imageUrl: visual.url),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ShaderMask(
-                shaderCallback: (bounds) {
-                  return LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [Colors.black.withAlpha(175), Colors.transparent],
-                  ).createShader(bounds);
-                },
-                blendMode: BlendMode.dstIn,
-                child: Container(
-                  height: 25,
-                  width: 100,
-                  color: Colors.black,
-                  child: Text(" "),
-                ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          double h = constraints.maxHeight;
+
+          bool hideDetails = h < 64;
+          return Tooltip(
+            message: (hideDetails) ? visual.name : "",
+            child: Container(
+              decoration: BoxDecoration(
+                border:
+                    visualVM.isVisualInList(isRight: isRight, visual: visual)
+                    ? Border.all(width: 2, color: AppColors.red)
+                    : Border.all(width: 2, color: Colors.transparent),
+              ),
+              child: Stack(
+                children: [
+                  CachedNetworkImage(imageUrl: visual.url),
+                  if (!hideDetails) IconViewImageButton(imageUrl: visual.url),
+                  if (!hideDetails)
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ShaderMask(
+                        shaderCallback: (bounds) {
+                          return LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [
+                              Colors.black.withAlpha(175),
+                              Colors.transparent,
+                            ],
+                          ).createShader(bounds);
+                        },
+                        blendMode: BlendMode.dstIn,
+                        child: Container(
+                          height: 25,
+                          width: 100,
+                          color: Colors.black,
+                          child: Text(" "),
+                        ),
+                      ),
+                    ),
+                  if (!hideDetails)
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Text(
+                        visual.name,
+                        style: TextStyle(fontSize: 10, color: Colors.white),
+                      ),
+                    ),
+                ],
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Text(
-                visual.name,
-                style: TextStyle(fontSize: 10, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

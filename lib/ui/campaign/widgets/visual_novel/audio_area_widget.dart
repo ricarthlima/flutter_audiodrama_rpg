@@ -64,118 +64,148 @@ class _AudioAreaWidgetState extends State<AudioAreaWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.title, style: TextStyle(fontFamily: FontFamily.bungee)),
-        GenericFilterWidget<CampaignVisual>(
-          listValues: widget.listAudios,
-          listOrderers: [
-            GenericFilterOrderer<CampaignVisual>(
-              label: "Por nome",
-              iconAscending: Icons.sort_by_alpha,
-              iconDescending: Icons.sort_by_alpha,
-              orderFunction: (a, b) => a.name.compareTo(b.name),
-            ),
-          ],
-          textExtractor: (p0) => p0.name,
-          enableSearch: true,
-          onFiltered: (listFiltered) {
-            setState(() {
-              listAudiosVisualization = listFiltered.map((e) => e).toList();
-            });
-          },
-        ),
         Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Flexible(
-              fit: FlexFit.loose,
-              child: Slider(
-                value: tempVolume,
-                min: 0,
-                max: 1,
-                onChanged: (value) {
+            Text(widget.title, style: TextStyle(fontFamily: FontFamily.bungee)),
+            SizedBox(
+              width: 150,
+              child: GenericFilterWidget<CampaignVisual>(
+                listValues: widget.listAudios,
+                listOrderers: [
+                  GenericFilterOrderer<CampaignVisual>(
+                    label: "Por nome",
+                    iconAscending: Icons.sort_by_alpha,
+                    iconDescending: Icons.sort_by_alpha,
+                    orderFunction: (a, b) => a.name.compareTo(b.name),
+                  ),
+                ],
+                textExtractor: (p0) => p0.name,
+                enableSearch: true,
+                onFiltered: (listFiltered) {
                   setState(() {
-                    tempVolume = value;
+                    listAudiosVisualization = listFiltered
+                        .map((e) => e)
+                        .toList();
                   });
                 },
-                onChangeEnd: (value) {
-                  double volume = safeVolume(value);
-                  switch (widget.type) {
-                    case AudioProviderType.music:
-                      campaignVM.campaign!.audioCampaign.musicVolume = volume;
-                      break;
-                    case AudioProviderType.ambience:
-                      campaignVM.campaign!.audioCampaign.ambienceVolume =
-                          volume;
-                      break;
-                    case AudioProviderType.sfx:
-                      campaignVM.campaign!.audioCampaign.sfxVolume = volume;
-                      break;
-                  }
-                  AudioProviderFirestore().setAudioCampaign(
-                    campaign: campaignVM.campaign!,
-                  );
-                },
               ),
-            ),
-            SizedBox(
-              width: 25,
-              child: Text((tempVolume * 100).toStringAsFixed(0)),
-            ),
-            IconButton(
-              onPressed: () {
-                audioProvider.stop(widget.type);
-                switch (widget.type) {
-                  case AudioProviderType.music:
-                    campaignVM.campaign!.audioCampaign.musicUrl = null;
-                    campaignVM.campaign!.audioCampaign.musicStarted = null;
-                    break;
-                  case AudioProviderType.ambience:
-                    campaignVM.campaign!.audioCampaign.ambienceUrl = null;
-                    campaignVM.campaign!.audioCampaign.ambienceStarted = null;
-                    break;
-                  case AudioProviderType.sfx:
-                    campaignVM.campaign!.audioCampaign.sfxUrl = null;
-                    campaignVM.campaign!.audioCampaign.sfxStarted = null;
-                    break;
-                }
-
-                AudioProviderFirestore().setAudioCampaign(
-                  campaign: campaignVM.campaign!,
-                );
-              },
-              tooltip: "Parar",
-              icon: Icon(Icons.stop, color: AppColors.red),
             ),
           ],
         ),
         Flexible(
-          child: ListView.builder(
-            padding: EdgeInsets.only(bottom: 128),
-            itemCount: listAudiosVisualization.length,
-            itemBuilder: (context, index) {
-              final music = listAudiosVisualization[index];
-              return ListTile(
-                title: Text(
-                  music.name,
-                  style: getNeedToHighlight(audioProvider, music.url)
-                      ? TextStyle(
-                          color: AppColors.red,
-                          fontWeight: FontWeight.bold,
-                        )
-                      : null,
+          child: Row(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.only(bottom: 128),
+                  itemCount: listAudiosVisualization.length,
+                  itemBuilder: (context, index) {
+                    final music = listAudiosVisualization[index];
+                    return ListTile(
+                      title: Text(
+                        music.name,
+                        style: getNeedToHighlight(audioProvider, music.url)
+                            ? TextStyle(
+                                color: AppColors.red,
+                                fontWeight: FontWeight.bold,
+                              )
+                            : null,
+                      ),
+                      leading: widget.type == AudioProviderType.music
+                          ? const Icon(Icons.music_note_rounded)
+                          : widget.type == AudioProviderType.ambience
+                          ? Icon(Icons.landscape)
+                          : Icon(Icons.speaker),
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      onTap: () {
+                        setAudio(campaignVM: campaignVM, audio: music);
+                      },
+                    );
+                  },
                 ),
-                leading: widget.type == AudioProviderType.music
-                    ? const Icon(Icons.music_note_rounded)
-                    : widget.type == AudioProviderType.ambience
-                    ? Icon(Icons.landscape)
-                    : Icon(Icons.speaker),
-                dense: true,
-                contentPadding: EdgeInsets.zero,
-                onTap: () {
-                  setAudio(campaignVM: campaignVM, audio: music);
-                },
-              );
-            },
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      audioProvider.stop(widget.type);
+                      switch (widget.type) {
+                        case AudioProviderType.music:
+                          campaignVM.campaign!.audioCampaign.musicUrl = null;
+                          campaignVM.campaign!.audioCampaign.musicStarted =
+                              null;
+                          break;
+                        case AudioProviderType.ambience:
+                          campaignVM.campaign!.audioCampaign.ambienceUrl = null;
+                          campaignVM.campaign!.audioCampaign.ambienceStarted =
+                              null;
+                          break;
+                        case AudioProviderType.sfx:
+                          campaignVM.campaign!.audioCampaign.sfxUrl = null;
+                          campaignVM.campaign!.audioCampaign.sfxStarted = null;
+                          break;
+                      }
+
+                      AudioProviderFirestore().setAudioCampaign(
+                        campaign: campaignVM.campaign!,
+                      );
+                    },
+                    child: Tooltip(
+                      message: "Parar",
+                      child: Icon(Icons.stop, color: AppColors.red),
+                    ),
+                  ),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: RotatedBox(
+                      quarterTurns: -1,
+                      child: Slider(
+                        padding: EdgeInsets.only(right: 12),
+                        value: tempVolume,
+                        min: 0,
+                        max: 1,
+                        onChanged: (value) {
+                          setState(() {
+                            tempVolume = value;
+                          });
+                        },
+                        onChangeEnd: (value) {
+                          double volume = safeVolume(value);
+                          switch (widget.type) {
+                            case AudioProviderType.music:
+                              campaignVM.campaign!.audioCampaign.musicVolume =
+                                  volume;
+                              break;
+                            case AudioProviderType.ambience:
+                              campaignVM
+                                      .campaign!
+                                      .audioCampaign
+                                      .ambienceVolume =
+                                  volume;
+                              break;
+                            case AudioProviderType.sfx:
+                              campaignVM.campaign!.audioCampaign.sfxVolume =
+                                  volume;
+                              break;
+                          }
+                          AudioProviderFirestore().setAudioCampaign(
+                            campaign: campaignVM.campaign!,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+
+                  // SizedBox(
+                  //   width: 25,
+                  //   child: Text((tempVolume * 100).toStringAsFixed(0)),
+                  // ),
+                ],
+              ),
+            ],
           ),
         ),
       ],

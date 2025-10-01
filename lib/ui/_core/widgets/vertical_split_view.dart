@@ -11,6 +11,7 @@ class VerticalSplitView extends StatefulWidget {
   final Duration animationDuration;
   final Curve animationCurve;
   final double dragSensitivity;
+  final Function(double ratio)? onChange;
 
   const VerticalSplitView({
     super.key,
@@ -23,7 +24,8 @@ class VerticalSplitView extends StatefulWidget {
     this.spacing = 0,
     this.animationDuration = const Duration(milliseconds: 120),
     this.animationCurve = Curves.easeOut,
-    this.dragSensitivity = 0.5, // 0.5 = metade da velocidade do dedo
+    this.dragSensitivity = 0.5,
+    this.onChange,
   });
 
   @override
@@ -37,6 +39,16 @@ class _VerticalSplitViewState extends State<VerticalSplitView> {
   void initState() {
     super.initState();
     ratio = widget.initialRatio.clamp(widget.minRatio, widget.maxRatio);
+  }
+
+  @override
+  void didUpdateWidget(covariant VerticalSplitView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialRatio != widget.initialRatio) {
+      setState(() {
+        ratio = widget.initialRatio.clamp(widget.minRatio, widget.maxRatio);
+      });
+    }
   }
 
   @override
@@ -68,6 +80,9 @@ class _VerticalSplitViewState extends State<VerticalSplitView> {
                 setState(() {
                   ratio = newRatio.clamp(widget.minRatio, widget.maxRatio);
                 });
+                if (widget.onChange != null) {
+                  widget.onChange!(ratio);
+                }
               },
               child: MouseRegion(
                 cursor: SystemMouseCursors.resizeUpDown,

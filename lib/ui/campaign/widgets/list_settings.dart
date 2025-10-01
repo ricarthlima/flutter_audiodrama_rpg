@@ -13,10 +13,7 @@ class ListSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     CampaignProvider campaignPV = Provider.of<CampaignProvider>(context);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: 16,
+    return Column(
       children: [
         Row(
           spacing: 16,
@@ -74,6 +71,7 @@ class ListSettings extends StatelessWidget {
             ),
           ],
         ),
+        Divider(),
       ],
     );
   }
