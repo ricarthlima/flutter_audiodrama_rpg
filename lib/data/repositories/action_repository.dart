@@ -1,3 +1,5 @@
+import 'package:flutter_rpg_audiodrama/_core/helpers/important_actions.dart';
+
 import '../../domain/dto/action_template.dart';
 import '../../domain/dto/list_action.dart';
 import '../../domain/models/action_value.dart';
@@ -39,7 +41,7 @@ abstract class ActionRepository {
   }
 
   bool isLuckAction(String id) {
-    return id == "e025515c-ecd7-11ef-9cd2-0242ac120002";
+    return id == ImportantActions.luck;
   }
 
   List<ActionTemplate> getListActionsFromActionValues({

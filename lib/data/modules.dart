@@ -17,7 +17,13 @@ class Module {
     description: "Ativar os Mapas de Batalha, grids e tokens.",
   );
 
-  static List<Module> get all => [magic, grid];
+  static Module get combat => Module(
+    id: "COMBAT",
+    name: "Combate avançado",
+    description: "Ativar iniciativa, ordem de turnos e dano ao corpo.",
+  );
+
+  static List<Module> get all => [magic, grid, combat];
 }
 
 const String energySpellModuleSCC = "ENERGY_SPELL_MODULE_SCC";

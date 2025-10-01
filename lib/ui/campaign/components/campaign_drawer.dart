@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_fullscreen/flutter_fullscreen.dart';
+import 'package:flutter_rpg_audiodrama/data/modules.dart';
 import 'package:provider/provider.dart';
 
 import '../../../_core/providers/audio_provider.dart';
@@ -183,18 +184,19 @@ class CampaignDrawer extends StatelessWidget {
                     campaignVM.isDrawerClosed = true;
                   },
                 ),
-                CompactableButton(
-                  controller: CompactableButtonController(
-                    isCompressed: campaignVM.isDrawerClosed,
-                    isSelected: campaignVM.currentTab == CampaignTabs.turns,
+                if (campaignVM.isModuleActive(Module.combat.id))
+                  CompactableButton(
+                    controller: CompactableButtonController(
+                      isCompressed: campaignVM.isDrawerClosed,
+                      isSelected: campaignVM.currentTab == CampaignTabs.turns,
+                    ),
+                    title: "Turnos",
+                    leadingIcon: Icons.access_time,
+                    onPressed: () {
+                      campaignVM.currentTab = CampaignTabs.turns;
+                      campaignVM.isDrawerClosed = true;
+                    },
                   ),
-                  title: "Turnos",
-                  leadingIcon: Icons.access_time,
-                  onPressed: () {
-                    campaignVM.currentTab = CampaignTabs.turns;
-                    campaignVM.isDrawerClosed = true;
-                  },
-                ),
                 CompactableButton(
                   controller: CompactableButtonController(
                     isCompressed: campaignVM.isDrawerClosed,

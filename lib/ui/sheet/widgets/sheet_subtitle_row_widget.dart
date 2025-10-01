@@ -250,7 +250,12 @@ class SheetSubtitleRowWidget extends StatelessWidget {
         ),
       ),
       NamedWidget(
-        isVisible: !sheetVM.isEditing,
+        isVisible:
+            !sheetVM.isEditing &&
+            sheetVM.isModuleActive(
+              moduleId: Module.combat.id,
+              campaign: campaign,
+            ),
         hardHeight: 50,
         padding: EdgeInsets.symmetric(horizontal: 16),
         title: "Dados de Corpo",

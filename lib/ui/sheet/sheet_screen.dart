@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rpg_audiodrama/_core/helpers/important_actions.dart';
+import 'package:flutter_rpg_audiodrama/data/modules.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -346,24 +347,28 @@ class _SheetScreenState extends State<SheetScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             spacing: 4,
             children: [
-              InkWell(
-                onTap: () {
-                  _rollInitiative();
-                },
-                onLongPress: () {
-                  _rollInitiative(isVisible: false);
-                },
-                child: SizedBox(
-                  height: 32,
-                  child: Tooltip(
-                    message: "Rolar iniciativa",
-                    child: Image.asset(
-                      "assets/images/d20.png",
-                      color: AppColors.red,
+              if (sheetVM.isModuleActive(
+                moduleId: Module.combat.id,
+                campaign: campaign,
+              ))
+                InkWell(
+                  onTap: () {
+                    _rollInitiative();
+                  },
+                  onLongPress: () {
+                    _rollInitiative(isVisible: false);
+                  },
+                  child: SizedBox(
+                    height: 32,
+                    child: Tooltip(
+                      message: "Rolar iniciativa",
+                      child: Image.asset(
+                        "assets/images/d20.png",
+                        color: AppColors.red,
+                      ),
                     ),
                   ),
                 ),
-              ),
               if (sheetVM.sheet!.ownerId ==
                   FirebaseAuth.instance.currentUser!.uid)
                 Tooltip(

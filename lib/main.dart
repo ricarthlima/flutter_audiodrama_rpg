@@ -98,7 +98,13 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(
+          create: (_) => UserProvider(
+            campaignProvider: campaignVM,
+            visualNovelProvider: campaignVisualVM,
+            audioProvider: audioProvider,
+          ),
+        ),
         ChangeNotifierProvider(create: (_) => settingsProvider),
         ChangeNotifierProvider(create: (_) => homeVM),
         ChangeNotifierProvider(create: (_) => sheetVM),

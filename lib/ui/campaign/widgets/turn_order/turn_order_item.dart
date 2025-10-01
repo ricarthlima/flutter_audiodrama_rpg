@@ -12,7 +12,12 @@ import '../../../../domain/models/sheet_model.dart';
 
 class TurnOrderItem extends StatelessWidget {
   final SheetTurnOrder sheetOrder;
-  const TurnOrderItem({super.key, required this.sheetOrder});
+  final int index;
+  const TurnOrderItem({
+    super.key,
+    required this.sheetOrder,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,72 +36,91 @@ class TurnOrderItem extends StatelessWidget {
 
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
-    bool canEdit = campaignVM.isOwner || sheet.id == uid;
+    bool canEdit = campaignVM.isOwner || sheet.ownerId == uid;
 
-    return Opacity(
-      opacity: sheetOrder.isVisible ? 1 : 0.5,
-      child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        leading: SizedBox(
-          width: 40,
-          height: 40,
-          child: (sheet.imageUrl != null)
-              ? Image.network(sheet.imageUrl!)
-              : Icon(Icons.person, size: 40),
+    return Visibility(
+      visible: sheetOrder.isVisible || canEdit,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: 1,
+            color: campaignVM.campaign!.campaignTurnOrder.sheetTurn == index
+                ? AppColors.red
+                : Colors.transparent,
+          ),
         ),
-        title: Text(sheet.characterName),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 8,
-          children: [
-            (canEdit)
-                ? IntrinsicWidth(
-                    stepWidth: 32,
-                    child: TextFormField(
-                      controller: TextEditingController(
-                        text: sheetOrder.orderValue.toString(),
+        child: Opacity(
+          opacity: sheetOrder.isVisible ? 1 : 0.5,
+          child: ListTile(
+            leading: SizedBox(
+              width: 40,
+              height: 40,
+              child: (sheet.imageUrl != null)
+                  ? Image.network(sheet.imageUrl!)
+                  : Icon(Icons.person, size: 40),
+            ),
+            title: Text(sheet.characterName),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 8,
+              children: [
+                (canEdit)
+                    ? IntrinsicWidth(
+                        stepWidth: 32,
+                        child: TextFormField(
+                          controller: TextEditingController(
+                            text: sheetOrder.orderValue.toString(),
+                          ),
+                          textAlign: TextAlign.end,
+                          decoration: InputDecoration(border: InputBorder.none),
+                          style: TextStyle(fontFamily: FontFamily.bungee),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          onFieldSubmitted: (value) {
+                            campaignVM.changeTurnValue(
+                              sheetId: sheetOrder.sheetId,
+                              orderValue: int.parse(value),
+                            );
+                          },
+                        ),
+                      )
+                    : Text(
+                        sheetOrder.orderValue.toString(),
+                        style: TextStyle(
+                          fontFamily: FontFamily.bungee,
+                          fontSize: 18,
+                        ),
                       ),
-                      textAlign: TextAlign.end,
-                      decoration: InputDecoration(border: InputBorder.none),
-                      style: TextStyle(fontFamily: FontFamily.bungee),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      onFieldSubmitted: (value) {
-                        campaignVM.changeTurnValue(
-                          sheetId: sheetOrder.sheetId,
-                          orderValue: int.parse(value),
-                        );
-                      },
+                if (canEdit)
+                  IconButton(
+                    onPressed: () {
+                      campaignVM.toggleTurnVisibility(
+                        sheetId: sheetOrder.sheetId,
+                      );
+                    },
+                    padding: EdgeInsets.zero,
+                    tooltip: "Mudar visibilidade",
+                    icon: Icon(
+                      sheetOrder.isVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
-                  )
-                : Text(
-                    sheetOrder.orderValue.toString(),
-                    style: TextStyle(fontFamily: FontFamily.bungee),
                   ),
-            if (canEdit)
-              IconButton(
-                onPressed: () {
-                  campaignVM.toggleTurnVisibility(sheetId: sheetOrder.sheetId);
-                },
-                padding: EdgeInsets.zero,
-                tooltip: "Mudar visibilidade",
-                icon: Icon(
-                  sheetOrder.isVisible
-                      ? Icons.visibility
-                      : Icons.visibility_off,
-                ),
-              ),
-            if (canEdit)
-              IconButton(
-                onPressed: () {
-                  campaignVM.removeFromTurn(sheetOrder.sheetId);
-                },
-                padding: EdgeInsets.zero,
-                tooltip: "Remover da lista",
-                icon: Icon(Icons.delete, color: AppColors.red),
-              ),
-          ],
+                if (canEdit)
+                  IconButton(
+                    onPressed: () {
+                      campaignVM.removeFromTurn(sheetOrder.sheetId);
+                    },
+                    padding: EdgeInsets.zero,
+                    tooltip: "Remover da lista",
+                    icon: Icon(Icons.delete, color: AppColors.red),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );

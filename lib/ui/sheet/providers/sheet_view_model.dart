@@ -423,6 +423,16 @@ class SheetViewModel extends ChangeNotifier {
     scheduleSave();
   }
 
+  bool isModuleActive({required String moduleId, Campaign? campaign}) {
+    if (campaign == null) {
+      return sheet!.listActiveModules.contains(moduleId);
+    } else {
+      return campaign.campaignSheetSettings.listActiveModuleIds.contains(
+        moduleId,
+      );
+    }
+  }
+
   void saveActionLore({
     required String actionId,
     required String loreText,

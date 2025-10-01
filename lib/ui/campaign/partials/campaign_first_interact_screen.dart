@@ -76,10 +76,7 @@ class _CampaignFirstInteractScreenState
                         isLoading = true;
                       });
                       campaignVM.hasInteracted = true;
-                      userProvider.playCampaignAudios(
-                        campaignVM.campaign!,
-                        context,
-                      );
+                      userProvider.playCampaignAudios(campaignVM.campaign!);
                     },
                     child: Text("Entrar na campanha"),
                   ),

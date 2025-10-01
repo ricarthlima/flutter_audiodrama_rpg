@@ -110,7 +110,6 @@ class AppRouter {
 
           return FutureBuilder(
             future: context.read<UserProvider>().initializeCampaign(
-              context: context,
               campaignId: id,
             ),
             builder: (context, snapshot) {

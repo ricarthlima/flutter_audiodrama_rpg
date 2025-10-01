@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rpg_audiodrama/ui/_core/app_colors.dart';
 import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/turn_order/turn_order_item.dart';
@@ -50,20 +49,7 @@ class CampaignDrawerTurnOrder extends StatelessWidget {
                     .campaign!
                     .campaignTurnOrder
                     .listSheetOrders[index];
-                return Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 1,
-                      color:
-                          campaignVM.campaign!.campaignTurnOrder.sheetTurn ==
-                              index
-                          ? AppColors.red
-                          : Colors.transparent,
-                    ),
-                  ),
-                  child: TurnOrderItem(sheetOrder: sheetOrder),
-                );
+                return TurnOrderItem(sheetOrder: sheetOrder, index: index);
               },
             ),
           ),
@@ -79,22 +65,24 @@ class CampaignDrawerTurnOrder extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 8,
               children: [
-                InkWell(
-                  onTap: () {
-                    campaignVM.removeTurn();
-                  },
-                  child: Icon(Icons.remove),
-                ),
+                if (campaignVM.isOwner)
+                  InkWell(
+                    onTap: () {
+                      campaignVM.removeTurn();
+                    },
+                    child: Icon(Icons.remove),
+                  ),
                 Text(
                   campaignVM.campaign!.campaignTurnOrder.turn.toString(),
                   style: TextStyle(fontFamily: FontFamily.bungee, fontSize: 18),
                 ),
-                InkWell(
-                  onTap: () {
-                    campaignVM.addTurn();
-                  },
-                  child: Icon(Icons.add),
-                ),
+                if (campaignVM.isOwner)
+                  InkWell(
+                    onTap: () {
+                      campaignVM.addTurn();
+                    },
+                    child: Icon(Icons.add),
+                  ),
               ],
             ),
             Opacity(

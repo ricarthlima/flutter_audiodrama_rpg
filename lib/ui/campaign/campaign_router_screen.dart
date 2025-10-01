@@ -24,7 +24,7 @@ class _CampaignRouterScreenState extends State<CampaignRouterScreen> {
       Provider.of<UserProvider>(
         context,
         listen: false,
-      ).playCampaignAudios(campaignVM.campaign!, context);
+      ).playCampaignAudios(campaignVM.campaign!);
     });
 
     super.initState();

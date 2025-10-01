@@ -42,8 +42,33 @@ class CampaignProvider extends ChangeNotifier {
 
   StreamSubscription? sheetsSub;
 
+  void loadingStart() {
+    isLoading = true;
+    notifyListeners();
+  }
+
+  void loadingStop() {
+    isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> startCampaign(Campaign campaign) async {
+    loadingStart();
+
+    removeTrash();
+    this.campaign = campaign;
+    nameController.text = campaign.name ?? "";
+    descController.text = campaign.description ?? "";
+    notificationCount = 0;
+
+    await _verifyNewAchievement();
+    await getSheetsByCampaign();
+    loadingStop();
+  }
+
   Future<void> updateCampaign(Campaign campaign) async {
     isLoading = true;
+    notifyListeners();
 
     if (this.campaign != null && this.campaign!.id != campaign.id) {
       removeTrash();
@@ -59,6 +84,7 @@ class CampaignProvider extends ChangeNotifier {
     await getSheetsByCampaign();
 
     isLoading = false;
+    notifyListeners();
   }
 
   void removeTrash() async {
@@ -100,7 +126,7 @@ class CampaignProvider extends ChangeNotifier {
     if (campaign != null) {
       campaign!.name = nameController.text;
       campaign!.description = descController.text;
-      // CampaignService.instance.saveCampaign(campaign!);
+      CampaignService.instance.saveCampaign(campaign!);
     }
   }
 
@@ -587,6 +613,10 @@ class CampaignProvider extends ChangeNotifier {
       return b.orderValue.compareTo(a.orderValue);
     });
     notifyListeners();
+  }
+
+  bool isModuleActive(String id) {
+    return campaign!.campaignSheetSettings.listActiveModuleIds.contains(id);
   }
 }
 

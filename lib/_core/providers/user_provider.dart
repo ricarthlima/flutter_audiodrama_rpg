@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:provider/provider.dart';
 
 import '../../data/services/auth_service.dart';
 import '../../data/services/campaign_service.dart';
@@ -17,6 +15,16 @@ import '../../ui/campaign/view/campaign_visual_novel_view_model.dart';
 import 'audio_provider.dart';
 
 class UserProvider extends ChangeNotifier {
+  final CampaignProvider campaignProvider;
+  final CampaignVisualNovelViewModel visualNovelProvider;
+  final AudioProvider audioProvider;
+
+  UserProvider({
+    required this.campaignProvider,
+    required this.visualNovelProvider,
+    required this.audioProvider,
+  });
+
   List<Sheet> listSheets = [];
   List<Campaign> listCampaigns = [];
   List<Campaign> listCampaignsInvited = [];
@@ -151,83 +159,65 @@ class UserProvider extends ChangeNotifier {
 
   String? lastCampaignId;
 
-  Future<void> initializeCampaign({
-    required BuildContext context,
-    required String campaignId,
-  }) async {
+  Future<void> initializeCampaign({required String campaignId}) async {
     if (campaignId != lastCampaignId) {
       lastCampaignId = campaignId;
-      context.read<CampaignProvider>().removeTrash();
+      campaignProvider.removeTrash();
     }
-
-    await _streamCurrentCampaign?.cancel();
-
-    final completer = Completer<void>();
-
     _streamCurrentCampaign = CampaignService.instance
         .getCampaignStreamById(campaignId)
         .listen((DocumentSnapshot<Map<String, dynamic>> snapshot) {
-          if (snapshot.exists) {
-            if (snapshot.data() != null) {
-              Campaign campaign = Campaign.fromMap(snapshot.data()!);
-              if (context.mounted) {
-                SchedulerBinding.instance.addPostFrameCallback((_) {
-                  context.read<CampaignProvider>().updateCampaign(campaign);
-                  context.read<CampaignProvider>().activatePresence();
+          if (snapshot.exists && snapshot.data() != null) {
+            Campaign campaign = Campaign.fromMap(snapshot.data()!);
+            campaignProvider.loadingStart();
+            campaignProvider.updateCampaign(campaign);
+            campaignProvider.activatePresence();
 
-                  context.read<CampaignVisualNovelViewModel>().campaignId =
-                      campaignId;
-                  context.read<CampaignVisualNovelViewModel>().data =
-                      campaign.visualData;
+            visualNovelProvider.campaignId = campaignId;
+            visualNovelProvider.data = campaign.visualData;
 
-                  if (context.read<CampaignProvider>().hasInteracted) {
-                    playCampaignAudios(campaign, context);
-                  }
-                  completer.complete();
-                });
-              }
+            if (campaignProvider.hasInteracted) {
+              playCampaignAudios(campaign);
             }
           }
         });
-
-    return completer.future;
   }
 
-  void playCampaignAudios(Campaign campaign, BuildContext context) {
+  void playCampaignAudios(Campaign campaign) {
     if (campaign.audioCampaign.ambienceUrl != null) {
-      context.read<AudioProvider>().setAndPlay(
+      audioProvider.setAndPlay(
         type: AudioProviderType.ambience,
         url: campaign.audioCampaign.ambienceUrl!,
         volume: campaign.audioCampaign.ambienceVolume ?? 1,
         timeStarted: campaign.audioCampaign.ambienceStarted ?? DateTime.now(),
       );
     } else {
-      context.read<AudioProvider>().stop(AudioProviderType.ambience);
+      audioProvider.stop(AudioProviderType.ambience);
     }
 
     if (campaign.audioCampaign.musicUrl != null) {
-      context.read<AudioProvider>().setAndPlay(
+      audioProvider.setAndPlay(
         type: AudioProviderType.music,
         url: campaign.audioCampaign.musicUrl!,
         volume: campaign.audioCampaign.musicVolume ?? 1,
         timeStarted: campaign.audioCampaign.musicStarted ?? DateTime.now(),
       );
     } else {
-      context.read<AudioProvider>().stop(AudioProviderType.music);
+      audioProvider.stop(AudioProviderType.music);
     }
 
     if (campaign.audioCampaign.sfxUrl != null &&
         campaign.audioCampaign.sfxStarted != null &&
         campaign.audioCampaign.sfxStarted!.difference(DateTime.now()) <=
             Duration(seconds: 5)) {
-      context.read<AudioProvider>().setAndPlay(
+      audioProvider.setAndPlay(
         type: AudioProviderType.sfx,
         url: campaign.audioCampaign.sfxUrl!,
         volume: campaign.audioCampaign.sfxVolume ?? 1,
         timeStarted: campaign.audioCampaign.sfxStarted,
       );
     } else {
-      context.read<AudioProvider>().stop(AudioProviderType.sfx);
+      audioProvider.stop(AudioProviderType.sfx);
     }
   }
 

@@ -119,7 +119,7 @@ class CampaignSheetItem extends StatelessWidget {
               campaignVM.rollInitiative(sheet: sheet, isVisible: false);
             },
             tooltip: "Rolar Iniciativa",
-            icon: Image.asset("assets/images/d20.png"),
+            icon: Image.asset("assets/images/d20.png", color: AppColors.red),
           ),
           PopupMenuButton<_SheetMenuOptions>(
             onSelected: (_SheetMenuOptions value) {
