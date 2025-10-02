@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_owner_preview.dart';
 import 'package:flutter_rpg_audiodrama/ui/settings/view/settings_provider.dart';
 import '../_core/dimensions.dart';
 import '../_core/widgets/vertical_split_view.dart';
@@ -31,7 +32,6 @@ class _CampaignOwnerSubScreenState extends State<CampaignOwnerSubScreen> {
       settings.getVerticalSplitRatio().then((ratio) {
         setState(() {
           verticalRatio = ratio;
-          print(verticalRatio);
         });
       });
     });
@@ -59,28 +59,33 @@ class _CampaignOwnerSubScreenState extends State<CampaignOwnerSubScreen> {
           spacing: 8,
           children: [
             ListSettings(),
-            Expanded(
-              child: VerticalSplitView(
-                initialRatio: verticalRatio,
-                minRatio: 0.2,
-                maxRatio: 0.9,
-                dividerThickness: 4,
-                spacing: 10,
-                dragSensitivity: 10,
-                onChange: (ratio) {
-                  context.read<SettingsProvider>().setVerticalSplitRatio(ratio);
-                },
-                top: switch (campaignVM.campaignScene) {
-                  CampaignScenes.visual => CampaignOwnerVisualNovelSection(
-                    visualVM: visualVM,
-                  ),
-                  CampaignScenes.grid => CampaignGridOwner(),
-                  CampaignScenes.cutscenes => Placeholder(),
-                },
 
-                bottom: AmbienceAssetsSection(),
-              ),
-            ),
+            (campaignVM.campaignScene == CampaignScenes.preview)
+                ? Expanded(child: CampaignOwnerPreview())
+                : Expanded(
+                    child: VerticalSplitView(
+                      initialRatio: verticalRatio,
+                      minRatio: 0.2,
+                      maxRatio: 0.9,
+                      dividerThickness: 4,
+                      spacing: 10,
+                      dragSensitivity: 10,
+                      onChange: (ratio) {
+                        context.read<SettingsProvider>().setVerticalSplitRatio(
+                          ratio,
+                        );
+                      },
+                      top: switch (campaignVM.campaignScene) {
+                        CampaignScenes.preview => Placeholder(),
+                        CampaignScenes.visual =>
+                          CampaignOwnerVisualNovelSection(),
+                        CampaignScenes.grid => CampaignGridOwner(),
+                        CampaignScenes.cutscenes => Placeholder(),
+                      },
+
+                      bottom: AmbienceAssetsSection(),
+                    ),
+                  ),
           ],
         ),
       ),

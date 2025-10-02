@@ -618,6 +618,13 @@ class CampaignProvider extends ChangeNotifier {
   bool isModuleActive(String id) {
     return campaign!.campaignSheetSettings.listActiveModuleIds.contains(id);
   }
+
+  bool _isPreviewVisible = false;
+  bool get isPreviewVisible => _isPreviewVisible;
+  set isPreviewVisible(bool value) {
+    _isPreviewVisible = value;
+    notifyListeners();
+  }
 }
 
 class SheetAppUser {

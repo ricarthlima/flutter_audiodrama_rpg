@@ -1,1 +1,1 @@
-enum CampaignScenes { visual, grid, cutscenes }
+enum CampaignScenes { preview, visual, grid, cutscenes }

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/campaign_guest_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -120,6 +121,25 @@ class AppRouter {
             },
           );
         },
+        routes: [
+          GoRoute(
+            path: "preview",
+            builder: (context, state) {
+              String id = state.pathParameters["campaignId"] ?? "";
+              return FutureBuilder(
+                future: context.read<UserProvider>().initializeCampaign(
+                  campaignId: id,
+                ),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return ScaffoldCenterCPI();
+                  }
+                  return CampaignGuestScreen(isPreview: true);
+                },
+              );
+            },
+          ),
+        ],
       ),
     ],
   );

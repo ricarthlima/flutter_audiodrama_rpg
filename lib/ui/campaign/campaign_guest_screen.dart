@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/router.dart';
+import 'package:go_router/go_router.dart';
 import 'view/campaign_visual_novel_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -64,8 +66,29 @@ class _CampaignGuestScreenState extends State<CampaignGuestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    CampaignVisualNovelViewModel visualVM =
-        Provider.of<CampaignVisualNovelViewModel>(context);
+    final campaignVM = context.watch<CampaignProvider>();
+    final visualVM = context.watch<CampaignVisualNovelViewModel>();
+
+    if (!campaignVM.isOwnerOrInvited) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 8,
+            children: [
+              Text("Campanha não encontrada."),
+              ElevatedButton(
+                onPressed: () {
+                  context.go(AppRouter.home);
+                },
+                child: Text("Voltar"),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return InteractiveViewer(
       transformationController:
           (!visualVM.data.allowPan && !visualVM.data.allowZoom)

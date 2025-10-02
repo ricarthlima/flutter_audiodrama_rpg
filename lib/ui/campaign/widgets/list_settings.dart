@@ -19,13 +19,30 @@ class ListSettings extends StatelessWidget {
           spacing: 16,
           children: [
             InkWell(
+              onTap: campaignPV.campaignScene != CampaignScenes.preview
+                  ? () {
+                      campaignPV.campaignScene = CampaignScenes.preview;
+                    }
+                  : null,
+              child: Text(
+                "Visualização",
+                style: TextStyle(
+                  color: (campaignPV.campaignScene == CampaignScenes.preview)
+                      ? AppColors.red
+                      : AppColors.googleAuthBorderLight,
+                  fontFamily: FontFamily.bungee,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            InkWell(
               onTap: campaignPV.campaignScene != CampaignScenes.visual
                   ? () {
                       campaignPV.campaignScene = CampaignScenes.visual;
                     }
                   : null,
               child: Text(
-                "Mesa de Ambientação",
+                "Ambientação",
                 style: TextStyle(
                   color: (campaignPV.campaignScene == CampaignScenes.visual)
                       ? AppColors.red

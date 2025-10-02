@@ -17,14 +17,10 @@ class _CampaignRouterScreenState extends State<CampaignRouterScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      CampaignProvider campaignVM = Provider.of<CampaignProvider>(
-        context,
-        listen: false,
-      );
-      Provider.of<UserProvider>(
-        context,
-        listen: false,
-      ).playCampaignAudios(campaignVM.campaign!);
+      final campaignVM = context.watch<CampaignProvider>();
+      final userProvider = context.watch<UserProvider>();
+
+      userProvider.playCampaignAudios(campaignVM.campaign!);
     });
 
     super.initState();

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/campaign_guest_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/providers/user_provider.dart';
@@ -161,6 +162,14 @@ class _CampaignScreenState extends State<CampaignScreen> {
             );
           },
         ),
+        if (campaignVM.isOwner && campaignVM.isPreviewVisible)
+          MovableExpandableScreen(
+            title: "Visualização",
+            onExit: () {
+              campaignVM.isPreviewVisible = false;
+            },
+            child: CampaignGuestScreen(),
+          ),
       ],
     );
   }

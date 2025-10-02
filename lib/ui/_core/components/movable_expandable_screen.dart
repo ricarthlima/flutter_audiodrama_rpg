@@ -9,15 +9,13 @@ class MovableExpandableScreen extends StatefulWidget {
   final double minScale;
   final double maxScale;
   final Function? onPopup;
-  final Function? onExit;
+  final Function()? onExit;
 
   final double? width;
   final double? height;
 
   const MovableExpandableScreen({
     super.key,
-    required this.child,
-    required this.title,
     this.initialScale = 0.5,
     this.minScale = 0.5,
     this.maxScale = 3.0,
@@ -25,6 +23,8 @@ class MovableExpandableScreen extends StatefulWidget {
     this.onExit,
     this.width,
     this.height,
+    required this.title,
+    required this.child,
   });
 
   @override

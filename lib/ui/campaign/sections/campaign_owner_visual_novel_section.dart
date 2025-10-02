@@ -1,4 +1,9 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../_core/dimensions.dart';
 import '../view/campaign_visual_novel_view_model.dart';
 import '../widgets/visual_novel/character_area_widget.dart';
@@ -7,12 +12,13 @@ import '../campaign_guest_screen.dart';
 import '../widgets/visual_novel/image_area_widget.dart';
 
 class CampaignOwnerVisualNovelSection extends StatelessWidget {
-  const CampaignOwnerVisualNovelSection({super.key, required this.visualVM});
-
-  final CampaignVisualNovelViewModel visualVM;
+  const CampaignOwnerVisualNovelSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final campaignVM = context.watch<CampaignProvider>();
+    final visualVM = context.watch<CampaignVisualNovelViewModel>();
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       spacing: 8,
