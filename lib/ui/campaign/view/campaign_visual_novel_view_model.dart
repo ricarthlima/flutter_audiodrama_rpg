@@ -134,17 +134,21 @@ class CampaignVisualNovelViewModel extends ChangeNotifier {
   void clearFromLeft() {
     data.listLeftActive.clear();
     notifyListeners();
+    onSave();
   }
 
   void clearFromRight() {
     data.listRightActive.clear();
     notifyListeners();
+    onSave();
   }
 
   void clearAll() {
     data.listLeftActive.clear();
     data.listRightActive.clear();
     data.backgroundActive = null;
+    notifyListeners();
+    onSave();
   }
 
   void replaceBackground(CampaignVisual campaignVisual) {

@@ -21,6 +21,9 @@ class BattleMap {
   double gridOpacity;
   Color gridColor;
 
+  bool clearLeft;
+  bool clearRight;
+
   BattleMap({
     required this.id,
     required this.name,
@@ -33,6 +36,8 @@ class BattleMap {
     required this.listTokens,
     required this.gridOpacity,
     required this.gridColor,
+    this.clearLeft = true,
+    this.clearRight = true,
   });
 
   BattleMap copyWith({
@@ -47,6 +52,8 @@ class BattleMap {
     List<Token>? listTokens,
     double? gridOpacity,
     Color? gridColor,
+    bool? clearLeft,
+    bool? clearRight,
   }) {
     return BattleMap(
       id: id ?? this.id,
@@ -60,6 +67,8 @@ class BattleMap {
       listTokens: listTokens ?? this.listTokens,
       gridOpacity: gridOpacity ?? this.gridOpacity,
       gridColor: gridColor ?? this.gridColor,
+      clearLeft: clearLeft ?? this.clearLeft,
+      clearRight: clearRight ?? this.clearRight,
     );
   }
 
@@ -76,6 +85,8 @@ class BattleMap {
       'listTokens': listTokens.map((x) => x.toMap()).toList(),
       'gridOpacity': gridOpacity,
       'gridColor': gridColor.toARGB32(),
+      'clearLeft': clearLeft,
+      'clearRight': clearRight,
     };
   }
 
@@ -98,6 +109,8 @@ class BattleMap {
       gridColor: map['gridColor'] != null
           ? Color(map['gridColor'])
           : Colors.white,
+      clearLeft: map['clearLeft'] ?? true,
+      clearRight: map['clearRight'] ?? true,
     );
   }
 

@@ -205,38 +205,83 @@ class _CampaignBattleMapGridViewerState
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 300,
-                  child: ExpansibleList(
-                    title: "Configurações",
-                    startClosed: true,
-                    child: Container(
-                      color: Colors.black.withAlpha(200),
-                      padding: const EdgeInsets.all(8),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            NamedWidget(
-                              title: "Opacidade do grid",
-                              isLeft: true,
-                              child: Slider(
-                                value: battleMap.gridOpacity,
-                                min: 0,
-                                max: 1,
-                                padding: EdgeInsets.zero,
-                                onChanged: (double value) {
-                                  battleMap.gridOpacity = value;
-                                  battleMapProvider.onUpdate(battleMap);
-                                },
-                              ),
+                Builder(
+                  builder: (context) {
+                    double boxWidth = 300;
+                    double padding = 8;
+                    double width = boxWidth - (padding * 2);
+
+                    return SizedBox(
+                      width: boxWidth,
+                      child: ExpansibleList(
+                        title: "Configurações",
+                        startClosed: true,
+                        child: Container(
+                          color: Colors.black.withAlpha(200),
+                          padding: EdgeInsets.all(padding),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                NamedWidget(
+                                  title: "Opacidade do grid",
+                                  isLeft: true,
+                                  child: Slider(
+                                    value: battleMap.gridOpacity,
+                                    min: 0,
+                                    max: 1,
+                                    padding: EdgeInsets.zero,
+                                    onChanged: (double value) {
+                                      battleMap.gridOpacity = value;
+                                      battleMapProvider.onUpdate(battleMap);
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: width,
+
+                                  child: CheckboxListTile(
+                                    title: Text(
+                                      "Limpar personagens da esquerda",
+                                    ),
+                                    dense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                    controlAffinity:
+                                        ListTileControlAffinity.leading,
+                                    value: battleMap.clearLeft,
+                                    onChanged: (value) {
+                                      battleMap.clearLeft =
+                                          !battleMap.clearLeft;
+                                      battleMapProvider.onUpdate(battleMap);
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: width,
+                                  child: CheckboxListTile(
+                                    title: Text(
+                                      "Limpar personagens da direita",
+                                    ),
+                                    dense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                    controlAffinity:
+                                        ListTileControlAffinity.leading,
+                                    value: battleMap.clearRight,
+                                    onChanged: (value) {
+                                      battleMap.clearRight =
+                                          !battleMap.clearRight;
+                                      battleMapProvider.onUpdate(battleMap);
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ],
             ),

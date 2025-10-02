@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_visual_novel_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/app_colors.dart';
@@ -15,6 +16,7 @@ class CampaignBattleMapListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final campaignProvider = context.watch<CampaignProvider>();
+    final visualVM = context.watch<CampaignVisualNovelViewModel>();
     final battleMapProvider = context.watch<CampaignOwnerBattleMapProvider>();
 
     bool isGlobalActive =
@@ -34,7 +36,7 @@ class CampaignBattleMapListItem extends StatelessWidget {
           battleMapProvider.onInitialize(battleMap);
         },
         onLongPress: () {
-          _toggleActive(campaignProvider);
+          _toggleActive(campaignProvider, visualVM);
         },
         contentPadding: EdgeInsets.zero,
         leading: AspectRatio(
@@ -48,7 +50,7 @@ class CampaignBattleMapListItem extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {
-                _toggleActive(campaignProvider);
+                _toggleActive(campaignProvider, visualVM);
               },
               icon: Icon((isGlobalActive) ? Icons.stop : Icons.play_arrow),
             ),
@@ -71,11 +73,20 @@ class CampaignBattleMapListItem extends StatelessWidget {
     );
   }
 
-  void _toggleActive(CampaignProvider campaignProvider) {
+  void _toggleActive(
+    CampaignProvider campaignProvider,
+    CampaignVisualNovelViewModel visualVM,
+  ) {
     if (campaignProvider.campaign!.activeBattleMapId == battleMap.id) {
       campaignProvider.deactivateGlobalBattleMap();
     } else {
       campaignProvider.activeGlobalBattleMap(battleMap);
+      if (battleMap.clearLeft) {
+        visualVM.clearFromLeft();
+      }
+      if (battleMap.clearRight) {
+        visualVM.clearFromRight();
+      }
     }
   }
 }
