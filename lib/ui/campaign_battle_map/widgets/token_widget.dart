@@ -1,55 +1,48 @@
 // ignore_for_file: unused_element
 
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import '../controllers/battle_map_controller.dart';
 import '../models/token.dart';
 
-/// Recebe um token e mostra-o. Deverá ser usado sobre o grid;
-/// Deverá ser arrastável, e quando arrastado, mudar de posição no grid;
-/// Deverá ser redimensionável, e ao redimensionar, aumentar/diminuir no grid;
+/// Widget do token, arrastável com ancoragem no PONTEIRO
+/// e sem "fantasma" bloqueando o DropTarget.
 class TokenWidget extends StatelessWidget {
   final Token token;
   final Size sizeInGrid;
   const TokenWidget({super.key, required this.token, required this.sizeInGrid});
 
+  // TokenWidget (apenas o build)
   @override
   Widget build(BuildContext context) {
+    final double scale = context
+        .read<CampaignOwnerBattleMapProvider>()
+        .gridTrans
+        .value
+        .getMaxScaleOnAxis();
     return Draggable<Token>(
       data: token,
-      feedback: Material(child: _buildImage()),
+      dragAnchorStrategy: pointerDragAnchorStrategy,
+      childWhenDragging: const SizedBox.shrink(),
+      feedback: Transform.scale(
+        scale: scale,
+        alignment: Alignment.center,
+        child: Material(type: MaterialType.transparency, child: _buildImage()),
+      ),
       child: _buildImage(),
     );
   }
 
-  Container _buildImage() {
+  Widget _buildImage() {
     return Container(
-      color: Colors.black.withAlpha(100),
-      alignment: Alignment.center,
       width: sizeInGrid.width,
       height: sizeInGrid.height,
-      child: Stack(
-        children: [
-          Transform.rotate(
-            angle: token.rotationDeg * pi / 180.0,
-            child: Image.network(token.imageUrl, fit: BoxFit.contain),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: ColoredBox(
-              color: Colors.black,
-              child: Text(
-                "${token.position.x.floor()}:${token.position.y.floor()}\n${token.size.width.floor()}x${token.size.height.floor()}",
-              ),
-            ),
-          ),
-        ],
+      alignment: Alignment.center,
+      child: Transform.rotate(
+        angle: token.rotationDeg * pi / 180.0,
+        child: Image.network(token.imageUrl, fit: BoxFit.contain),
       ),
     );
-  }
-
-  void _showSettingsDialog() {
-    //TODO: Abrir dialog de configurações do Token
   }
 }

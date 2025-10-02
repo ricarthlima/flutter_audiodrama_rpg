@@ -62,6 +62,7 @@ class CampaignGridOwner extends StatelessWidget {
                         return CampaignSheetItem(
                           sheet: sau.sheet,
                           username: sau.appUser.username!,
+                          isShowingByCampaign: true,
                         );
                       })
                       .toList(),
@@ -75,6 +76,7 @@ class CampaignGridOwner extends StatelessWidget {
                     return CampaignSheetItem(
                       sheet: sau.sheet,
                       username: sau.appUser.username!,
+                      isShowingByCampaign: true,
                     );
                   }).toList(),
                 ),

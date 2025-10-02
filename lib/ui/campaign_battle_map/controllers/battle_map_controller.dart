@@ -31,20 +31,11 @@ class CampaignOwnerBattleMapProvider extends ChangeNotifier {
 
   void onUpdate(BattleMap bm) {
     battleMap = bm;
+    notifyListeners();
     scheduleSave();
   }
 
   Timer? schSaveTimer;
-  void scheduleSave() {
-    notifyListeners();
-    if (schSaveTimer != null) {
-      schSaveTimer!.cancel();
-      schSaveTimer = null;
-    }
-    schSaveTimer = Timer(Duration(milliseconds: 500), () {
-      onSave();
-    });
-  }
 
   void onSave() {
     if (campaignProvider.campaign != null && battleMap != null) {
@@ -82,38 +73,43 @@ class CampaignOwnerBattleMapProvider extends ChangeNotifier {
       ..translateByDouble(-c.dx, -c.dy, 0.0, 1.0); // desfaz a translação
   }
 
+  void scheduleSave() {
+    if (schSaveTimer != null) {
+      schSaveTimer!.cancel();
+      schSaveTimer = null;
+    }
+    schSaveTimer = Timer(const Duration(milliseconds: 750), onSave);
+  }
+
   void addToken({
     required BattleMap battleMap,
     required Sheet sheet,
-    required Point<double>
-    position, // posição em unidades de grid (âncora no centro)
+    required Point<double> position,
   }) {
-    // Se já houver um token, mover.
-    int indexSheet = battleMap.listTokens.indexWhere(
+    final int indexSheet = battleMap.listTokens.indexWhere(
       (e) => e.sheetId == sheet.id,
     );
 
-    bool isMultiple =
+    final bool isMultiple =
         sheet.booleans["MULTIPLE_TOKEN"] != null &&
         sheet.booleans["MULTIPLE_TOKEN"]!;
 
     if (indexSheet != -1) {
-      return moveToken(
+      moveToken(
         battleMap: battleMap,
         position: position,
         token: battleMap.listTokens[indexSheet],
       );
+      return;
     }
 
-    String image = (sheet.listTokens.isNotEmpty)
+    final String image = (sheet.listTokens.isNotEmpty)
         ? sheet.listTokens[sheet.indexToken]
-        : (sheet.imageUrl != null)
-        ? sheet.imageUrl!
-        : "";
+        : (sheet.imageUrl ?? "");
 
-    Size sizeNorm = Size(1, 1);
+    final Size sizeNorm = const Size(1, 1);
 
-    Token token = Token(
+    final Token token = Token(
       id: const Uuid().v4(),
       battleMapId: battleMap.id,
       imageUrl: image,
@@ -127,8 +123,18 @@ class CampaignOwnerBattleMapProvider extends ChangeNotifier {
       sheetId: !isMultiple ? sheet.id : null,
     );
 
-    battleMap.listTokens.add(token);
-    scheduleSave();
+    this.battleMap!.listTokens.add(token);
+
+    final int mapIndex =
+        campaign?.listBattleMaps.indexWhere(
+          (e) => e.id == this.battleMap!.id,
+        ) ??
+        -1;
+    if (mapIndex != -1) {
+      campaign!.listBattleMaps[mapIndex] = this.battleMap!;
+    }
+
+    onSave();
   }
 
   void moveToken({
@@ -136,20 +142,26 @@ class CampaignOwnerBattleMapProvider extends ChangeNotifier {
     required Point<double> position,
     required Token token,
   }) {
-    int mapIndex = campaign!.listBattleMaps.indexWhere(
-      (e) => e.id == battleMap.id,
-    );
-    if (mapIndex == -1) return;
+    if (this.battleMap == null) return;
 
-    int tokenIndex = campaign!.listBattleMaps[mapIndex].listTokens.indexWhere(
+    final int localIdx = this.battleMap!.listTokens.indexWhere(
       (e) => e.id == token.id,
     );
-    if (tokenIndex == -1) return;
+    if (localIdx == -1) return;
 
-    Token updated = token.copyWith(position: position);
+    this.battleMap!.listTokens[localIdx] = this.battleMap!.listTokens[localIdx]
+        .copyWith(position: position);
 
-    campaign!.listBattleMaps[mapIndex].listTokens[tokenIndex] = updated;
+    final int mapIndex =
+        campaign?.listBattleMaps.indexWhere(
+          (e) => e.id == this.battleMap!.id,
+        ) ??
+        -1;
+    if (mapIndex != -1) {
+      campaign!.listBattleMaps[mapIndex] = this.battleMap!;
+    }
 
-    scheduleSave();
+    notifyListeners();
+    onSave();
   }
 }
