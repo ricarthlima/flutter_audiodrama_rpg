@@ -4,17 +4,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
 import 'package:go_router/go_router.dart';
-import 'view/campaign_visual_novel_view_model.dart';
+import 'partials/campaign_guest_novel.dart';
+import '../view/campaign_visual_novel_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../_core/providers/audio_provider.dart';
-import '../../data/services/campaign_roll_service.dart';
-import '../../domain/models/campaign_roll.dart';
-import '../../domain/models/campaign_visual.dart';
-import '../_core/components/movable_expandable_screen.dart';
-import '../_core/dimensions.dart';
-import 'view/campaign_view_model.dart';
+import '../../../_core/providers/audio_provider.dart';
+import '../../../data/services/campaign_roll_service.dart';
+import '../../../domain/models/campaign_roll.dart';
+import '../../../domain/models/campaign_visual.dart';
+import '../../_core/components/movable_expandable_screen.dart';
+import '../../_core/dimensions.dart';
+import '../view/campaign_view_model.dart';
 
 class CampaignGuestScreen extends StatefulWidget {
   final double sizeFactor;
@@ -89,15 +91,8 @@ class _CampaignGuestScreenState extends State<CampaignGuestScreen> {
       );
     }
 
-    return InteractiveViewer(
-      transformationController:
-          (!visualVM.data.allowPan && !visualVM.data.allowZoom)
-          ? TransformationController(Matrix4.identity())
-          : null,
-      panEnabled: visualVM.data.allowPan,
-      scaleEnabled: visualVM.data.allowZoom,
-      maxScale: 10,
-      child: Center(
+    return Scaffold(
+      body: Center(
         child: AspectRatio(
           aspectRatio: (isVertical(context))
               ? 16 / 9
@@ -109,27 +104,12 @@ class _CampaignGuestScreenState extends State<CampaignGuestScreen> {
                   <Widget>[
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: AnimatedSwitcher(
-                        duration: Duration(
-                          milliseconds: visualVM
-                              .data
-                              .transitionBackgroundDurationInMilliseconds,
-                        ),
-                        child: (visualVM.data.backgroundActive == null)
-                            ? Container(
-                                key: ValueKey('empty'),
-                                color: Colors.black,
-                              )
-                            : Image.network(
-                                visualVM.data.backgroundActive!.url,
-                                key: ValueKey(
-                                  visualVM.data.backgroundActive!.url,
-                                ),
-                                fit: BoxFit.fitWidth,
-                                width: width(context),
-                                height: height(context),
-                              ),
-                      ),
+                      child: switch (campaignVM.campaign!.activeSceneType) {
+                        CampaignScenes.preview => Placeholder(),
+                        CampaignScenes.novel => CampaignGuestNovel(),
+                        CampaignScenes.grid => Placeholder(),
+                        CampaignScenes.cutscenes => Placeholder(),
+                      },
                     ),
                   ] +
                   _generateListStack(context, visualVM) +

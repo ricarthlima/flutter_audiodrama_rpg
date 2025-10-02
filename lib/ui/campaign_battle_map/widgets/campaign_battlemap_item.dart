@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/app_colors.dart';
@@ -16,19 +17,24 @@ class CampaignBattleMapListItem extends StatelessWidget {
     final campaignProvider = context.watch<CampaignProvider>();
     final battleMapProvider = context.watch<CampaignOwnerBattleMapProvider>();
 
+    bool isGlobalActive =
+        campaignProvider.campaign!.activeBattleMapId == battleMap.id &&
+        campaignProvider.campaign!.activeSceneType == CampaignScenes.grid;
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         border: Border.all(
           width: 4,
-          color: campaignProvider.campaign!.activeBattleMapId == battleMap.id
-              ? AppColors.red
-              : Colors.transparent,
+          color: isGlobalActive ? AppColors.red : Colors.transparent,
         ),
       ),
       child: ListTile(
         onTap: () {
           battleMapProvider.onInitialize(battleMap);
+        },
+        onLongPress: () {
+          _toggleActive(campaignProvider);
         },
         contentPadding: EdgeInsets.zero,
         leading: AspectRatio(
@@ -42,18 +48,9 @@ class CampaignBattleMapListItem extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {
-                if (campaignProvider.campaign!.activeBattleMapId ==
-                    battleMap.id) {
-                  campaignProvider.deactivateGlobalBattleMap();
-                } else {
-                  campaignProvider.activeGlobalBattleMap(battleMap);
-                }
+                _toggleActive(campaignProvider);
               },
-              icon: Icon(
-                (campaignProvider.campaign!.activeBattleMapId == battleMap.id)
-                    ? Icons.stop
-                    : Icons.play_arrow,
-              ),
+              icon: Icon((isGlobalActive) ? Icons.stop : Icons.play_arrow),
             ),
             IconButton(
               onPressed: () {
@@ -72,5 +69,13 @@ class CampaignBattleMapListItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _toggleActive(CampaignProvider campaignProvider) {
+    if (campaignProvider.campaign!.activeBattleMapId == battleMap.id) {
+      campaignProvider.deactivateGlobalBattleMap();
+    } else {
+      campaignProvider.activeGlobalBattleMap(battleMap);
+    }
   }
 }

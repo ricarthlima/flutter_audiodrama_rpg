@@ -38,6 +38,8 @@ class Campaign {
 
   CampaignTurnOrder campaignTurnOrder;
 
+  CampaignScenes activeSceneType;
+
   Campaign({
     required this.id,
     required this.listIdOwners,
@@ -57,6 +59,7 @@ class Campaign {
     required this.activeBattleMapId,
     required this.listBattleMaps,
     required this.campaignTurnOrder,
+    required this.activeSceneType,
   });
 
   Campaign copyWith({
@@ -78,6 +81,7 @@ class Campaign {
     String? activeBattleMapId,
     List<BattleMap>? listBattleMaps,
     CampaignTurnOrder? campaignTurnOrder,
+    CampaignScenes? activeSceneType,
   }) {
     return Campaign(
       id: id ?? this.id,
@@ -99,6 +103,7 @@ class Campaign {
       activeBattleMapId: activeBattleMapId ?? this.activeBattleMapId,
       listBattleMaps: listBattleMaps ?? this.listBattleMaps,
       campaignTurnOrder: campaignTurnOrder ?? this.campaignTurnOrder,
+      activeSceneType: activeSceneType ?? this.activeSceneType,
     );
   }
 
@@ -122,6 +127,7 @@ class Campaign {
       'activeBattleMapId': activeBattleMapId,
       'listBattleMaps': listBattleMaps.map((e) => e.toMap()).toList(),
       'campaignTurnOrder': campaignTurnOrder.toMap(),
+      'activeSceneType': activeSceneType.name,
     };
   }
 
@@ -168,10 +174,11 @@ class Campaign {
             ),
 
       campaignScenes: (map['campaignScenes'] != null)
-          ? CampaignScenes.values
-                .where((e) => e.name == map['campaignScenes'])
-                .first
-          : CampaignScenes.visual,
+          ? CampaignScenes.values.firstWhere(
+              (e) => e.name == map['campaignScenes'],
+              orElse: () => CampaignScenes.novel,
+            )
+          : CampaignScenes.novel,
       activeBattleMapId: (map['activeBattleMapId'] != null)
           ? map['activeBattleMapId'] as String
           : null,
@@ -188,6 +195,12 @@ class Campaign {
               sheetTurn: 0,
               listSheetOrders: [],
             ),
+      activeSceneType: (map['activeSceneType'] != null)
+          ? CampaignScenes.values.firstWhere(
+              (e) => e.name == map['activeSceneType'],
+              orElse: () => CampaignScenes.novel,
+            )
+          : CampaignScenes.novel,
     );
   }
 

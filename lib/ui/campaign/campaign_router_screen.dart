@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'campaign_owner_sub_screen.dart';
-import 'campaign_guest_screen.dart';
+import 'guest/campaign_guest_screen.dart';
 import 'view/campaign_view_model.dart';
 import 'package:provider/provider.dart';
 

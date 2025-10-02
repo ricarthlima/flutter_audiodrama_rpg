@@ -56,7 +56,7 @@ class CampaignService {
         activePublicRolls: false,
         activeResisted: false,
       ),
-      campaignScenes: CampaignScenes.visual,
+      campaignScenes: CampaignScenes.novel,
       activeBattleMapId: null,
       listBattleMaps: [],
       campaignTurnOrder: CampaignTurnOrder(
@@ -65,6 +65,7 @@ class CampaignService {
         sheetTurn: 0,
         listSheetOrders: [],
       ),
+      activeSceneType: CampaignScenes.novel,
     );
 
     if (fileImage != null) {

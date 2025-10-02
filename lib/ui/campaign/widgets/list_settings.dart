@@ -36,15 +36,15 @@ class ListSettings extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: campaignPV.campaignScene != CampaignScenes.visual
+              onTap: campaignPV.campaignScene != CampaignScenes.novel
                   ? () {
-                      campaignPV.campaignScene = CampaignScenes.visual;
+                      campaignPV.campaignScene = CampaignScenes.novel;
                     }
                   : null,
               child: Text(
                 "Ambientação",
                 style: TextStyle(
-                  color: (campaignPV.campaignScene == CampaignScenes.visual)
+                  color: (campaignPV.campaignScene == CampaignScenes.novel)
                       ? AppColors.red
                       : AppColors.googleAuthBorderLight,
                   fontFamily: FontFamily.bungee,

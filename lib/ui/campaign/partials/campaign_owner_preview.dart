@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../campaign_guest_screen.dart';
+import '../guest/campaign_guest_screen.dart';
 
 class CampaignOwnerPreview extends StatelessWidget {
   const CampaignOwnerPreview({super.key});

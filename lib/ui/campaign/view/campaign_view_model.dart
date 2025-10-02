@@ -396,12 +396,14 @@ class CampaignProvider extends ChangeNotifier {
   Future<void> activeGlobalBattleMap(BattleMap battleMap) async {
     campaign!.activeBattleMapId = battleMap.id;
     notifyListeners();
+    campaign!.activeSceneType = CampaignScenes.grid;
     onSave();
   }
 
   void deactivateGlobalBattleMap() {
     campaign!.activeBattleMapId = null;
     notifyListeners();
+    campaign!.activeSceneType = CampaignScenes.novel;
     onSave();
   }
 
@@ -624,6 +626,11 @@ class CampaignProvider extends ChangeNotifier {
   set isPreviewVisible(bool value) {
     _isPreviewVisible = value;
     notifyListeners();
+  }
+
+  void setSceneType(CampaignScenes type) {
+    campaign!.activeSceneType = type;
+    onSave();
   }
 }
 

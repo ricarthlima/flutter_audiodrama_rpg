@@ -77,7 +77,7 @@ class _CampaignOwnerSubScreenState extends State<CampaignOwnerSubScreen> {
                       },
                       top: switch (campaignVM.campaignScene) {
                         CampaignScenes.preview => Placeholder(),
-                        CampaignScenes.visual =>
+                        CampaignScenes.novel =>
                           CampaignOwnerVisualNovelSection(),
                         CampaignScenes.grid => CampaignGridOwner(),
                         CampaignScenes.cutscenes => Placeholder(),
