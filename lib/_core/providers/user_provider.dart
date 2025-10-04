@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/controllers/battle_map_controller.dart';
 
 import '../../data/services/auth_service.dart';
 import '../../data/services/campaign_service.dart';
@@ -12,17 +13,20 @@ import '../../domain/models/campaign_sheet.dart';
 import '../../domain/models/sheet_model.dart';
 import '../../ui/campaign/view/campaign_view_model.dart';
 import '../../ui/campaign/view/campaign_visual_novel_view_model.dart';
+import '../../ui/campaign_battle_map/models/battle_map.dart';
 import 'audio_provider.dart';
 
 class UserProvider extends ChangeNotifier {
   final CampaignProvider campaignProvider;
   final CampaignVisualNovelViewModel visualNovelProvider;
+  final CampaignBattleMapProvider battleMapProvider;
   final AudioProvider audioProvider;
 
   UserProvider({
     required this.campaignProvider,
     required this.visualNovelProvider,
     required this.audioProvider,
+    required this.battleMapProvider,
   });
 
   List<Sheet> listSheets = [];
@@ -173,8 +177,22 @@ class UserProvider extends ChangeNotifier {
             campaignProvider.updateCampaign(campaign);
             campaignProvider.activatePresence();
 
+            // Update visual novel
             visualNovelProvider.campaignId = campaignId;
             visualNovelProvider.data = campaign.visualData;
+
+            String? battleMapId = campaignProvider.campaign!.activeBattleMapId;
+
+            if (campaignProvider.campaign != null && battleMapId != null) {
+              Iterable<BattleMap> query = campaignProvider
+                  .campaign!
+                  .listBattleMaps
+                  .where((e) => e.id == battleMapId);
+
+              if (query.isNotEmpty) {
+                battleMapProvider.onUpdate(query.first, save: false);
+              }
+            }
 
             if (campaignProvider.hasInteracted) {
               playCampaignAudios(campaign);

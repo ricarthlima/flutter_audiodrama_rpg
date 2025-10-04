@@ -12,7 +12,8 @@ import '../models/token.dart';
 import 'token_widget.dart';
 
 class CampaignBattleMapGridViewer extends StatefulWidget {
-  const CampaignBattleMapGridViewer({super.key});
+  final bool isOwner;
+  const CampaignBattleMapGridViewer({super.key, this.isOwner = true});
 
   @override
   State<CampaignBattleMapGridViewer> createState() =>
@@ -27,8 +28,8 @@ class _CampaignBattleMapGridViewerState
 
   @override
   Widget build(BuildContext context) {
-    final CampaignOwnerBattleMapProvider battleMapProvider = context
-        .watch<CampaignOwnerBattleMapProvider>();
+    final CampaignBattleMapProvider battleMapProvider = context
+        .watch<CampaignBattleMapProvider>();
 
     if (battleMapProvider.battleMap == null) {
       return const Center();
@@ -161,139 +162,140 @@ class _CampaignBattleMapGridViewerState
                 );
               },
         ),
-
-        Align(
-          alignment: Alignment.topCenter,
-          child: Container(color: Colors.black.withAlpha(200), height: 40),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                battleMap.name,
-                style: const TextStyle(
-                  fontFamily: FontFamily.bungee,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 32,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.zoom_in),
-                      Slider(
-                        min: 0.5,
-                        max: 6,
-                        value: battleMapProvider.zoom,
-                        onChanged: (double value) {
-                          battleMapProvider.zoom = value;
-                          final RenderBox box =
-                              _viewportKey.currentContext!.findRenderObject()
-                                  as RenderBox;
-                          final Size vpSize = box.size;
-                          battleMapProvider.setZoom(vpSize);
-                        },
-                      ),
-                    ],
+        if (widget.isOwner)
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(color: Colors.black.withAlpha(200), height: 40),
+          ),
+        if (widget.isOwner)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(
+                  battleMap.name,
+                  style: const TextStyle(
+                    fontFamily: FontFamily.bungee,
+                    fontSize: 24,
                   ),
                 ),
-                Builder(
-                  builder: (context) {
-                    double boxWidth = 300;
-                    double padding = 8;
-                    double width = boxWidth - (padding * 2);
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 32,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.zoom_in),
+                        Slider(
+                          min: 0.5,
+                          max: 6,
+                          value: battleMapProvider.zoom,
+                          onChanged: (double value) {
+                            battleMapProvider.zoom = value;
+                            final RenderBox box =
+                                _viewportKey.currentContext!.findRenderObject()
+                                    as RenderBox;
+                            final Size vpSize = box.size;
+                            battleMapProvider.setZoom(vpSize);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Builder(
+                    builder: (context) {
+                      double boxWidth = 300;
+                      double padding = 8;
+                      double width = boxWidth - (padding * 2);
 
-                    return SizedBox(
-                      width: boxWidth,
-                      child: ExpansibleList(
-                        title: "Configurações",
-                        startClosed: true,
-                        child: Container(
-                          color: Colors.black.withAlpha(200),
-                          padding: EdgeInsets.all(padding),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                NamedWidget(
-                                  title: "Opacidade do grid",
-                                  isLeft: true,
-                                  child: Slider(
-                                    value: battleMap.gridOpacity,
-                                    min: 0,
-                                    max: 1,
-                                    padding: EdgeInsets.zero,
-                                    onChanged: (double value) {
-                                      battleMap.gridOpacity = value;
-                                      battleMapProvider.onUpdate(battleMap);
-                                    },
+                      return SizedBox(
+                        width: boxWidth,
+                        child: ExpansibleList(
+                          title: "Configurações",
+                          startClosed: true,
+                          child: Container(
+                            color: Colors.black.withAlpha(200),
+                            padding: EdgeInsets.all(padding),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  NamedWidget(
+                                    title: "Opacidade do grid",
+                                    isLeft: true,
+                                    child: Slider(
+                                      value: battleMap.gridOpacity,
+                                      min: 0,
+                                      max: 1,
+                                      padding: EdgeInsets.zero,
+                                      onChanged: (double value) {
+                                        battleMap.gridOpacity = value;
+                                        battleMapProvider.onUpdate(battleMap);
+                                      },
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: width,
+                                  SizedBox(
+                                    width: width,
 
-                                  child: CheckboxListTile(
-                                    title: Text(
-                                      "Limpar personagens da esquerda",
+                                    child: CheckboxListTile(
+                                      title: Text(
+                                        "Limpar personagens da esquerda",
+                                      ),
+                                      dense: true,
+                                      contentPadding: EdgeInsets.zero,
+                                      controlAffinity:
+                                          ListTileControlAffinity.leading,
+                                      value: battleMap.clearLeft,
+                                      onChanged: (value) {
+                                        battleMap.clearLeft =
+                                            !battleMap.clearLeft;
+                                        battleMapProvider.onUpdate(battleMap);
+                                      },
                                     ),
-                                    dense: true,
-                                    contentPadding: EdgeInsets.zero,
-                                    controlAffinity:
-                                        ListTileControlAffinity.leading,
-                                    value: battleMap.clearLeft,
-                                    onChanged: (value) {
-                                      battleMap.clearLeft =
-                                          !battleMap.clearLeft;
-                                      battleMapProvider.onUpdate(battleMap);
-                                    },
                                   ),
-                                ),
-                                SizedBox(
-                                  width: width,
-                                  child: CheckboxListTile(
-                                    title: Text(
-                                      "Limpar personagens da direita",
+                                  SizedBox(
+                                    width: width,
+                                    child: CheckboxListTile(
+                                      title: Text(
+                                        "Limpar personagens da direita",
+                                      ),
+                                      dense: true,
+                                      contentPadding: EdgeInsets.zero,
+                                      controlAffinity:
+                                          ListTileControlAffinity.leading,
+                                      value: battleMap.clearRight,
+                                      onChanged: (value) {
+                                        battleMap.clearRight =
+                                            !battleMap.clearRight;
+                                        battleMapProvider.onUpdate(battleMap);
+                                      },
                                     ),
-                                    dense: true,
-                                    contentPadding: EdgeInsets.zero,
-                                    controlAffinity:
-                                        ListTileControlAffinity.leading,
-                                    value: battleMap.clearRight,
-                                    onChanged: (value) {
-                                      battleMap.clearRight =
-                                          !battleMap.clearRight;
-                                      battleMapProvider.onUpdate(battleMap);
-                                    },
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
       ],
     );
   }
 
   Point<double> _scenePointFromGlobal(
     Offset global,
-    CampaignOwnerBattleMapProvider battleMapProvider,
+    CampaignBattleMapProvider battleMapProvider,
   ) {
     final RenderBox vp =
         _viewportKey.currentContext!.findRenderObject() as RenderBox;

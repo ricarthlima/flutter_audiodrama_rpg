@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/router.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/utils/campaign_scenes.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign_battle_map/sections/campaign_grid_guest.dart';
 import 'package:go_router/go_router.dart';
 import 'partials/campaign_guest_novel.dart';
 import '../view/campaign_visual_novel_view_model.dart';
@@ -107,7 +108,7 @@ class _CampaignGuestScreenState extends State<CampaignGuestScreen> {
                       child: switch (campaignVM.campaign!.activeSceneType) {
                         CampaignScenes.preview => Placeholder(),
                         CampaignScenes.novel => CampaignGuestNovel(),
-                        CampaignScenes.grid => Placeholder(),
+                        CampaignScenes.grid => CampaignGridGuest(),
                         CampaignScenes.cutscenes => Placeholder(),
                       },
                     ),

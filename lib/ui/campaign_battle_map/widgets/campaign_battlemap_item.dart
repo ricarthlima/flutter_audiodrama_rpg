@@ -17,7 +17,7 @@ class CampaignBattleMapListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final campaignProvider = context.watch<CampaignProvider>();
     final visualVM = context.watch<CampaignVisualNovelViewModel>();
-    final battleMapProvider = context.watch<CampaignOwnerBattleMapProvider>();
+    final battleMapProvider = context.watch<CampaignBattleMapProvider>();
 
     bool isGlobalActive =
         campaignProvider.campaign!.activeBattleMapId == battleMap.id &&

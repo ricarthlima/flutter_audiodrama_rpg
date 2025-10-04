@@ -91,7 +91,7 @@ void main() async {
     campaignId: "",
   );
 
-  CampaignOwnerBattleMapProvider battleMapCTRL = CampaignOwnerBattleMapProvider(
+  CampaignBattleMapProvider battleMapProvider = CampaignBattleMapProvider(
     campaignProvider: campaignVM,
   );
 
@@ -103,6 +103,7 @@ void main() async {
             campaignProvider: campaignVM,
             visualNovelProvider: campaignVisualVM,
             audioProvider: audioProvider,
+            battleMapProvider: battleMapProvider,
           ),
         ),
         ChangeNotifierProvider(create: (_) => settingsProvider),
@@ -113,7 +114,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => campaignVM),
         ChangeNotifierProvider(create: (_) => campaignVisualVM),
         ChangeNotifierProvider(create: (_) => audioProvider),
-        ChangeNotifierProvider(create: (_) => battleMapCTRL),
+        ChangeNotifierProvider(create: (_) => battleMapProvider),
       ],
       child: const MainApp(),
     ),

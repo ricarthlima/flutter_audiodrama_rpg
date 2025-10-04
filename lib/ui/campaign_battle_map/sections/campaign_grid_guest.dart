@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../campaign_battle_map.dart';
+import '../widgets/campaign_battlemap_grid_viewer.dart';
 
 class CampaignGridGuest extends StatelessWidget {
   const CampaignGridGuest({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return CampaignBattleMap();
+    return CampaignBattleMapGridViewer(isOwner: false);
   }
 }

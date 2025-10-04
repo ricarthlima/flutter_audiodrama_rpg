@@ -11,10 +11,10 @@ import '../../campaign/view/campaign_view_model.dart';
 import '../models/battle_map.dart';
 import '../models/token.dart';
 
-class CampaignOwnerBattleMapProvider extends ChangeNotifier {
+class CampaignBattleMapProvider extends ChangeNotifier {
   CampaignProvider campaignProvider;
 
-  CampaignOwnerBattleMapProvider({required this.campaignProvider});
+  CampaignBattleMapProvider({required this.campaignProvider});
 
   BattleMap? battleMap;
   TransformationController gridTrans = TransformationController();
@@ -29,10 +29,13 @@ class CampaignOwnerBattleMapProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onUpdate(BattleMap bm) {
+  void onUpdate(BattleMap bm, {bool save = true}) {
     battleMap = bm;
     notifyListeners();
-    scheduleSave();
+
+    if (save) {
+      scheduleSave();
+    }
   }
 
   Timer? schSaveTimer;
