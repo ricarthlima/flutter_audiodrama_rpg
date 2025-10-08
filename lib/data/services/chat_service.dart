@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_rpg_audiodrama/domain/models/roll_log.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../_core/helpers/release_collections.dart';
@@ -48,6 +49,27 @@ class ChatService {
       createdAt: DateTime.now(),
       type: CampaignChatType.message,
       whisperId: whisperId,
+    );
+
+    await FirebaseFirestore.instance
+        .collection("${rc}campaigns")
+        .doc(campaignId)
+        .collection("${rc}chat")
+        .doc(chatMessage.id)
+        .set(chatMessage.toMap());
+  }
+
+  Future<void> sendRollToChat({
+    required String campaignId,
+    required RollLog rolllog,
+  }) async {
+    CampaignChatMessage chatMessage = CampaignChatMessage(
+      id: Uuid().v8(),
+      userId: FirebaseAuth.instance.currentUser!.uid,
+      message: rolllog.toJson(),
+      createdAt: DateTime.now(),
+      type: CampaignChatType.roll,
+      whisperId: null,
     );
 
     await FirebaseFirestore.instance

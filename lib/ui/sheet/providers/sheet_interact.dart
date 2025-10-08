@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../_core/providers/audio_provider.dart';
 import '../../../data/services/campaign_roll_service.dart';
+import '../../../data/services/chat_service.dart';
 import '../../../domain/models/campaign_roll.dart';
 import '../../_core/constants/roll_type.dart';
 import '../../_core/snackbars/snackbars.dart';
@@ -115,6 +116,7 @@ abstract class SheetInteract {
       isGettingLower: newActionValue <= 1,
       rollType: rollType,
       idSpell: spell?.name,
+      sheetName: sheetVM.sheet!.characterName,
     );
 
     sheetVM.onRoll(roll: roll, groupId: groupId);
@@ -144,6 +146,16 @@ abstract class SheetInteract {
           rollLog: roll,
         ),
       );
+
+      bool publicRolls =
+          campaignVM.campaign!.campaignSheetSettings.activePublicRolls;
+
+      if (publicRolls && sheetVM.isShowingRolls) {
+        ChatService.instance.sendRollToChat(
+          campaignId: campaignVM.campaign!.id,
+          rolllog: roll,
+        );
+      }
     }
   }
 

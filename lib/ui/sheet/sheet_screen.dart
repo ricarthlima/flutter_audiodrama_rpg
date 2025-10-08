@@ -369,6 +369,21 @@ class _SheetScreenState extends State<SheetScreen> {
                     ),
                   ),
                 ),
+              if (campaign?.campaignSheetSettings.activePublicRolls ?? false)
+                IconButton(
+                  onPressed: () {
+                    sheetVM.isShowingRolls = !sheetVM.isShowingRolls;
+                  },
+                  iconSize: 32,
+                  tooltip: sheetVM.isShowingRolls
+                      ? "Mostrando rolagens"
+                      : "Escondendo rolagens",
+                  icon: Icon(
+                    sheetVM.isShowingRolls
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                  ),
+                ),
               if (sheetVM.sheet!.ownerId ==
                   FirebaseAuth.instance.currentUser!.uid)
                 Tooltip(
@@ -390,6 +405,7 @@ class _SheetScreenState extends State<SheetScreen> {
                     ),
                   ),
                 ),
+              SizedBox(height: 16),
               Opacity(
                 opacity: (sheetVM.currentPage == SheetSubpages.sheet) ? 1 : 0.5,
                 child: IconButton(

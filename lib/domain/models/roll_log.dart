@@ -11,6 +11,7 @@ class RollLog {
   bool isGettingLower;
   RollType rollType;
   String? idSpell;
+  String sheetName;
 
   RollLog({
     required this.rolls,
@@ -18,6 +19,7 @@ class RollLog {
     required this.dateTime,
     required this.isGettingLower,
     required this.rollType,
+    required this.sheetName,
     this.idSpell,
   });
 
@@ -28,6 +30,7 @@ class RollLog {
     bool? isGettingLower,
     RollType? rollType,
     String? idSpell,
+    String? sheetName,
   }) {
     return RollLog(
       rolls: rolls ?? this.rolls,
@@ -36,6 +39,7 @@ class RollLog {
       isGettingLower: isGettingLower ?? this.isGettingLower,
       rollType: rollType ?? this.rollType,
       idSpell: idSpell ?? this.idSpell,
+      sheetName: sheetName ?? this.sheetName,
     );
   }
 
@@ -47,6 +51,7 @@ class RollLog {
       'isGettingLower': isGettingLower,
       'rollType': rollType.name,
       'idSpell': idSpell,
+      'sheetName': sheetName,
     };
   }
 
@@ -60,6 +65,7 @@ class RollLog {
           ? RollType.values.where((e) => e.name == map['rollType']).first
           : RollType.difficult,
       idSpell: map['idSpell'] != null ? map['idSpell'] as String : null,
+      sheetName: map['sheetName'] != null ? map['sheetName'] as String : "",
     );
   }
 

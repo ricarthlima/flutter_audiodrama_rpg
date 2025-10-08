@@ -102,7 +102,8 @@ class _CampaignScreenState extends State<CampaignScreen> {
                     duration: Duration(milliseconds: 500),
                     width: min(
                       width(context),
-                      campaignVM.currentTab!.index == 0 ? 500 : 400,
+                      400,
+                      // campaignVM.currentTab!.index == 0 ? 500 : 400,
                     ),
                     padding: EdgeInsets.all(16),
                     color: Theme.of(context).scaffoldBackgroundColor,

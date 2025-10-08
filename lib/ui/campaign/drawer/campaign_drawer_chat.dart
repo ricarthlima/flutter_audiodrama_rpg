@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/chat/campaign_chat_roll_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/services/chat_service.dart';
@@ -165,7 +166,7 @@ class _CampaignDrawerChatState extends State<CampaignDrawerChat> {
                       );
                       break;
                     case CampaignChatType.roll:
-                      child = const SizedBox.shrink();
+                      child = CampaignChatRollWidget(chatMessage: chatMessage);
                       break;
                     case CampaignChatType.spell:
                       child = const SizedBox.shrink();

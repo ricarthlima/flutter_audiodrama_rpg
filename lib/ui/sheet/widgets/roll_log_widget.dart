@@ -27,7 +27,7 @@ class _RollLogWidgetState extends State<RollLogWidget> {
     if (action != null) {
       return Container(
         padding: EdgeInsets.all(8),
-        margin: EdgeInsets.all(8),
+        margin: EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           border: Border.all(
             width: 2,
@@ -39,6 +39,7 @@ class _RollLogWidgetState extends State<RollLogWidget> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(action.name, style: TextStyle(fontFamily: FontFamily.bungee)),
+            if (widget.rollLog.sheetName != "") Text(widget.rollLog.sheetName),
             ExpansionTile(
               title: Text(
                 "Descrição",

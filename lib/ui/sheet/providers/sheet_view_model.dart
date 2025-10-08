@@ -872,6 +872,9 @@ class SheetViewModel extends ChangeNotifier {
     }
   }
 
+  bool get isShowingRolls => getBoolean("IS_SHOWING_ROLLS");
+  set isShowingRolls(bool value) => setBoolean("IS_SHOWING_ROLLS", value);
+
   bool getBoolean(String idd) {
     return sheet!.booleans[idd] ?? false;
   }

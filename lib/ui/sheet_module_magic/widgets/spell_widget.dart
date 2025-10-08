@@ -76,6 +76,9 @@ class _SpellWidgetState extends State<SpellWidget> {
                             "Conjure feitiços contra individuos que resistem.",
                         child: InkWell(
                           onTap: () {
+                            if (campaign != null && sheetVM.isShowingRolls) {
+                              _sendToChat(sheetVM, campaign);
+                            }
                             widget.onRollResisted!();
                           },
                           child: ColorFiltered(
@@ -93,6 +96,9 @@ class _SpellWidgetState extends State<SpellWidget> {
                         message: "Determine a potência do feitiço.",
                         child: InkWell(
                           onTap: () {
+                            if (campaign != null && sheetVM.isShowingRolls) {
+                              _sendToChat(sheetVM, campaign);
+                            }
                             widget.onRoll!();
                           },
                           child: ColorFiltered(
