@@ -667,6 +667,12 @@ class SheetViewModel extends ChangeNotifier {
       holdMod: false,
       listActions: [],
     ),
+    GroupActionIds.movement: GroupAction(
+      id: GroupActionIds.basic,
+      mod: 0,
+      holdMod: false,
+      listActions: [],
+    ),
     GroupActionIds.resisted: GroupAction(
       id: GroupActionIds.resisted,
       mod: 0,
@@ -701,6 +707,8 @@ class SheetViewModel extends ChangeNotifier {
 
   void _loadActionGroup() {
     mapGroupAction[GroupActionIds.basic]!.listActions = actionRepo.getBasics();
+    mapGroupAction[GroupActionIds.movement]!.listActions = actionRepo
+        .getMovement();
     mapGroupAction[GroupActionIds.resisted]!.listActions = actionRepo
         .getResisted();
     mapGroupAction[GroupActionIds.strength]!.listActions = actionRepo

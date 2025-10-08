@@ -57,7 +57,12 @@ class SheetActionsScreen extends StatelessWidget {
             ),
           ),
           ListActionsWidget(
-            name: "Resistidas",
+            name: "Movimentação",
+            isEditing: sheetVM.isEditing,
+            groupAction: sheetVM.mapGroupAction[GroupActionIds.movement]!,
+          ),
+          ListActionsWidget(
+            name: "Reações",
             isEditing: sheetVM.isEditing,
             color: AppColors.red,
             groupAction: sheetVM.mapGroupAction[GroupActionIds.resisted]!,

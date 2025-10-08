@@ -18,6 +18,7 @@ class GroupAction {
 
 abstract class GroupActionIds {
   static const String basic = "BASIC";
+  static const String movement = "MOVEMENT";
   static const String resisted = "RESISTED";
   static const String strength = "STRENGTH";
   static const String agility = "AGILITY";
