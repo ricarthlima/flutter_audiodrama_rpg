@@ -3,6 +3,7 @@ import 'package:flutter_rpg_audiodrama/ui/campaign/partials/campaign_owner_previ
 import 'package:flutter_rpg_audiodrama/ui/settings/view/settings_provider.dart';
 import '../_core/dimensions.dart';
 import '../_core/widgets/vertical_split_view.dart';
+import 'owner/campaign_owner_cutscenes.dart';
 import 'sections/ambience_assets_section.dart';
 import 'sections/campaign_owner_visual_novel_section.dart';
 import 'utils/campaign_scenes.dart';
@@ -79,8 +80,8 @@ class _CampaignOwnerSubScreenState extends State<CampaignOwnerSubScreen> {
                         CampaignScenes.preview => Placeholder(),
                         CampaignScenes.novel =>
                           CampaignOwnerVisualNovelSection(),
-                        CampaignScenes.grid => CampaignGridOwner(),
-                        CampaignScenes.cutscenes => Placeholder(),
+                        CampaignScenes.grid => CampaignOwnerGrid(),
+                        CampaignScenes.cutscenes => CampaignOwnerCutscenes(),
                       },
 
                       bottom: AmbienceAssetsSection(),

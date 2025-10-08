@@ -10,8 +10,8 @@ import '../../campaign/view/campaign_view_model.dart';
 import '../widgets/campaign_battlemap_grid_viewer.dart';
 import '../widgets/campaign_battlemap_item.dart';
 
-class CampaignGridOwner extends StatelessWidget {
-  const CampaignGridOwner({super.key});
+class CampaignOwnerGrid extends StatelessWidget {
+  const CampaignOwnerGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
