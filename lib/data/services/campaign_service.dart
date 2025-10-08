@@ -54,7 +54,6 @@ class CampaignService {
         listActiveWorkIds: [],
         listActiveModuleIds: [],
         activePublicRolls: false,
-        activeResisted: false,
       ),
       campaignScenes: CampaignScenes.novel,
       activeBattleMapId: null,

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class ExhaustLevel {
   static const List<String> _exhaustLevel = [
     "Disposição",
@@ -7,7 +9,7 @@ class ExhaustLevel {
   ];
 
   static String getByExhaustLevel(int stressLevel) {
-    return _exhaustLevel[stressLevel ~/ 4];
+    return _exhaustLevel[min(stressLevel ~/ 4, 3)];
   }
 
   static int get total => _exhaustLevel.length;

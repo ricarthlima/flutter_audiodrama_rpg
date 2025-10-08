@@ -6,13 +6,11 @@ class CampaignSheetSettings {
   List<String> listActiveWorkIds;
   List<String> listActiveModuleIds;
 
-  bool activeResisted;
   bool activePublicRolls;
 
   CampaignSheetSettings({
     required this.listActiveWorkIds,
     required this.listActiveModuleIds,
-    required this.activeResisted,
     required this.activePublicRolls,
   });
 
@@ -25,7 +23,6 @@ class CampaignSheetSettings {
     return CampaignSheetSettings(
       listActiveWorkIds: listActiveWorkIds ?? this.listActiveWorkIds,
       listActiveModuleIds: listActiveModuleIds ?? this.listActiveModuleIds,
-      activeResisted: activeResisted ?? this.activeResisted,
       activePublicRolls: activePublicRolls ?? this.activePublicRolls,
     );
   }
@@ -34,7 +31,6 @@ class CampaignSheetSettings {
     return {
       'listActiveWorkIds': listActiveWorkIds,
       'listActiveModuleIds': listActiveModuleIds,
-      'activeResisted': activeResisted,
       'activePublicRolls': activePublicRolls,
     };
   }
@@ -43,7 +39,6 @@ class CampaignSheetSettings {
     return CampaignSheetSettings(
       listActiveWorkIds: List<String>.from(map['listActiveWorkIds']),
       listActiveModuleIds: List<String>.from(map['listActiveModuleIds']),
-      activeResisted: map['activeResisted'] ?? false,
       activePublicRolls: map['activePublicRolls'] ?? false,
     );
   }
@@ -55,7 +50,7 @@ class CampaignSheetSettings {
 
   @override
   String toString() {
-    return 'CampaignSheetSettings(listActiveWorkIds: $listActiveWorkIds, listActiveModuleIds: $listActiveModuleIds, activeResisted: $activeResisted, activePublicRolls: $activePublicRolls)';
+    return 'CampaignSheetSettings(listActiveWorkIds: $listActiveWorkIds, listActiveModuleIds: $listActiveModuleIds, activePublicRolls: $activePublicRolls)';
   }
 
   @override
@@ -65,7 +60,6 @@ class CampaignSheetSettings {
     return other is CampaignSheetSettings &&
         listEquals(other.listActiveWorkIds, listActiveWorkIds) &&
         listEquals(other.listActiveModuleIds, listActiveModuleIds) &&
-        other.activeResisted == activeResisted &&
         other.activePublicRolls == activePublicRolls;
   }
 
@@ -73,7 +67,6 @@ class CampaignSheetSettings {
   int get hashCode {
     return listActiveWorkIds.hashCode ^
         listActiveModuleIds.hashCode ^
-        activeResisted.hashCode ^
         activePublicRolls.hashCode;
   }
 }

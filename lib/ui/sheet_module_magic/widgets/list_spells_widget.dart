@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../../_core/providers/user_provider.dart';
+import '../../../data/modules.dart';
 import '../../../domain/dto/action_template.dart';
 import '../../../domain/dto/spell.dart';
+import '../../../domain/models/campaign.dart';
 import '../../../domain/models/sheet_custom_count.dart';
 import '../../_core/constants/roll_type.dart';
 import '../../_core/widgets/generic_filter_widget.dart';
@@ -54,6 +57,13 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
   @override
   Widget build(BuildContext context) {
     SheetViewModel sheetVM = Provider.of<SheetViewModel>(context);
+
+    final userProvider = Provider.of<UserProvider>(context);
+    Campaign? campaign = userProvider.getCampaignBySheet(sheetVM.sheet!.id);
+    bool isResistedActive = sheetVM.isModuleActive(
+      moduleId: Module.resisted.id,
+      campaign: campaign,
+    );
 
     return SingleChildScrollView(
       child: Column(
@@ -117,7 +127,12 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
                         widget.isMine &&
                         spell.isResisted)
                     ? () {
-                        _rollActions(spell: spell, rollType: RollType.resisted);
+                        _rollActions(
+                          spell: spell,
+                          rollType: isResistedActive
+                              ? RollType.resisted
+                              : RollType.difficult,
+                        );
                       }
                     : null,
                 onTapRemove: (widget.isMine && sheetVM.isEditing)
@@ -162,6 +177,10 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
       }
     }
 
+    bool canCast = sheetVM.consumeEnergy(energy);
+
+    if (!canCast) return;
+
     if (spell.actionIds.length == 1) {
       String id = spell.actionIds.first;
       ActionTemplate? action = sheetVM.actionRepo.getActionById(id);
@@ -203,7 +222,5 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
 
       sheetVM.setBoolean("isBonded", true);
     }
-
-    sheetVM.consumeEnergy(energy);
   }
 }

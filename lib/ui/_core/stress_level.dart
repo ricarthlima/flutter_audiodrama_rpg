@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class StressLevel {
   static const List<String> _stressLevel = [
     "Saudável",
@@ -7,7 +9,7 @@ class StressLevel {
   ];
 
   static String getByStressLevel(int stressPoints) {
-    return _stressLevel[stressPoints ~/ 4];
+    return _stressLevel[min(stressPoints ~/ 4, 3)];
   }
 
   static int get total => _stressLevel.length;

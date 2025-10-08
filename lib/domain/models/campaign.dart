@@ -170,7 +170,6 @@ class Campaign {
               listActiveWorkIds: [],
               listActiveModuleIds: [],
               activePublicRolls: false,
-              activeResisted: false,
             ),
 
       campaignScenes: (map['campaignScenes'] != null)

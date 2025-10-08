@@ -101,17 +101,15 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
             children: List.generate(Module.all.length, (index) {
               Module module = Module.all[index];
               if (module.id == Module.grid.id) return SizedBox();
-              return Tooltip(
-                message: module.description,
-                child: CheckboxListTile(
-                  value: sheetVM.sheet!.listActiveModules.contains(module.id),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  title: Text(module.name),
-                  contentPadding: EdgeInsets.zero,
-                  onChanged: (value) {
-                    sheetVM.toggleActiveModule(module.id);
-                  },
-                ),
+              return CheckboxListTile(
+                value: sheetVM.sheet!.listActiveModules.contains(module.id),
+                controlAffinity: ListTileControlAffinity.leading,
+                title: Text(module.name),
+                subtitle: Text(module.description),
+                contentPadding: EdgeInsets.zero,
+                onChanged: (value) {
+                  sheetVM.toggleActiveModule(module.id);
+                },
               );
             }),
           ),

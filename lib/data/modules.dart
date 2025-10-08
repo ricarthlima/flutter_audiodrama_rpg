@@ -13,7 +13,7 @@ class Module {
 
   static Module get grid => Module(
     id: "GRID",
-    name: "Mapas de Batalha",
+    name: "Mapas de batalha",
     description: "Ativar os Mapas de Batalha, grids e tokens.",
   );
 
@@ -23,7 +23,14 @@ class Module {
     description: "Ativar iniciativa, ordem de turnos e dano ao corpo.",
   );
 
-  static List<Module> get all => [magic, grid, combat];
+  static Module get resisted => Module(
+    id: "RESISTED",
+    name: "Testes resistidos",
+    description:
+        "(Regra legado) Permite rolagem contra DT10 para obter sucesso.",
+  );
+
+  static List<Module> get all => [magic, grid, combat, resisted];
 }
 
 const String energySpellModuleSCC = "ENERGY_SPELL_MODULE_SCC";

@@ -167,20 +167,6 @@ class __CampaignSettingsDialogState extends State<_CampaignSettingsDialog> {
             child: Text("Configurações gerais sobre a campanha."),
           ),
           CheckboxListTile(
-            value: campaignVM.campaign!.campaignSheetSettings.activeResisted,
-            onChanged: (value) {
-              campaignVM.campaign!.campaignSheetSettings.activeResisted =
-                  !campaignVM.campaign!.campaignSheetSettings.activeResisted;
-              campaignVM.onSave();
-            },
-            contentPadding: EdgeInsets.zero,
-            controlAffinity: ListTileControlAffinity.leading,
-            title: Text("Ativar Testes Resistidos"),
-            subtitle: Text(
-              "(Regra legado) Permite rolagem contra DT10 para obter sucessos.",
-            ),
-          ),
-          CheckboxListTile(
             value: campaignVM.campaign!.campaignSheetSettings.activePublicRolls,
             onChanged: (value) {
               campaignVM.campaign!.campaignSheetSettings.activePublicRolls =

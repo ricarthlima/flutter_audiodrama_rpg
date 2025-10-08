@@ -333,7 +333,7 @@ class SheetViewModel extends ChangeNotifier {
         return result;
       case RollType.difficult:
         String result =
-            "Teste de Dificuldade\nPegue um número baseado no seu treinamento.";
+            "Teste de Dificuldade"; //\nPegue um número baseado no seu treinamento.";
         if (trainingLevel <= 1) {
           result +=
               "\nComo seu treinamento é '${getTrainingLevel(trainingLevel)}', pegue o menor dado.";
@@ -840,7 +840,7 @@ class SheetViewModel extends ChangeNotifier {
     scheduleSave();
   }
 
-  void consumeEnergy(int energy) {
+  bool consumeEnergy(int energy) {
     bool needToExhaust = false;
     if (customCount(energySpellModuleSCC) != null) {
       if (customCount(energySpellModuleSCC)!.count < energy) {
@@ -859,9 +859,17 @@ class SheetViewModel extends ChangeNotifier {
       );
     }
     if (needToExhaust) {
-      sheet!.exhaustPoints += 4;
+      if (sheet!.exhaustPoints <= 11) {
+        sheet!.exhaustPoints += 4;
+        scheduleSave();
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      scheduleSave();
+      return true;
     }
-    scheduleSave();
   }
 
   bool getBoolean(String idd) {

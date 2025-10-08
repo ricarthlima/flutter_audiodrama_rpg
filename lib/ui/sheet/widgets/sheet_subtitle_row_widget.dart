@@ -348,7 +348,7 @@ class SheetSubtitleRowWidget extends StatelessWidget {
                   icon: Icon(Icons.remove),
                 ),
               SizedBox(
-                width: 22,
+                width: 28,
                 child: Center(
                   child: Text(
                     (_hasSpellEnergyCount(sheetVM))
