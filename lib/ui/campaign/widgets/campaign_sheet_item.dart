@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/data/modules.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import '../../_core/web/download_json/download_json.dart';
 import 'package:provider/provider.dart';
@@ -111,16 +112,17 @@ class CampaignSheetItem extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(
-            onPressed: () {
-              campaignVM.rollInitiative(sheet: sheet, isVisible: true);
-            },
-            onLongPress: () {
-              campaignVM.rollInitiative(sheet: sheet, isVisible: false);
-            },
-            tooltip: "Rolar Iniciativa",
-            icon: Image.asset("assets/images/d20.png", color: AppColors.red),
-          ),
+          if (campaignVM.isModuleActive(Module.combat.id))
+            IconButton(
+              onPressed: () {
+                campaignVM.rollInitiative(sheet: sheet, isVisible: true);
+              },
+              onLongPress: () {
+                campaignVM.rollInitiative(sheet: sheet, isVisible: false);
+              },
+              tooltip: "Rolar Iniciativa",
+              icon: Image.asset("assets/images/d20.png", color: AppColors.red),
+            ),
           PopupMenuButton<_SheetMenuOptions>(
             onSelected: (_SheetMenuOptions value) {
               switch (value) {

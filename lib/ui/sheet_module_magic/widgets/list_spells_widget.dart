@@ -21,6 +21,8 @@ class ListSpellsWidget extends StatefulWidget {
   final bool isDense;
   final bool isDraggable;
   final bool isMine;
+  final bool hideSearch;
+  final bool showExpand;
 
   const ListSpellsWidget({
     super.key,
@@ -29,6 +31,8 @@ class ListSpellsWidget extends StatefulWidget {
     this.isDense = true,
     this.isDraggable = false,
     this.isMine = true,
+    this.hideSearch = false,
+    this.showExpand = false,
   });
 
   @override
@@ -37,6 +41,7 @@ class ListSpellsWidget extends StatefulWidget {
 
 class _ListSpellsWidgetState extends State<ListSpellsWidget> {
   List<Spell> listSpellVisualization = [];
+  bool isExpanded = true;
 
   @override
   void initState() {
@@ -72,78 +77,106 @@ class _ListSpellsWidgetState extends State<ListSpellsWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children:
             <Widget>[
-              GenericHeader(title: widget.title, showDivider: false),
-              GenericFilterWidget<Spell>(
-                listValues: widget.listSpells,
-                listOrderers: [
-                  GenericFilterOrderer<Spell>(
-                    label: "Energia",
-                    iconAscending: Icons.flare,
-                    iconDescending: Icons.abc,
-                    orderFunction: (a, b) {
-                      return a.energy.compareTo(b.energy);
-                    },
-                  ),
-                  GenericFilterOrderer<Spell>(
-                    label: "Nome",
-                    iconAscending: Icons.abc,
-                    iconDescending: Icons.abc,
-                    orderFunction: (a, b) {
-                      return a.name.compareTo(b.name);
-                    },
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (widget.showExpand)
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          isExpanded = !isExpanded;
+                        });
+                      },
+                      icon: Icon(
+                        !isExpanded ? Icons.expand_less : Icons.expand_more,
+                      ),
+                    ),
+                  GenericHeader(
+                    title: widget.title,
+                    showDivider: false,
+                    dense: true,
                   ),
                 ],
-                onFiltered: (listFiltered) {
-                  setState(() {
-                    listSpellVisualization = listFiltered
-                        .map((e) => e)
-                        .toList();
-                  });
-                },
-                textExtractor: (spell) =>
-                    spell.name + spell.verbal + (spell.source ?? ""),
-                enableSearch: true,
               ),
+              if (isExpanded)
+                GenericFilterWidget<Spell>(
+                  listValues: widget.listSpells,
+                  listOrderers: [
+                    if (!widget.hideSearch)
+                      GenericFilterOrderer<Spell>(
+                        label: "Energia",
+                        iconAscending: Icons.flare,
+                        iconDescending: Icons.abc,
+                        orderFunction: (a, b) {
+                          return a.energy.compareTo(b.energy);
+                        },
+                      ),
+                    if (!widget.hideSearch)
+                      GenericFilterOrderer<Spell>(
+                        label: "Nome",
+                        iconAscending: Icons.abc,
+                        iconDescending: Icons.abc,
+                        orderFunction: (a, b) {
+                          return a.name.compareTo(b.name);
+                        },
+                      ),
+                  ],
+                  onFiltered: (listFiltered) {
+                    setState(() {
+                      listSpellVisualization = listFiltered
+                          .map((e) => e)
+                          .toList();
+                    });
+                  },
+                  textExtractor: (spell) =>
+                      spell.name + spell.verbal + (spell.source ?? ""),
+                  enableSearch: !widget.hideSearch,
+                ),
             ] +
-            List.generate(listSpellVisualization.length, (index) {
-              Spell spell = listSpellVisualization[index];
-              return SpellWidget(
-                spell: spell,
-                isDense: widget.isDense,
-                isDraggable: widget.isDraggable,
-                onRoll:
-                    (spell.actionIds.isNotEmpty &&
-                        widget.isMine &&
-                        spell.hasBaseTest)
-                    ? () {
-                        _rollActions(
-                          spell: spell,
-                          rollType: RollType.difficult,
-                        );
-                      }
-                    : null,
-                onRollResisted:
-                    (spell.actionIds.isNotEmpty &&
-                        widget.isMine &&
-                        spell.isResisted)
-                    ? () {
-                        _rollActions(
-                          spell: spell,
-                          rollType: isResistedActive
-                              ? RollType.resisted
-                              : RollType.difficult,
-                        );
-                      }
-                    : null,
-                onTapRemove: (widget.isMine && sheetVM.isEditing)
-                    ? () {
-                        sheetVM.removeSpell(spell);
-                      }
-                    : null,
-              );
-            }),
+            getSpellWidget(
+              sheetVM: sheetVM,
+              isResistedActive: isResistedActive,
+            ),
       ),
     );
+  }
+
+  List<Widget> getSpellWidget({
+    required SheetViewModel sheetVM,
+    required bool isResistedActive,
+  }) {
+    if (!isExpanded) return [SizedBox()];
+
+    return List.generate(listSpellVisualization.length, (index) {
+      Spell spell = listSpellVisualization[index];
+      return SpellWidget(
+        spell: spell,
+        isDense: widget.isDense,
+        isDraggable: widget.isDraggable,
+        onRoll:
+            (spell.actionIds.isNotEmpty && widget.isMine && spell.hasBaseTest)
+            ? () {
+                _rollActions(spell: spell, rollType: RollType.difficult);
+              }
+            : null,
+        onRollResisted:
+            (spell.actionIds.isNotEmpty && widget.isMine && spell.isResisted)
+            ? () {
+                _rollActions(
+                  spell: spell,
+                  rollType: isResistedActive
+                      ? RollType.resisted
+                      : RollType.difficult,
+                );
+              }
+            : null,
+        onTapRemove: (widget.isMine && sheetVM.isEditing)
+            ? () {
+                sheetVM.removeSpell(spell);
+              }
+            : null,
+      );
+    });
   }
 
   void _rollActions({required Spell spell, required RollType rollType}) async {
