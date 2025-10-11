@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/tab_title.dart';
 import 'package:provider/provider.dart';
-
-import '../../_core/app_colors.dart';
-import '../../_core/fonts.dart';
 import '../utils/campaign_scenes.dart';
 import '../view/campaign_view_model.dart';
 
@@ -18,73 +16,41 @@ class ListSettings extends StatelessWidget {
         Row(
           spacing: 16,
           children: [
-            InkWell(
+            TabTitle(
+              title: "Visualização",
+              isActive: campaignPV.campaignScene == CampaignScenes.preview,
               onTap: campaignPV.campaignScene != CampaignScenes.preview
                   ? () {
                       campaignPV.campaignScene = CampaignScenes.preview;
                     }
                   : null,
-              child: Text(
-                "Visualização",
-                style: TextStyle(
-                  color: (campaignPV.campaignScene == CampaignScenes.preview)
-                      ? AppColors.red
-                      : AppColors.googleAuthBorderLight,
-                  fontFamily: FontFamily.bungee,
-                  fontSize: 18,
-                ),
-              ),
             ),
-            InkWell(
+            TabTitle(
+              title: "Ambientação",
+              isActive: campaignPV.campaignScene == CampaignScenes.novel,
               onTap: campaignPV.campaignScene != CampaignScenes.novel
                   ? () {
                       campaignPV.campaignScene = CampaignScenes.novel;
                     }
                   : null,
-              child: Text(
-                "Ambientação",
-                style: TextStyle(
-                  color: (campaignPV.campaignScene == CampaignScenes.novel)
-                      ? AppColors.red
-                      : AppColors.googleAuthBorderLight,
-                  fontFamily: FontFamily.bungee,
-                  fontSize: 18,
-                ),
-              ),
             ),
-            InkWell(
+            TabTitle(
+              title: "Mesa de Batalha",
+              isActive: campaignPV.campaignScene == CampaignScenes.grid,
               onTap: campaignPV.campaignScene != CampaignScenes.grid
                   ? () {
                       campaignPV.campaignScene = CampaignScenes.grid;
                     }
                   : null,
-              child: Text(
-                "Mapa de Batalha",
-                style: TextStyle(
-                  color: (campaignPV.campaignScene == CampaignScenes.grid)
-                      ? AppColors.red
-                      : AppColors.googleAuthBorderLight,
-                  fontFamily: FontFamily.bungee,
-                  fontSize: 18,
-                ),
-              ),
             ),
-            InkWell(
+            TabTitle(
+              title: "Cenas de Corte",
+              isActive: campaignPV.campaignScene == CampaignScenes.cutscenes,
               onTap: campaignPV.campaignScene != CampaignScenes.cutscenes
                   ? () {
                       campaignPV.campaignScene = CampaignScenes.cutscenes;
                     }
                   : null,
-              child: Text(
-                "CENAS DE CORTE",
-                style: TextStyle(
-                  color: (campaignPV.campaignScene == CampaignScenes.cutscenes)
-                      ? AppColors.red
-                      : AppColors.googleAuthBorderLight,
-                  fontFamily: FontFamily.bungee,
-                  fontSize: 18,
-                ),
-              ),
             ),
           ],
         ),

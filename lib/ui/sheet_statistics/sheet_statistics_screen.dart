@@ -12,9 +12,12 @@ class SheetStatisticsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    StatisticsViewModel statisticsViewModel = Provider.of<StatisticsViewModel>(
-      context,
-    );
+    StatisticsViewModel statisticsVM = context.watch<StatisticsViewModel>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      statisticsVM.onInitialize();
+    });
+
     return Column(
       children: [
         SingleChildScrollView(
@@ -27,7 +30,7 @@ class SheetStatisticsScreen extends StatelessWidget {
               SizedBox(
                 width: 150,
                 child: TextFormField(
-                  controller: statisticsViewModel.startDateEditingController,
+                  controller: statisticsVM.startDateEditingController,
                   enabled: false,
                 ),
               ),
@@ -35,13 +38,11 @@ class SheetStatisticsScreen extends StatelessWidget {
                 onPressed: () {
                   showDateTimePickerDialog(
                     context: context,
-                    initialDate: statisticsViewModel.filterDateStart,
-                    firstDate: statisticsViewModel.getFirstDate(),
+                    initialDate: statisticsVM.filterDateStart,
+                    firstDate: statisticsVM.getFirstDate(),
                   ).then((DateTime? dateTimeResult) {
                     if (dateTimeResult != null) {
-                      if (dateTimeResult.isAfter(
-                        statisticsViewModel.filterDateEnd,
-                      )) {
+                      if (dateTimeResult.isAfter(statisticsVM.filterDateEnd)) {
                         if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -51,7 +52,7 @@ class SheetStatisticsScreen extends StatelessWidget {
                           ),
                         );
                       } else {
-                        statisticsViewModel.filterDateStart = dateTimeResult;
+                        statisticsVM.filterDateStart = dateTimeResult;
                       }
                     }
                   });
@@ -66,7 +67,7 @@ class SheetStatisticsScreen extends StatelessWidget {
               SizedBox(
                 width: 150,
                 child: TextFormField(
-                  controller: statisticsViewModel.endDateEditingController,
+                  controller: statisticsVM.endDateEditingController,
                   enabled: false,
                 ),
               ),
@@ -74,11 +75,11 @@ class SheetStatisticsScreen extends StatelessWidget {
                 onPressed: () {
                   showDateTimePickerDialog(
                     context: context,
-                    initialDate: statisticsViewModel.filterDateEnd,
+                    initialDate: statisticsVM.filterDateEnd,
                     lastDate: DateTime.now(),
                   ).then((DateTime? dateTimeResult) {
                     if (dateTimeResult != null) {
-                      statisticsViewModel.filterDateEnd = dateTimeResult;
+                      statisticsVM.filterDateEnd = dateTimeResult;
                     }
                   });
                 },
@@ -90,7 +91,7 @@ class SheetStatisticsScreen extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
-                  statisticsViewModel.resetDates();
+                  statisticsVM.resetDates();
                 },
                 child: Text("Redefinir"),
               ),

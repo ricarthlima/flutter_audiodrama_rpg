@@ -291,39 +291,39 @@ class SheetSubtitleRowWidget extends StatelessWidget {
           ],
         ),
       ),
-      NamedWidget(
-        isVisible:
-            (sheetVM.sheet!.listActiveWorks.isNotEmpty &&
-                userProvider.getCampaignBySheet(sheetVM.sheet!.id) == null) ||
-            (userProvider.getCampaignBySheet(sheetVM.sheet!.id) != null &&
-                userProvider
-                    .getCampaignBySheet(sheetVM.sheet!.id)!
-                    .campaignSheetSettings
-                    .listActiveWorkIds
-                    .isNotEmpty),
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        isShowLeftSeparator: true,
-        title: "",
-        hardHeight: 50,
-        titleWidget: Text(
-          "Ofícios",
-          style: TextStyle(
-            fontFamily: FontFamily.sourceSerif4,
-            fontSize: 10,
-            color: Colors.amber.withAlpha(150),
-          ),
-        ),
-        child: InkWell(
-          onTap: () {
-            onWorksPressed.call();
-          },
-          child: Icon(
-            Icons.workspace_premium_sharp,
-            color: Colors.amber,
-            size: 18,
-          ),
-        ),
-      ),
+      // NamedWidget(
+      //   isVisible:
+      //       (sheetVM.sheet!.listActiveWorks.isNotEmpty &&
+      //           userProvider.getCampaignBySheet(sheetVM.sheet!.id) == null) ||
+      //       (userProvider.getCampaignBySheet(sheetVM.sheet!.id) != null &&
+      //           userProvider
+      //               .getCampaignBySheet(sheetVM.sheet!.id)!
+      //               .campaignSheetSettings
+      //               .listActiveWorkIds
+      //               .isNotEmpty),
+      //   padding: EdgeInsets.symmetric(horizontal: 16),
+      //   isShowLeftSeparator: true,
+      //   title: "",
+      //   hardHeight: 50,
+      //   titleWidget: Text(
+      //     "Ofícios",
+      //     style: TextStyle(
+      //       fontFamily: FontFamily.sourceSerif4,
+      //       fontSize: 10,
+      //       color: Colors.amber.withAlpha(150),
+      //     ),
+      //   ),
+      //   child: InkWell(
+      //     onTap: () {
+      //       onWorksPressed.call();
+      //     },
+      //     child: Icon(
+      //       Icons.workspace_premium_sharp,
+      //       color: Colors.amber,
+      //       size: 18,
+      //     ),
+      //   ),
+      // ),
       if (sheetVM.showMagicModule(campaign))
         NamedWidget(
           padding: EdgeInsets.symmetric(horizontal: 16),

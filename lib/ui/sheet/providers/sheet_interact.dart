@@ -19,7 +19,6 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/dto/action_template.dart';
 import '../../../domain/models/roll_log.dart';
-import '../../sheet_statistics/view/statistics_view_model.dart';
 import '../components/roll_body_dialog.dart';
 import 'sheet_view_model.dart';
 
@@ -49,12 +48,6 @@ abstract class SheetInteract {
   }
 
   static Future<void> onStatisticsButtonClicked(BuildContext context) async {
-    //TODO: Provovalmente é melhor isso estar no initState da tela
-    context.read<StatisticsViewModel>().listCompleteRollLog = context
-        .read<SheetViewModel>()
-        .sheet!
-        .listRollLog;
-
     context.read<SheetViewModel>().currentPage = SheetSubpages.statistics;
   }
 

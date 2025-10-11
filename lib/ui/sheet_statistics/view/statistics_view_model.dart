@@ -4,9 +4,16 @@ import 'package:intl/intl.dart';
 
 import '../../../_core/utils/roll_log_statistics.dart';
 import '../../../domain/models/roll_log.dart';
+import '../../sheet/providers/sheet_view_model.dart';
 
 class StatisticsViewModel extends ChangeNotifier {
-  StatisticsViewModel();
+  final SheetViewModel sheetVM;
+  StatisticsViewModel({required this.sheetVM});
+
+  void onInitialize() {
+    listCompleteRollLog = sheetVM.sheet!.listRollLog;
+    notifyListeners();
+  }
 
   List<RollLog> _listCompleteRollLog = [];
   List<RollLog> get listCompleteRollLog => _listCompleteRollLog;

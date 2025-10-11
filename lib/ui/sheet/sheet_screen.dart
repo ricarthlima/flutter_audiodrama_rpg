@@ -442,7 +442,7 @@ class _SheetScreenState extends State<SheetScreen> {
                     icon: Icon(MdiIcons.magicStaff, color: AppColors.module),
                   ),
                 ),
-              SizedBox(height: 16),
+
               if (!isVertical(context))
                 Opacity(
                   opacity: (sheetVM.currentPage == SheetSubpages.notes)
@@ -457,20 +457,7 @@ class _SheetScreenState extends State<SheetScreen> {
                     icon: Icon(Icons.description),
                   ),
                 ),
-              if (!isVertical(context))
-                Opacity(
-                  opacity: (sheetVM.currentPage == SheetSubpages.statistics)
-                      ? 1
-                      : 0.5,
-                  child: IconButton(
-                    tooltip: "Estatísticas",
-                    iconSize: 32,
-                    onPressed: () {
-                      SheetInteract.onStatisticsButtonClicked(context);
-                    },
-                    icon: Icon(Icons.bar_chart),
-                  ),
-                ),
+              SizedBox(height: 16),
               Opacity(
                 opacity: (sheetVM.currentPage == SheetSubpages.settings)
                     ? 1

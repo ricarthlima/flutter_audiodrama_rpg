@@ -7,6 +7,7 @@ import '../../../data/modules.dart';
 import '../../../domain/dto/list_action.dart';
 import '../../../domain/models/campaign.dart';
 import '../../_core/widgets/loading_widget.dart';
+import '../providers/sheet_interact.dart';
 import '../providers/sheet_view_model.dart';
 import '../widgets/setting_token_item.dart';
 import '../widgets/sheet_not_found_widget.dart';
@@ -61,13 +62,26 @@ class _SheetSettingsScreenState extends State<SheetSettingsScreen> {
       _SettingItem(
         title: "Opções de Ficha",
         subtitle: "Configurações gerais sobre a ficha",
-        child: ListTile(
-          leading: Icon(Icons.download),
-          contentPadding: EdgeInsets.zero,
-          title: Text("Baixar a ficha como JSON"),
-          onTap: () {
-            downloadSheetJSON(sheetVM);
-          },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.bar_chart),
+              contentPadding: EdgeInsets.zero,
+              title: Text("Abrir estatísticas de rolagem"),
+              onTap: () {
+                SheetInteract.onStatisticsButtonClicked(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.download),
+              contentPadding: EdgeInsets.zero,
+              title: Text("Baixar a ficha como JSON"),
+              onTap: () {
+                downloadSheetJSON(sheetVM);
+              },
+            ),
+          ],
         ),
       ),
       if (campaign == null)

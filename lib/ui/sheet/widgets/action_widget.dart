@@ -241,7 +241,7 @@ class _ActionWidgetState extends State<ActionWidget> {
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 18,
                             fontFamily: "SourceSerif4",
                           ),
                         ),

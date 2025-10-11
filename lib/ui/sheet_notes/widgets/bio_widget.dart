@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/horizontal_split_view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/dto/action_template.dart';
@@ -16,91 +17,88 @@ class BioWidget extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Flexible(
-            flex: (isVertical(context)) ? 9 : 6,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: 32,
-              children: [
-                Text(
-                  "Quais segredos estão guardados no seu passado?",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      child: HorizontalSplitView(
+        left: Flexible(
+          flex: (isVertical(context)) ? 9 : 6,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 32,
+            children: [
+              Text(
+                "Quais segredos estão guardados no seu passado?",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              if (sheetViewModel.isOwner)
+                Expanded(
+                  child: TextFormField(
+                    controller: sheetViewModel.bioEditingController(),
+                    maxLines: null,
+                    expands: true,
+                    enabled: sheetViewModel.isOwner,
+                  ),
                 ),
-                if (sheetViewModel.isOwner)
-                  Expanded(
-                    child: TextFormField(
-                      controller: sheetViewModel.bioEditingController(),
-                      maxLines: null,
-                      expands: true,
-                      enabled: sheetViewModel.isOwner,
+              if (!sheetViewModel.isOwner)
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: SelectableText(
+                      sheetViewModel.bioEditingController().text,
                     ),
                   ),
-                if (!sheetViewModel.isOwner)
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: SelectableText(
-                        sheetViewModel.bioEditingController().text,
-                      ),
-                    ),
-                  ),
-                if (sheetViewModel.isOwner)
-                  AnimatedSwitcher(
-                    duration: Duration(milliseconds: 750),
-                    child: (sheetViewModel.isSavingBio == null)
-                        ? ElevatedButton(
-                            onPressed: () {
-                              sheetViewModel.saveBio();
-                            },
-                            child: Text("Salvar"),
-                          )
-                        : (sheetViewModel.isSavingBio!)
-                        ? Center(
-                            child: SizedBox(
-                              width: 32,
-                              height: 32,
-                              child: CircularProgressIndicator(),
-                            ),
-                          )
-                        : Icon(Icons.check, size: 32),
-                  ),
-              ],
-            ),
-          ),
-          VerticalDivider(),
-          Flexible(
-            flex: (!isVertical(context)) ? 3 : 6,
-            child: SizedBox(
-              height: double.infinity,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children:
-                      <Widget>[
-                        ListTile(
-                          leading: Icon(Icons.arrow_back_ios_new_outlined),
-                          title: Text("Transferir para o texto"),
-                          onTap: () {
-                            sheetViewModel.addTextToEndActionValues();
+                ),
+              if (sheetViewModel.isOwner)
+                AnimatedSwitcher(
+                  duration: Duration(milliseconds: 750),
+                  child: (sheetViewModel.isSavingBio == null)
+                      ? ElevatedButton(
+                          onPressed: () {
+                            sheetViewModel.saveBio();
                           },
-                        ),
-                        Divider(),
-                      ] +
-                      sheetViewModel.getActionsValuesWithWorks().map((e) {
-                        return _ActionLoreWidget(
-                          action: context
-                              .read<SheetViewModel>()
-                              .actionRepo
-                              .getActionById(e.actionId)!,
-                        );
-                      }).toList(),
+                          child: Text("Salvar"),
+                        )
+                      : (sheetViewModel.isSavingBio!)
+                      ? Center(
+                          child: SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : Icon(Icons.check, size: 32),
                 ),
+            ],
+          ),
+        ),
+        right: Flexible(
+          flex: (!isVertical(context)) ? 3 : 6,
+          child: SizedBox(
+            height: double.infinity,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:
+                    <Widget>[
+                      ListTile(
+                        leading: Icon(Icons.arrow_back_ios_new_outlined),
+                        title: Text("Transferir para o texto"),
+                        onTap: () {
+                          sheetViewModel.addTextToEndActionValues();
+                        },
+                      ),
+                      Divider(),
+                    ] +
+                    sheetViewModel.getActionsValuesWithWorks().map((e) {
+                      return _ActionLoreWidget(
+                        action: context
+                            .read<SheetViewModel>()
+                            .actionRepo
+                            .getActionById(e.actionId)!,
+                      );
+                    }).toList(),
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

@@ -85,7 +85,8 @@ void main() async {
     itemRepo: itemRepo,
   );
 
-  StatisticsViewModel statisticsVM = StatisticsViewModel();
+  StatisticsViewModel statisticsVM = StatisticsViewModel(sheetVM: sheetVM);
+
   CampaignProvider campaignVM = CampaignProvider();
   CampaignVisualNovelViewModel campaignVisualVM = CampaignVisualNovelViewModel(
     campaignId: "",
