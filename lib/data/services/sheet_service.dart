@@ -310,4 +310,32 @@ class SheetService {
     final fileRef = storageRef.child(filePath);
     return fileRef.delete();
   }
+
+  Future<void> transferOwnership({
+    required Sheet sheet,
+    required AppUser user,
+    required String campaignId,
+  }) async {
+    sheet.ownerId = user.id!;
+
+    await removeSheet(sheet);
+
+    await FirebaseFirestore.instance
+        .collection("${rc}users")
+        .doc(user.id!)
+        .collection("sheets")
+        .doc(sheet.id)
+        .set(sheet.toMap());
+
+    await FirebaseFirestore.instance
+        .collection("${rc}campaign-sheet")
+        .doc(sheet.id)
+        .set(
+          CampaignSheet(
+            userId: user.id!,
+            campaignId: campaignId,
+            sheetId: sheet.id,
+          ).toMap(),
+        );
+  }
 }

@@ -164,6 +164,7 @@ class CampaignProvider extends ChangeNotifier {
   }
 
   List<SheetAppUser> listSheetAppUser = [];
+  List<AppUser> listUsers = [];
 
   Future<void> getSheetsByCampaign({bool isJustOthers = true}) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -175,6 +176,7 @@ class CampaignProvider extends ChangeNotifier {
           .getStreamCSByCampaign(campaign!.id)
           .listen((snapshot) async {
             listSheetAppUser = [];
+            listUsers = [];
 
             for (var doc in snapshot.docs) {
               CampaignSheet campaignSheet = CampaignSheet.fromMap(doc.data());
@@ -193,6 +195,10 @@ class CampaignProvider extends ChangeNotifier {
                 listSheetAppUser.add(
                   SheetAppUser(sheet: sheet, appUser: appUser),
                 );
+
+                if (!listUsers.contains(appUser)) {
+                  listUsers.add(appUser);
+                }
               }
             }
             notifyListeners();

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rpg_audiodrama/data/modules.dart';
+import 'package:flutter_rpg_audiodrama/ui/campaign/dialogs/sheet_transfer_ownership_diaolog.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/view/campaign_view_model.dart';
 import '../../_core/web/download_json/download_json.dart';
 import 'package:provider/provider.dart';
@@ -143,6 +144,12 @@ class CampaignSheetItem extends StatelessWidget {
                 case _SheetMenuOptions.moveToCampaign:
                   showMoveSheetToCampaignDialog(context: context, sheet: sheet);
                   return;
+                case _SheetMenuOptions.transferOwnership:
+                  showSheetTransferOwnershipDialog(
+                    context: context,
+                    sheet: sheet,
+                  );
+                  return;
                 case _SheetMenuOptions.duplicate:
                   homeVM.onDuplicateSheet(sheet: sheet);
                   return;
@@ -178,6 +185,17 @@ class CampaignSheetItem extends StatelessWidget {
                       children: [
                         Icon(Icons.move_down_rounded),
                         Text("Mover para campanha"),
+                      ],
+                    ),
+                  ),
+                if (sheet.ownerId == FirebaseAuth.instance.currentUser!.uid)
+                  PopupMenuItem(
+                    value: _SheetMenuOptions.transferOwnership,
+                    child: Row(
+                      spacing: 8,
+                      children: [
+                        Icon(Icons.move_down_rounded),
+                        Text("Transferir propriedade"),
                       ],
                     ),
                   ),
@@ -227,6 +245,7 @@ enum _SheetMenuOptions {
   export,
   openInScreen,
   moveToCampaign,
+  transferOwnership,
   duplicate,
   remove,
 }

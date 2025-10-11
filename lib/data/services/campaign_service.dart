@@ -343,7 +343,7 @@ class CampaignService {
     required String id,
   }) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    String filePath = "users/$uid/campaigns/$campaignId/battle-maps/$id.png";
+    String filePath = "users/$uid/campaigns/$campaignId/battle-maps/$id.webp";
 
     final fileRef = storageRef.child(filePath);
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:flutter_rpg_audiodrama/ui/campaign/widgets/campaign_sheet_item.dart';
 import 'package:provider/provider.dart';
 
@@ -23,67 +24,67 @@ class CampaignOwnerGrid extends StatelessWidget {
       dividerThickness: 5,
       left: CampaignBattleMapGridViewer(),
       right: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(right: 12.0),
-          child: Column(
-            children: [
-              ExpansibleList(
-                title: "Mapas de Batalha",
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      showUpinsertBattleMap(context);
-                    },
-                    icon: Icon(Icons.add),
-                  ),
-                ],
-                child: Column(
-                  children: campaignCTRL.campaign!.listBattleMaps
-                      .map((e) => CampaignBattleMapListItem(battleMap: e))
-                      .toList(),
+        padding: const EdgeInsets.only(right: 12.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            ExpansibleList(
+              title: "Mapas de Batalha",
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    showUpinsertBattleMap(context);
+                  },
+                  icon: Icon(Icons.add),
                 ),
+              ],
+              child: Column(
+                children: campaignCTRL.campaign!.listBattleMaps
+                    .map((e) => CampaignBattleMapListItem(battleMap: e))
+                    .toList(),
               ),
-              ExpansibleList(
-                title: "Objetos",
-                startClosed: true,
-                child: Column(children: []),
+            ),
+            ExpansibleList(
+              title: "Objetos",
+              startClosed: true,
+              child: Column(children: []),
+            ),
+            ExpansibleList(
+              title: "Meus Personagens",
+              startClosed: true,
+              child: Column(
+                children: userProvider
+                    .getMySheetsByCampaign(campaignCTRL.campaign!.id)
+                    .map((e) {
+                      final sau = SheetAppUser(
+                        sheet: e,
+                        appUser: userProvider.currentAppUser,
+                      );
+                      return CampaignSheetItem(
+                        sheet: sau.sheet,
+                        username: sau.appUser.username!,
+                        isShowingByCampaign: true,
+                      );
+                    })
+                    .toList(),
               ),
-              ExpansibleList(
-                title: "Meus Personagens",
-                startClosed: true,
-                child: Column(
-                  children: userProvider
-                      .getMySheetsByCampaign(campaignCTRL.campaign!.id)
-                      .map((e) {
-                        final sau = SheetAppUser(
-                          sheet: e,
-                          appUser: userProvider.currentAppUser,
-                        );
-                        return CampaignSheetItem(
-                          sheet: sau.sheet,
-                          username: sau.appUser.username!,
-                          isShowingByCampaign: true,
-                        );
-                      })
-                      .toList(),
-                ),
+            ),
+            ExpansibleList(
+              title: "Outros Personagens",
+              startClosed: true,
+              child: Column(
+                children: campaignCTRL.listSheetAppUser.map((sau) {
+                  return CampaignSheetItem(
+                    sheet: sau.sheet,
+                    username: sau.appUser.username!,
+                    isShowingByCampaign: true,
+                  );
+                }).toList(),
               ),
-              ExpansibleList(
-                title: "Outros Personagens",
-                startClosed: true,
-                child: Column(
-                  children: campaignCTRL.listSheetAppUser.map((sau) {
-                    return CampaignSheetItem(
-                      sheet: sau.sheet,
-                      username: sau.appUser.username!,
-                      isShowingByCampaign: true,
-                    );
-                  }).toList(),
-                ),
-              ),
-              SizedBox(height: 300),
-            ],
-          ),
+            ),
+            SizedBox(height: height(context)),
+          ],
         ),
       ),
     );

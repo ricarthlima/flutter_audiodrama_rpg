@@ -234,11 +234,7 @@ class __CreateAchievementDialogState extends State<_CreateAchievementDialog> {
 
   void _onUploadImagePressed() async {
     try {
-      Uint8List? imageBytes = await loadAndCompressImage(
-        context,
-        minHeight: 64,
-        minWidth: 64,
-      );
+      Uint8List? imageBytes = await loadAndCompressImage(context);
       if (imageBytes != null) {
         setState(() {
           image = imageBytes;

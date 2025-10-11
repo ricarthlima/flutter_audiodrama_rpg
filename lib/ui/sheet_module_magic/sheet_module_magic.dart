@@ -47,14 +47,10 @@ class SheetModuleMagic extends StatelessWidget {
                             ),
                           ),
                         )
-                      : Expanded(
-                          child: ListView(
-                            children:
-                                <Widget>[
-                                  GenericHeader(title: "Meus feitiços"),
-                                ] +
-                                getListsByEnergy(sheetVM),
-                          ),
+                      : ListView(
+                          children:
+                              <Widget>[GenericHeader(title: "Meus feitiços")] +
+                              getListsByEnergy(sheetVM),
                         ),
                   if (candidateData.isNotEmpty)
                     Positioned.fill(
@@ -100,6 +96,7 @@ class SheetModuleMagic extends StatelessWidget {
   }
 
   List<Widget> getListsByEnergy(SheetViewModel sheetVM) {
+    if (sheetVM.sheet == null) return [const SizedBox()];
     Map<int, List<Spell>> map = _mapEnergySpell(_listSheetSpells(sheetVM));
 
     List<Widget> result = [];
