@@ -19,22 +19,16 @@ class SheetActionsScreen extends StatelessWidget {
     final userProvider = Provider.of<UserProvider>(context);
     return (isVertical(context))
         ? PageView(children: _buildActionsColumns(sheetVM, userProvider))
-        : Scrollbar(
-            controller: scrollController,
-            thumbVisibility: true,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: SingleChildScrollView(
-                controller: scrollController,
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  spacing: 8,
-                  children: _buildActionsColumns(sheetVM, userProvider),
-                ),
-              ),
+        : GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
             ),
+            itemCount: _buildActionsColumns(sheetVM, userProvider).length,
+            itemBuilder: (context, index) {
+              return _buildActionsColumns(sheetVM, userProvider)[index];
+            },
           );
   }
 
@@ -45,47 +39,25 @@ class SheetActionsScreen extends StatelessWidget {
     Campaign? campaign = userProvider.getCampaignBySheet(sheetVM.sheet!.id);
 
     List<Widget> baseActions = [
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 16,
-        children: [
-          Expanded(
-            child: ListActionsWidget(
-              name: "Básicas",
-              isEditing: sheetVM.isEditing,
-              groupAction: sheetVM.mapGroupAction[GroupActionIds.basic]!,
-            ),
-          ),
-          ListActionsWidget(
-            name: "Movimentação",
-            isEditing: sheetVM.isEditing,
-            groupAction: sheetVM.mapGroupAction[GroupActionIds.movement]!,
-          ),
-          ListActionsWidget(
-            name: "Reações",
-            isEditing: sheetVM.isEditing,
-            color: AppColors.red,
-            groupAction: sheetVM.mapGroupAction[GroupActionIds.resisted]!,
-          ),
-        ],
+      ListActionsWidget(
+        name: "Básicas",
+        isEditing: sheetVM.isEditing,
+        groupAction: sheetVM.mapGroupAction[GroupActionIds.basic]!,
       ),
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 16,
-        children: [
-          ListActionsWidget(
-            name: "Força",
-            isEditing: sheetVM.isEditing,
-            groupAction: sheetVM.mapGroupAction[GroupActionIds.strength]!,
-          ),
-          Expanded(
-            child: ListActionsWidget(
-              name: "Agilidade",
-              isEditing: sheetVM.isEditing,
-              groupAction: sheetVM.mapGroupAction[GroupActionIds.agility]!,
-            ),
-          ),
-        ],
+      ListActionsWidget(
+        name: "Movimentação",
+        isEditing: sheetVM.isEditing,
+        groupAction: sheetVM.mapGroupAction[GroupActionIds.movement]!,
+      ),
+      ListActionsWidget(
+        name: "Força",
+        isEditing: sheetVM.isEditing,
+        groupAction: sheetVM.mapGroupAction[GroupActionIds.strength]!,
+      ),
+      ListActionsWidget(
+        name: "Agilidade",
+        isEditing: sheetVM.isEditing,
+        groupAction: sheetVM.mapGroupAction[GroupActionIds.agility]!,
       ),
       ListActionsWidget(
         name: "Intelecto",
@@ -96,6 +68,12 @@ class SheetActionsScreen extends StatelessWidget {
         name: "Sociais",
         isEditing: sheetVM.isEditing,
         groupAction: sheetVM.mapGroupAction[GroupActionIds.social]!,
+      ),
+      ListActionsWidget(
+        name: "Reações",
+        isEditing: sheetVM.isEditing,
+        color: AppColors.red,
+        groupAction: sheetVM.mapGroupAction[GroupActionIds.resisted]!,
       ),
     ];
 

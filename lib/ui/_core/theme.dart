@@ -65,5 +65,9 @@ class AppTheme {
       ),
       shape: OutlineInputBorder(borderRadius: BorderRadius.zero),
     ),
+    scrollbarTheme: ScrollbarThemeData(
+      radius: Radius.zero,
+      thickness: WidgetStatePropertyAll(6),
+    ),
   );
 }

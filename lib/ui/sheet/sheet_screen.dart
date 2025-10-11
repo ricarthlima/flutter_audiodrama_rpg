@@ -457,7 +457,6 @@ class _SheetScreenState extends State<SheetScreen> {
                     icon: Icon(Icons.description),
                   ),
                 ),
-              SizedBox(height: 16),
               Opacity(
                 opacity: (sheetVM.currentPage == SheetSubpages.settings)
                     ? 1

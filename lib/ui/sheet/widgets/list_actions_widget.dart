@@ -15,7 +15,7 @@ class ListActionsWidget extends StatelessWidget {
   final bool isEditing;
   final Color? color;
 
-  const ListActionsWidget({
+  ListActionsWidget({
     super.key,
     required this.name,
     required this.groupAction,
@@ -23,13 +23,13 @@ class ListActionsWidget extends StatelessWidget {
     this.color,
   });
 
+  final ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     SheetViewModel sheetVM = Provider.of<SheetViewModel>(context);
     return Container(
-      width: (isVertical(context))
-          ? width(context) - 100
-          : (width(context) / 5) - (30),
+      width: (isVertical(context)) ? width(context) - 100 : null,
       decoration: BoxDecoration(
         border: Border.all(
           width: 2,
@@ -39,56 +39,61 @@ class ListActionsWidget extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(8),
       ),
-      padding: const EdgeInsets.only(top: 16, bottom: 16, right: 16, left: 16),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: 8,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Flexible(
-                  child: Tooltip(
-                    message: name,
-                    child: Text(
-                      name,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: isVertical(context)
-                            ? 16
-                            : getZoomFactor(context, 18),
-                        fontFamily: FontFamily.bungee,
-                        fontWeight: FontWeight.bold,
-                        color: color,
-                      ),
+      padding: const EdgeInsets.only(left: 12, top: 12, right: 6, bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 8,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Tooltip(
+                  message: name,
+                  child: Text(
+                    name,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: isVertical(context)
+                          ? 16
+                          : getZoomFactor(context, 18),
+                      fontFamily: FontFamily.bungee,
+                      fontWeight: FontWeight.bold,
+                      color: color,
                     ),
                   ),
                 ),
-                _ModGroup(sheetVM: sheetVM, groupAction: groupAction),
-              ],
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: // TODO: Ações ativadas por padrão config de campanha
-              groupAction.listActions
-                  .where((e) => e.enabled)
-                  .length,
-              itemBuilder: (context, index) {
-                ActionTemplate action = groupAction.listActions
+              ),
+              _ModGroup(sheetVM: sheetVM, groupAction: groupAction),
+            ],
+          ),
+          Expanded(
+            child: Scrollbar(
+              controller: scrollController,
+              thumbVisibility: true,
+              child: ListView.builder(
+                controller: scrollController,
+                padding: EdgeInsets.only(right: 16),
+                itemCount: // TODO: Ações ativadas por padrão config de campanha
+                groupAction.listActions
                     .where((e) => e.enabled)
-                    .toList()[index];
+                    .length,
+                itemBuilder: (context, index) {
+                  ActionTemplate action = groupAction.listActions
+                      .where((e) => e.enabled)
+                      .toList()[index];
 
-                return ActionWidget(
-                  action: action,
-                  groupId: groupAction.id,
-                  isWork: groupAction.isWork,
-                );
-              },
+                  return ActionWidget(
+                    action: action,
+                    groupId: groupAction.id,
+                    isWork: groupAction.isWork,
+                  );
+                },
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -66,6 +66,33 @@ class HomeDrawer extends StatelessWidget {
                     homeViewModel.isDrawerClosed = true;
                   },
                 ),
+                SizedBox(height: 8),
+                CompactableButton(
+                  controller: CompactableButtonController(
+                    isCompressed: homeViewModel.isDrawerClosed,
+                    isSelected: homeViewModel.currentPage == HomeTabs.tutorials,
+                  ),
+                  title: "Como jogar?",
+                  leadingIcon: Icons.book,
+                  onPressed: () {
+                    homeViewModel.currentPage = HomeTabs.tutorials;
+                    changeURL(HomeTabs.tutorials.name);
+                    homeViewModel.isDrawerClosed = true;
+                  },
+                ),
+                CompactableButton(
+                  controller: CompactableButtonController(
+                    isCompressed: homeViewModel.isDrawerClosed,
+                    isSelected: homeViewModel.currentPage == HomeTabs.watch,
+                  ),
+                  title: "Assista ADRPG",
+                  leadingIcon: Icons.play_arrow,
+                  onPressed: () {
+                    homeViewModel.currentPage = HomeTabs.watch;
+                    changeURL(HomeTabs.watch.name);
+                    homeViewModel.isDrawerClosed = true;
+                  },
+                ),
               ],
             ),
             CompactableButton(

@@ -316,9 +316,9 @@ class SheetService {
     required AppUser user,
     required String campaignId,
   }) async {
-    sheet.ownerId = user.id!;
-
     await removeSheet(sheet);
+
+    sheet.ownerId = user.id!;
 
     await FirebaseFirestore.instance
         .collection("${rc}users")

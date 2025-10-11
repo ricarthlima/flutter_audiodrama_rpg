@@ -1,5 +1,1 @@
-enum HomeTabs {
-  sheets,
-  campaigns,
-  profile,
-}
+enum HomeTabs { sheets, campaigns, tutorials, watch, profile }

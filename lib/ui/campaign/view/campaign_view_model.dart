@@ -201,6 +201,7 @@ class CampaignProvider extends ChangeNotifier {
                 }
               }
             }
+
             notifyListeners();
           });
     }

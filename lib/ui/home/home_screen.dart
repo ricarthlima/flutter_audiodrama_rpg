@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/providers/user_provider.dart';
@@ -62,53 +63,61 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-
-      // Row(
-      //   children: [
-      //     HomeDrawer(),
-      //     VerticalDivider(thickness: 0.1),
-      //     Flexible(child: _buildBody(context)),
-      //   ],
-      // ),
     );
   }
 
   Widget _buildBody(BuildContext context) {
     final homeViewModel = Provider.of<HomeViewModel>(context);
 
-    return Stack(
+    return Row(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: IndexedStack(
-            index: HomeTabs.values.indexOf(homeViewModel.currentPage),
+        Expanded(
+          child: Stack(
             children: [
-              // Personagens
-              HomeSheetScreen(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IndexedStack(
+                  index: HomeTabs.values.indexOf(homeViewModel.currentPage),
+                  children: [
+                    // Personagens
+                    HomeSheetScreen(),
 
-              // Campanhas
-              HomeCampaignScreen(),
+                    // Campanhas
+                    HomeCampaignScreen(),
 
-              // Configurações
-              Center(child: Text("Ainda não implementado")),
+                    // Tutorial
+                    Center(child: Text("Ainda não implementado")),
+
+                    // Assistir
+                    Center(child: Text("Ainda não implementado")),
+
+                    // Configurações
+                    Center(child: Text("Ainda não implementado")),
+                  ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FutureBuilder(
+                    future: versionDev,
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.data ?? "",
+                        style: TextStyle(fontSize: 11),
+                      );
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FutureBuilder(
-              future: versionDev,
-              builder: (context, snapshot) {
-                return Text(
-                  snapshot.data ?? "",
-                  style: TextStyle(fontSize: 11),
-                );
-              },
-            ),
-          ),
-        ),
+        if (!isVertical(context) && homeViewModel.currentPage.index < 2)
+          VerticalDivider(),
+        if (!isVertical(context) && homeViewModel.currentPage.index < 2)
+          _buildTutorialArea(),
       ],
     );
   }
@@ -118,5 +127,22 @@ class _HomeScreenState extends State<HomeScreen> {
     if (mounted && news != null) {
       showNewsDialog(context, news);
     }
+  }
+
+  Widget _buildTutorialArea() {
+    return Container(
+      width: 300,
+      padding: EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Text(
+            "Como jogar?",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontFamily: FontFamily.bungee, fontSize: 24),
+          ),
+          SingleChildScrollView(child: Column()),
+        ],
+      ),
+    );
   }
 }

@@ -17,6 +17,7 @@ class HomeListSheetsWidget extends StatefulWidget {
   final String? title;
   final String? subtitle;
   final bool showAdding;
+  final bool showTitle;
 
   const HomeListSheetsWidget({
     super.key,
@@ -25,6 +26,7 @@ class HomeListSheetsWidget extends StatefulWidget {
     this.title,
     this.subtitle,
     this.showAdding = true,
+    this.showTitle = true,
   });
 
   @override
@@ -59,37 +61,40 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8,
         children: [
-          GenericHeader(
-            title: widget.title!,
-            subtitle: widget.subtitle,
-            actions: [
-              if (widget.showAdding)
-                IconButton(
-                  onPressed: () {
-                    _importFromJson(context);
-                  },
-                  tooltip: "Importar personagem",
-                  icon: Icon(Icons.file_download_outlined),
+          if (widget.showTitle)
+            GenericHeader(
+              title: widget.title!,
+              subtitle: widget.subtitle,
+              actions: [
+                if (widget.showAdding)
+                  IconButton(
+                    onPressed: () {
+                      importFromJson(context);
+                    },
+                    tooltip: "Importar personagem",
+                    icon: Icon(Icons.file_download_outlined),
+                  ),
+                if (widget.showAdding)
+                  IconButton(
+                    onPressed: () {
+                      HomeInteract.onCreateCharacterClicked(context);
+                    },
+                    tooltip: "Criar personagem",
+                    icon: Icon(Icons.add),
+                  ),
+              ],
+              iconButton: IconButton(
+                onPressed: () {
+                  setState(() {
+                    isExpanded = !isExpanded;
+                  });
+                },
+                icon: Icon(
+                  (!isExpanded) ? Icons.expand_more : Icons.expand_less,
                 ),
-              if (widget.showAdding)
-                IconButton(
-                  onPressed: () {
-                    HomeInteract.onCreateCharacterClicked(context);
-                  },
-                  tooltip: "Criar personagem",
-                  icon: Icon(Icons.add),
-                ),
-            ],
-            iconButton: IconButton(
-              onPressed: () {
-                setState(() {
-                  isExpanded = !isExpanded;
-                });
-              },
-              icon: Icon((!isExpanded) ? Icons.expand_more : Icons.expand_less),
+              ),
+              showDivider: false,
             ),
-            showDivider: false,
-          ),
           if (widget.listSheets.isEmpty)
             Expanded(
               child: Center(
@@ -171,11 +176,11 @@ class _HomeListSheetsWidgetState extends State<HomeListSheetsWidget> {
       ),
     );
   }
+}
 
-  Future<void> _importFromJson(BuildContext context) async {
-    Map<String, dynamic>? map = await pickAndReadJsonFile();
-    if (map != null && context.mounted) {
-      context.read<HomeViewModel>().createSheetByMap(map);
-    }
+Future<void> importFromJson(BuildContext context) async {
+  Map<String, dynamic>? map = await pickAndReadJsonFile();
+  if (map != null && context.mounted) {
+    context.read<HomeViewModel>().createSheetByMap(map);
   }
 }

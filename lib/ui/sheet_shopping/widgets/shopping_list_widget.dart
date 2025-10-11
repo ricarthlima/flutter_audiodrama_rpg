@@ -249,24 +249,24 @@ class _ShoppingListWidgetState extends State<ShoppingListWidget> {
                     ? shoppingVM.onSearchOnSeller()
                     : shoppingVM.onSearchOnInventory(),
               ),
-              Wrap(
-                children: context
-                    .read<ShoppingViewModel>()
-                    .itemRepo
-                    .listCategories
-                    .map((e) {
-                      return ItemCategoryWidget(
-                        category: e,
-                        isSeller: widget.isSeller,
-                        isActive: (!widget.isSeller)
-                            ? shoppingVM.listFilteredCategories.contains(e)
-                            : shoppingVM.listFilteredCategoriesSeller.contains(
-                                e,
-                              ),
-                      );
-                    })
-                    .toList(),
-              ),
+              if (widget.isSeller)
+                Wrap(
+                  children: context
+                      .read<ShoppingViewModel>()
+                      .itemRepo
+                      .listCategories
+                      .map((e) {
+                        return ItemCategoryWidget(
+                          category: e,
+                          isSeller: widget.isSeller,
+                          isActive: (!widget.isSeller)
+                              ? shoppingVM.listFilteredCategories.contains(e)
+                              : shoppingVM.listFilteredCategoriesSeller
+                                    .contains(e),
+                        );
+                      })
+                      .toList(),
+                ),
               SizedBox(
                 height: 450 * (height(context) / 866),
                 child: DragTarget<Item>(

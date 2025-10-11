@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rpg_audiodrama/ui/_core/widgets/tab_title.dart';
 // import 'package:flutter_rpg_audiodrama/ui/_core/dimensions.dart';
 import 'package:provider/provider.dart';
 
 import '../../_core/providers/user_provider.dart';
+import '../home/view/home_interact.dart';
 import '../home/widgets/home_list_sheets_widget.dart';
 
 class HomeSheetScreen extends StatefulWidget {
@@ -30,42 +32,56 @@ class _HomeSheetScreenState extends State<HomeSheetScreen> {
     return Column(
       children: [
         Row(
-          spacing: 16,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  isMine = true;
-                });
-              },
-              style: ButtonStyle(
-                backgroundColor: !isMine
-                    ? WidgetStatePropertyAll(
-                        Theme.of(context).scaffoldBackgroundColor,
-                      )
-                    : null,
-              ),
-              child: Text("Privados"),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 16,
+              children: [
+                TabTitle(
+                  title: "Meus personagens",
+                  titleVertical: Icons.person,
+                  isActive: isMine,
+                  onTap: () {
+                    setState(() {
+                      isMine = true;
+                    });
+                  },
+                ),
+                TabTitle(
+                  title: "Em campanhas",
+                  titleVertical: Icons.hub,
+                  isActive: !isMine,
+                  onTap: () {
+                    setState(() {
+                      isMine = false;
+                    });
+                  },
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  isMine = false;
-                });
-              },
-              style: ButtonStyle(
-                backgroundColor: isMine
-                    ? WidgetStatePropertyAll(
-                        Theme.of(context).scaffoldBackgroundColor,
-                      )
-                    : null,
-              ),
-              child: Text("Em campanhas"),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    importFromJson(context);
+                  },
+                  tooltip: "Importar personagem",
+                  icon: Icon(Icons.file_download_outlined),
+                ),
+                IconButton(
+                  onPressed: () {
+                    HomeInteract.onCreateCharacterClicked(context);
+                  },
+                  tooltip: "Criar personagem",
+                  icon: Icon(Icons.add),
+                ),
+              ],
             ),
           ],
         ),
+        Divider(),
         Flexible(
           child: AnimatedSwitcher(
             duration: Duration(milliseconds: 300),
@@ -75,13 +91,14 @@ class _HomeSheetScreenState extends State<HomeSheetScreen> {
                     title: "Meus personagens",
                     listSheets: userProvider.listSheetsOutCampaigns,
                     username: userProvider.currentAppUser.username!,
+                    showTitle: false,
                   )
                 : HomeListSheetsWidget(
                     key: ValueKey("other"),
                     title: "Personagens de campanhas",
                     listSheets: userProvider.listSheetsInCampaigns,
                     username: userProvider.currentAppUser.username!,
-                    showAdding: false,
+                    showTitle: false,
                   ),
           ),
         ),

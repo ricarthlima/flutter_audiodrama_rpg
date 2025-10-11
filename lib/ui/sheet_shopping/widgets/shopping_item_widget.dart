@@ -48,6 +48,8 @@ class ShoppingItemWidgetState extends State<ShoppingItemWidget> {
   Container _buildBody(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(8),
+      width: 96,
+      height: 96,
       decoration: BoxDecoration(
         border: Border.all(
           width: 1,
