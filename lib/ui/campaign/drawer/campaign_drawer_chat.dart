@@ -245,10 +245,10 @@ class _CampaignDrawerChatState extends State<CampaignDrawerChat> {
                             value: 'OWNERS',
                             label: '(Pessoas narradoras)',
                           ),
-                          ...campaignVM.listSheetAppUser.map(
+                          ...campaignVM.listUsers.map(
                             (e) => DropdownMenuEntry<String>(
-                              value: e.appUser.id ?? '',
-                              label: e.sheet.characterName,
+                              value: e.id ?? '',
+                              label: e.username ?? '',
                             ),
                           ),
                         ],
