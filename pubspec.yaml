@@ -1,7 +1,7 @@
 name: flutter_rpg_audiodrama
 description: "Uma plataforma para ADRPG"
 publish_to: 'none'
-version: 0.3.18
+version: 0.3.20
 
 environment:
   sdk: ^3.10.0-154.0.dev
