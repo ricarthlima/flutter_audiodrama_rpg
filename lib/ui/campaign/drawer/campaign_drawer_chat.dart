@@ -33,6 +33,7 @@ class _CampaignDrawerChatState extends State<CampaignDrawerChat> {
     _focusNode = FocusNode();
     _messageController = TextEditingController();
     _scrollController = ScrollController();
+    _scrollToEnd(immediate: true);
   }
 
   @override
